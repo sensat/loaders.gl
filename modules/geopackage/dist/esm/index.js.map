@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","names":["GeoPackageLoader"],"sources":["../../src/index.ts"],"sourcesContent":["export {GeoPackageLoader} from './geopackage-loader';\n"],"mappings":"AAAA,SAAQA,gBAAgB,QAAO,qBAAqB"}

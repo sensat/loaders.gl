@@ -1,0 +1,18 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _log = require("./utils/log");
+var version = typeof "4.0.0-alpha.7" !== 'undefined' ? "4.0.0-alpha.7" : '';
+if (!globalThis.loaders) {
+  _log.log.log(1, "loaders.gl ".concat(version))();
+  globalThis.loaders = Object.assign(globalThis.loaders || {}, {
+    VERSION: version,
+    log: _log.log
+  });
+}
+var _default = globalThis.loaders;
+exports.default = _default;
+//# sourceMappingURL=init.js.map

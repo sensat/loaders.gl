@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","names":["loadZarr","default","ZarrPixelSource"],"sources":["../../src/index.ts"],"sourcesContent":["export {loadZarr} from './lib/load-zarr';\nexport {default as ZarrPixelSource} from './lib/zarr-pixel-source';\n"],"mappings":"AAAA,SAAQA,QAAQ,QAAO,iBAAiB;AACxC,SAAQC,OAAO,IAAIC,eAAe,QAAO,yBAAyB"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"parquet-writer.d.ts","sourceRoot":"","sources":["../src/parquet-writer.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAC,MAAM,EAAC,MAAM,0BAA0B,CAAC;AACrD,OAAO,EAAC,KAAK,EAAE,UAAU,EAAC,MAAM,oBAAoB,CAAC;AAMrD,MAAM,MAAM,oBAAoB,GAAG,EAAE,CAAC;AAItC,eAAO,MAAM,aAAa,EAAE,MAAM,CAAC,KAAK,EAAE,UAAU,EAAE,oBAAoB,CAUzE,CAAC"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","names":["loadGeoTiff","default","TiffPixelSource"],"sources":["../../src/index.ts"],"sourcesContent":["export {loadGeoTiff} from './lib/load-geotiff';\nexport {default as TiffPixelSource} from './lib/tiff-pixel-source';\n"],"mappings":"AAAA,SAAQA,WAAW,QAAO,oBAAoB;AAC9C,SAAQC,OAAO,IAAIC,eAAe,QAAO,yBAAyB"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","names":["BSONLoader","BSONWriter"],"sources":["../../src/index.ts"],"sourcesContent":["// loaders.gl, MIT license\n\nexport type {BSONLoaderOptions} from './bson-loader';\nexport {BSONLoader} from './bson-loader';\nexport {BSONWriter} from './bson-writer';\n"],"mappings":"AAGA,SAAQA,UAAU,QAAO,eAAe;AACxC,SAAQC,UAAU,QAAO,eAAe"}

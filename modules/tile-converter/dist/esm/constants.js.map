@@ -1,0 +1,1 @@
+{"version":3,"file":"constants.js","names":["BROWSER_ERROR_MESSAGE"],"sources":["../../src/constants.ts"],"sourcesContent":["export const BROWSER_ERROR_MESSAGE =\n  'Tile converter does not work in browser, only in node js environment';\n"],"mappings":"AAAA,OAAO,MAAMA,qBAAqB,GAChC,sEAAsE"}

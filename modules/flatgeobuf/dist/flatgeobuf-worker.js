@@ -1,0 +1,9038 @@
+(() => {
+  var __create = Object.create;
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __getProtoOf = Object.getPrototypeOf;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
+  var __commonJS = (cb, mod) => function __require() {
+    return mod || (0, cb[Object.keys(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  };
+  var __reExport = (target, module, desc) => {
+    if (module && typeof module === "object" || typeof module === "function") {
+      for (let key of __getOwnPropNames(module))
+        if (!__hasOwnProp.call(target, key) && key !== "default")
+          __defProp(target, key, { get: () => module[key], enumerable: !(desc = __getOwnPropDesc(module, key)) || desc.enumerable });
+    }
+    return target;
+  };
+  var __toModule = (module) => {
+    return __reExport(__markAsModule(__defProp(module != null ? __create(__getProtoOf(module)) : {}, "default", module && module.__esModule && "default" in module ? { get: () => module.default, enumerable: true } : { value: module, enumerable: true })), module);
+  };
+
+  // ../../node_modules/flatbuffers/js/flatbuffers.js
+  var require_flatbuffers = __commonJS({
+    "../../node_modules/flatbuffers/js/flatbuffers.js"(exports4) {
+      var flatbuffers = {};
+      flatbuffers.Offset;
+      flatbuffers.Table;
+      flatbuffers.SIZEOF_SHORT = 2;
+      flatbuffers.SIZEOF_INT = 4;
+      flatbuffers.FILE_IDENTIFIER_LENGTH = 4;
+      flatbuffers.SIZE_PREFIX_LENGTH = 4;
+      flatbuffers.Encoding = {
+        UTF8_BYTES: 1,
+        UTF16_STRING: 2
+      };
+      flatbuffers.int32 = new Int32Array(2);
+      flatbuffers.float32 = new Float32Array(flatbuffers.int32.buffer);
+      flatbuffers.float64 = new Float64Array(flatbuffers.int32.buffer);
+      flatbuffers.isLittleEndian = new Uint16Array(new Uint8Array([1, 0]).buffer)[0] === 1;
+      flatbuffers.Long = function(low, high) {
+        this.low = low | 0;
+        this.high = high | 0;
+      };
+      flatbuffers.Long.create = function(low, high) {
+        return low == 0 && high == 0 ? flatbuffers.Long.ZERO : new flatbuffers.Long(low, high);
+      };
+      flatbuffers.Long.prototype.toFloat64 = function() {
+        return (this.low >>> 0) + this.high * 4294967296;
+      };
+      flatbuffers.Long.prototype.equals = function(other) {
+        return this.low == other.low && this.high == other.high;
+      };
+      flatbuffers.Long.ZERO = new flatbuffers.Long(0, 0);
+      flatbuffers.Builder = function(opt_initial_size) {
+        if (!opt_initial_size) {
+          var initial_size = 1024;
+        } else {
+          var initial_size = opt_initial_size;
+        }
+        this.bb = flatbuffers.ByteBuffer.allocate(initial_size);
+        this.space = initial_size;
+        this.minalign = 1;
+        this.vtable = null;
+        this.vtable_in_use = 0;
+        this.isNested = false;
+        this.object_start = 0;
+        this.vtables = [];
+        this.vector_num_elems = 0;
+        this.force_defaults = false;
+      };
+      flatbuffers.Builder.prototype.clear = function() {
+        this.bb.clear();
+        this.space = this.bb.capacity();
+        this.minalign = 1;
+        this.vtable = null;
+        this.vtable_in_use = 0;
+        this.isNested = false;
+        this.object_start = 0;
+        this.vtables = [];
+        this.vector_num_elems = 0;
+        this.force_defaults = false;
+      };
+      flatbuffers.Builder.prototype.forceDefaults = function(forceDefaults) {
+        this.force_defaults = forceDefaults;
+      };
+      flatbuffers.Builder.prototype.dataBuffer = function() {
+        return this.bb;
+      };
+      flatbuffers.Builder.prototype.asUint8Array = function() {
+        return this.bb.bytes().subarray(this.bb.position(), this.bb.position() + this.offset());
+      };
+      flatbuffers.Builder.prototype.prep = function(size, additional_bytes) {
+        if (size > this.minalign) {
+          this.minalign = size;
+        }
+        var align_size = ~(this.bb.capacity() - this.space + additional_bytes) + 1 & size - 1;
+        while (this.space < align_size + size + additional_bytes) {
+          var old_buf_size = this.bb.capacity();
+          this.bb = flatbuffers.Builder.growByteBuffer(this.bb);
+          this.space += this.bb.capacity() - old_buf_size;
+        }
+        this.pad(align_size);
+      };
+      flatbuffers.Builder.prototype.pad = function(byte_size) {
+        for (var i = 0; i < byte_size; i++) {
+          this.bb.writeInt8(--this.space, 0);
+        }
+      };
+      flatbuffers.Builder.prototype.writeInt8 = function(value) {
+        this.bb.writeInt8(this.space -= 1, value);
+      };
+      flatbuffers.Builder.prototype.writeInt16 = function(value) {
+        this.bb.writeInt16(this.space -= 2, value);
+      };
+      flatbuffers.Builder.prototype.writeInt32 = function(value) {
+        this.bb.writeInt32(this.space -= 4, value);
+      };
+      flatbuffers.Builder.prototype.writeInt64 = function(value) {
+        this.bb.writeInt64(this.space -= 8, value);
+      };
+      flatbuffers.Builder.prototype.writeFloat32 = function(value) {
+        this.bb.writeFloat32(this.space -= 4, value);
+      };
+      flatbuffers.Builder.prototype.writeFloat64 = function(value) {
+        this.bb.writeFloat64(this.space -= 8, value);
+      };
+      flatbuffers.Builder.prototype.addInt8 = function(value) {
+        this.prep(1, 0);
+        this.writeInt8(value);
+      };
+      flatbuffers.Builder.prototype.addInt16 = function(value) {
+        this.prep(2, 0);
+        this.writeInt16(value);
+      };
+      flatbuffers.Builder.prototype.addInt32 = function(value) {
+        this.prep(4, 0);
+        this.writeInt32(value);
+      };
+      flatbuffers.Builder.prototype.addInt64 = function(value) {
+        this.prep(8, 0);
+        this.writeInt64(value);
+      };
+      flatbuffers.Builder.prototype.addFloat32 = function(value) {
+        this.prep(4, 0);
+        this.writeFloat32(value);
+      };
+      flatbuffers.Builder.prototype.addFloat64 = function(value) {
+        this.prep(8, 0);
+        this.writeFloat64(value);
+      };
+      flatbuffers.Builder.prototype.addFieldInt8 = function(voffset, value, defaultValue) {
+        if (this.force_defaults || value != defaultValue) {
+          this.addInt8(value);
+          this.slot(voffset);
+        }
+      };
+      flatbuffers.Builder.prototype.addFieldInt16 = function(voffset, value, defaultValue) {
+        if (this.force_defaults || value != defaultValue) {
+          this.addInt16(value);
+          this.slot(voffset);
+        }
+      };
+      flatbuffers.Builder.prototype.addFieldInt32 = function(voffset, value, defaultValue) {
+        if (this.force_defaults || value != defaultValue) {
+          this.addInt32(value);
+          this.slot(voffset);
+        }
+      };
+      flatbuffers.Builder.prototype.addFieldInt64 = function(voffset, value, defaultValue) {
+        if (this.force_defaults || !value.equals(defaultValue)) {
+          this.addInt64(value);
+          this.slot(voffset);
+        }
+      };
+      flatbuffers.Builder.prototype.addFieldFloat32 = function(voffset, value, defaultValue) {
+        if (this.force_defaults || value != defaultValue) {
+          this.addFloat32(value);
+          this.slot(voffset);
+        }
+      };
+      flatbuffers.Builder.prototype.addFieldFloat64 = function(voffset, value, defaultValue) {
+        if (this.force_defaults || value != defaultValue) {
+          this.addFloat64(value);
+          this.slot(voffset);
+        }
+      };
+      flatbuffers.Builder.prototype.addFieldOffset = function(voffset, value, defaultValue) {
+        if (this.force_defaults || value != defaultValue) {
+          this.addOffset(value);
+          this.slot(voffset);
+        }
+      };
+      flatbuffers.Builder.prototype.addFieldStruct = function(voffset, value, defaultValue) {
+        if (value != defaultValue) {
+          this.nested(value);
+          this.slot(voffset);
+        }
+      };
+      flatbuffers.Builder.prototype.nested = function(obj) {
+        if (obj != this.offset()) {
+          throw new Error("FlatBuffers: struct must be serialized inline.");
+        }
+      };
+      flatbuffers.Builder.prototype.notNested = function() {
+        if (this.isNested) {
+          throw new Error("FlatBuffers: object serialization must not be nested.");
+        }
+      };
+      flatbuffers.Builder.prototype.slot = function(voffset) {
+        this.vtable[voffset] = this.offset();
+      };
+      flatbuffers.Builder.prototype.offset = function() {
+        return this.bb.capacity() - this.space;
+      };
+      flatbuffers.Builder.growByteBuffer = function(bb) {
+        var old_buf_size = bb.capacity();
+        if (old_buf_size & 3221225472) {
+          throw new Error("FlatBuffers: cannot grow buffer beyond 2 gigabytes.");
+        }
+        var new_buf_size = old_buf_size << 1;
+        var nbb = flatbuffers.ByteBuffer.allocate(new_buf_size);
+        nbb.setPosition(new_buf_size - old_buf_size);
+        nbb.bytes().set(bb.bytes(), new_buf_size - old_buf_size);
+        return nbb;
+      };
+      flatbuffers.Builder.prototype.addOffset = function(offset) {
+        this.prep(flatbuffers.SIZEOF_INT, 0);
+        this.writeInt32(this.offset() - offset + flatbuffers.SIZEOF_INT);
+      };
+      flatbuffers.Builder.prototype.startObject = function(numfields) {
+        this.notNested();
+        if (this.vtable == null) {
+          this.vtable = [];
+        }
+        this.vtable_in_use = numfields;
+        for (var i = 0; i < numfields; i++) {
+          this.vtable[i] = 0;
+        }
+        this.isNested = true;
+        this.object_start = this.offset();
+      };
+      flatbuffers.Builder.prototype.endObject = function() {
+        if (this.vtable == null || !this.isNested) {
+          throw new Error("FlatBuffers: endObject called without startObject");
+        }
+        this.addInt32(0);
+        var vtableloc = this.offset();
+        var i = this.vtable_in_use - 1;
+        for (; i >= 0 && this.vtable[i] == 0; i--) {
+        }
+        var trimmed_size = i + 1;
+        for (; i >= 0; i--) {
+          this.addInt16(this.vtable[i] != 0 ? vtableloc - this.vtable[i] : 0);
+        }
+        var standard_fields = 2;
+        this.addInt16(vtableloc - this.object_start);
+        var len = (trimmed_size + standard_fields) * flatbuffers.SIZEOF_SHORT;
+        this.addInt16(len);
+        var existing_vtable = 0;
+        var vt1 = this.space;
+        outer_loop:
+          for (i = 0; i < this.vtables.length; i++) {
+            var vt2 = this.bb.capacity() - this.vtables[i];
+            if (len == this.bb.readInt16(vt2)) {
+              for (var j = flatbuffers.SIZEOF_SHORT; j < len; j += flatbuffers.SIZEOF_SHORT) {
+                if (this.bb.readInt16(vt1 + j) != this.bb.readInt16(vt2 + j)) {
+                  continue outer_loop;
+                }
+              }
+              existing_vtable = this.vtables[i];
+              break;
+            }
+          }
+        if (existing_vtable) {
+          this.space = this.bb.capacity() - vtableloc;
+          this.bb.writeInt32(this.space, existing_vtable - vtableloc);
+        } else {
+          this.vtables.push(this.offset());
+          this.bb.writeInt32(this.bb.capacity() - vtableloc, this.offset() - vtableloc);
+        }
+        this.isNested = false;
+        return vtableloc;
+      };
+      flatbuffers.Builder.prototype.finish = function(root_table, opt_file_identifier, opt_size_prefix) {
+        var size_prefix = opt_size_prefix ? flatbuffers.SIZE_PREFIX_LENGTH : 0;
+        if (opt_file_identifier) {
+          var file_identifier = opt_file_identifier;
+          this.prep(this.minalign, flatbuffers.SIZEOF_INT + flatbuffers.FILE_IDENTIFIER_LENGTH + size_prefix);
+          if (file_identifier.length != flatbuffers.FILE_IDENTIFIER_LENGTH) {
+            throw new Error("FlatBuffers: file identifier must be length " + flatbuffers.FILE_IDENTIFIER_LENGTH);
+          }
+          for (var i = flatbuffers.FILE_IDENTIFIER_LENGTH - 1; i >= 0; i--) {
+            this.writeInt8(file_identifier.charCodeAt(i));
+          }
+        }
+        this.prep(this.minalign, flatbuffers.SIZEOF_INT + size_prefix);
+        this.addOffset(root_table);
+        if (size_prefix) {
+          this.addInt32(this.bb.capacity() - this.space);
+        }
+        this.bb.setPosition(this.space);
+      };
+      flatbuffers.Builder.prototype.finishSizePrefixed = function(root_table, opt_file_identifier) {
+        this.finish(root_table, opt_file_identifier, true);
+      };
+      flatbuffers.Builder.prototype.requiredField = function(table, field) {
+        var table_start = this.bb.capacity() - table;
+        var vtable_start = table_start - this.bb.readInt32(table_start);
+        var ok = this.bb.readInt16(vtable_start + field) != 0;
+        if (!ok) {
+          throw new Error("FlatBuffers: field " + field + " must be set");
+        }
+      };
+      flatbuffers.Builder.prototype.startVector = function(elem_size, num_elems, alignment) {
+        this.notNested();
+        this.vector_num_elems = num_elems;
+        this.prep(flatbuffers.SIZEOF_INT, elem_size * num_elems);
+        this.prep(alignment, elem_size * num_elems);
+      };
+      flatbuffers.Builder.prototype.endVector = function() {
+        this.writeInt32(this.vector_num_elems);
+        return this.offset();
+      };
+      flatbuffers.Builder.prototype.createString = function(s) {
+        if (s instanceof Uint8Array) {
+          var utf8 = s;
+        } else {
+          var utf8 = [];
+          var i = 0;
+          while (i < s.length) {
+            var codePoint;
+            var a = s.charCodeAt(i++);
+            if (a < 55296 || a >= 56320) {
+              codePoint = a;
+            } else {
+              var b = s.charCodeAt(i++);
+              codePoint = (a << 10) + b + (65536 - (55296 << 10) - 56320);
+            }
+            if (codePoint < 128) {
+              utf8.push(codePoint);
+            } else {
+              if (codePoint < 2048) {
+                utf8.push(codePoint >> 6 & 31 | 192);
+              } else {
+                if (codePoint < 65536) {
+                  utf8.push(codePoint >> 12 & 15 | 224);
+                } else {
+                  utf8.push(codePoint >> 18 & 7 | 240, codePoint >> 12 & 63 | 128);
+                }
+                utf8.push(codePoint >> 6 & 63 | 128);
+              }
+              utf8.push(codePoint & 63 | 128);
+            }
+          }
+        }
+        this.addInt8(0);
+        this.startVector(1, utf8.length, 1);
+        this.bb.setPosition(this.space -= utf8.length);
+        for (var i = 0, offset = this.space, bytes = this.bb.bytes(); i < utf8.length; i++) {
+          bytes[offset++] = utf8[i];
+        }
+        return this.endVector();
+      };
+      flatbuffers.Builder.prototype.createLong = function(low, high) {
+        return flatbuffers.Long.create(low, high);
+      };
+      flatbuffers.ByteBuffer = function(bytes) {
+        this.bytes_ = bytes;
+        this.position_ = 0;
+      };
+      flatbuffers.ByteBuffer.allocate = function(byte_size) {
+        return new flatbuffers.ByteBuffer(new Uint8Array(byte_size));
+      };
+      flatbuffers.ByteBuffer.prototype.clear = function() {
+        this.position_ = 0;
+      };
+      flatbuffers.ByteBuffer.prototype.bytes = function() {
+        return this.bytes_;
+      };
+      flatbuffers.ByteBuffer.prototype.position = function() {
+        return this.position_;
+      };
+      flatbuffers.ByteBuffer.prototype.setPosition = function(position) {
+        this.position_ = position;
+      };
+      flatbuffers.ByteBuffer.prototype.capacity = function() {
+        return this.bytes_.length;
+      };
+      flatbuffers.ByteBuffer.prototype.readInt8 = function(offset) {
+        return this.readUint8(offset) << 24 >> 24;
+      };
+      flatbuffers.ByteBuffer.prototype.readUint8 = function(offset) {
+        return this.bytes_[offset];
+      };
+      flatbuffers.ByteBuffer.prototype.readInt16 = function(offset) {
+        return this.readUint16(offset) << 16 >> 16;
+      };
+      flatbuffers.ByteBuffer.prototype.readUint16 = function(offset) {
+        return this.bytes_[offset] | this.bytes_[offset + 1] << 8;
+      };
+      flatbuffers.ByteBuffer.prototype.readInt32 = function(offset) {
+        return this.bytes_[offset] | this.bytes_[offset + 1] << 8 | this.bytes_[offset + 2] << 16 | this.bytes_[offset + 3] << 24;
+      };
+      flatbuffers.ByteBuffer.prototype.readUint32 = function(offset) {
+        return this.readInt32(offset) >>> 0;
+      };
+      flatbuffers.ByteBuffer.prototype.readInt64 = function(offset) {
+        return new flatbuffers.Long(this.readInt32(offset), this.readInt32(offset + 4));
+      };
+      flatbuffers.ByteBuffer.prototype.readUint64 = function(offset) {
+        return new flatbuffers.Long(this.readUint32(offset), this.readUint32(offset + 4));
+      };
+      flatbuffers.ByteBuffer.prototype.readFloat32 = function(offset) {
+        flatbuffers.int32[0] = this.readInt32(offset);
+        return flatbuffers.float32[0];
+      };
+      flatbuffers.ByteBuffer.prototype.readFloat64 = function(offset) {
+        flatbuffers.int32[flatbuffers.isLittleEndian ? 0 : 1] = this.readInt32(offset);
+        flatbuffers.int32[flatbuffers.isLittleEndian ? 1 : 0] = this.readInt32(offset + 4);
+        return flatbuffers.float64[0];
+      };
+      flatbuffers.ByteBuffer.prototype.writeInt8 = function(offset, value) {
+        this.bytes_[offset] = value;
+      };
+      flatbuffers.ByteBuffer.prototype.writeUint8 = function(offset, value) {
+        this.bytes_[offset] = value;
+      };
+      flatbuffers.ByteBuffer.prototype.writeInt16 = function(offset, value) {
+        this.bytes_[offset] = value;
+        this.bytes_[offset + 1] = value >> 8;
+      };
+      flatbuffers.ByteBuffer.prototype.writeUint16 = function(offset, value) {
+        this.bytes_[offset] = value;
+        this.bytes_[offset + 1] = value >> 8;
+      };
+      flatbuffers.ByteBuffer.prototype.writeInt32 = function(offset, value) {
+        this.bytes_[offset] = value;
+        this.bytes_[offset + 1] = value >> 8;
+        this.bytes_[offset + 2] = value >> 16;
+        this.bytes_[offset + 3] = value >> 24;
+      };
+      flatbuffers.ByteBuffer.prototype.writeUint32 = function(offset, value) {
+        this.bytes_[offset] = value;
+        this.bytes_[offset + 1] = value >> 8;
+        this.bytes_[offset + 2] = value >> 16;
+        this.bytes_[offset + 3] = value >> 24;
+      };
+      flatbuffers.ByteBuffer.prototype.writeInt64 = function(offset, value) {
+        this.writeInt32(offset, value.low);
+        this.writeInt32(offset + 4, value.high);
+      };
+      flatbuffers.ByteBuffer.prototype.writeUint64 = function(offset, value) {
+        this.writeUint32(offset, value.low);
+        this.writeUint32(offset + 4, value.high);
+      };
+      flatbuffers.ByteBuffer.prototype.writeFloat32 = function(offset, value) {
+        flatbuffers.float32[0] = value;
+        this.writeInt32(offset, flatbuffers.int32[0]);
+      };
+      flatbuffers.ByteBuffer.prototype.writeFloat64 = function(offset, value) {
+        flatbuffers.float64[0] = value;
+        this.writeInt32(offset, flatbuffers.int32[flatbuffers.isLittleEndian ? 0 : 1]);
+        this.writeInt32(offset + 4, flatbuffers.int32[flatbuffers.isLittleEndian ? 1 : 0]);
+      };
+      flatbuffers.ByteBuffer.prototype.getBufferIdentifier = function() {
+        if (this.bytes_.length < this.position_ + flatbuffers.SIZEOF_INT + flatbuffers.FILE_IDENTIFIER_LENGTH) {
+          throw new Error("FlatBuffers: ByteBuffer is too short to contain an identifier.");
+        }
+        var result = "";
+        for (var i = 0; i < flatbuffers.FILE_IDENTIFIER_LENGTH; i++) {
+          result += String.fromCharCode(this.readInt8(this.position_ + flatbuffers.SIZEOF_INT + i));
+        }
+        return result;
+      };
+      flatbuffers.ByteBuffer.prototype.__offset = function(bb_pos, vtable_offset) {
+        var vtable = bb_pos - this.readInt32(bb_pos);
+        return vtable_offset < this.readInt16(vtable) ? this.readInt16(vtable + vtable_offset) : 0;
+      };
+      flatbuffers.ByteBuffer.prototype.__union = function(t, offset) {
+        t.bb_pos = offset + this.readInt32(offset);
+        t.bb = this;
+        return t;
+      };
+      flatbuffers.ByteBuffer.prototype.__string = function(offset, opt_encoding) {
+        offset += this.readInt32(offset);
+        var length = this.readInt32(offset);
+        var result = "";
+        var i = 0;
+        offset += flatbuffers.SIZEOF_INT;
+        if (opt_encoding === flatbuffers.Encoding.UTF8_BYTES) {
+          return this.bytes_.subarray(offset, offset + length);
+        }
+        while (i < length) {
+          var codePoint;
+          var a = this.readUint8(offset + i++);
+          if (a < 192) {
+            codePoint = a;
+          } else {
+            var b = this.readUint8(offset + i++);
+            if (a < 224) {
+              codePoint = (a & 31) << 6 | b & 63;
+            } else {
+              var c = this.readUint8(offset + i++);
+              if (a < 240) {
+                codePoint = (a & 15) << 12 | (b & 63) << 6 | c & 63;
+              } else {
+                var d = this.readUint8(offset + i++);
+                codePoint = (a & 7) << 18 | (b & 63) << 12 | (c & 63) << 6 | d & 63;
+              }
+            }
+          }
+          if (codePoint < 65536) {
+            result += String.fromCharCode(codePoint);
+          } else {
+            codePoint -= 65536;
+            result += String.fromCharCode((codePoint >> 10) + 55296, (codePoint & (1 << 10) - 1) + 56320);
+          }
+        }
+        return result;
+      };
+      flatbuffers.ByteBuffer.prototype.__indirect = function(offset) {
+        return offset + this.readInt32(offset);
+      };
+      flatbuffers.ByteBuffer.prototype.__vector = function(offset) {
+        return offset + this.readInt32(offset) + flatbuffers.SIZEOF_INT;
+      };
+      flatbuffers.ByteBuffer.prototype.__vector_len = function(offset) {
+        return this.readInt32(offset + this.readInt32(offset));
+      };
+      flatbuffers.ByteBuffer.prototype.__has_identifier = function(ident) {
+        if (ident.length != flatbuffers.FILE_IDENTIFIER_LENGTH) {
+          throw new Error("FlatBuffers: file identifier must be length " + flatbuffers.FILE_IDENTIFIER_LENGTH);
+        }
+        for (var i = 0; i < flatbuffers.FILE_IDENTIFIER_LENGTH; i++) {
+          if (ident.charCodeAt(i) != this.readInt8(this.position_ + flatbuffers.SIZEOF_INT + i)) {
+            return false;
+          }
+        }
+        return true;
+      };
+      flatbuffers.ByteBuffer.prototype.createLong = function(low, high) {
+        return flatbuffers.Long.create(low, high);
+      };
+      exports4.flatbuffers = flatbuffers;
+    }
+  });
+
+  // ../../node_modules/flatgeobuf/lib/cjs/header_generated.js
+  var require_header_generated = __commonJS({
+    "../../node_modules/flatgeobuf/lib/cjs/header_generated.js"(exports4) {
+      "use strict";
+      Object.defineProperty(exports4, "__esModule", { value: true });
+      exports4.Header = exports4.Crs = exports4.Column = exports4.ColumnType = exports4.GeometryType = void 0;
+      var flatbuffers_1 = require_flatbuffers();
+      var GeometryType2;
+      (function(GeometryType3) {
+        GeometryType3[GeometryType3["Unknown"] = 0] = "Unknown";
+        GeometryType3[GeometryType3["Point"] = 1] = "Point";
+        GeometryType3[GeometryType3["LineString"] = 2] = "LineString";
+        GeometryType3[GeometryType3["Polygon"] = 3] = "Polygon";
+        GeometryType3[GeometryType3["MultiPoint"] = 4] = "MultiPoint";
+        GeometryType3[GeometryType3["MultiLineString"] = 5] = "MultiLineString";
+        GeometryType3[GeometryType3["MultiPolygon"] = 6] = "MultiPolygon";
+        GeometryType3[GeometryType3["GeometryCollection"] = 7] = "GeometryCollection";
+        GeometryType3[GeometryType3["CircularString"] = 8] = "CircularString";
+        GeometryType3[GeometryType3["CompoundCurve"] = 9] = "CompoundCurve";
+        GeometryType3[GeometryType3["CurvePolygon"] = 10] = "CurvePolygon";
+        GeometryType3[GeometryType3["MultiCurve"] = 11] = "MultiCurve";
+        GeometryType3[GeometryType3["MultiSurface"] = 12] = "MultiSurface";
+        GeometryType3[GeometryType3["Curve"] = 13] = "Curve";
+        GeometryType3[GeometryType3["Surface"] = 14] = "Surface";
+        GeometryType3[GeometryType3["PolyhedralSurface"] = 15] = "PolyhedralSurface";
+        GeometryType3[GeometryType3["TIN"] = 16] = "TIN";
+        GeometryType3[GeometryType3["Triangle"] = 17] = "Triangle";
+      })(GeometryType2 = exports4.GeometryType || (exports4.GeometryType = {}));
+      var ColumnType;
+      (function(ColumnType2) {
+        ColumnType2[ColumnType2["Byte"] = 0] = "Byte";
+        ColumnType2[ColumnType2["UByte"] = 1] = "UByte";
+        ColumnType2[ColumnType2["Bool"] = 2] = "Bool";
+        ColumnType2[ColumnType2["Short"] = 3] = "Short";
+        ColumnType2[ColumnType2["UShort"] = 4] = "UShort";
+        ColumnType2[ColumnType2["Int"] = 5] = "Int";
+        ColumnType2[ColumnType2["UInt"] = 6] = "UInt";
+        ColumnType2[ColumnType2["Long"] = 7] = "Long";
+        ColumnType2[ColumnType2["ULong"] = 8] = "ULong";
+        ColumnType2[ColumnType2["Float"] = 9] = "Float";
+        ColumnType2[ColumnType2["Double"] = 10] = "Double";
+        ColumnType2[ColumnType2["String"] = 11] = "String";
+        ColumnType2[ColumnType2["Json"] = 12] = "Json";
+        ColumnType2[ColumnType2["DateTime"] = 13] = "DateTime";
+        ColumnType2[ColumnType2["Binary"] = 14] = "Binary";
+      })(ColumnType = exports4.ColumnType || (exports4.ColumnType = {}));
+      var Column = function() {
+        function Column2() {
+          this.bb = null;
+          this.bb_pos = 0;
+        }
+        Column2.prototype.__init = function(i, bb) {
+          this.bb_pos = i;
+          this.bb = bb;
+          return this;
+        };
+        ;
+        Column2.getRoot = function(bb, obj) {
+          return (obj || new Column2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Column2.getSizePrefixedRoot = function(bb, obj) {
+          bb.setPosition(bb.position() + flatbuffers_1.flatbuffers.SIZE_PREFIX_LENGTH);
+          return (obj || new Column2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Column2.prototype.name = function(optionalEncoding) {
+          var offset = this.bb.__offset(this.bb_pos, 4);
+          return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+        };
+        ;
+        Column2.prototype.type = function() {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? this.bb.readUint8(this.bb_pos + offset) : ColumnType.Byte;
+        };
+        ;
+        Column2.start = function(builder) {
+          builder.startObject(2);
+        };
+        ;
+        Column2.addName = function(builder, nameOffset) {
+          builder.addFieldOffset(0, nameOffset, 0);
+        };
+        ;
+        Column2.addType = function(builder, type) {
+          builder.addFieldInt8(1, type, ColumnType.Byte);
+        };
+        ;
+        Column2.end = function(builder) {
+          var offset = builder.endObject();
+          builder.requiredField(offset, 4);
+          return offset;
+        };
+        ;
+        Column2.create = function(builder, nameOffset, type) {
+          Column2.start(builder);
+          Column2.addName(builder, nameOffset);
+          Column2.addType(builder, type);
+          return Column2.end(builder);
+        };
+        return Column2;
+      }();
+      exports4.Column = Column;
+      var Crs = function() {
+        function Crs2() {
+          this.bb = null;
+          this.bb_pos = 0;
+        }
+        Crs2.prototype.__init = function(i, bb) {
+          this.bb_pos = i;
+          this.bb = bb;
+          return this;
+        };
+        ;
+        Crs2.getRoot = function(bb, obj) {
+          return (obj || new Crs2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Crs2.getSizePrefixedRoot = function(bb, obj) {
+          bb.setPosition(bb.position() + flatbuffers_1.flatbuffers.SIZE_PREFIX_LENGTH);
+          return (obj || new Crs2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Crs2.prototype.org = function(optionalEncoding) {
+          var offset = this.bb.__offset(this.bb_pos, 4);
+          return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+        };
+        ;
+        Crs2.prototype.code = function() {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? this.bb.readInt32(this.bb_pos + offset) : 0;
+        };
+        ;
+        Crs2.prototype.name = function(optionalEncoding) {
+          var offset = this.bb.__offset(this.bb_pos, 8);
+          return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+        };
+        ;
+        Crs2.prototype.description = function(optionalEncoding) {
+          var offset = this.bb.__offset(this.bb_pos, 10);
+          return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+        };
+        ;
+        Crs2.prototype.wkt = function(optionalEncoding) {
+          var offset = this.bb.__offset(this.bb_pos, 12);
+          return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+        };
+        ;
+        Crs2.start = function(builder) {
+          builder.startObject(5);
+        };
+        ;
+        Crs2.addOrg = function(builder, orgOffset) {
+          builder.addFieldOffset(0, orgOffset, 0);
+        };
+        ;
+        Crs2.addCode = function(builder, code) {
+          builder.addFieldInt32(1, code, 0);
+        };
+        ;
+        Crs2.addName = function(builder, nameOffset) {
+          builder.addFieldOffset(2, nameOffset, 0);
+        };
+        ;
+        Crs2.addDescription = function(builder, descriptionOffset) {
+          builder.addFieldOffset(3, descriptionOffset, 0);
+        };
+        ;
+        Crs2.addWkt = function(builder, wktOffset) {
+          builder.addFieldOffset(4, wktOffset, 0);
+        };
+        ;
+        Crs2.end = function(builder) {
+          var offset = builder.endObject();
+          return offset;
+        };
+        ;
+        Crs2.create = function(builder, orgOffset, code, nameOffset, descriptionOffset, wktOffset) {
+          Crs2.start(builder);
+          Crs2.addOrg(builder, orgOffset);
+          Crs2.addCode(builder, code);
+          Crs2.addName(builder, nameOffset);
+          Crs2.addDescription(builder, descriptionOffset);
+          Crs2.addWkt(builder, wktOffset);
+          return Crs2.end(builder);
+        };
+        return Crs2;
+      }();
+      exports4.Crs = Crs;
+      var Header = function() {
+        function Header2() {
+          this.bb = null;
+          this.bb_pos = 0;
+        }
+        Header2.prototype.__init = function(i, bb) {
+          this.bb_pos = i;
+          this.bb = bb;
+          return this;
+        };
+        ;
+        Header2.getRoot = function(bb, obj) {
+          return (obj || new Header2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Header2.getSizePrefixedRoot = function(bb, obj) {
+          bb.setPosition(bb.position() + flatbuffers_1.flatbuffers.SIZE_PREFIX_LENGTH);
+          return (obj || new Header2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Header2.prototype.name = function(optionalEncoding) {
+          var offset = this.bb.__offset(this.bb_pos, 4);
+          return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+        };
+        ;
+        Header2.prototype.envelope = function(index) {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? this.bb.readFloat64(this.bb.__vector(this.bb_pos + offset) + index * 8) : 0;
+        };
+        ;
+        Header2.prototype.envelopeLength = function() {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+        };
+        ;
+        Header2.prototype.envelopeArray = function() {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? new Float64Array(this.bb.bytes().buffer, this.bb.bytes().byteOffset + this.bb.__vector(this.bb_pos + offset), this.bb.__vector_len(this.bb_pos + offset)) : null;
+        };
+        ;
+        Header2.prototype.geometryType = function() {
+          var offset = this.bb.__offset(this.bb_pos, 8);
+          return offset ? this.bb.readUint8(this.bb_pos + offset) : GeometryType2.Unknown;
+        };
+        ;
+        Header2.prototype.hasZ = function() {
+          var offset = this.bb.__offset(this.bb_pos, 10);
+          return offset ? !!this.bb.readInt8(this.bb_pos + offset) : false;
+        };
+        ;
+        Header2.prototype.hasM = function() {
+          var offset = this.bb.__offset(this.bb_pos, 12);
+          return offset ? !!this.bb.readInt8(this.bb_pos + offset) : false;
+        };
+        ;
+        Header2.prototype.hasT = function() {
+          var offset = this.bb.__offset(this.bb_pos, 14);
+          return offset ? !!this.bb.readInt8(this.bb_pos + offset) : false;
+        };
+        ;
+        Header2.prototype.hasTM = function() {
+          var offset = this.bb.__offset(this.bb_pos, 16);
+          return offset ? !!this.bb.readInt8(this.bb_pos + offset) : false;
+        };
+        ;
+        Header2.prototype.columns = function(index, obj) {
+          var offset = this.bb.__offset(this.bb_pos, 18);
+          return offset ? (obj || new Column()).__init(this.bb.__indirect(this.bb.__vector(this.bb_pos + offset) + index * 4), this.bb) : null;
+        };
+        ;
+        Header2.prototype.columnsLength = function() {
+          var offset = this.bb.__offset(this.bb_pos, 18);
+          return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+        };
+        ;
+        Header2.prototype.featuresCount = function() {
+          var offset = this.bb.__offset(this.bb_pos, 20);
+          return offset ? this.bb.readUint64(this.bb_pos + offset) : this.bb.createLong(0, 0);
+        };
+        ;
+        Header2.prototype.indexNodeSize = function() {
+          var offset = this.bb.__offset(this.bb_pos, 22);
+          return offset ? this.bb.readUint16(this.bb_pos + offset) : 16;
+        };
+        ;
+        Header2.prototype.crs = function(obj) {
+          var offset = this.bb.__offset(this.bb_pos, 24);
+          return offset ? (obj || new Crs()).__init(this.bb.__indirect(this.bb_pos + offset), this.bb) : null;
+        };
+        ;
+        Header2.start = function(builder) {
+          builder.startObject(11);
+        };
+        ;
+        Header2.addName = function(builder, nameOffset) {
+          builder.addFieldOffset(0, nameOffset, 0);
+        };
+        ;
+        Header2.addEnvelope = function(builder, envelopeOffset) {
+          builder.addFieldOffset(1, envelopeOffset, 0);
+        };
+        ;
+        Header2.createEnvelopeVector = function(builder, data) {
+          builder.startVector(8, data.length, 8);
+          for (var i = data.length - 1; i >= 0; i--) {
+            builder.addFloat64(data[i]);
+          }
+          return builder.endVector();
+        };
+        ;
+        Header2.startEnvelopeVector = function(builder, numElems) {
+          builder.startVector(8, numElems, 8);
+        };
+        ;
+        Header2.addGeometryType = function(builder, geometryType) {
+          builder.addFieldInt8(2, geometryType, GeometryType2.Unknown);
+        };
+        ;
+        Header2.addHasZ = function(builder, hasZ) {
+          builder.addFieldInt8(3, +hasZ, 0);
+        };
+        ;
+        Header2.addHasM = function(builder, hasM) {
+          builder.addFieldInt8(4, +hasM, 0);
+        };
+        ;
+        Header2.addHasT = function(builder, hasT) {
+          builder.addFieldInt8(5, +hasT, 0);
+        };
+        ;
+        Header2.addHasTM = function(builder, hasTM) {
+          builder.addFieldInt8(6, +hasTM, 0);
+        };
+        ;
+        Header2.addColumns = function(builder, columnsOffset) {
+          builder.addFieldOffset(7, columnsOffset, 0);
+        };
+        ;
+        Header2.createColumnsVector = function(builder, data) {
+          builder.startVector(4, data.length, 4);
+          for (var i = data.length - 1; i >= 0; i--) {
+            builder.addOffset(data[i]);
+          }
+          return builder.endVector();
+        };
+        ;
+        Header2.startColumnsVector = function(builder, numElems) {
+          builder.startVector(4, numElems, 4);
+        };
+        ;
+        Header2.addFeaturesCount = function(builder, featuresCount) {
+          builder.addFieldInt64(8, featuresCount, builder.createLong(0, 0));
+        };
+        ;
+        Header2.addIndexNodeSize = function(builder, indexNodeSize) {
+          builder.addFieldInt16(9, indexNodeSize, 16);
+        };
+        ;
+        Header2.addCrs = function(builder, crsOffset) {
+          builder.addFieldOffset(10, crsOffset, 0);
+        };
+        ;
+        Header2.end = function(builder) {
+          var offset = builder.endObject();
+          return offset;
+        };
+        ;
+        Header2.finishBuffer = function(builder, offset) {
+          builder.finish(offset);
+        };
+        ;
+        Header2.finishSizePrefixedBuffer = function(builder, offset) {
+          builder.finish(offset, void 0, true);
+        };
+        ;
+        Header2.create = function(builder, nameOffset, envelopeOffset, geometryType, hasZ, hasM, hasT, hasTM, columnsOffset, featuresCount, indexNodeSize, crsOffset) {
+          Header2.start(builder);
+          Header2.addName(builder, nameOffset);
+          Header2.addEnvelope(builder, envelopeOffset);
+          Header2.addGeometryType(builder, geometryType);
+          Header2.addHasZ(builder, hasZ);
+          Header2.addHasM(builder, hasM);
+          Header2.addHasT(builder, hasT);
+          Header2.addHasTM(builder, hasTM);
+          Header2.addColumns(builder, columnsOffset);
+          Header2.addFeaturesCount(builder, featuresCount);
+          Header2.addIndexNodeSize(builder, indexNodeSize);
+          Header2.addCrs(builder, crsOffset);
+          return Header2.end(builder);
+        };
+        return Header2;
+      }();
+      exports4.Header = Header;
+    }
+  });
+
+  // ../../node_modules/flatgeobuf/lib/cjs/ColumnMeta.js
+  var require_ColumnMeta = __commonJS({
+    "../../node_modules/flatgeobuf/lib/cjs/ColumnMeta.js"(exports4) {
+      "use strict";
+      var _a;
+      Object.defineProperty(exports4, "__esModule", { value: true });
+      var header_generated_1 = require_header_generated();
+      var arrayTypeMap = (_a = {}, _a[header_generated_1.ColumnType.Byte] = Uint8Array, _a[header_generated_1.ColumnType.UByte] = Uint8Array, _a[header_generated_1.ColumnType.Bool] = Uint8Array, _a[header_generated_1.ColumnType.Short] = Uint16Array, _a[header_generated_1.ColumnType.UShort] = Uint16Array, _a[header_generated_1.ColumnType.Int] = Uint32Array, _a[header_generated_1.ColumnType.UInt] = Uint32Array, _a[header_generated_1.ColumnType.Long] = BigUint64Array, _a[header_generated_1.ColumnType.ULong] = BigUint64Array, _a[header_generated_1.ColumnType.Float] = Float64Array, _a[header_generated_1.ColumnType.Double] = Float64Array, _a[header_generated_1.ColumnType.String] = String, _a[header_generated_1.ColumnType.Json] = String, _a[header_generated_1.ColumnType.DateTime] = String, _a[header_generated_1.ColumnType.Binary] = String, _a);
+      var ColumnMeta = function() {
+        function ColumnMeta2(name, type) {
+          this.name = name;
+          this.type = type;
+          this.arrayType = arrayTypeMap[type];
+        }
+        return ColumnMeta2;
+      }();
+      exports4.default = ColumnMeta;
+    }
+  });
+
+  // ../../node_modules/flatgeobuf/lib/cjs/HeaderMeta.js
+  var require_HeaderMeta = __commonJS({
+    "../../node_modules/flatgeobuf/lib/cjs/HeaderMeta.js"(exports4) {
+      "use strict";
+      Object.defineProperty(exports4, "__esModule", { value: true });
+      var HeaderMeta = function() {
+        function HeaderMeta2(geometryType, columns, featuresCount, crs) {
+          this.geometryType = geometryType;
+          this.columns = columns;
+          this.featuresCount = featuresCount;
+          this.crs = crs;
+        }
+        return HeaderMeta2;
+      }();
+      exports4.default = HeaderMeta;
+    }
+  });
+
+  // ../../node_modules/flatgeobuf/lib/cjs/feature_generated.js
+  var require_feature_generated = __commonJS({
+    "../../node_modules/flatgeobuf/lib/cjs/feature_generated.js"(exports4) {
+      "use strict";
+      Object.defineProperty(exports4, "__esModule", { value: true });
+      exports4.Feature = exports4.Geometry = exports4.Header = exports4.Crs = exports4.Column = exports4.ColumnType = exports4.GeometryType = void 0;
+      var flatbuffers_1 = require_flatbuffers();
+      var GeometryType2;
+      (function(GeometryType3) {
+        GeometryType3[GeometryType3["Unknown"] = 0] = "Unknown";
+        GeometryType3[GeometryType3["Point"] = 1] = "Point";
+        GeometryType3[GeometryType3["LineString"] = 2] = "LineString";
+        GeometryType3[GeometryType3["Polygon"] = 3] = "Polygon";
+        GeometryType3[GeometryType3["MultiPoint"] = 4] = "MultiPoint";
+        GeometryType3[GeometryType3["MultiLineString"] = 5] = "MultiLineString";
+        GeometryType3[GeometryType3["MultiPolygon"] = 6] = "MultiPolygon";
+        GeometryType3[GeometryType3["GeometryCollection"] = 7] = "GeometryCollection";
+        GeometryType3[GeometryType3["CircularString"] = 8] = "CircularString";
+        GeometryType3[GeometryType3["CompoundCurve"] = 9] = "CompoundCurve";
+        GeometryType3[GeometryType3["CurvePolygon"] = 10] = "CurvePolygon";
+        GeometryType3[GeometryType3["MultiCurve"] = 11] = "MultiCurve";
+        GeometryType3[GeometryType3["MultiSurface"] = 12] = "MultiSurface";
+        GeometryType3[GeometryType3["Curve"] = 13] = "Curve";
+        GeometryType3[GeometryType3["Surface"] = 14] = "Surface";
+        GeometryType3[GeometryType3["PolyhedralSurface"] = 15] = "PolyhedralSurface";
+        GeometryType3[GeometryType3["TIN"] = 16] = "TIN";
+        GeometryType3[GeometryType3["Triangle"] = 17] = "Triangle";
+      })(GeometryType2 = exports4.GeometryType || (exports4.GeometryType = {}));
+      var ColumnType;
+      (function(ColumnType2) {
+        ColumnType2[ColumnType2["Byte"] = 0] = "Byte";
+        ColumnType2[ColumnType2["UByte"] = 1] = "UByte";
+        ColumnType2[ColumnType2["Bool"] = 2] = "Bool";
+        ColumnType2[ColumnType2["Short"] = 3] = "Short";
+        ColumnType2[ColumnType2["UShort"] = 4] = "UShort";
+        ColumnType2[ColumnType2["Int"] = 5] = "Int";
+        ColumnType2[ColumnType2["UInt"] = 6] = "UInt";
+        ColumnType2[ColumnType2["Long"] = 7] = "Long";
+        ColumnType2[ColumnType2["ULong"] = 8] = "ULong";
+        ColumnType2[ColumnType2["Float"] = 9] = "Float";
+        ColumnType2[ColumnType2["Double"] = 10] = "Double";
+        ColumnType2[ColumnType2["String"] = 11] = "String";
+        ColumnType2[ColumnType2["Json"] = 12] = "Json";
+        ColumnType2[ColumnType2["DateTime"] = 13] = "DateTime";
+        ColumnType2[ColumnType2["Binary"] = 14] = "Binary";
+      })(ColumnType = exports4.ColumnType || (exports4.ColumnType = {}));
+      var Column = function() {
+        function Column2() {
+          this.bb = null;
+          this.bb_pos = 0;
+        }
+        Column2.prototype.__init = function(i, bb) {
+          this.bb_pos = i;
+          this.bb = bb;
+          return this;
+        };
+        ;
+        Column2.getRoot = function(bb, obj) {
+          return (obj || new Column2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Column2.getSizePrefixedRoot = function(bb, obj) {
+          bb.setPosition(bb.position() + flatbuffers_1.flatbuffers.SIZE_PREFIX_LENGTH);
+          return (obj || new Column2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Column2.prototype.name = function(optionalEncoding) {
+          var offset = this.bb.__offset(this.bb_pos, 4);
+          return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+        };
+        ;
+        Column2.prototype.type = function() {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? this.bb.readUint8(this.bb_pos + offset) : ColumnType.Byte;
+        };
+        ;
+        Column2.start = function(builder) {
+          builder.startObject(2);
+        };
+        ;
+        Column2.addName = function(builder, nameOffset) {
+          builder.addFieldOffset(0, nameOffset, 0);
+        };
+        ;
+        Column2.addType = function(builder, type) {
+          builder.addFieldInt8(1, type, ColumnType.Byte);
+        };
+        ;
+        Column2.end = function(builder) {
+          var offset = builder.endObject();
+          builder.requiredField(offset, 4);
+          return offset;
+        };
+        ;
+        Column2.create = function(builder, nameOffset, type) {
+          Column2.start(builder);
+          Column2.addName(builder, nameOffset);
+          Column2.addType(builder, type);
+          return Column2.end(builder);
+        };
+        return Column2;
+      }();
+      exports4.Column = Column;
+      var Crs = function() {
+        function Crs2() {
+          this.bb = null;
+          this.bb_pos = 0;
+        }
+        Crs2.prototype.__init = function(i, bb) {
+          this.bb_pos = i;
+          this.bb = bb;
+          return this;
+        };
+        ;
+        Crs2.getRoot = function(bb, obj) {
+          return (obj || new Crs2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Crs2.getSizePrefixedRoot = function(bb, obj) {
+          bb.setPosition(bb.position() + flatbuffers_1.flatbuffers.SIZE_PREFIX_LENGTH);
+          return (obj || new Crs2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Crs2.prototype.org = function(optionalEncoding) {
+          var offset = this.bb.__offset(this.bb_pos, 4);
+          return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+        };
+        ;
+        Crs2.prototype.code = function() {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? this.bb.readInt32(this.bb_pos + offset) : 0;
+        };
+        ;
+        Crs2.prototype.name = function(optionalEncoding) {
+          var offset = this.bb.__offset(this.bb_pos, 8);
+          return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+        };
+        ;
+        Crs2.prototype.description = function(optionalEncoding) {
+          var offset = this.bb.__offset(this.bb_pos, 10);
+          return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+        };
+        ;
+        Crs2.prototype.wkt = function(optionalEncoding) {
+          var offset = this.bb.__offset(this.bb_pos, 12);
+          return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+        };
+        ;
+        Crs2.start = function(builder) {
+          builder.startObject(5);
+        };
+        ;
+        Crs2.addOrg = function(builder, orgOffset) {
+          builder.addFieldOffset(0, orgOffset, 0);
+        };
+        ;
+        Crs2.addCode = function(builder, code) {
+          builder.addFieldInt32(1, code, 0);
+        };
+        ;
+        Crs2.addName = function(builder, nameOffset) {
+          builder.addFieldOffset(2, nameOffset, 0);
+        };
+        ;
+        Crs2.addDescription = function(builder, descriptionOffset) {
+          builder.addFieldOffset(3, descriptionOffset, 0);
+        };
+        ;
+        Crs2.addWkt = function(builder, wktOffset) {
+          builder.addFieldOffset(4, wktOffset, 0);
+        };
+        ;
+        Crs2.end = function(builder) {
+          var offset = builder.endObject();
+          return offset;
+        };
+        ;
+        Crs2.create = function(builder, orgOffset, code, nameOffset, descriptionOffset, wktOffset) {
+          Crs2.start(builder);
+          Crs2.addOrg(builder, orgOffset);
+          Crs2.addCode(builder, code);
+          Crs2.addName(builder, nameOffset);
+          Crs2.addDescription(builder, descriptionOffset);
+          Crs2.addWkt(builder, wktOffset);
+          return Crs2.end(builder);
+        };
+        return Crs2;
+      }();
+      exports4.Crs = Crs;
+      var Header = function() {
+        function Header2() {
+          this.bb = null;
+          this.bb_pos = 0;
+        }
+        Header2.prototype.__init = function(i, bb) {
+          this.bb_pos = i;
+          this.bb = bb;
+          return this;
+        };
+        ;
+        Header2.getRoot = function(bb, obj) {
+          return (obj || new Header2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Header2.getSizePrefixedRoot = function(bb, obj) {
+          bb.setPosition(bb.position() + flatbuffers_1.flatbuffers.SIZE_PREFIX_LENGTH);
+          return (obj || new Header2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Header2.prototype.name = function(optionalEncoding) {
+          var offset = this.bb.__offset(this.bb_pos, 4);
+          return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+        };
+        ;
+        Header2.prototype.envelope = function(index) {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? this.bb.readFloat64(this.bb.__vector(this.bb_pos + offset) + index * 8) : 0;
+        };
+        ;
+        Header2.prototype.envelopeLength = function() {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+        };
+        ;
+        Header2.prototype.envelopeArray = function() {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? new Float64Array(this.bb.bytes().buffer, this.bb.bytes().byteOffset + this.bb.__vector(this.bb_pos + offset), this.bb.__vector_len(this.bb_pos + offset)) : null;
+        };
+        ;
+        Header2.prototype.geometryType = function() {
+          var offset = this.bb.__offset(this.bb_pos, 8);
+          return offset ? this.bb.readUint8(this.bb_pos + offset) : GeometryType2.Unknown;
+        };
+        ;
+        Header2.prototype.hasZ = function() {
+          var offset = this.bb.__offset(this.bb_pos, 10);
+          return offset ? !!this.bb.readInt8(this.bb_pos + offset) : false;
+        };
+        ;
+        Header2.prototype.hasM = function() {
+          var offset = this.bb.__offset(this.bb_pos, 12);
+          return offset ? !!this.bb.readInt8(this.bb_pos + offset) : false;
+        };
+        ;
+        Header2.prototype.hasT = function() {
+          var offset = this.bb.__offset(this.bb_pos, 14);
+          return offset ? !!this.bb.readInt8(this.bb_pos + offset) : false;
+        };
+        ;
+        Header2.prototype.hasTM = function() {
+          var offset = this.bb.__offset(this.bb_pos, 16);
+          return offset ? !!this.bb.readInt8(this.bb_pos + offset) : false;
+        };
+        ;
+        Header2.prototype.columns = function(index, obj) {
+          var offset = this.bb.__offset(this.bb_pos, 18);
+          return offset ? (obj || new Column()).__init(this.bb.__indirect(this.bb.__vector(this.bb_pos + offset) + index * 4), this.bb) : null;
+        };
+        ;
+        Header2.prototype.columnsLength = function() {
+          var offset = this.bb.__offset(this.bb_pos, 18);
+          return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+        };
+        ;
+        Header2.prototype.featuresCount = function() {
+          var offset = this.bb.__offset(this.bb_pos, 20);
+          return offset ? this.bb.readUint64(this.bb_pos + offset) : this.bb.createLong(0, 0);
+        };
+        ;
+        Header2.prototype.indexNodeSize = function() {
+          var offset = this.bb.__offset(this.bb_pos, 22);
+          return offset ? this.bb.readUint16(this.bb_pos + offset) : 16;
+        };
+        ;
+        Header2.prototype.crs = function(obj) {
+          var offset = this.bb.__offset(this.bb_pos, 24);
+          return offset ? (obj || new Crs()).__init(this.bb.__indirect(this.bb_pos + offset), this.bb) : null;
+        };
+        ;
+        Header2.start = function(builder) {
+          builder.startObject(11);
+        };
+        ;
+        Header2.addName = function(builder, nameOffset) {
+          builder.addFieldOffset(0, nameOffset, 0);
+        };
+        ;
+        Header2.addEnvelope = function(builder, envelopeOffset) {
+          builder.addFieldOffset(1, envelopeOffset, 0);
+        };
+        ;
+        Header2.createEnvelopeVector = function(builder, data) {
+          builder.startVector(8, data.length, 8);
+          for (var i = data.length - 1; i >= 0; i--) {
+            builder.addFloat64(data[i]);
+          }
+          return builder.endVector();
+        };
+        ;
+        Header2.startEnvelopeVector = function(builder, numElems) {
+          builder.startVector(8, numElems, 8);
+        };
+        ;
+        Header2.addGeometryType = function(builder, geometryType) {
+          builder.addFieldInt8(2, geometryType, GeometryType2.Unknown);
+        };
+        ;
+        Header2.addHasZ = function(builder, hasZ) {
+          builder.addFieldInt8(3, +hasZ, 0);
+        };
+        ;
+        Header2.addHasM = function(builder, hasM) {
+          builder.addFieldInt8(4, +hasM, 0);
+        };
+        ;
+        Header2.addHasT = function(builder, hasT) {
+          builder.addFieldInt8(5, +hasT, 0);
+        };
+        ;
+        Header2.addHasTM = function(builder, hasTM) {
+          builder.addFieldInt8(6, +hasTM, 0);
+        };
+        ;
+        Header2.addColumns = function(builder, columnsOffset) {
+          builder.addFieldOffset(7, columnsOffset, 0);
+        };
+        ;
+        Header2.createColumnsVector = function(builder, data) {
+          builder.startVector(4, data.length, 4);
+          for (var i = data.length - 1; i >= 0; i--) {
+            builder.addOffset(data[i]);
+          }
+          return builder.endVector();
+        };
+        ;
+        Header2.startColumnsVector = function(builder, numElems) {
+          builder.startVector(4, numElems, 4);
+        };
+        ;
+        Header2.addFeaturesCount = function(builder, featuresCount) {
+          builder.addFieldInt64(8, featuresCount, builder.createLong(0, 0));
+        };
+        ;
+        Header2.addIndexNodeSize = function(builder, indexNodeSize) {
+          builder.addFieldInt16(9, indexNodeSize, 16);
+        };
+        ;
+        Header2.addCrs = function(builder, crsOffset) {
+          builder.addFieldOffset(10, crsOffset, 0);
+        };
+        ;
+        Header2.end = function(builder) {
+          var offset = builder.endObject();
+          return offset;
+        };
+        ;
+        Header2.create = function(builder, nameOffset, envelopeOffset, geometryType, hasZ, hasM, hasT, hasTM, columnsOffset, featuresCount, indexNodeSize, crsOffset) {
+          Header2.start(builder);
+          Header2.addName(builder, nameOffset);
+          Header2.addEnvelope(builder, envelopeOffset);
+          Header2.addGeometryType(builder, geometryType);
+          Header2.addHasZ(builder, hasZ);
+          Header2.addHasM(builder, hasM);
+          Header2.addHasT(builder, hasT);
+          Header2.addHasTM(builder, hasTM);
+          Header2.addColumns(builder, columnsOffset);
+          Header2.addFeaturesCount(builder, featuresCount);
+          Header2.addIndexNodeSize(builder, indexNodeSize);
+          Header2.addCrs(builder, crsOffset);
+          return Header2.end(builder);
+        };
+        return Header2;
+      }();
+      exports4.Header = Header;
+      var Geometry = function() {
+        function Geometry2() {
+          this.bb = null;
+          this.bb_pos = 0;
+        }
+        Geometry2.prototype.__init = function(i, bb) {
+          this.bb_pos = i;
+          this.bb = bb;
+          return this;
+        };
+        ;
+        Geometry2.getRoot = function(bb, obj) {
+          return (obj || new Geometry2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Geometry2.getSizePrefixedRoot = function(bb, obj) {
+          bb.setPosition(bb.position() + flatbuffers_1.flatbuffers.SIZE_PREFIX_LENGTH);
+          return (obj || new Geometry2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Geometry2.prototype.ends = function(index) {
+          var offset = this.bb.__offset(this.bb_pos, 4);
+          return offset ? this.bb.readUint32(this.bb.__vector(this.bb_pos + offset) + index * 4) : 0;
+        };
+        ;
+        Geometry2.prototype.endsLength = function() {
+          var offset = this.bb.__offset(this.bb_pos, 4);
+          return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+        };
+        ;
+        Geometry2.prototype.endsArray = function() {
+          var offset = this.bb.__offset(this.bb_pos, 4);
+          return offset ? new Uint32Array(this.bb.bytes().buffer, this.bb.bytes().byteOffset + this.bb.__vector(this.bb_pos + offset), this.bb.__vector_len(this.bb_pos + offset)) : null;
+        };
+        ;
+        Geometry2.prototype.xy = function(index) {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? this.bb.readFloat64(this.bb.__vector(this.bb_pos + offset) + index * 8) : 0;
+        };
+        ;
+        Geometry2.prototype.xyLength = function() {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+        };
+        ;
+        Geometry2.prototype.xyArray = function() {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? new Float64Array(this.bb.bytes().buffer, this.bb.bytes().byteOffset + this.bb.__vector(this.bb_pos + offset), this.bb.__vector_len(this.bb_pos + offset)) : null;
+        };
+        ;
+        Geometry2.prototype.z = function(index) {
+          var offset = this.bb.__offset(this.bb_pos, 8);
+          return offset ? this.bb.readFloat64(this.bb.__vector(this.bb_pos + offset) + index * 8) : 0;
+        };
+        ;
+        Geometry2.prototype.zLength = function() {
+          var offset = this.bb.__offset(this.bb_pos, 8);
+          return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+        };
+        ;
+        Geometry2.prototype.zArray = function() {
+          var offset = this.bb.__offset(this.bb_pos, 8);
+          return offset ? new Float64Array(this.bb.bytes().buffer, this.bb.bytes().byteOffset + this.bb.__vector(this.bb_pos + offset), this.bb.__vector_len(this.bb_pos + offset)) : null;
+        };
+        ;
+        Geometry2.prototype.m = function(index) {
+          var offset = this.bb.__offset(this.bb_pos, 10);
+          return offset ? this.bb.readFloat64(this.bb.__vector(this.bb_pos + offset) + index * 8) : 0;
+        };
+        ;
+        Geometry2.prototype.mLength = function() {
+          var offset = this.bb.__offset(this.bb_pos, 10);
+          return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+        };
+        ;
+        Geometry2.prototype.mArray = function() {
+          var offset = this.bb.__offset(this.bb_pos, 10);
+          return offset ? new Float64Array(this.bb.bytes().buffer, this.bb.bytes().byteOffset + this.bb.__vector(this.bb_pos + offset), this.bb.__vector_len(this.bb_pos + offset)) : null;
+        };
+        ;
+        Geometry2.prototype.t = function(index) {
+          var offset = this.bb.__offset(this.bb_pos, 12);
+          return offset ? this.bb.readFloat64(this.bb.__vector(this.bb_pos + offset) + index * 8) : 0;
+        };
+        ;
+        Geometry2.prototype.tLength = function() {
+          var offset = this.bb.__offset(this.bb_pos, 12);
+          return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+        };
+        ;
+        Geometry2.prototype.tArray = function() {
+          var offset = this.bb.__offset(this.bb_pos, 12);
+          return offset ? new Float64Array(this.bb.bytes().buffer, this.bb.bytes().byteOffset + this.bb.__vector(this.bb_pos + offset), this.bb.__vector_len(this.bb_pos + offset)) : null;
+        };
+        ;
+        Geometry2.prototype.tm = function(index) {
+          var offset = this.bb.__offset(this.bb_pos, 14);
+          return offset ? this.bb.readUint64(this.bb.__vector(this.bb_pos + offset) + index * 8) : this.bb.createLong(0, 0);
+        };
+        ;
+        Geometry2.prototype.tmLength = function() {
+          var offset = this.bb.__offset(this.bb_pos, 14);
+          return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+        };
+        ;
+        Geometry2.prototype.type = function() {
+          var offset = this.bb.__offset(this.bb_pos, 16);
+          return offset ? this.bb.readUint8(this.bb_pos + offset) : GeometryType2.Unknown;
+        };
+        ;
+        Geometry2.prototype.parts = function(index, obj) {
+          var offset = this.bb.__offset(this.bb_pos, 18);
+          return offset ? (obj || new Geometry2()).__init(this.bb.__indirect(this.bb.__vector(this.bb_pos + offset) + index * 4), this.bb) : null;
+        };
+        ;
+        Geometry2.prototype.partsLength = function() {
+          var offset = this.bb.__offset(this.bb_pos, 18);
+          return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+        };
+        ;
+        Geometry2.start = function(builder) {
+          builder.startObject(8);
+        };
+        ;
+        Geometry2.addEnds = function(builder, endsOffset) {
+          builder.addFieldOffset(0, endsOffset, 0);
+        };
+        ;
+        Geometry2.createEndsVector = function(builder, data) {
+          builder.startVector(4, data.length, 4);
+          for (var i = data.length - 1; i >= 0; i--) {
+            builder.addInt32(data[i]);
+          }
+          return builder.endVector();
+        };
+        ;
+        Geometry2.startEndsVector = function(builder, numElems) {
+          builder.startVector(4, numElems, 4);
+        };
+        ;
+        Geometry2.addXy = function(builder, xyOffset) {
+          builder.addFieldOffset(1, xyOffset, 0);
+        };
+        ;
+        Geometry2.createXyVector = function(builder, data) {
+          builder.startVector(8, data.length, 8);
+          for (var i = data.length - 1; i >= 0; i--) {
+            builder.addFloat64(data[i]);
+          }
+          return builder.endVector();
+        };
+        ;
+        Geometry2.startXyVector = function(builder, numElems) {
+          builder.startVector(8, numElems, 8);
+        };
+        ;
+        Geometry2.addZ = function(builder, zOffset) {
+          builder.addFieldOffset(2, zOffset, 0);
+        };
+        ;
+        Geometry2.createZVector = function(builder, data) {
+          builder.startVector(8, data.length, 8);
+          for (var i = data.length - 1; i >= 0; i--) {
+            builder.addFloat64(data[i]);
+          }
+          return builder.endVector();
+        };
+        ;
+        Geometry2.startZVector = function(builder, numElems) {
+          builder.startVector(8, numElems, 8);
+        };
+        ;
+        Geometry2.addM = function(builder, mOffset) {
+          builder.addFieldOffset(3, mOffset, 0);
+        };
+        ;
+        Geometry2.createMVector = function(builder, data) {
+          builder.startVector(8, data.length, 8);
+          for (var i = data.length - 1; i >= 0; i--) {
+            builder.addFloat64(data[i]);
+          }
+          return builder.endVector();
+        };
+        ;
+        Geometry2.startMVector = function(builder, numElems) {
+          builder.startVector(8, numElems, 8);
+        };
+        ;
+        Geometry2.addT = function(builder, tOffset) {
+          builder.addFieldOffset(4, tOffset, 0);
+        };
+        ;
+        Geometry2.createTVector = function(builder, data) {
+          builder.startVector(8, data.length, 8);
+          for (var i = data.length - 1; i >= 0; i--) {
+            builder.addFloat64(data[i]);
+          }
+          return builder.endVector();
+        };
+        ;
+        Geometry2.startTVector = function(builder, numElems) {
+          builder.startVector(8, numElems, 8);
+        };
+        ;
+        Geometry2.addTm = function(builder, tmOffset) {
+          builder.addFieldOffset(5, tmOffset, 0);
+        };
+        ;
+        Geometry2.createTmVector = function(builder, data) {
+          builder.startVector(8, data.length, 8);
+          for (var i = data.length - 1; i >= 0; i--) {
+            builder.addInt64(data[i]);
+          }
+          return builder.endVector();
+        };
+        ;
+        Geometry2.startTmVector = function(builder, numElems) {
+          builder.startVector(8, numElems, 8);
+        };
+        ;
+        Geometry2.addType = function(builder, type) {
+          builder.addFieldInt8(6, type, GeometryType2.Unknown);
+        };
+        ;
+        Geometry2.addParts = function(builder, partsOffset) {
+          builder.addFieldOffset(7, partsOffset, 0);
+        };
+        ;
+        Geometry2.createPartsVector = function(builder, data) {
+          builder.startVector(4, data.length, 4);
+          for (var i = data.length - 1; i >= 0; i--) {
+            builder.addOffset(data[i]);
+          }
+          return builder.endVector();
+        };
+        ;
+        Geometry2.startPartsVector = function(builder, numElems) {
+          builder.startVector(4, numElems, 4);
+        };
+        ;
+        Geometry2.end = function(builder) {
+          var offset = builder.endObject();
+          return offset;
+        };
+        ;
+        Geometry2.create = function(builder, endsOffset, xyOffset, zOffset, mOffset, tOffset, tmOffset, type, partsOffset) {
+          Geometry2.start(builder);
+          Geometry2.addEnds(builder, endsOffset);
+          Geometry2.addXy(builder, xyOffset);
+          Geometry2.addZ(builder, zOffset);
+          Geometry2.addM(builder, mOffset);
+          Geometry2.addT(builder, tOffset);
+          Geometry2.addTm(builder, tmOffset);
+          Geometry2.addType(builder, type);
+          Geometry2.addParts(builder, partsOffset);
+          return Geometry2.end(builder);
+        };
+        return Geometry2;
+      }();
+      exports4.Geometry = Geometry;
+      var Feature = function() {
+        function Feature2() {
+          this.bb = null;
+          this.bb_pos = 0;
+        }
+        Feature2.prototype.__init = function(i, bb) {
+          this.bb_pos = i;
+          this.bb = bb;
+          return this;
+        };
+        ;
+        Feature2.getRoot = function(bb, obj) {
+          return (obj || new Feature2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Feature2.getSizePrefixedRoot = function(bb, obj) {
+          bb.setPosition(bb.position() + flatbuffers_1.flatbuffers.SIZE_PREFIX_LENGTH);
+          return (obj || new Feature2()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+        };
+        ;
+        Feature2.prototype.geometry = function(obj) {
+          var offset = this.bb.__offset(this.bb_pos, 4);
+          return offset ? (obj || new Geometry()).__init(this.bb.__indirect(this.bb_pos + offset), this.bb) : null;
+        };
+        ;
+        Feature2.prototype.properties = function(index) {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? this.bb.readUint8(this.bb.__vector(this.bb_pos + offset) + index) : 0;
+        };
+        ;
+        Feature2.prototype.propertiesLength = function() {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+        };
+        ;
+        Feature2.prototype.propertiesArray = function() {
+          var offset = this.bb.__offset(this.bb_pos, 6);
+          return offset ? new Uint8Array(this.bb.bytes().buffer, this.bb.bytes().byteOffset + this.bb.__vector(this.bb_pos + offset), this.bb.__vector_len(this.bb_pos + offset)) : null;
+        };
+        ;
+        Feature2.prototype.columns = function(index, obj) {
+          var offset = this.bb.__offset(this.bb_pos, 8);
+          return offset ? (obj || new Column()).__init(this.bb.__indirect(this.bb.__vector(this.bb_pos + offset) + index * 4), this.bb) : null;
+        };
+        ;
+        Feature2.prototype.columnsLength = function() {
+          var offset = this.bb.__offset(this.bb_pos, 8);
+          return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+        };
+        ;
+        Feature2.start = function(builder) {
+          builder.startObject(3);
+        };
+        ;
+        Feature2.addGeometry = function(builder, geometryOffset) {
+          builder.addFieldOffset(0, geometryOffset, 0);
+        };
+        ;
+        Feature2.addProperties = function(builder, propertiesOffset) {
+          builder.addFieldOffset(1, propertiesOffset, 0);
+        };
+        ;
+        Feature2.createPropertiesVector = function(builder, data) {
+          builder.startVector(1, data.length, 1);
+          for (var i = data.length - 1; i >= 0; i--) {
+            builder.addInt8(data[i]);
+          }
+          return builder.endVector();
+        };
+        ;
+        Feature2.startPropertiesVector = function(builder, numElems) {
+          builder.startVector(1, numElems, 1);
+        };
+        ;
+        Feature2.addColumns = function(builder, columnsOffset) {
+          builder.addFieldOffset(2, columnsOffset, 0);
+        };
+        ;
+        Feature2.createColumnsVector = function(builder, data) {
+          builder.startVector(4, data.length, 4);
+          for (var i = data.length - 1; i >= 0; i--) {
+            builder.addOffset(data[i]);
+          }
+          return builder.endVector();
+        };
+        ;
+        Feature2.startColumnsVector = function(builder, numElems) {
+          builder.startVector(4, numElems, 4);
+        };
+        ;
+        Feature2.end = function(builder) {
+          var offset = builder.endObject();
+          return offset;
+        };
+        ;
+        Feature2.finishBuffer = function(builder, offset) {
+          builder.finish(offset);
+        };
+        ;
+        Feature2.finishSizePrefixedBuffer = function(builder, offset) {
+          builder.finish(offset, void 0, true);
+        };
+        ;
+        Feature2.create = function(builder, geometryOffset, propertiesOffset, columnsOffset) {
+          Feature2.start(builder);
+          Feature2.addGeometry(builder, geometryOffset);
+          Feature2.addProperties(builder, propertiesOffset);
+          Feature2.addColumns(builder, columnsOffset);
+          return Feature2.end(builder);
+        };
+        return Feature2;
+      }();
+      exports4.Feature = Feature;
+    }
+  });
+
+  // ../../node_modules/flatgeobuf/lib/cjs/generic/geometry.js
+  var require_geometry = __commonJS({
+    "../../node_modules/flatgeobuf/lib/cjs/generic/geometry.js"(exports4) {
+      "use strict";
+      Object.defineProperty(exports4, "__esModule", { value: true });
+      exports4.toGeometryType = exports4.pairFlatCoordinates = exports4.parseGeometry = exports4.flat = exports4.buildGeometry = void 0;
+      var header_generated_1 = require_header_generated();
+      var feature_generated_1 = require_feature_generated();
+      function buildGeometry(builder, parsedGeometry) {
+        var xy = parsedGeometry.xy, z = parsedGeometry.z, ends = parsedGeometry.ends, parts = parsedGeometry.parts, type = parsedGeometry.type;
+        if (parts) {
+          var partOffsets = parts.map(function(part) {
+            return buildGeometry(builder, part);
+          });
+          var partsOffset = feature_generated_1.Geometry.createPartsVector(builder, partOffsets);
+          feature_generated_1.Geometry.start(builder);
+          feature_generated_1.Geometry.addParts(builder, partsOffset);
+          return feature_generated_1.Geometry.end(builder);
+        }
+        var xyOffset = feature_generated_1.Geometry.createXyVector(builder, xy);
+        var zOffset;
+        if (z)
+          zOffset = feature_generated_1.Geometry.createZVector(builder, z);
+        var endsOffset;
+        if (ends)
+          endsOffset = feature_generated_1.Geometry.createEndsVector(builder, ends);
+        feature_generated_1.Geometry.start(builder);
+        if (endsOffset)
+          feature_generated_1.Geometry.addEnds(builder, endsOffset);
+        feature_generated_1.Geometry.addXy(builder, xyOffset);
+        if (zOffset)
+          feature_generated_1.Geometry.addZ(builder, zOffset);
+        feature_generated_1.Geometry.addType(builder, type);
+        return feature_generated_1.Geometry.end(builder);
+      }
+      exports4.buildGeometry = buildGeometry;
+      function flat(a, xy, z) {
+        if (a.length === 0)
+          return;
+        if (Array.isArray(a[0])) {
+          for (var _i = 0, a_1 = a; _i < a_1.length; _i++) {
+            var sa = a_1[_i];
+            flat(sa, xy, z);
+          }
+        } else {
+          if (a.length === 2)
+            xy.push.apply(xy, a);
+          else {
+            xy.push(a[0], a[1]);
+            z.push(a[2]);
+          }
+        }
+      }
+      exports4.flat = flat;
+      function parseGeometry(geometry, type) {
+        var xy;
+        var ends;
+        var parts;
+        if (type === header_generated_1.GeometryType.MultiLineString) {
+          if (geometry.getFlatCoordinates)
+            xy = geometry.getFlatCoordinates();
+          var mlsEnds = geometry.getEnds();
+          if (mlsEnds.length > 1)
+            ends = mlsEnds.map(function(e) {
+              return e >> 1;
+            });
+        } else if (type === header_generated_1.GeometryType.Polygon) {
+          if (geometry.getFlatCoordinates)
+            xy = geometry.getFlatCoordinates();
+          var pEnds = geometry.getEnds();
+          if (pEnds.length > 1)
+            ends = pEnds.map(function(e) {
+              return e >> 1;
+            });
+        } else if (type === header_generated_1.GeometryType.MultiPolygon) {
+          var mp = geometry;
+          parts = mp.getPolygons().map(function(p) {
+            return parseGeometry(p, header_generated_1.GeometryType.Polygon);
+          });
+        } else {
+          if (geometry.getFlatCoordinates)
+            xy = geometry.getFlatCoordinates();
+        }
+        return {
+          xy,
+          ends,
+          type,
+          parts
+        };
+      }
+      exports4.parseGeometry = parseGeometry;
+      function pairFlatCoordinates(xy, z) {
+        var newArray = [];
+        for (var i = 0; i < xy.length; i += 2) {
+          var a = [xy[i], xy[i + 1]];
+          if (z)
+            a.push(z[i >> 1]);
+          newArray.push(a);
+        }
+        return newArray;
+      }
+      exports4.pairFlatCoordinates = pairFlatCoordinates;
+      function toGeometryType(name) {
+        if (!name)
+          return header_generated_1.GeometryType.Unknown;
+        var type = header_generated_1.GeometryType[name];
+        return type;
+      }
+      exports4.toGeometryType = toGeometryType;
+    }
+  });
+
+  // ../../node_modules/flatgeobuf/lib/cjs/geojson/geometry.js
+  var require_geometry2 = __commonJS({
+    "../../node_modules/flatgeobuf/lib/cjs/geojson/geometry.js"(exports4) {
+      "use strict";
+      Object.defineProperty(exports4, "__esModule", { value: true });
+      exports4.fromGeometry = exports4.parseGeometry = void 0;
+      var header_generated_1 = require_header_generated();
+      var geometry_1 = require_geometry();
+      function parseGeometry(geometry) {
+        var cs = geometry.coordinates;
+        var xy = [];
+        var z = [];
+        var ends;
+        var parts;
+        var type = geometry_1.toGeometryType(geometry.type);
+        var end = 0;
+        switch (geometry.type) {
+          case "Point":
+            geometry_1.flat(cs, xy, z);
+            break;
+          case "MultiPoint":
+          case "LineString":
+            geometry_1.flat(cs, xy, z);
+            break;
+          case "MultiLineString":
+          case "Polygon": {
+            var css = cs;
+            geometry_1.flat(css, xy, z);
+            if (css.length > 1)
+              ends = css.map(function(c) {
+                return end += c.length;
+              });
+            break;
+          }
+          case "MultiPolygon": {
+            var csss = cs;
+            var geometries = csss.map(function(coordinates) {
+              return { type: "Polygon", coordinates };
+            });
+            parts = geometries.map(parseGeometry);
+            break;
+          }
+          case "GeometryCollection":
+            if (geometry.geometries)
+              parts = geometry.geometries.map(parseGeometry);
+            break;
+        }
+        return {
+          xy,
+          z: z.length > 0 ? z : void 0,
+          ends,
+          type,
+          parts
+        };
+      }
+      exports4.parseGeometry = parseGeometry;
+      function extractParts(xy, z, ends) {
+        if (!ends || ends.length === 0)
+          return [geometry_1.pairFlatCoordinates(xy, z)];
+        var s = 0;
+        var xySlices = Array.from(ends).map(function(e) {
+          return xy.slice(s, s = e << 1);
+        });
+        var zSlices;
+        if (z) {
+          s = 0;
+          zSlices = Array.from(ends).map(function(e) {
+            return z.slice(s, s = e);
+          });
+        }
+        return xySlices.map(function(xy2, i) {
+          return geometry_1.pairFlatCoordinates(xy2, zSlices ? zSlices[i] : void 0);
+        });
+      }
+      function toGeoJsonCoordinates(geometry, type) {
+        var xy = geometry.xyArray();
+        var z = geometry.zArray();
+        switch (type) {
+          case header_generated_1.GeometryType.Point: {
+            var a = Array.from(xy);
+            if (z)
+              a.push(z[0]);
+            return a;
+          }
+          case header_generated_1.GeometryType.MultiPoint:
+          case header_generated_1.GeometryType.LineString:
+            return geometry_1.pairFlatCoordinates(xy, z);
+          case header_generated_1.GeometryType.MultiLineString:
+            return extractParts(xy, z, geometry.endsArray());
+          case header_generated_1.GeometryType.Polygon:
+            return extractParts(xy, z, geometry.endsArray());
+        }
+      }
+      function fromGeometry2(geometry, type) {
+        if (type === header_generated_1.GeometryType.GeometryCollection) {
+          var geometries = [];
+          for (var i = 0; i < geometry.partsLength(); i++) {
+            var part = geometry.parts(i);
+            var partType = part.type();
+            geometries.push(fromGeometry2(part, partType));
+          }
+          return {
+            type: header_generated_1.GeometryType[type],
+            geometries
+          };
+        } else if (type === header_generated_1.GeometryType.MultiPolygon) {
+          var geometries = [];
+          for (var i = 0; i < geometry.partsLength(); i++)
+            geometries.push(fromGeometry2(geometry.parts(i), header_generated_1.GeometryType.Polygon));
+          return {
+            type: header_generated_1.GeometryType[type],
+            coordinates: geometries.map(function(g) {
+              return g.coordinates;
+            })
+          };
+        }
+        var coordinates = toGeoJsonCoordinates(geometry, type);
+        return {
+          type: header_generated_1.GeometryType[type],
+          coordinates
+        };
+      }
+      exports4.fromGeometry = fromGeometry2;
+    }
+  });
+
+  // ../../node_modules/flatgeobuf/lib/cjs/generic/feature.js
+  var require_feature = __commonJS({
+    "../../node_modules/flatgeobuf/lib/cjs/generic/feature.js"(exports4) {
+      "use strict";
+      var __spreadArrays = exports4 && exports4.__spreadArrays || function() {
+        for (var s = 0, i = 0, il = arguments.length; i < il; i++)
+          s += arguments[i].length;
+        for (var r = Array(s), k = 0, i = 0; i < il; i++)
+          for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+        return r;
+      };
+      Object.defineProperty(exports4, "__esModule", { value: true });
+      exports4.parseProperties = exports4.buildFeature = exports4.fromFeature = void 0;
+      var flatbuffers_1 = require_flatbuffers();
+      var header_generated_1 = require_header_generated();
+      var feature_generated_1 = require_feature_generated();
+      var geometry_1 = require_geometry();
+      var textEncoder = new TextEncoder();
+      var textDecoder = new TextDecoder();
+      function fromFeature(feature, header, createGeometry, createFeature) {
+        var columns = header.columns;
+        var geometry = feature.geometry();
+        if (!geometry)
+          throw new Error("Missing geometry");
+        var simpleGeometry = createGeometry(geometry, header.geometryType);
+        var properties;
+        if (columns)
+          properties = parseProperties(feature, columns);
+        return createFeature(simpleGeometry, properties);
+      }
+      exports4.fromFeature = fromFeature;
+      function buildFeature(geometry, properties, header) {
+        var columns = header.columns;
+        var builder = new flatbuffers_1.flatbuffers.Builder();
+        var props = [];
+        if (columns) {
+          for (var i = 0; i < columns.length; i++) {
+            var column = columns[i];
+            var value = properties[column.name];
+            if (value === null)
+              continue;
+            props.push(Uint16Array.of(i));
+            switch (column.type) {
+              case header_generated_1.ColumnType.Bool:
+              case header_generated_1.ColumnType.Short:
+              case header_generated_1.ColumnType.UShort:
+              case header_generated_1.ColumnType.Int:
+              case header_generated_1.ColumnType.UInt:
+              case header_generated_1.ColumnType.Long:
+              case header_generated_1.ColumnType.Double:
+                props.push(column.arrayType.of(value));
+                break;
+              case header_generated_1.ColumnType.DateTime:
+              case header_generated_1.ColumnType.String: {
+                var str = textEncoder.encode(value);
+                props.push(Uint32Array.of(str.length));
+                props.push(str);
+                break;
+              }
+              default:
+                throw new Error("Unknown type " + column.type);
+            }
+          }
+        }
+        var propertiesOffset = null;
+        if (props.length > 0)
+          propertiesOffset = feature_generated_1.Feature.createPropertiesVector(builder, concat.apply(void 0, __spreadArrays([Uint8Array], props)));
+        var geometryOffset = geometry_1.buildGeometry(builder, geometry);
+        feature_generated_1.Feature.start(builder);
+        feature_generated_1.Feature.addGeometry(builder, geometryOffset);
+        if (propertiesOffset)
+          feature_generated_1.Feature.addProperties(builder, propertiesOffset);
+        var featureOffset = feature_generated_1.Feature.end(builder);
+        builder.finishSizePrefixed(featureOffset);
+        return builder.asUint8Array();
+      }
+      exports4.buildFeature = buildFeature;
+      function concat(resultConstructor) {
+        var arrays = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+          arrays[_i - 1] = arguments[_i];
+        }
+        var totalLength = 0;
+        for (var _a = 0, arrays_1 = arrays; _a < arrays_1.length; _a++) {
+          var arr = arrays_1[_a];
+          totalLength += arr.byteLength;
+        }
+        var result = new resultConstructor(totalLength);
+        var offset = 0;
+        for (var _b = 0, arrays_2 = arrays; _b < arrays_2.length; _b++) {
+          var arr = arrays_2[_b];
+          if (arr instanceof Uint8Array)
+            result.set(arr, offset);
+          else
+            result.set(new resultConstructor(arr.buffer), offset);
+          offset += arr.byteLength;
+        }
+        return result;
+      }
+      function parseProperties(feature, columns) {
+        if (!columns || columns.length === 0)
+          return;
+        var array = feature.propertiesArray();
+        if (!array)
+          throw new Error("Properties array unexpectedly null");
+        var view = new DataView(array.buffer, array.byteOffset);
+        var length = feature.propertiesLength();
+        var offset = 0;
+        var properties = {};
+        while (offset < length) {
+          var i = view.getUint16(offset, true);
+          offset += 2;
+          var column = columns[i];
+          switch (column.type) {
+            case header_generated_1.ColumnType.Bool: {
+              properties[column.name] = !!view.getUint8(offset);
+              offset += 1;
+              break;
+            }
+            case header_generated_1.ColumnType.Byte: {
+              properties[column.name] = view.getInt8(offset);
+              offset += 1;
+              break;
+            }
+            case header_generated_1.ColumnType.UByte: {
+              properties[column.name] = view.getUint8(offset);
+              offset += 1;
+              break;
+            }
+            case header_generated_1.ColumnType.Short: {
+              properties[column.name] = view.getInt16(offset, true);
+              offset += 2;
+              break;
+            }
+            case header_generated_1.ColumnType.UShort: {
+              properties[column.name] = view.getUint16(offset, true);
+              offset += 2;
+              break;
+            }
+            case header_generated_1.ColumnType.Int: {
+              properties[column.name] = view.getInt32(offset, true);
+              offset += 4;
+              break;
+            }
+            case header_generated_1.ColumnType.UInt: {
+              properties[column.name] = view.getUint32(offset, true);
+              offset += 4;
+              break;
+            }
+            case header_generated_1.ColumnType.Long: {
+              properties[column.name] = Number(view.getBigInt64(offset, true));
+              offset += 8;
+              break;
+            }
+            case header_generated_1.ColumnType.ULong: {
+              properties[column.name] = Number(view.getBigUint64(offset, true));
+              offset += 8;
+              break;
+            }
+            case header_generated_1.ColumnType.Double: {
+              properties[column.name] = view.getFloat64(offset, true);
+              offset += 8;
+              break;
+            }
+            case header_generated_1.ColumnType.DateTime:
+            case header_generated_1.ColumnType.String: {
+              var length_1 = view.getUint32(offset, true);
+              offset += 4;
+              properties[column.name] = textDecoder.decode(array.subarray(offset, offset + length_1));
+              offset += length_1;
+              break;
+            }
+            default:
+              throw new Error("Unknown type " + column.type);
+          }
+        }
+        return properties;
+      }
+      exports4.parseProperties = parseProperties;
+    }
+  });
+
+  // ../../node_modules/flatgeobuf/lib/cjs/geojson/feature.js
+  var require_feature2 = __commonJS({
+    "../../node_modules/flatgeobuf/lib/cjs/geojson/feature.js"(exports4) {
+      "use strict";
+      Object.defineProperty(exports4, "__esModule", { value: true });
+      exports4.fromFeature = void 0;
+      var geometry_1 = require_geometry2();
+      var feature_1 = require_feature();
+      function fromFeature(feature, header) {
+        var columns = header.columns;
+        var geometry = geometry_1.fromGeometry(feature.geometry(), header.geometryType);
+        var geoJsonfeature = {
+          type: "Feature",
+          geometry
+        };
+        if (columns && columns.length > 0)
+          geoJsonfeature.properties = feature_1.parseProperties(feature, columns);
+        return geoJsonfeature;
+      }
+      exports4.fromFeature = fromFeature;
+    }
+  });
+
+  // ../../node_modules/slice-source/dist/slice-source.js
+  var require_slice_source = __commonJS({
+    "../../node_modules/slice-source/dist/slice-source.js"(exports4, module) {
+      (function(global, factory) {
+        typeof exports4 === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global.sources = global.sources || {}, global.sources.slice = factory());
+      })(exports4, function() {
+        "use strict";
+        var empty = new Uint8Array(0);
+        function slice_cancel() {
+          return this._source.cancel();
+        }
+        function concat(a, b) {
+          if (!a.length)
+            return b;
+          if (!b.length)
+            return a;
+          var c = new Uint8Array(a.length + b.length);
+          c.set(a);
+          c.set(b, a.length);
+          return c;
+        }
+        function slice_read() {
+          var that = this, array = that._array.subarray(that._index);
+          return that._source.read().then(function(result) {
+            that._array = empty;
+            that._index = 0;
+            return result.done ? array.length > 0 ? { done: false, value: array } : { done: true, value: void 0 } : { done: false, value: concat(array, result.value) };
+          });
+        }
+        function slice_slice(length) {
+          if ((length |= 0) < 0)
+            throw new Error("invalid length");
+          var that = this, index = this._array.length - this._index;
+          if (this._index + length <= this._array.length) {
+            return Promise.resolve(this._array.subarray(this._index, this._index += length));
+          }
+          var array = new Uint8Array(length);
+          array.set(this._array.subarray(this._index));
+          return function read() {
+            return that._source.read().then(function(result) {
+              if (result.done) {
+                that._array = empty;
+                that._index = 0;
+                return index > 0 ? array.subarray(0, index) : null;
+              }
+              if (index + result.value.length >= length) {
+                that._array = result.value;
+                that._index = length - index;
+                array.set(result.value.subarray(0, length - index), index);
+                return array;
+              }
+              array.set(result.value, index);
+              index += result.value.length;
+              return read();
+            });
+          }();
+        }
+        function slice(source) {
+          return typeof source.slice === "function" ? source : new SliceSource(typeof source.read === "function" ? source : source.getReader());
+        }
+        function SliceSource(source) {
+          this._source = source;
+          this._array = empty;
+          this._index = 0;
+        }
+        SliceSource.prototype.read = slice_read;
+        SliceSource.prototype.slice = slice_slice;
+        SliceSource.prototype.cancel = slice_cancel;
+        return slice;
+      });
+    }
+  });
+
+  // ../../node_modules/flatgeobuf/lib/cjs/CrsMeta.js
+  var require_CrsMeta = __commonJS({
+    "../../node_modules/flatgeobuf/lib/cjs/CrsMeta.js"(exports4) {
+      "use strict";
+      Object.defineProperty(exports4, "__esModule", { value: true });
+      var CrsMeta = function() {
+        function CrsMeta2(org, code, name, description, wkt) {
+          this.org = org;
+          this.code = code;
+          this.name = name;
+          this.description = description;
+          this.wkt = wkt;
+        }
+        return CrsMeta2;
+      }();
+      exports4.default = CrsMeta;
+    }
+  });
+
+  // ../../node_modules/flatgeobuf/lib/cjs/packedrtree.js
+  var require_packedrtree = __commonJS({
+    "../../node_modules/flatgeobuf/lib/cjs/packedrtree.js"(exports4) {
+      "use strict";
+      var __generator = exports4 && exports4.__generator || function(thisArg, body) {
+        var _ = { label: 0, sent: function() {
+          if (t[0] & 1)
+            throw t[1];
+          return t[1];
+        }, trys: [], ops: [] }, f, y, t, g;
+        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() {
+          return this;
+        }), g;
+        function verb(n) {
+          return function(v) {
+            return step([n, v]);
+          };
+        }
+        function step(op) {
+          if (f)
+            throw new TypeError("Generator is already executing.");
+          while (_)
+            try {
+              if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done)
+                return t;
+              if (y = 0, t)
+                op = [op[0] & 2, t.value];
+              switch (op[0]) {
+                case 0:
+                case 1:
+                  t = op;
+                  break;
+                case 4:
+                  _.label++;
+                  return { value: op[1], done: false };
+                case 5:
+                  _.label++;
+                  y = op[1];
+                  op = [0];
+                  continue;
+                case 7:
+                  op = _.ops.pop();
+                  _.trys.pop();
+                  continue;
+                default:
+                  if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                    _ = 0;
+                    continue;
+                  }
+                  if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+                    _.label = op[1];
+                    break;
+                  }
+                  if (op[0] === 6 && _.label < t[1]) {
+                    _.label = t[1];
+                    t = op;
+                    break;
+                  }
+                  if (t && _.label < t[2]) {
+                    _.label = t[2];
+                    _.ops.push(op);
+                    break;
+                  }
+                  if (t[2])
+                    _.ops.pop();
+                  _.trys.pop();
+                  continue;
+              }
+              op = body.call(thisArg, _);
+            } catch (e) {
+              op = [6, e];
+              y = 0;
+            } finally {
+              f = t = 0;
+            }
+          if (op[0] & 5)
+            throw op[1];
+          return { value: op[0] ? op[1] : void 0, done: true };
+        }
+      };
+      var __await = exports4 && exports4.__await || function(v) {
+        return this instanceof __await ? (this.v = v, this) : new __await(v);
+      };
+      var __asyncGenerator = exports4 && exports4.__asyncGenerator || function(thisArg, _arguments, generator) {
+        if (!Symbol.asyncIterator)
+          throw new TypeError("Symbol.asyncIterator is not defined.");
+        var g = generator.apply(thisArg, _arguments || []), i, q = [];
+        return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function() {
+          return this;
+        }, i;
+        function verb(n) {
+          if (g[n])
+            i[n] = function(v) {
+              return new Promise(function(a, b) {
+                q.push([n, v, a, b]) > 1 || resume(n, v);
+              });
+            };
+        }
+        function resume(n, v) {
+          try {
+            step(g[n](v));
+          } catch (e) {
+            settle(q[0][3], e);
+          }
+        }
+        function step(r) {
+          r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r);
+        }
+        function fulfill(value) {
+          resume("next", value);
+        }
+        function reject(value) {
+          resume("throw", value);
+        }
+        function settle(f, v) {
+          if (f(v), q.shift(), q.length)
+            resume(q[0][0], q[0][1]);
+        }
+      };
+      Object.defineProperty(exports4, "__esModule", { value: true });
+      exports4.streamSearch = exports4.calcTreeSize = void 0;
+      var NODE_ITEM_LEN = 8 * 4 + 8;
+      function calcTreeSize(numItems, nodeSize) {
+        nodeSize = Math.min(Math.max(+nodeSize, 2), 65535);
+        var n = numItems;
+        var numNodes = n;
+        do {
+          n = Math.ceil(n / nodeSize);
+          numNodes += n;
+        } while (n !== 1);
+        return numNodes * NODE_ITEM_LEN;
+      }
+      exports4.calcTreeSize = calcTreeSize;
+      function generateLevelBounds(numItems, nodeSize) {
+        if (nodeSize < 2)
+          throw new Error("Node size must be at least 2");
+        if (numItems === 0)
+          throw new Error("Number of items must be greater than 0");
+        var n = numItems;
+        var numNodes = n;
+        var levelNumNodes = [n];
+        do {
+          n = Math.ceil(n / nodeSize);
+          numNodes += n;
+          levelNumNodes.push(n);
+        } while (n !== 1);
+        var levelOffsets = [];
+        n = numNodes;
+        for (var _i = 0, levelNumNodes_1 = levelNumNodes; _i < levelNumNodes_1.length; _i++) {
+          var size = levelNumNodes_1[_i];
+          levelOffsets.push(n - size);
+          n -= size;
+        }
+        levelOffsets.reverse();
+        levelNumNodes.reverse();
+        var levelBounds = [];
+        for (var i = 0; i < levelNumNodes.length; i++)
+          levelBounds.push([levelOffsets[i], levelOffsets[i] + levelNumNodes[i]]);
+        levelBounds.reverse();
+        return levelBounds;
+      }
+      function streamSearch(numItems, nodeSize, rect, readNode) {
+        return __asyncGenerator(this, arguments, function streamSearch_1() {
+          var minX, minY, maxX, maxY, levelBounds, _a, leafNodesOffset, numNodes, queue, _b, nodeIndex, level, isLeafNode, _c, levelBound, end, length_1, buffer, float64Array, uint32Array, pos, nodePos, offset;
+          return __generator(this, function(_d) {
+            switch (_d.label) {
+              case 0:
+                minX = rect.minX, minY = rect.minY, maxX = rect.maxX, maxY = rect.maxY;
+                levelBounds = generateLevelBounds(numItems, nodeSize);
+                _a = levelBounds[0], leafNodesOffset = _a[0], numNodes = _a[1];
+                queue = [];
+                queue.push([0, levelBounds.length - 1]);
+                _d.label = 1;
+              case 1:
+                if (!(queue.length !== 0))
+                  return [3, 9];
+                _b = queue.pop(), nodeIndex = _b[0], level = _b[1];
+                isLeafNode = nodeIndex >= numNodes - numItems;
+                _c = levelBounds[level], levelBound = _c[1];
+                end = Math.min(nodeIndex + nodeSize, levelBound);
+                length_1 = end - nodeIndex;
+                return [4, __await(readNode(nodeIndex * NODE_ITEM_LEN, length_1 * NODE_ITEM_LEN))];
+              case 2:
+                buffer = _d.sent();
+                float64Array = new Float64Array(buffer);
+                uint32Array = new Uint32Array(buffer);
+                pos = nodeIndex;
+                _d.label = 3;
+              case 3:
+                if (!(pos < end))
+                  return [3, 8];
+                nodePos = (pos - nodeIndex) * 5;
+                if (maxX < float64Array[nodePos + 0])
+                  return [3, 7];
+                if (maxY < float64Array[nodePos + 1])
+                  return [3, 7];
+                if (minX > float64Array[nodePos + 2])
+                  return [3, 7];
+                if (minY > float64Array[nodePos + 3])
+                  return [3, 7];
+                offset = uint32Array[(nodePos << 1) + 8];
+                if (!isLeafNode)
+                  return [3, 6];
+                return [4, __await([offset, pos - leafNodesOffset])];
+              case 4:
+                return [4, _d.sent()];
+              case 5:
+                _d.sent();
+                return [3, 7];
+              case 6:
+                queue.push([offset, level - 1]);
+                _d.label = 7;
+              case 7:
+                pos++;
+                return [3, 3];
+              case 8:
+                queue.sort(function(a, b) {
+                  return b[0] - a[0];
+                });
+                return [3, 1];
+              case 9:
+                return [2];
+            }
+          });
+        });
+      }
+      exports4.streamSearch = streamSearch;
+    }
+  });
+
+  // ../../node_modules/flatgeobuf/lib/cjs/generic/featurecollection.js
+  var require_featurecollection = __commonJS({
+    "../../node_modules/flatgeobuf/lib/cjs/generic/featurecollection.js"(exports4) {
+      "use strict";
+      var __awaiter = exports4 && exports4.__awaiter || function(thisArg, _arguments, P, generator) {
+        function adopt(value) {
+          return value instanceof P ? value : new P(function(resolve) {
+            resolve(value);
+          });
+        }
+        return new (P || (P = Promise))(function(resolve, reject) {
+          function fulfilled(value) {
+            try {
+              step(generator.next(value));
+            } catch (e) {
+              reject(e);
+            }
+          }
+          function rejected(value) {
+            try {
+              step(generator["throw"](value));
+            } catch (e) {
+              reject(e);
+            }
+          }
+          function step(result) {
+            result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+          }
+          step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+      };
+      var __generator = exports4 && exports4.__generator || function(thisArg, body) {
+        var _ = { label: 0, sent: function() {
+          if (t[0] & 1)
+            throw t[1];
+          return t[1];
+        }, trys: [], ops: [] }, f, y, t, g;
+        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() {
+          return this;
+        }), g;
+        function verb(n) {
+          return function(v) {
+            return step([n, v]);
+          };
+        }
+        function step(op) {
+          if (f)
+            throw new TypeError("Generator is already executing.");
+          while (_)
+            try {
+              if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done)
+                return t;
+              if (y = 0, t)
+                op = [op[0] & 2, t.value];
+              switch (op[0]) {
+                case 0:
+                case 1:
+                  t = op;
+                  break;
+                case 4:
+                  _.label++;
+                  return { value: op[1], done: false };
+                case 5:
+                  _.label++;
+                  y = op[1];
+                  op = [0];
+                  continue;
+                case 7:
+                  op = _.ops.pop();
+                  _.trys.pop();
+                  continue;
+                default:
+                  if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                    _ = 0;
+                    continue;
+                  }
+                  if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+                    _.label = op[1];
+                    break;
+                  }
+                  if (op[0] === 6 && _.label < t[1]) {
+                    _.label = t[1];
+                    t = op;
+                    break;
+                  }
+                  if (t && _.label < t[2]) {
+                    _.label = t[2];
+                    _.ops.push(op);
+                    break;
+                  }
+                  if (t[2])
+                    _.ops.pop();
+                  _.trys.pop();
+                  continue;
+              }
+              op = body.call(thisArg, _);
+            } catch (e) {
+              op = [6, e];
+              y = 0;
+            } finally {
+              f = t = 0;
+            }
+          if (op[0] & 5)
+            throw op[1];
+          return { value: op[0] ? op[1] : void 0, done: true };
+        }
+      };
+      var __await = exports4 && exports4.__await || function(v) {
+        return this instanceof __await ? (this.v = v, this) : new __await(v);
+      };
+      var __asyncValues = exports4 && exports4.__asyncValues || function(o) {
+        if (!Symbol.asyncIterator)
+          throw new TypeError("Symbol.asyncIterator is not defined.");
+        var m = o[Symbol.asyncIterator], i;
+        return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function() {
+          return this;
+        }, i);
+        function verb(n) {
+          i[n] = o[n] && function(v) {
+            return new Promise(function(resolve, reject) {
+              v = o[n](v), settle(resolve, reject, v.done, v.value);
+            });
+          };
+        }
+        function settle(resolve, reject, d, v) {
+          Promise.resolve(v).then(function(v2) {
+            resolve({ value: v2, done: d });
+          }, reject);
+        }
+      };
+      var __asyncGenerator = exports4 && exports4.__asyncGenerator || function(thisArg, _arguments, generator) {
+        if (!Symbol.asyncIterator)
+          throw new TypeError("Symbol.asyncIterator is not defined.");
+        var g = generator.apply(thisArg, _arguments || []), i, q = [];
+        return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function() {
+          return this;
+        }, i;
+        function verb(n) {
+          if (g[n])
+            i[n] = function(v) {
+              return new Promise(function(a, b) {
+                q.push([n, v, a, b]) > 1 || resume(n, v);
+              });
+            };
+        }
+        function resume(n, v) {
+          try {
+            step(g[n](v));
+          } catch (e) {
+            settle(q[0][3], e);
+          }
+        }
+        function step(r) {
+          r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r);
+        }
+        function fulfill(value) {
+          resume("next", value);
+        }
+        function reject(value) {
+          resume("throw", value);
+        }
+        function settle(f, v) {
+          if (f(v), q.shift(), q.length)
+            resume(q[0][0], q[0][1]);
+        }
+      };
+      var __importDefault = exports4 && exports4.__importDefault || function(mod) {
+        return mod && mod.__esModule ? mod : { "default": mod };
+      };
+      Object.defineProperty(exports4, "__esModule", { value: true });
+      exports4.buildHeader = exports4.deserializeFiltered = exports4.deserializeStream = exports4.deserialize = exports4.serialize = exports4.magicbytes = void 0;
+      var flatbuffers_1 = require_flatbuffers();
+      var slice_source_1 = __importDefault(require_slice_source());
+      var ColumnMeta_1 = __importDefault(require_ColumnMeta());
+      var CrsMeta_1 = __importDefault(require_CrsMeta());
+      var header_generated_1 = require_header_generated();
+      var feature_generated_1 = require_feature_generated();
+      var HeaderMeta_1 = __importDefault(require_HeaderMeta());
+      var feature_1 = require_feature();
+      var geometry_1 = require_geometry();
+      var packedrtree_1 = require_packedrtree();
+      var geometry_2 = require_geometry();
+      var SIZE_PREFIX_LEN = 4;
+      exports4.magicbytes = new Uint8Array([102, 103, 98, 3, 102, 103, 98, 0]);
+      function serialize(features) {
+        var headerMeta = introspectHeaderMeta(features);
+        var header = buildHeader(headerMeta);
+        var featureBuffers = features.map(function(f) {
+          if (!f.getGeometry)
+            throw new Error("Missing getGeometry implementation");
+          if (!f.getProperties)
+            throw new Error("Missing getProperties implementation");
+          return feature_1.buildFeature(geometry_2.parseGeometry(f.getGeometry(), headerMeta.geometryType), f.getProperties(), headerMeta);
+        });
+        var featuresLength = featureBuffers.map(function(f) {
+          return f.length;
+        }).reduce(function(a, b) {
+          return a + b;
+        });
+        var uint8 = new Uint8Array(exports4.magicbytes.length + header.length + featuresLength);
+        uint8.set(header, exports4.magicbytes.length);
+        var offset = exports4.magicbytes.length + header.length;
+        for (var _i = 0, featureBuffers_1 = featureBuffers; _i < featureBuffers_1.length; _i++) {
+          var feature = featureBuffers_1[_i];
+          uint8.set(feature, offset);
+          offset += feature.length;
+        }
+        uint8.set(exports4.magicbytes);
+        return uint8;
+      }
+      exports4.serialize = serialize;
+      function deserialize(bytes, fromFeature, headerMetaFn) {
+        if (!bytes.subarray(0, 7).every(function(v, i) {
+          return exports4.magicbytes[i] === v;
+        }))
+          throw new Error("Not a FlatGeobuf file");
+        var bb = new flatbuffers_1.flatbuffers.ByteBuffer(bytes);
+        var headerLength = bb.readUint32(exports4.magicbytes.length);
+        bb.setPosition(exports4.magicbytes.length + SIZE_PREFIX_LEN);
+        var header = header_generated_1.Header.getRoot(bb);
+        var count = header.featuresCount().toFloat64();
+        var columns = [];
+        for (var j = 0; j < header.columnsLength(); j++) {
+          var column = header.columns(j);
+          if (!column)
+            throw new Error("Column unexpectedly missing");
+          if (!column.name())
+            throw new Error("Column name unexpectedly missing");
+          columns.push(new ColumnMeta_1.default(column.name(), column.type()));
+        }
+        var crs = header.crs();
+        var crsMeta = crs ? new CrsMeta_1.default(crs.org(), crs.code(), crs.name(), crs.description(), crs.wkt()) : null;
+        var headerMeta = new HeaderMeta_1.default(header.geometryType(), columns, 0, crsMeta);
+        if (headerMetaFn)
+          headerMetaFn(headerMeta);
+        var offset = exports4.magicbytes.length + SIZE_PREFIX_LEN + headerLength;
+        var indexNodeSize = header.indexNodeSize();
+        if (indexNodeSize > 0)
+          offset += packedrtree_1.calcTreeSize(count, indexNodeSize);
+        var features = [];
+        while (offset < bb.capacity()) {
+          var featureLength = bb.readUint32(offset);
+          bb.setPosition(offset + SIZE_PREFIX_LEN);
+          var feature = feature_generated_1.Feature.getRoot(bb);
+          features.push(fromFeature(feature, headerMeta));
+          offset += SIZE_PREFIX_LEN + featureLength;
+        }
+        return features;
+      }
+      exports4.deserialize = deserialize;
+      function deserializeStream(stream, fromFeature, headerMetaFn) {
+        var _this = this;
+        var reader = slice_source_1.default(stream);
+        var read = function(size) {
+          return __awaiter(_this, void 0, void 0, function() {
+            return __generator(this, function(_a) {
+              switch (_a.label) {
+                case 0:
+                  return [4, reader.slice(size)];
+                case 1:
+                  return [2, _a.sent()];
+              }
+            });
+          });
+        };
+        return deserializeInternal(read, void 0, void 0, fromFeature, headerMetaFn);
+      }
+      exports4.deserializeStream = deserializeStream;
+      function deserializeFiltered(url, rect, fromFeature, headerMetaFn) {
+        var _this = this;
+        var offset = 0;
+        var read = function(size) {
+          return __awaiter(_this, void 0, void 0, function() {
+            var response, arrayBuffer;
+            return __generator(this, function(_a) {
+              switch (_a.label) {
+                case 0:
+                  return [4, fetch(url, {
+                    headers: {
+                      "Range": "bytes=" + offset + "-" + (offset + size - 1)
+                    }
+                  })];
+                case 1:
+                  response = _a.sent();
+                  offset += size;
+                  return [4, response.arrayBuffer()];
+                case 2:
+                  arrayBuffer = _a.sent();
+                  return [2, arrayBuffer];
+              }
+            });
+          });
+        };
+        var seek = function(newoffset) {
+          return __awaiter(_this, void 0, void 0, function() {
+            return __generator(this, function(_a) {
+              offset = newoffset;
+              return [2];
+            });
+          });
+        };
+        return deserializeInternal(read, seek, rect, fromFeature, headerMetaFn);
+      }
+      exports4.deserializeFiltered = deserializeFiltered;
+      function deserializeInternal(read, seek, rect, fromFeature, headerMetaFn) {
+        return __asyncGenerator(this, arguments, function deserializeInternal_1() {
+          var offset, bytes, _a, _b, bb, headerLength, _c, header, count, columns, j, column, crs, crsMeta, headerMeta, indexNodeSize, treeSize, readNode, foundOffsets, _d, _e, foundOffset, e_1_1, foundOffsets_1, foundOffsets_1_1, foundOffset, feature_2, e_2_1, feature;
+          var _this = this;
+          var e_1, _f, e_2, _g;
+          return __generator(this, function(_h) {
+            switch (_h.label) {
+              case 0:
+                offset = 0;
+                _a = Uint8Array.bind;
+                return [4, __await(read(8))];
+              case 1:
+                bytes = new (_a.apply(Uint8Array, [void 0, _h.sent()]))();
+                offset += 8;
+                if (!bytes.every(function(v, i) {
+                  return exports4.magicbytes[i] === v;
+                }))
+                  throw new Error("Not a FlatGeobuf file");
+                _b = Uint8Array.bind;
+                return [4, __await(read(4))];
+              case 2:
+                bytes = new (_b.apply(Uint8Array, [void 0, _h.sent()]))();
+                offset += 4;
+                bb = new flatbuffers_1.flatbuffers.ByteBuffer(bytes);
+                headerLength = bb.readUint32(0);
+                _c = Uint8Array.bind;
+                return [4, __await(read(headerLength))];
+              case 3:
+                bytes = new (_c.apply(Uint8Array, [void 0, _h.sent()]))();
+                offset += headerLength;
+                bb = new flatbuffers_1.flatbuffers.ByteBuffer(bytes);
+                header = header_generated_1.Header.getRoot(bb);
+                count = header.featuresCount().toFloat64();
+                columns = [];
+                for (j = 0; j < header.columnsLength(); j++) {
+                  column = header.columns(j);
+                  if (!column)
+                    throw new Error("Unexpected missing column");
+                  if (!column.name())
+                    throw new Error("Unexpected missing column name");
+                  columns.push(new ColumnMeta_1.default(column.name(), column.type()));
+                }
+                crs = header.crs();
+                crsMeta = crs ? new CrsMeta_1.default(crs.org(), crs.code(), crs.name(), crs.description(), crs.wkt()) : null;
+                headerMeta = new HeaderMeta_1.default(header.geometryType(), columns, count, crsMeta);
+                if (headerMetaFn)
+                  headerMetaFn(headerMeta);
+                indexNodeSize = header.indexNodeSize();
+                if (!(indexNodeSize > 0 && seek))
+                  return [3, 38];
+                treeSize = packedrtree_1.calcTreeSize(count, indexNodeSize);
+                if (!rect)
+                  return [3, 33];
+                readNode = function(treeOffset, size) {
+                  return __awaiter(_this, void 0, void 0, function() {
+                    return __generator(this, function(_a2) {
+                      switch (_a2.label) {
+                        case 0:
+                          return [4, seek(offset + treeOffset)];
+                        case 1:
+                          _a2.sent();
+                          return [4, read(size)];
+                        case 2:
+                          return [2, _a2.sent()];
+                      }
+                    });
+                  });
+                };
+                foundOffsets = [];
+                _h.label = 4;
+              case 4:
+                _h.trys.push([4, 9, 10, 15]);
+                _d = __asyncValues(packedrtree_1.streamSearch(count, indexNodeSize, rect, readNode));
+                _h.label = 5;
+              case 5:
+                return [4, __await(_d.next())];
+              case 6:
+                if (!(_e = _h.sent(), !_e.done))
+                  return [3, 8];
+                foundOffset = _e.value[0];
+                foundOffsets.push(foundOffset);
+                _h.label = 7;
+              case 7:
+                return [3, 5];
+              case 8:
+                return [3, 15];
+              case 9:
+                e_1_1 = _h.sent();
+                e_1 = { error: e_1_1 };
+                return [3, 15];
+              case 10:
+                _h.trys.push([10, , 13, 14]);
+                if (!(_e && !_e.done && (_f = _d.return)))
+                  return [3, 12];
+                return [4, __await(_f.call(_d))];
+              case 11:
+                _h.sent();
+                _h.label = 12;
+              case 12:
+                return [3, 14];
+              case 13:
+                if (e_1)
+                  throw e_1.error;
+                return [7];
+              case 14:
+                return [7];
+              case 15:
+                offset += treeSize;
+                _h.label = 16;
+              case 16:
+                _h.trys.push([16, 25, 26, 31]);
+                foundOffsets_1 = __asyncValues(foundOffsets);
+                _h.label = 17;
+              case 17:
+                return [4, __await(foundOffsets_1.next())];
+              case 18:
+                if (!(foundOffsets_1_1 = _h.sent(), !foundOffsets_1_1.done))
+                  return [3, 24];
+                foundOffset = foundOffsets_1_1.value;
+                return [4, __await(seek(offset + foundOffset))];
+              case 19:
+                _h.sent();
+                return [4, __await(readFeature(read, headerMeta, fromFeature))];
+              case 20:
+                feature_2 = _h.sent();
+                if (!feature_2)
+                  return [3, 23];
+                return [4, __await(feature_2)];
+              case 21:
+                return [4, _h.sent()];
+              case 22:
+                _h.sent();
+                _h.label = 23;
+              case 23:
+                return [3, 17];
+              case 24:
+                return [3, 31];
+              case 25:
+                e_2_1 = _h.sent();
+                e_2 = { error: e_2_1 };
+                return [3, 31];
+              case 26:
+                _h.trys.push([26, , 29, 30]);
+                if (!(foundOffsets_1_1 && !foundOffsets_1_1.done && (_g = foundOffsets_1.return)))
+                  return [3, 28];
+                return [4, __await(_g.call(foundOffsets_1))];
+              case 27:
+                _h.sent();
+                _h.label = 28;
+              case 28:
+                return [3, 30];
+              case 29:
+                if (e_2)
+                  throw e_2.error;
+                return [7];
+              case 30:
+                return [7];
+              case 31:
+                return [4, __await(void 0)];
+              case 32:
+                return [2, _h.sent()];
+              case 33:
+                if (!seek)
+                  return [3, 35];
+                return [4, __await(seek(offset + treeSize))];
+              case 34:
+                _h.sent();
+                return [3, 37];
+              case 35:
+                return [4, __await(read(treeSize))];
+              case 36:
+                _h.sent();
+                _h.label = 37;
+              case 37:
+                offset += treeSize;
+                _h.label = 38;
+              case 38:
+                return [4, __await(readFeature(read, headerMeta, fromFeature))];
+              case 39:
+                if (!(feature = _h.sent()))
+                  return [3, 42];
+                return [4, __await(feature)];
+              case 40:
+                return [4, _h.sent()];
+              case 41:
+                _h.sent();
+                return [3, 38];
+              case 42:
+                return [2];
+            }
+          });
+        });
+      }
+      function readFeature(read, headerMeta, fromFeature) {
+        return __awaiter(this, void 0, void 0, function() {
+          var bytes, _a, bb, featureLength, _b, bytesAligned, feature;
+          return __generator(this, function(_c) {
+            switch (_c.label) {
+              case 0:
+                _a = Uint8Array.bind;
+                return [4, read(4)];
+              case 1:
+                bytes = new (_a.apply(Uint8Array, [void 0, _c.sent()]))();
+                if (bytes.byteLength === 0)
+                  return [2];
+                bb = new flatbuffers_1.flatbuffers.ByteBuffer(bytes);
+                featureLength = bb.readUint32(0);
+                _b = Uint8Array.bind;
+                return [4, read(featureLength)];
+              case 2:
+                bytes = new (_b.apply(Uint8Array, [void 0, _c.sent()]))();
+                bytesAligned = new Uint8Array(featureLength + 4);
+                bytesAligned.set(bytes, 4);
+                bb = new flatbuffers_1.flatbuffers.ByteBuffer(bytesAligned);
+                bb.setPosition(SIZE_PREFIX_LEN);
+                feature = feature_generated_1.Feature.getRoot(bb);
+                return [2, fromFeature(feature, headerMeta)];
+            }
+          });
+        });
+      }
+      function buildColumn(builder, column) {
+        var nameOffset = builder.createString(column.name);
+        header_generated_1.Column.start(builder);
+        header_generated_1.Column.addName(builder, nameOffset);
+        header_generated_1.Column.addType(builder, column.type);
+        return header_generated_1.Column.end(builder);
+      }
+      function buildHeader(header) {
+        var builder = new flatbuffers_1.flatbuffers.Builder();
+        var columnOffsets = null;
+        if (header.columns)
+          columnOffsets = header_generated_1.Header.createColumnsVector(builder, header.columns.map(function(c) {
+            return buildColumn(builder, c);
+          }));
+        var nameOffset = builder.createString("L1");
+        header_generated_1.Header.start(builder);
+        header_generated_1.Header.addFeaturesCount(builder, new flatbuffers_1.flatbuffers.Long(header.featuresCount, 0));
+        header_generated_1.Header.addGeometryType(builder, header.geometryType);
+        header_generated_1.Header.addIndexNodeSize(builder, 0);
+        if (columnOffsets)
+          header_generated_1.Header.addColumns(builder, columnOffsets);
+        header_generated_1.Header.addName(builder, nameOffset);
+        var offset = header_generated_1.Header.end(builder);
+        builder.finishSizePrefixed(offset);
+        return builder.asUint8Array();
+      }
+      exports4.buildHeader = buildHeader;
+      function valueToType(value) {
+        if (typeof value === "boolean")
+          return header_generated_1.ColumnType.Bool;
+        else if (typeof value === "number")
+          if (value % 1 === 0)
+            return header_generated_1.ColumnType.Int;
+          else
+            return header_generated_1.ColumnType.Double;
+        else if (typeof value === "string")
+          return header_generated_1.ColumnType.String;
+        else if (value === null)
+          return header_generated_1.ColumnType.String;
+        else
+          throw new Error("Unknown type (value '" + value + "')");
+      }
+      function introspectHeaderMeta(features) {
+        var feature = features[0];
+        var geometry = feature.getGeometry ? feature.getGeometry() : void 0;
+        var geometryType = geometry ? geometry.getType() : void 0;
+        var properties = feature.getProperties ? feature.getProperties() : {};
+        var columns = null;
+        if (properties)
+          columns = Object.keys(properties).filter(function(key) {
+            return key !== "geometry";
+          }).map(function(k) {
+            return new ColumnMeta_1.default(k, valueToType(properties[k]));
+          });
+        var headerMeta = new HeaderMeta_1.default(geometry_1.toGeometryType(geometryType), columns, features.length, null);
+        return headerMeta;
+      }
+    }
+  });
+
+  // ../../node_modules/flatgeobuf/lib/cjs/geojson/featurecollection.js
+  var require_featurecollection2 = __commonJS({
+    "../../node_modules/flatgeobuf/lib/cjs/geojson/featurecollection.js"(exports4) {
+      "use strict";
+      var __importDefault = exports4 && exports4.__importDefault || function(mod) {
+        return mod && mod.__esModule ? mod : { "default": mod };
+      };
+      Object.defineProperty(exports4, "__esModule", { value: true });
+      exports4.deserializeFiltered = exports4.deserializeStream = exports4.deserialize = exports4.serialize = void 0;
+      var ColumnMeta_1 = __importDefault(require_ColumnMeta());
+      var header_generated_1 = require_header_generated();
+      var HeaderMeta_1 = __importDefault(require_HeaderMeta());
+      var feature_1 = require_feature2();
+      var geometry_1 = require_geometry2();
+      var featurecollection_1 = require_featurecollection();
+      var geometry_2 = require_geometry();
+      var feature_2 = require_feature();
+      function serialize(featurecollection) {
+        var headerMeta = introspectHeaderMeta(featurecollection);
+        var header = featurecollection_1.buildHeader(headerMeta);
+        var features = featurecollection.features.map(function(f) {
+          return feature_2.buildFeature(geometry_1.parseGeometry(f.geometry), f.properties, headerMeta);
+        });
+        var featuresLength = features.map(function(f) {
+          return f.length;
+        }).reduce(function(a, b) {
+          return a + b;
+        });
+        var uint8 = new Uint8Array(featurecollection_1.magicbytes.length + header.length + featuresLength);
+        uint8.set(header, featurecollection_1.magicbytes.length);
+        var offset = featurecollection_1.magicbytes.length + header.length;
+        for (var _i = 0, features_1 = features; _i < features_1.length; _i++) {
+          var feature = features_1[_i];
+          uint8.set(feature, offset);
+          offset += feature.length;
+        }
+        uint8.set(featurecollection_1.magicbytes);
+        return uint8;
+      }
+      exports4.serialize = serialize;
+      function deserialize(bytes, headerMetaFn) {
+        var features = featurecollection_1.deserialize(bytes, feature_1.fromFeature, headerMetaFn);
+        return {
+          type: "FeatureCollection",
+          features
+        };
+      }
+      exports4.deserialize = deserialize;
+      function deserializeStream(stream, headerMetaFn) {
+        return featurecollection_1.deserializeStream(stream, feature_1.fromFeature, headerMetaFn);
+      }
+      exports4.deserializeStream = deserializeStream;
+      function deserializeFiltered(url, rect, headerMetaFn) {
+        return featurecollection_1.deserializeFiltered(url, rect, feature_1.fromFeature, headerMetaFn);
+      }
+      exports4.deserializeFiltered = deserializeFiltered;
+      function valueToType(value) {
+        if (typeof value === "boolean")
+          return header_generated_1.ColumnType.Bool;
+        else if (typeof value === "number")
+          if (value % 1 === 0)
+            return header_generated_1.ColumnType.Int;
+          else
+            return header_generated_1.ColumnType.Double;
+        else if (typeof value === "string")
+          return header_generated_1.ColumnType.String;
+        else if (value === null)
+          return header_generated_1.ColumnType.String;
+        else
+          throw new Error("Unknown type (value '" + value + "')");
+      }
+      function introspectHeaderMeta(featurecollection) {
+        var feature = featurecollection.features[0];
+        var properties = feature.properties;
+        var columns = null;
+        if (properties)
+          columns = Object.keys(properties).map(function(k) {
+            return new ColumnMeta_1.default(k, valueToType(properties[k]));
+          });
+        var headerMeta = new HeaderMeta_1.default(geometry_2.toGeometryType(feature.geometry.type), columns, featurecollection.features.length, null);
+        return headerMeta;
+      }
+    }
+  });
+
+  // ../../node_modules/flatgeobuf/lib/cjs/geojson.js
+  var require_geojson = __commonJS({
+    "../../node_modules/flatgeobuf/lib/cjs/geojson.js"(exports4) {
+      "use strict";
+      Object.defineProperty(exports4, "__esModule", { value: true });
+      exports4.deserialize = exports4.serialize = void 0;
+      var featurecollection_1 = require_featurecollection2();
+      function serialize(geojson) {
+        var bytes = featurecollection_1.serialize(geojson);
+        return bytes;
+      }
+      exports4.serialize = serialize;
+      function deserialize(input, rect, headerMetaFn) {
+        if (input instanceof Uint8Array)
+          return featurecollection_1.deserialize(input, headerMetaFn);
+        else if (input instanceof ReadableStream)
+          return featurecollection_1.deserializeStream(input, headerMetaFn);
+        else
+          return featurecollection_1.deserializeFiltered(input, rect, headerMetaFn);
+      }
+      exports4.deserialize = deserialize;
+    }
+  });
+
+  // ../../node_modules/flatgeobuf/lib/cjs/generic.js
+  var require_generic = __commonJS({
+    "../../node_modules/flatgeobuf/lib/cjs/generic.js"(exports4) {
+      "use strict";
+      Object.defineProperty(exports4, "__esModule", { value: true });
+      exports4.ColumnType = exports4.GeometryType = exports4.serialize = exports4.deserialize = void 0;
+      var featurecollection_1 = require_featurecollection();
+      function deserialize(input, fromFeature, rect) {
+        if (input instanceof Uint8Array)
+          return featurecollection_1.deserialize(input, fromFeature);
+        else if (input instanceof ReadableStream)
+          return featurecollection_1.deserializeStream(input, fromFeature);
+        else
+          return featurecollection_1.deserializeFiltered(input, rect, fromFeature);
+      }
+      exports4.deserialize = deserialize;
+      var featurecollection_2 = require_featurecollection();
+      Object.defineProperty(exports4, "serialize", { enumerable: true, get: function() {
+        return featurecollection_2.serialize;
+      } });
+      var header_generated_1 = require_header_generated();
+      Object.defineProperty(exports4, "GeometryType", { enumerable: true, get: function() {
+        return header_generated_1.GeometryType;
+      } });
+      Object.defineProperty(exports4, "ColumnType", { enumerable: true, get: function() {
+        return header_generated_1.ColumnType;
+      } });
+    }
+  });
+
+  // ../worker-utils/src/lib/worker-utils/get-transfer-list.ts
+  function getTransferList(object, recursive = true, transfers) {
+    const transfersSet = transfers || new Set();
+    if (!object) {
+    } else if (isTransferable(object)) {
+      transfersSet.add(object);
+    } else if (isTransferable(object.buffer)) {
+      transfersSet.add(object.buffer);
+    } else if (ArrayBuffer.isView(object)) {
+    } else if (recursive && typeof object === "object") {
+      for (const key in object) {
+        getTransferList(object[key], recursive, transfersSet);
+      }
+    }
+    return transfers === void 0 ? Array.from(transfersSet) : [];
+  }
+  function isTransferable(object) {
+    if (!object) {
+      return false;
+    }
+    if (object instanceof ArrayBuffer) {
+      return true;
+    }
+    if (typeof MessagePort !== "undefined" && object instanceof MessagePort) {
+      return true;
+    }
+    if (typeof ImageBitmap !== "undefined" && object instanceof ImageBitmap) {
+      return true;
+    }
+    if (typeof OffscreenCanvas !== "undefined" && object instanceof OffscreenCanvas) {
+      return true;
+    }
+    return false;
+  }
+
+  // ../worker-utils/src/lib/worker-farm/worker-body.ts
+  function getParentPort() {
+    let parentPort;
+    try {
+      eval("globalThis.parentPort = require('worker_threads').parentPort");
+      parentPort = globalThis.parentPort;
+    } catch {
+    }
+    return parentPort;
+  }
+  var onMessageWrapperMap = new Map();
+  var WorkerBody = class {
+    static inWorkerThread() {
+      return typeof self !== "undefined" || Boolean(getParentPort());
+    }
+    static set onmessage(onMessage) {
+      function handleMessage(message) {
+        const parentPort3 = getParentPort();
+        const { type, payload } = parentPort3 ? message : message.data;
+        onMessage(type, payload);
+      }
+      const parentPort2 = getParentPort();
+      if (parentPort2) {
+        parentPort2.on("message", handleMessage);
+        parentPort2.on("exit", () => console.debug("Node worker closing"));
+      } else {
+        globalThis.onmessage = handleMessage;
+      }
+    }
+    static addEventListener(onMessage) {
+      let onMessageWrapper = onMessageWrapperMap.get(onMessage);
+      if (!onMessageWrapper) {
+        onMessageWrapper = (message) => {
+          if (!isKnownMessage(message)) {
+            return;
+          }
+          const parentPort3 = getParentPort();
+          const { type, payload } = parentPort3 ? message : message.data;
+          onMessage(type, payload);
+        };
+      }
+      const parentPort2 = getParentPort();
+      if (parentPort2) {
+        console.error("not implemented");
+      } else {
+        globalThis.addEventListener("message", onMessageWrapper);
+      }
+    }
+    static removeEventListener(onMessage) {
+      const onMessageWrapper = onMessageWrapperMap.get(onMessage);
+      onMessageWrapperMap.delete(onMessage);
+      const parentPort2 = getParentPort();
+      if (parentPort2) {
+        console.error("not implemented");
+      } else {
+        globalThis.removeEventListener("message", onMessageWrapper);
+      }
+    }
+    static postMessage(type, payload) {
+      const data = { source: "loaders.gl", type, payload };
+      const transferList = getTransferList(payload);
+      const parentPort2 = getParentPort();
+      if (parentPort2) {
+        parentPort2.postMessage(data, transferList);
+      } else {
+        globalThis.postMessage(data, transferList);
+      }
+    }
+  };
+  function isKnownMessage(message) {
+    const { type, data } = message;
+    return type === "message" && data && typeof data.source === "string" && data.source.startsWith("loaders.gl");
+  }
+
+  // ../loader-utils/src/lib/worker-loader-utils/create-loader-worker.ts
+  var requestId = 0;
+  function createLoaderWorker(loader) {
+    if (!WorkerBody.inWorkerThread()) {
+      return;
+    }
+    WorkerBody.onmessage = async (type, payload) => {
+      switch (type) {
+        case "process":
+          try {
+            const { input, options = {}, context = {} } = payload;
+            const result = await parseData({
+              loader,
+              arrayBuffer: input,
+              options,
+              context: {
+                ...context,
+                parse: parseOnMainThread
+              }
+            });
+            WorkerBody.postMessage("done", { result });
+          } catch (error) {
+            const message = error instanceof Error ? error.message : "";
+            WorkerBody.postMessage("error", { error: message });
+          }
+          break;
+        default:
+      }
+    };
+  }
+  function parseOnMainThread(arrayBuffer, options) {
+    return new Promise((resolve, reject) => {
+      const id = requestId++;
+      const onMessage = (type, payload2) => {
+        if (payload2.id !== id) {
+          return;
+        }
+        switch (type) {
+          case "done":
+            WorkerBody.removeEventListener(onMessage);
+            resolve(payload2.result);
+            break;
+          case "error":
+            WorkerBody.removeEventListener(onMessage);
+            reject(payload2.error);
+            break;
+          default:
+        }
+      };
+      WorkerBody.addEventListener(onMessage);
+      const payload = { id, input: arrayBuffer, options };
+      WorkerBody.postMessage("process", payload);
+    });
+  }
+  async function parseData({ loader, arrayBuffer, options, context }) {
+    let data;
+    let parser;
+    if (loader.parseSync || loader.parse) {
+      data = arrayBuffer;
+      parser = loader.parseSync || loader.parse;
+    } else if (loader.parseTextSync) {
+      const textDecoder = new TextDecoder();
+      data = textDecoder.decode(arrayBuffer);
+      parser = loader.parseTextSync;
+    } else {
+      throw new Error(`Could not load data with ${loader.name} loader`);
+    }
+    options = {
+      ...options,
+      modules: loader && loader.options && loader.options.modules || {},
+      worker: false
+    };
+    return await parser(data, { ...options }, context, loader);
+  }
+
+  // ../../node_modules/@babel/runtime/helpers/esm/typeof.js
+  function _typeof(obj) {
+    "@babel/helpers - typeof";
+    return _typeof = typeof Symbol == "function" && typeof Symbol.iterator == "symbol" ? function(obj2) {
+      return typeof obj2;
+    } : function(obj2) {
+      return obj2 && typeof Symbol == "function" && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+    }, _typeof(obj);
+  }
+
+  // ../../node_modules/@babel/runtime/helpers/esm/toPrimitive.js
+  function _toPrimitive(input, hint) {
+    if (_typeof(input) !== "object" || input === null)
+      return input;
+    var prim = input[Symbol.toPrimitive];
+    if (prim !== void 0) {
+      var res = prim.call(input, hint || "default");
+      if (_typeof(res) !== "object")
+        return res;
+      throw new TypeError("@@toPrimitive must return a primitive value.");
+    }
+    return (hint === "string" ? String : Number)(input);
+  }
+
+  // ../../node_modules/@babel/runtime/helpers/esm/toPropertyKey.js
+  function _toPropertyKey(arg) {
+    var key = _toPrimitive(arg, "string");
+    return _typeof(key) === "symbol" ? key : String(key);
+  }
+
+  // ../../node_modules/@babel/runtime/helpers/esm/defineProperty.js
+  function _defineProperty(obj, key, value) {
+    key = _toPropertyKey(key);
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+    return obj;
+  }
+
+  // src/flatgeobuf-loader.ts
+  var VERSION = true ? "4.0.0-alpha.7" : "latest";
+  var FlatGeobufLoader = {
+    id: "flatgeobuf",
+    name: "FlatGeobuf",
+    module: "flatgeobuf",
+    version: VERSION,
+    worker: true,
+    extensions: ["fgb"],
+    mimeTypes: ["application/octet-stream"],
+    category: "geometry",
+    options: {
+      flatgeobuf: {
+        shape: "geojson"
+      }
+    }
+  };
+
+  // ../../node_modules/proj4/lib/global.js
+  function global_default(defs2) {
+    defs2("EPSG:4326", "+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees");
+    defs2("EPSG:4269", "+title=NAD83 (long/lat) +proj=longlat +a=6378137.0 +b=6356752.31414036 +ellps=GRS80 +datum=NAD83 +units=degrees");
+    defs2("EPSG:3857", "+title=WGS 84 / Pseudo-Mercator +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs");
+    defs2.WGS84 = defs2["EPSG:4326"];
+    defs2["EPSG:3785"] = defs2["EPSG:3857"];
+    defs2.GOOGLE = defs2["EPSG:3857"];
+    defs2["EPSG:900913"] = defs2["EPSG:3857"];
+    defs2["EPSG:102113"] = defs2["EPSG:3857"];
+  }
+
+  // ../../node_modules/proj4/lib/constants/values.js
+  var PJD_3PARAM = 1;
+  var PJD_7PARAM = 2;
+  var PJD_WGS84 = 4;
+  var PJD_NODATUM = 5;
+  var SEC_TO_RAD = 484813681109536e-20;
+  var HALF_PI = Math.PI / 2;
+  var SIXTH = 0.16666666666666666;
+  var RA4 = 0.04722222222222222;
+  var RA6 = 0.022156084656084655;
+  var EPSLN = 1e-10;
+  var D2R = 0.017453292519943295;
+  var R2D = 57.29577951308232;
+  var FORTPI = Math.PI / 4;
+  var TWO_PI = Math.PI * 2;
+  var SPI = 3.14159265359;
+
+  // ../../node_modules/proj4/lib/constants/PrimeMeridian.js
+  var exports = {};
+  exports.greenwich = 0;
+  exports.lisbon = -9.131906111111;
+  exports.paris = 2.337229166667;
+  exports.bogota = -74.080916666667;
+  exports.madrid = -3.687938888889;
+  exports.rome = 12.452333333333;
+  exports.bern = 7.439583333333;
+  exports.jakarta = 106.807719444444;
+  exports.ferro = -17.666666666667;
+  exports.brussels = 4.367975;
+  exports.stockholm = 18.058277777778;
+  exports.athens = 23.7163375;
+  exports.oslo = 10.722916666667;
+
+  // ../../node_modules/proj4/lib/constants/units.js
+  var units_default = {
+    ft: { to_meter: 0.3048 },
+    "us-ft": { to_meter: 1200 / 3937 }
+  };
+
+  // ../../node_modules/proj4/lib/match.js
+  var ignoredChar = /[\s_\-\/\(\)]/g;
+  function match(obj, key) {
+    if (obj[key]) {
+      return obj[key];
+    }
+    var keys = Object.keys(obj);
+    var lkey = key.toLowerCase().replace(ignoredChar, "");
+    var i = -1;
+    var testkey, processedKey;
+    while (++i < keys.length) {
+      testkey = keys[i];
+      processedKey = testkey.toLowerCase().replace(ignoredChar, "");
+      if (processedKey === lkey) {
+        return obj[testkey];
+      }
+    }
+  }
+
+  // ../../node_modules/proj4/lib/projString.js
+  function projString_default(defData) {
+    var self2 = {};
+    var paramObj = defData.split("+").map(function(v) {
+      return v.trim();
+    }).filter(function(a) {
+      return a;
+    }).reduce(function(p, a) {
+      var split = a.split("=");
+      split.push(true);
+      p[split[0].toLowerCase()] = split[1];
+      return p;
+    }, {});
+    var paramName, paramVal, paramOutname;
+    var params = {
+      proj: "projName",
+      datum: "datumCode",
+      rf: function(v) {
+        self2.rf = parseFloat(v);
+      },
+      lat_0: function(v) {
+        self2.lat0 = v * D2R;
+      },
+      lat_1: function(v) {
+        self2.lat1 = v * D2R;
+      },
+      lat_2: function(v) {
+        self2.lat2 = v * D2R;
+      },
+      lat_ts: function(v) {
+        self2.lat_ts = v * D2R;
+      },
+      lon_0: function(v) {
+        self2.long0 = v * D2R;
+      },
+      lon_1: function(v) {
+        self2.long1 = v * D2R;
+      },
+      lon_2: function(v) {
+        self2.long2 = v * D2R;
+      },
+      alpha: function(v) {
+        self2.alpha = parseFloat(v) * D2R;
+      },
+      lonc: function(v) {
+        self2.longc = v * D2R;
+      },
+      x_0: function(v) {
+        self2.x0 = parseFloat(v);
+      },
+      y_0: function(v) {
+        self2.y0 = parseFloat(v);
+      },
+      k_0: function(v) {
+        self2.k0 = parseFloat(v);
+      },
+      k: function(v) {
+        self2.k0 = parseFloat(v);
+      },
+      a: function(v) {
+        self2.a = parseFloat(v);
+      },
+      b: function(v) {
+        self2.b = parseFloat(v);
+      },
+      r_a: function() {
+        self2.R_A = true;
+      },
+      zone: function(v) {
+        self2.zone = parseInt(v, 10);
+      },
+      south: function() {
+        self2.utmSouth = true;
+      },
+      towgs84: function(v) {
+        self2.datum_params = v.split(",").map(function(a) {
+          return parseFloat(a);
+        });
+      },
+      to_meter: function(v) {
+        self2.to_meter = parseFloat(v);
+      },
+      units: function(v) {
+        self2.units = v;
+        var unit = match(units_default, v);
+        if (unit) {
+          self2.to_meter = unit.to_meter;
+        }
+      },
+      from_greenwich: function(v) {
+        self2.from_greenwich = v * D2R;
+      },
+      pm: function(v) {
+        var pm = match(exports, v);
+        self2.from_greenwich = (pm ? pm : parseFloat(v)) * D2R;
+      },
+      nadgrids: function(v) {
+        if (v === "@null") {
+          self2.datumCode = "none";
+        } else {
+          self2.nadgrids = v;
+        }
+      },
+      axis: function(v) {
+        var legalAxis = "ewnsud";
+        if (v.length === 3 && legalAxis.indexOf(v.substr(0, 1)) !== -1 && legalAxis.indexOf(v.substr(1, 1)) !== -1 && legalAxis.indexOf(v.substr(2, 1)) !== -1) {
+          self2.axis = v;
+        }
+      }
+    };
+    for (paramName in paramObj) {
+      paramVal = paramObj[paramName];
+      if (paramName in params) {
+        paramOutname = params[paramName];
+        if (typeof paramOutname === "function") {
+          paramOutname(paramVal);
+        } else {
+          self2[paramOutname] = paramVal;
+        }
+      } else {
+        self2[paramName] = paramVal;
+      }
+    }
+    if (typeof self2.datumCode === "string" && self2.datumCode !== "WGS84") {
+      self2.datumCode = self2.datumCode.toLowerCase();
+    }
+    return self2;
+  }
+
+  // ../../node_modules/wkt-parser/parser.js
+  var parser_default = parseString;
+  var NEUTRAL = 1;
+  var KEYWORD = 2;
+  var NUMBER = 3;
+  var QUOTED = 4;
+  var AFTERQUOTE = 5;
+  var ENDED = -1;
+  var whitespace = /\s/;
+  var latin = /[A-Za-z]/;
+  var keyword = /[A-Za-z84_]/;
+  var endThings = /[,\]]/;
+  var digets = /[\d\.E\-\+]/;
+  function Parser(text) {
+    if (typeof text !== "string") {
+      throw new Error("not a string");
+    }
+    this.text = text.trim();
+    this.level = 0;
+    this.place = 0;
+    this.root = null;
+    this.stack = [];
+    this.currentObject = null;
+    this.state = NEUTRAL;
+  }
+  Parser.prototype.readCharicter = function() {
+    var char = this.text[this.place++];
+    if (this.state !== QUOTED) {
+      while (whitespace.test(char)) {
+        if (this.place >= this.text.length) {
+          return;
+        }
+        char = this.text[this.place++];
+      }
+    }
+    switch (this.state) {
+      case NEUTRAL:
+        return this.neutral(char);
+      case KEYWORD:
+        return this.keyword(char);
+      case QUOTED:
+        return this.quoted(char);
+      case AFTERQUOTE:
+        return this.afterquote(char);
+      case NUMBER:
+        return this.number(char);
+      case ENDED:
+        return;
+    }
+  };
+  Parser.prototype.afterquote = function(char) {
+    if (char === '"') {
+      this.word += '"';
+      this.state = QUOTED;
+      return;
+    }
+    if (endThings.test(char)) {
+      this.word = this.word.trim();
+      this.afterItem(char);
+      return;
+    }
+    throw new Error(`havn't handled "` + char + '" in afterquote yet, index ' + this.place);
+  };
+  Parser.prototype.afterItem = function(char) {
+    if (char === ",") {
+      if (this.word !== null) {
+        this.currentObject.push(this.word);
+      }
+      this.word = null;
+      this.state = NEUTRAL;
+      return;
+    }
+    if (char === "]") {
+      this.level--;
+      if (this.word !== null) {
+        this.currentObject.push(this.word);
+        this.word = null;
+      }
+      this.state = NEUTRAL;
+      this.currentObject = this.stack.pop();
+      if (!this.currentObject) {
+        this.state = ENDED;
+      }
+      return;
+    }
+  };
+  Parser.prototype.number = function(char) {
+    if (digets.test(char)) {
+      this.word += char;
+      return;
+    }
+    if (endThings.test(char)) {
+      this.word = parseFloat(this.word);
+      this.afterItem(char);
+      return;
+    }
+    throw new Error(`havn't handled "` + char + '" in number yet, index ' + this.place);
+  };
+  Parser.prototype.quoted = function(char) {
+    if (char === '"') {
+      this.state = AFTERQUOTE;
+      return;
+    }
+    this.word += char;
+    return;
+  };
+  Parser.prototype.keyword = function(char) {
+    if (keyword.test(char)) {
+      this.word += char;
+      return;
+    }
+    if (char === "[") {
+      var newObjects = [];
+      newObjects.push(this.word);
+      this.level++;
+      if (this.root === null) {
+        this.root = newObjects;
+      } else {
+        this.currentObject.push(newObjects);
+      }
+      this.stack.push(this.currentObject);
+      this.currentObject = newObjects;
+      this.state = NEUTRAL;
+      return;
+    }
+    if (endThings.test(char)) {
+      this.afterItem(char);
+      return;
+    }
+    throw new Error(`havn't handled "` + char + '" in keyword yet, index ' + this.place);
+  };
+  Parser.prototype.neutral = function(char) {
+    if (latin.test(char)) {
+      this.word = char;
+      this.state = KEYWORD;
+      return;
+    }
+    if (char === '"') {
+      this.word = "";
+      this.state = QUOTED;
+      return;
+    }
+    if (digets.test(char)) {
+      this.word = char;
+      this.state = NUMBER;
+      return;
+    }
+    if (endThings.test(char)) {
+      this.afterItem(char);
+      return;
+    }
+    throw new Error(`havn't handled "` + char + '" in neutral yet, index ' + this.place);
+  };
+  Parser.prototype.output = function() {
+    while (this.place < this.text.length) {
+      this.readCharicter();
+    }
+    if (this.state === ENDED) {
+      return this.root;
+    }
+    throw new Error('unable to parse string "' + this.text + '". State is ' + this.state);
+  };
+  function parseString(txt) {
+    var parser = new Parser(txt);
+    return parser.output();
+  }
+
+  // ../../node_modules/wkt-parser/process.js
+  function mapit(obj, key, value) {
+    if (Array.isArray(key)) {
+      value.unshift(key);
+      key = null;
+    }
+    var thing = key ? {} : obj;
+    var out = value.reduce(function(newObj, item) {
+      sExpr(item, newObj);
+      return newObj;
+    }, thing);
+    if (key) {
+      obj[key] = out;
+    }
+  }
+  function sExpr(v, obj) {
+    if (!Array.isArray(v)) {
+      obj[v] = true;
+      return;
+    }
+    var key = v.shift();
+    if (key === "PARAMETER") {
+      key = v.shift();
+    }
+    if (v.length === 1) {
+      if (Array.isArray(v[0])) {
+        obj[key] = {};
+        sExpr(v[0], obj[key]);
+        return;
+      }
+      obj[key] = v[0];
+      return;
+    }
+    if (!v.length) {
+      obj[key] = true;
+      return;
+    }
+    if (key === "TOWGS84") {
+      obj[key] = v;
+      return;
+    }
+    if (key === "AXIS") {
+      if (!(key in obj)) {
+        obj[key] = [];
+      }
+      obj[key].push(v);
+      return;
+    }
+    if (!Array.isArray(key)) {
+      obj[key] = {};
+    }
+    var i;
+    switch (key) {
+      case "UNIT":
+      case "PRIMEM":
+      case "VERT_DATUM":
+        obj[key] = {
+          name: v[0].toLowerCase(),
+          convert: v[1]
+        };
+        if (v.length === 3) {
+          sExpr(v[2], obj[key]);
+        }
+        return;
+      case "SPHEROID":
+      case "ELLIPSOID":
+        obj[key] = {
+          name: v[0],
+          a: v[1],
+          rf: v[2]
+        };
+        if (v.length === 4) {
+          sExpr(v[3], obj[key]);
+        }
+        return;
+      case "PROJECTEDCRS":
+      case "PROJCRS":
+      case "GEOGCS":
+      case "GEOCCS":
+      case "PROJCS":
+      case "LOCAL_CS":
+      case "GEODCRS":
+      case "GEODETICCRS":
+      case "GEODETICDATUM":
+      case "EDATUM":
+      case "ENGINEERINGDATUM":
+      case "VERT_CS":
+      case "VERTCRS":
+      case "VERTICALCRS":
+      case "COMPD_CS":
+      case "COMPOUNDCRS":
+      case "ENGINEERINGCRS":
+      case "ENGCRS":
+      case "FITTED_CS":
+      case "LOCAL_DATUM":
+      case "DATUM":
+        v[0] = ["name", v[0]];
+        mapit(obj, key, v);
+        return;
+      default:
+        i = -1;
+        while (++i < v.length) {
+          if (!Array.isArray(v[i])) {
+            return sExpr(v, obj[key]);
+          }
+        }
+        return mapit(obj, key, v);
+    }
+  }
+
+  // ../../node_modules/wkt-parser/index.js
+  var D2R2 = 0.017453292519943295;
+  function rename(obj, params) {
+    var outName = params[0];
+    var inName = params[1];
+    if (!(outName in obj) && inName in obj) {
+      obj[outName] = obj[inName];
+      if (params.length === 3) {
+        obj[outName] = params[2](obj[outName]);
+      }
+    }
+  }
+  function d2r(input) {
+    return input * D2R2;
+  }
+  function cleanWKT(wkt) {
+    if (wkt.type === "GEOGCS") {
+      wkt.projName = "longlat";
+    } else if (wkt.type === "LOCAL_CS") {
+      wkt.projName = "identity";
+      wkt.local = true;
+    } else {
+      if (typeof wkt.PROJECTION === "object") {
+        wkt.projName = Object.keys(wkt.PROJECTION)[0];
+      } else {
+        wkt.projName = wkt.PROJECTION;
+      }
+    }
+    if (wkt.AXIS) {
+      var axisOrder = "";
+      for (var i = 0, ii = wkt.AXIS.length; i < ii; ++i) {
+        var axis = [wkt.AXIS[i][0].toLowerCase(), wkt.AXIS[i][1].toLowerCase()];
+        if (axis[0].indexOf("north") !== -1 || (axis[0] === "y" || axis[0] === "lat") && axis[1] === "north") {
+          axisOrder += "n";
+        } else if (axis[0].indexOf("south") !== -1 || (axis[0] === "y" || axis[0] === "lat") && axis[1] === "south") {
+          axisOrder += "s";
+        } else if (axis[0].indexOf("east") !== -1 || (axis[0] === "x" || axis[0] === "lon") && axis[1] === "east") {
+          axisOrder += "e";
+        } else if (axis[0].indexOf("west") !== -1 || (axis[0] === "x" || axis[0] === "lon") && axis[1] === "west") {
+          axisOrder += "w";
+        }
+      }
+      if (axisOrder.length === 2) {
+        axisOrder += "u";
+      }
+      if (axisOrder.length === 3) {
+        wkt.axis = axisOrder;
+      }
+    }
+    if (wkt.UNIT) {
+      wkt.units = wkt.UNIT.name.toLowerCase();
+      if (wkt.units === "metre") {
+        wkt.units = "meter";
+      }
+      if (wkt.UNIT.convert) {
+        if (wkt.type === "GEOGCS") {
+          if (wkt.DATUM && wkt.DATUM.SPHEROID) {
+            wkt.to_meter = wkt.UNIT.convert * wkt.DATUM.SPHEROID.a;
+          }
+        } else {
+          wkt.to_meter = wkt.UNIT.convert;
+        }
+      }
+    }
+    var geogcs = wkt.GEOGCS;
+    if (wkt.type === "GEOGCS") {
+      geogcs = wkt;
+    }
+    if (geogcs) {
+      if (geogcs.DATUM) {
+        wkt.datumCode = geogcs.DATUM.name.toLowerCase();
+      } else {
+        wkt.datumCode = geogcs.name.toLowerCase();
+      }
+      if (wkt.datumCode.slice(0, 2) === "d_") {
+        wkt.datumCode = wkt.datumCode.slice(2);
+      }
+      if (wkt.datumCode === "new_zealand_geodetic_datum_1949" || wkt.datumCode === "new_zealand_1949") {
+        wkt.datumCode = "nzgd49";
+      }
+      if (wkt.datumCode === "wgs_1984" || wkt.datumCode === "world_geodetic_system_1984") {
+        if (wkt.PROJECTION === "Mercator_Auxiliary_Sphere") {
+          wkt.sphere = true;
+        }
+        wkt.datumCode = "wgs84";
+      }
+      if (wkt.datumCode.slice(-6) === "_ferro") {
+        wkt.datumCode = wkt.datumCode.slice(0, -6);
+      }
+      if (wkt.datumCode.slice(-8) === "_jakarta") {
+        wkt.datumCode = wkt.datumCode.slice(0, -8);
+      }
+      if (~wkt.datumCode.indexOf("belge")) {
+        wkt.datumCode = "rnb72";
+      }
+      if (geogcs.DATUM && geogcs.DATUM.SPHEROID) {
+        wkt.ellps = geogcs.DATUM.SPHEROID.name.replace("_19", "").replace(/[Cc]larke\_18/, "clrk");
+        if (wkt.ellps.toLowerCase().slice(0, 13) === "international") {
+          wkt.ellps = "intl";
+        }
+        wkt.a = geogcs.DATUM.SPHEROID.a;
+        wkt.rf = parseFloat(geogcs.DATUM.SPHEROID.rf, 10);
+      }
+      if (geogcs.DATUM && geogcs.DATUM.TOWGS84) {
+        wkt.datum_params = geogcs.DATUM.TOWGS84;
+      }
+      if (~wkt.datumCode.indexOf("osgb_1936")) {
+        wkt.datumCode = "osgb36";
+      }
+      if (~wkt.datumCode.indexOf("osni_1952")) {
+        wkt.datumCode = "osni52";
+      }
+      if (~wkt.datumCode.indexOf("tm65") || ~wkt.datumCode.indexOf("geodetic_datum_of_1965")) {
+        wkt.datumCode = "ire65";
+      }
+      if (wkt.datumCode === "ch1903+") {
+        wkt.datumCode = "ch1903";
+      }
+      if (~wkt.datumCode.indexOf("israel")) {
+        wkt.datumCode = "isr93";
+      }
+    }
+    if (wkt.b && !isFinite(wkt.b)) {
+      wkt.b = wkt.a;
+    }
+    function toMeter(input) {
+      var ratio = wkt.to_meter || 1;
+      return input * ratio;
+    }
+    var renamer = function(a) {
+      return rename(wkt, a);
+    };
+    var list = [
+      ["standard_parallel_1", "Standard_Parallel_1"],
+      ["standard_parallel_1", "Latitude of 1st standard parallel"],
+      ["standard_parallel_2", "Standard_Parallel_2"],
+      ["standard_parallel_2", "Latitude of 2nd standard parallel"],
+      ["false_easting", "False_Easting"],
+      ["false_easting", "False easting"],
+      ["false-easting", "Easting at false origin"],
+      ["false_northing", "False_Northing"],
+      ["false_northing", "False northing"],
+      ["false_northing", "Northing at false origin"],
+      ["central_meridian", "Central_Meridian"],
+      ["central_meridian", "Longitude of natural origin"],
+      ["central_meridian", "Longitude of false origin"],
+      ["latitude_of_origin", "Latitude_Of_Origin"],
+      ["latitude_of_origin", "Central_Parallel"],
+      ["latitude_of_origin", "Latitude of natural origin"],
+      ["latitude_of_origin", "Latitude of false origin"],
+      ["scale_factor", "Scale_Factor"],
+      ["k0", "scale_factor"],
+      ["latitude_of_center", "Latitude_Of_Center"],
+      ["latitude_of_center", "Latitude_of_center"],
+      ["lat0", "latitude_of_center", d2r],
+      ["longitude_of_center", "Longitude_Of_Center"],
+      ["longitude_of_center", "Longitude_of_center"],
+      ["longc", "longitude_of_center", d2r],
+      ["x0", "false_easting", toMeter],
+      ["y0", "false_northing", toMeter],
+      ["long0", "central_meridian", d2r],
+      ["lat0", "latitude_of_origin", d2r],
+      ["lat0", "standard_parallel_1", d2r],
+      ["lat1", "standard_parallel_1", d2r],
+      ["lat2", "standard_parallel_2", d2r],
+      ["azimuth", "Azimuth"],
+      ["alpha", "azimuth", d2r],
+      ["srsCode", "name"]
+    ];
+    list.forEach(renamer);
+    if (!wkt.long0 && wkt.longc && (wkt.projName === "Albers_Conic_Equal_Area" || wkt.projName === "Lambert_Azimuthal_Equal_Area")) {
+      wkt.long0 = wkt.longc;
+    }
+    if (!wkt.lat_ts && wkt.lat1 && (wkt.projName === "Stereographic_South_Pole" || wkt.projName === "Polar Stereographic (variant B)")) {
+      wkt.lat0 = d2r(wkt.lat1 > 0 ? 90 : -90);
+      wkt.lat_ts = wkt.lat1;
+    }
+  }
+  function wkt_parser_default(wkt) {
+    var lisp = parser_default(wkt);
+    var type = lisp.shift();
+    var name = lisp.shift();
+    lisp.unshift(["name", name]);
+    lisp.unshift(["type", type]);
+    var obj = {};
+    sExpr(lisp, obj);
+    cleanWKT(obj);
+    return obj;
+  }
+
+  // ../../node_modules/proj4/lib/defs.js
+  function defs(name) {
+    var that = this;
+    if (arguments.length === 2) {
+      var def = arguments[1];
+      if (typeof def === "string") {
+        if (def.charAt(0) === "+") {
+          defs[name] = projString_default(arguments[1]);
+        } else {
+          defs[name] = wkt_parser_default(arguments[1]);
+        }
+      } else {
+        defs[name] = def;
+      }
+    } else if (arguments.length === 1) {
+      if (Array.isArray(name)) {
+        return name.map(function(v) {
+          if (Array.isArray(v)) {
+            defs.apply(that, v);
+          } else {
+            defs(v);
+          }
+        });
+      } else if (typeof name === "string") {
+        if (name in defs) {
+          return defs[name];
+        }
+      } else if ("EPSG" in name) {
+        defs["EPSG:" + name.EPSG] = name;
+      } else if ("ESRI" in name) {
+        defs["ESRI:" + name.ESRI] = name;
+      } else if ("IAU2000" in name) {
+        defs["IAU2000:" + name.IAU2000] = name;
+      } else {
+        console.log(name);
+      }
+      return;
+    }
+  }
+  global_default(defs);
+  var defs_default = defs;
+
+  // ../../node_modules/proj4/lib/parseCode.js
+  function testObj(code) {
+    return typeof code === "string";
+  }
+  function testDef(code) {
+    return code in defs_default;
+  }
+  var codeWords = ["PROJECTEDCRS", "PROJCRS", "GEOGCS", "GEOCCS", "PROJCS", "LOCAL_CS", "GEODCRS", "GEODETICCRS", "GEODETICDATUM", "ENGCRS", "ENGINEERINGCRS"];
+  function testWKT(code) {
+    return codeWords.some(function(word) {
+      return code.indexOf(word) > -1;
+    });
+  }
+  var codes = ["3857", "900913", "3785", "102113"];
+  function checkMercator(item) {
+    var auth = match(item, "authority");
+    if (!auth) {
+      return;
+    }
+    var code = match(auth, "epsg");
+    return code && codes.indexOf(code) > -1;
+  }
+  function checkProjStr(item) {
+    var ext = match(item, "extension");
+    if (!ext) {
+      return;
+    }
+    return match(ext, "proj4");
+  }
+  function testProj(code) {
+    return code[0] === "+";
+  }
+  function parse(code) {
+    if (testObj(code)) {
+      if (testDef(code)) {
+        return defs_default[code];
+      }
+      if (testWKT(code)) {
+        var out = wkt_parser_default(code);
+        if (checkMercator(out)) {
+          return defs_default["EPSG:3857"];
+        }
+        var maybeProjStr = checkProjStr(out);
+        if (maybeProjStr) {
+          return projString_default(maybeProjStr);
+        }
+        return out;
+      }
+      if (testProj(code)) {
+        return projString_default(code);
+      }
+    } else {
+      return code;
+    }
+  }
+  var parseCode_default = parse;
+
+  // ../../node_modules/proj4/lib/extend.js
+  function extend_default(destination, source) {
+    destination = destination || {};
+    var value, property;
+    if (!source) {
+      return destination;
+    }
+    for (property in source) {
+      value = source[property];
+      if (value !== void 0) {
+        destination[property] = value;
+      }
+    }
+    return destination;
+  }
+
+  // ../../node_modules/proj4/lib/common/msfnz.js
+  function msfnz_default(eccent, sinphi, cosphi) {
+    var con = eccent * sinphi;
+    return cosphi / Math.sqrt(1 - con * con);
+  }
+
+  // ../../node_modules/proj4/lib/common/sign.js
+  function sign_default(x) {
+    return x < 0 ? -1 : 1;
+  }
+
+  // ../../node_modules/proj4/lib/common/adjust_lon.js
+  function adjust_lon_default(x) {
+    return Math.abs(x) <= SPI ? x : x - sign_default(x) * TWO_PI;
+  }
+
+  // ../../node_modules/proj4/lib/common/tsfnz.js
+  function tsfnz_default(eccent, phi, sinphi) {
+    var con = eccent * sinphi;
+    var com = 0.5 * eccent;
+    con = Math.pow((1 - con) / (1 + con), com);
+    return Math.tan(0.5 * (HALF_PI - phi)) / con;
+  }
+
+  // ../../node_modules/proj4/lib/common/phi2z.js
+  function phi2z_default(eccent, ts) {
+    var eccnth = 0.5 * eccent;
+    var con, dphi;
+    var phi = HALF_PI - 2 * Math.atan(ts);
+    for (var i = 0; i <= 15; i++) {
+      con = eccent * Math.sin(phi);
+      dphi = HALF_PI - 2 * Math.atan(ts * Math.pow((1 - con) / (1 + con), eccnth)) - phi;
+      phi += dphi;
+      if (Math.abs(dphi) <= 1e-10) {
+        return phi;
+      }
+    }
+    return -9999;
+  }
+
+  // ../../node_modules/proj4/lib/projections/merc.js
+  function init() {
+    var con = this.b / this.a;
+    this.es = 1 - con * con;
+    if (!("x0" in this)) {
+      this.x0 = 0;
+    }
+    if (!("y0" in this)) {
+      this.y0 = 0;
+    }
+    this.e = Math.sqrt(this.es);
+    if (this.lat_ts) {
+      if (this.sphere) {
+        this.k0 = Math.cos(this.lat_ts);
+      } else {
+        this.k0 = msfnz_default(this.e, Math.sin(this.lat_ts), Math.cos(this.lat_ts));
+      }
+    } else {
+      if (!this.k0) {
+        if (this.k) {
+          this.k0 = this.k;
+        } else {
+          this.k0 = 1;
+        }
+      }
+    }
+  }
+  function forward(p) {
+    var lon = p.x;
+    var lat = p.y;
+    if (lat * R2D > 90 && lat * R2D < -90 && lon * R2D > 180 && lon * R2D < -180) {
+      return null;
+    }
+    var x, y;
+    if (Math.abs(Math.abs(lat) - HALF_PI) <= EPSLN) {
+      return null;
+    } else {
+      if (this.sphere) {
+        x = this.x0 + this.a * this.k0 * adjust_lon_default(lon - this.long0);
+        y = this.y0 + this.a * this.k0 * Math.log(Math.tan(FORTPI + 0.5 * lat));
+      } else {
+        var sinphi = Math.sin(lat);
+        var ts = tsfnz_default(this.e, lat, sinphi);
+        x = this.x0 + this.a * this.k0 * adjust_lon_default(lon - this.long0);
+        y = this.y0 - this.a * this.k0 * Math.log(ts);
+      }
+      p.x = x;
+      p.y = y;
+      return p;
+    }
+  }
+  function inverse(p) {
+    var x = p.x - this.x0;
+    var y = p.y - this.y0;
+    var lon, lat;
+    if (this.sphere) {
+      lat = HALF_PI - 2 * Math.atan(Math.exp(-y / (this.a * this.k0)));
+    } else {
+      var ts = Math.exp(-y / (this.a * this.k0));
+      lat = phi2z_default(this.e, ts);
+      if (lat === -9999) {
+        return null;
+      }
+    }
+    lon = adjust_lon_default(this.long0 + x / (this.a * this.k0));
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  var names = ["Mercator", "Popular Visualisation Pseudo Mercator", "Mercator_1SP", "Mercator_Auxiliary_Sphere", "merc"];
+  var merc_default = {
+    init,
+    forward,
+    inverse,
+    names
+  };
+
+  // ../../node_modules/proj4/lib/projections/longlat.js
+  function init2() {
+  }
+  function identity(pt) {
+    return pt;
+  }
+  var names2 = ["longlat", "identity"];
+  var longlat_default = {
+    init: init2,
+    forward: identity,
+    inverse: identity,
+    names: names2
+  };
+
+  // ../../node_modules/proj4/lib/projections.js
+  var projs = [merc_default, longlat_default];
+  var names3 = {};
+  var projStore = [];
+  function add(proj, i) {
+    var len = projStore.length;
+    if (!proj.names) {
+      console.log(i);
+      return true;
+    }
+    projStore[len] = proj;
+    proj.names.forEach(function(n) {
+      names3[n.toLowerCase()] = len;
+    });
+    return this;
+  }
+  function get(name) {
+    if (!name) {
+      return false;
+    }
+    var n = name.toLowerCase();
+    if (typeof names3[n] !== "undefined" && projStore[names3[n]]) {
+      return projStore[names3[n]];
+    }
+  }
+  function start() {
+    projs.forEach(add);
+  }
+  var projections_default = {
+    start,
+    add,
+    get
+  };
+
+  // ../../node_modules/proj4/lib/constants/Ellipsoid.js
+  var exports2 = {};
+  exports2.MERIT = {
+    a: 6378137,
+    rf: 298.257,
+    ellipseName: "MERIT 1983"
+  };
+  exports2.SGS85 = {
+    a: 6378136,
+    rf: 298.257,
+    ellipseName: "Soviet Geodetic System 85"
+  };
+  exports2.GRS80 = {
+    a: 6378137,
+    rf: 298.257222101,
+    ellipseName: "GRS 1980(IUGG, 1980)"
+  };
+  exports2.IAU76 = {
+    a: 6378140,
+    rf: 298.257,
+    ellipseName: "IAU 1976"
+  };
+  exports2.airy = {
+    a: 6377563396e-3,
+    b: 635625691e-2,
+    ellipseName: "Airy 1830"
+  };
+  exports2.APL4 = {
+    a: 6378137,
+    rf: 298.25,
+    ellipseName: "Appl. Physics. 1965"
+  };
+  exports2.NWL9D = {
+    a: 6378145,
+    rf: 298.25,
+    ellipseName: "Naval Weapons Lab., 1965"
+  };
+  exports2.mod_airy = {
+    a: 6377340189e-3,
+    b: 6356034446e-3,
+    ellipseName: "Modified Airy"
+  };
+  exports2.andrae = {
+    a: 637710443e-2,
+    rf: 300,
+    ellipseName: "Andrae 1876 (Den., Iclnd.)"
+  };
+  exports2.aust_SA = {
+    a: 6378160,
+    rf: 298.25,
+    ellipseName: "Australian Natl & S. Amer. 1969"
+  };
+  exports2.GRS67 = {
+    a: 6378160,
+    rf: 298.247167427,
+    ellipseName: "GRS 67(IUGG 1967)"
+  };
+  exports2.bessel = {
+    a: 6377397155e-3,
+    rf: 299.1528128,
+    ellipseName: "Bessel 1841"
+  };
+  exports2.bess_nam = {
+    a: 6377483865e-3,
+    rf: 299.1528128,
+    ellipseName: "Bessel 1841 (Namibia)"
+  };
+  exports2.clrk66 = {
+    a: 63782064e-1,
+    b: 63565838e-1,
+    ellipseName: "Clarke 1866"
+  };
+  exports2.clrk80 = {
+    a: 6378249145e-3,
+    rf: 293.4663,
+    ellipseName: "Clarke 1880 mod."
+  };
+  exports2.clrk58 = {
+    a: 6378293645208759e-9,
+    rf: 294.2606763692654,
+    ellipseName: "Clarke 1858"
+  };
+  exports2.CPM = {
+    a: 63757387e-1,
+    rf: 334.29,
+    ellipseName: "Comm. des Poids et Mesures 1799"
+  };
+  exports2.delmbr = {
+    a: 6376428,
+    rf: 311.5,
+    ellipseName: "Delambre 1810 (Belgium)"
+  };
+  exports2.engelis = {
+    a: 637813605e-2,
+    rf: 298.2566,
+    ellipseName: "Engelis 1985"
+  };
+  exports2.evrst30 = {
+    a: 6377276345e-3,
+    rf: 300.8017,
+    ellipseName: "Everest 1830"
+  };
+  exports2.evrst48 = {
+    a: 6377304063e-3,
+    rf: 300.8017,
+    ellipseName: "Everest 1948"
+  };
+  exports2.evrst56 = {
+    a: 6377301243e-3,
+    rf: 300.8017,
+    ellipseName: "Everest 1956"
+  };
+  exports2.evrst69 = {
+    a: 6377295664e-3,
+    rf: 300.8017,
+    ellipseName: "Everest 1969"
+  };
+  exports2.evrstSS = {
+    a: 6377298556e-3,
+    rf: 300.8017,
+    ellipseName: "Everest (Sabah & Sarawak)"
+  };
+  exports2.fschr60 = {
+    a: 6378166,
+    rf: 298.3,
+    ellipseName: "Fischer (Mercury Datum) 1960"
+  };
+  exports2.fschr60m = {
+    a: 6378155,
+    rf: 298.3,
+    ellipseName: "Fischer 1960"
+  };
+  exports2.fschr68 = {
+    a: 6378150,
+    rf: 298.3,
+    ellipseName: "Fischer 1968"
+  };
+  exports2.helmert = {
+    a: 6378200,
+    rf: 298.3,
+    ellipseName: "Helmert 1906"
+  };
+  exports2.hough = {
+    a: 6378270,
+    rf: 297,
+    ellipseName: "Hough"
+  };
+  exports2.intl = {
+    a: 6378388,
+    rf: 297,
+    ellipseName: "International 1909 (Hayford)"
+  };
+  exports2.kaula = {
+    a: 6378163,
+    rf: 298.24,
+    ellipseName: "Kaula 1961"
+  };
+  exports2.lerch = {
+    a: 6378139,
+    rf: 298.257,
+    ellipseName: "Lerch 1979"
+  };
+  exports2.mprts = {
+    a: 6397300,
+    rf: 191,
+    ellipseName: "Maupertius 1738"
+  };
+  exports2.new_intl = {
+    a: 63781575e-1,
+    b: 63567722e-1,
+    ellipseName: "New International 1967"
+  };
+  exports2.plessis = {
+    a: 6376523,
+    rf: 6355863,
+    ellipseName: "Plessis 1817 (France)"
+  };
+  exports2.krass = {
+    a: 6378245,
+    rf: 298.3,
+    ellipseName: "Krassovsky, 1942"
+  };
+  exports2.SEasia = {
+    a: 6378155,
+    b: 63567733205e-4,
+    ellipseName: "Southeast Asia"
+  };
+  exports2.walbeck = {
+    a: 6376896,
+    b: 63558348467e-4,
+    ellipseName: "Walbeck"
+  };
+  exports2.WGS60 = {
+    a: 6378165,
+    rf: 298.3,
+    ellipseName: "WGS 60"
+  };
+  exports2.WGS66 = {
+    a: 6378145,
+    rf: 298.25,
+    ellipseName: "WGS 66"
+  };
+  exports2.WGS7 = {
+    a: 6378135,
+    rf: 298.26,
+    ellipseName: "WGS 72"
+  };
+  var WGS84 = exports2.WGS84 = {
+    a: 6378137,
+    rf: 298.257223563,
+    ellipseName: "WGS 84"
+  };
+  exports2.sphere = {
+    a: 6370997,
+    b: 6370997,
+    ellipseName: "Normal Sphere (r=6370997)"
+  };
+
+  // ../../node_modules/proj4/lib/deriveConstants.js
+  function eccentricity(a, b, rf, R_A) {
+    var a2 = a * a;
+    var b2 = b * b;
+    var es = (a2 - b2) / a2;
+    var e = 0;
+    if (R_A) {
+      a *= 1 - es * (SIXTH + es * (RA4 + es * RA6));
+      a2 = a * a;
+      es = 0;
+    } else {
+      e = Math.sqrt(es);
+    }
+    var ep2 = (a2 - b2) / b2;
+    return {
+      es,
+      e,
+      ep2
+    };
+  }
+  function sphere(a, b, rf, ellps, sphere2) {
+    if (!a) {
+      var ellipse = match(exports2, ellps);
+      if (!ellipse) {
+        ellipse = WGS84;
+      }
+      a = ellipse.a;
+      b = ellipse.b;
+      rf = ellipse.rf;
+    }
+    if (rf && !b) {
+      b = (1 - 1 / rf) * a;
+    }
+    if (rf === 0 || Math.abs(a - b) < EPSLN) {
+      sphere2 = true;
+      b = a;
+    }
+    return {
+      a,
+      b,
+      rf,
+      sphere: sphere2
+    };
+  }
+
+  // ../../node_modules/proj4/lib/constants/Datum.js
+  var exports3 = {};
+  exports3.wgs84 = {
+    towgs84: "0,0,0",
+    ellipse: "WGS84",
+    datumName: "WGS84"
+  };
+  exports3.ch1903 = {
+    towgs84: "674.374,15.056,405.346",
+    ellipse: "bessel",
+    datumName: "swiss"
+  };
+  exports3.ggrs87 = {
+    towgs84: "-199.87,74.79,246.62",
+    ellipse: "GRS80",
+    datumName: "Greek_Geodetic_Reference_System_1987"
+  };
+  exports3.nad83 = {
+    towgs84: "0,0,0",
+    ellipse: "GRS80",
+    datumName: "North_American_Datum_1983"
+  };
+  exports3.nad27 = {
+    nadgrids: "@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat",
+    ellipse: "clrk66",
+    datumName: "North_American_Datum_1927"
+  };
+  exports3.potsdam = {
+    towgs84: "606.0,23.0,413.0",
+    ellipse: "bessel",
+    datumName: "Potsdam Rauenberg 1950 DHDN"
+  };
+  exports3.carthage = {
+    towgs84: "-263.0,6.0,431.0",
+    ellipse: "clark80",
+    datumName: "Carthage 1934 Tunisia"
+  };
+  exports3.hermannskogel = {
+    towgs84: "653.0,-212.0,449.0",
+    ellipse: "bessel",
+    datumName: "Hermannskogel"
+  };
+  exports3.osni52 = {
+    towgs84: "482.530,-130.596,564.557,-1.042,-0.214,-0.631,8.15",
+    ellipse: "airy",
+    datumName: "Irish National"
+  };
+  exports3.ire65 = {
+    towgs84: "482.530,-130.596,564.557,-1.042,-0.214,-0.631,8.15",
+    ellipse: "mod_airy",
+    datumName: "Ireland 1965"
+  };
+  exports3.rassadiran = {
+    towgs84: "-133.63,-157.5,-158.62",
+    ellipse: "intl",
+    datumName: "Rassadiran"
+  };
+  exports3.nzgd49 = {
+    towgs84: "59.47,-5.04,187.44,0.47,-0.1,1.024,-4.5993",
+    ellipse: "intl",
+    datumName: "New Zealand Geodetic Datum 1949"
+  };
+  exports3.osgb36 = {
+    towgs84: "446.448,-125.157,542.060,0.1502,0.2470,0.8421,-20.4894",
+    ellipse: "airy",
+    datumName: "Airy 1830"
+  };
+  exports3.s_jtsk = {
+    towgs84: "589,76,480",
+    ellipse: "bessel",
+    datumName: "S-JTSK (Ferro)"
+  };
+  exports3.beduaram = {
+    towgs84: "-106,-87,188",
+    ellipse: "clrk80",
+    datumName: "Beduaram"
+  };
+  exports3.gunung_segara = {
+    towgs84: "-403,684,41",
+    ellipse: "bessel",
+    datumName: "Gunung Segara Jakarta"
+  };
+  exports3.rnb72 = {
+    towgs84: "106.869,-52.2978,103.724,-0.33657,0.456955,-1.84218,1",
+    ellipse: "intl",
+    datumName: "Reseau National Belge 1972"
+  };
+
+  // ../../node_modules/proj4/lib/datum.js
+  function datum(datumCode, datum_params, a, b, es, ep2) {
+    var out = {};
+    if (datumCode === void 0 || datumCode === "none") {
+      out.datum_type = PJD_NODATUM;
+    } else {
+      out.datum_type = PJD_WGS84;
+    }
+    if (datum_params) {
+      out.datum_params = datum_params.map(parseFloat);
+      if (out.datum_params[0] !== 0 || out.datum_params[1] !== 0 || out.datum_params[2] !== 0) {
+        out.datum_type = PJD_3PARAM;
+      }
+      if (out.datum_params.length > 3) {
+        if (out.datum_params[3] !== 0 || out.datum_params[4] !== 0 || out.datum_params[5] !== 0 || out.datum_params[6] !== 0) {
+          out.datum_type = PJD_7PARAM;
+          out.datum_params[3] *= SEC_TO_RAD;
+          out.datum_params[4] *= SEC_TO_RAD;
+          out.datum_params[5] *= SEC_TO_RAD;
+          out.datum_params[6] = out.datum_params[6] / 1e6 + 1;
+        }
+      }
+    }
+    out.a = a;
+    out.b = b;
+    out.es = es;
+    out.ep2 = ep2;
+    return out;
+  }
+  var datum_default = datum;
+
+  // ../../node_modules/proj4/lib/Proj.js
+  function Projection(srsCode, callback) {
+    if (!(this instanceof Projection)) {
+      return new Projection(srsCode);
+    }
+    callback = callback || function(error) {
+      if (error) {
+        throw error;
+      }
+    };
+    var json = parseCode_default(srsCode);
+    if (typeof json !== "object") {
+      callback(srsCode);
+      return;
+    }
+    var ourProj = Projection.projections.get(json.projName);
+    if (!ourProj) {
+      callback(srsCode);
+      return;
+    }
+    if (json.datumCode && json.datumCode !== "none") {
+      var datumDef = match(exports3, json.datumCode);
+      if (datumDef) {
+        json.datum_params = datumDef.towgs84 ? datumDef.towgs84.split(",") : null;
+        json.ellps = datumDef.ellipse;
+        json.datumName = datumDef.datumName ? datumDef.datumName : json.datumCode;
+      }
+    }
+    json.k0 = json.k0 || 1;
+    json.axis = json.axis || "enu";
+    json.ellps = json.ellps || "wgs84";
+    var sphere_ = sphere(json.a, json.b, json.rf, json.ellps, json.sphere);
+    var ecc = eccentricity(sphere_.a, sphere_.b, sphere_.rf, json.R_A);
+    var datumObj = json.datum || datum_default(json.datumCode, json.datum_params, sphere_.a, sphere_.b, ecc.es, ecc.ep2);
+    extend_default(this, json);
+    extend_default(this, ourProj);
+    this.a = sphere_.a;
+    this.b = sphere_.b;
+    this.rf = sphere_.rf;
+    this.sphere = sphere_.sphere;
+    this.es = ecc.es;
+    this.e = ecc.e;
+    this.ep2 = ecc.ep2;
+    this.datum = datumObj;
+    this.init();
+    callback(null, this);
+  }
+  Projection.projections = projections_default;
+  Projection.projections.start();
+  var Proj_default = Projection;
+
+  // ../../node_modules/proj4/lib/datumUtils.js
+  "use strict";
+  function compareDatums(source, dest) {
+    if (source.datum_type !== dest.datum_type) {
+      return false;
+    } else if (source.a !== dest.a || Math.abs(source.es - dest.es) > 5e-11) {
+      return false;
+    } else if (source.datum_type === PJD_3PARAM) {
+      return source.datum_params[0] === dest.datum_params[0] && source.datum_params[1] === dest.datum_params[1] && source.datum_params[2] === dest.datum_params[2];
+    } else if (source.datum_type === PJD_7PARAM) {
+      return source.datum_params[0] === dest.datum_params[0] && source.datum_params[1] === dest.datum_params[1] && source.datum_params[2] === dest.datum_params[2] && source.datum_params[3] === dest.datum_params[3] && source.datum_params[4] === dest.datum_params[4] && source.datum_params[5] === dest.datum_params[5] && source.datum_params[6] === dest.datum_params[6];
+    } else {
+      return true;
+    }
+  }
+  function geodeticToGeocentric(p, es, a) {
+    var Longitude = p.x;
+    var Latitude = p.y;
+    var Height = p.z ? p.z : 0;
+    var Rn;
+    var Sin_Lat;
+    var Sin2_Lat;
+    var Cos_Lat;
+    if (Latitude < -HALF_PI && Latitude > -1.001 * HALF_PI) {
+      Latitude = -HALF_PI;
+    } else if (Latitude > HALF_PI && Latitude < 1.001 * HALF_PI) {
+      Latitude = HALF_PI;
+    } else if (Latitude < -HALF_PI) {
+      return { x: -Infinity, y: -Infinity, z: p.z };
+    } else if (Latitude > HALF_PI) {
+      return { x: Infinity, y: Infinity, z: p.z };
+    }
+    if (Longitude > Math.PI) {
+      Longitude -= 2 * Math.PI;
+    }
+    Sin_Lat = Math.sin(Latitude);
+    Cos_Lat = Math.cos(Latitude);
+    Sin2_Lat = Sin_Lat * Sin_Lat;
+    Rn = a / Math.sqrt(1 - es * Sin2_Lat);
+    return {
+      x: (Rn + Height) * Cos_Lat * Math.cos(Longitude),
+      y: (Rn + Height) * Cos_Lat * Math.sin(Longitude),
+      z: (Rn * (1 - es) + Height) * Sin_Lat
+    };
+  }
+  function geocentricToGeodetic(p, es, a, b) {
+    var genau = 1e-12;
+    var genau2 = genau * genau;
+    var maxiter = 30;
+    var P;
+    var RR;
+    var CT;
+    var ST;
+    var RX;
+    var RK;
+    var RN;
+    var CPHI0;
+    var SPHI0;
+    var CPHI;
+    var SPHI;
+    var SDPHI;
+    var iter;
+    var X = p.x;
+    var Y = p.y;
+    var Z2 = p.z ? p.z : 0;
+    var Longitude;
+    var Latitude;
+    var Height;
+    P = Math.sqrt(X * X + Y * Y);
+    RR = Math.sqrt(X * X + Y * Y + Z2 * Z2);
+    if (P / a < genau) {
+      Longitude = 0;
+      if (RR / a < genau) {
+        Latitude = HALF_PI;
+        Height = -b;
+        return {
+          x: p.x,
+          y: p.y,
+          z: p.z
+        };
+      }
+    } else {
+      Longitude = Math.atan2(Y, X);
+    }
+    CT = Z2 / RR;
+    ST = P / RR;
+    RX = 1 / Math.sqrt(1 - es * (2 - es) * ST * ST);
+    CPHI0 = ST * (1 - es) * RX;
+    SPHI0 = CT * RX;
+    iter = 0;
+    do {
+      iter++;
+      RN = a / Math.sqrt(1 - es * SPHI0 * SPHI0);
+      Height = P * CPHI0 + Z2 * SPHI0 - RN * (1 - es * SPHI0 * SPHI0);
+      RK = es * RN / (RN + Height);
+      RX = 1 / Math.sqrt(1 - RK * (2 - RK) * ST * ST);
+      CPHI = ST * (1 - RK) * RX;
+      SPHI = CT * RX;
+      SDPHI = SPHI * CPHI0 - CPHI * SPHI0;
+      CPHI0 = CPHI;
+      SPHI0 = SPHI;
+    } while (SDPHI * SDPHI > genau2 && iter < maxiter);
+    Latitude = Math.atan(SPHI / Math.abs(CPHI));
+    return {
+      x: Longitude,
+      y: Latitude,
+      z: Height
+    };
+  }
+  function geocentricToWgs84(p, datum_type, datum_params) {
+    if (datum_type === PJD_3PARAM) {
+      return {
+        x: p.x + datum_params[0],
+        y: p.y + datum_params[1],
+        z: p.z + datum_params[2]
+      };
+    } else if (datum_type === PJD_7PARAM) {
+      var Dx_BF = datum_params[0];
+      var Dy_BF = datum_params[1];
+      var Dz_BF = datum_params[2];
+      var Rx_BF = datum_params[3];
+      var Ry_BF = datum_params[4];
+      var Rz_BF = datum_params[5];
+      var M_BF = datum_params[6];
+      return {
+        x: M_BF * (p.x - Rz_BF * p.y + Ry_BF * p.z) + Dx_BF,
+        y: M_BF * (Rz_BF * p.x + p.y - Rx_BF * p.z) + Dy_BF,
+        z: M_BF * (-Ry_BF * p.x + Rx_BF * p.y + p.z) + Dz_BF
+      };
+    }
+  }
+  function geocentricFromWgs84(p, datum_type, datum_params) {
+    if (datum_type === PJD_3PARAM) {
+      return {
+        x: p.x - datum_params[0],
+        y: p.y - datum_params[1],
+        z: p.z - datum_params[2]
+      };
+    } else if (datum_type === PJD_7PARAM) {
+      var Dx_BF = datum_params[0];
+      var Dy_BF = datum_params[1];
+      var Dz_BF = datum_params[2];
+      var Rx_BF = datum_params[3];
+      var Ry_BF = datum_params[4];
+      var Rz_BF = datum_params[5];
+      var M_BF = datum_params[6];
+      var x_tmp = (p.x - Dx_BF) / M_BF;
+      var y_tmp = (p.y - Dy_BF) / M_BF;
+      var z_tmp = (p.z - Dz_BF) / M_BF;
+      return {
+        x: x_tmp + Rz_BF * y_tmp - Ry_BF * z_tmp,
+        y: -Rz_BF * x_tmp + y_tmp + Rx_BF * z_tmp,
+        z: Ry_BF * x_tmp - Rx_BF * y_tmp + z_tmp
+      };
+    }
+  }
+
+  // ../../node_modules/proj4/lib/datum_transform.js
+  function checkParams(type) {
+    return type === PJD_3PARAM || type === PJD_7PARAM;
+  }
+  function datum_transform_default(source, dest, point) {
+    if (compareDatums(source, dest)) {
+      return point;
+    }
+    if (source.datum_type === PJD_NODATUM || dest.datum_type === PJD_NODATUM) {
+      return point;
+    }
+    if (source.es === dest.es && source.a === dest.a && !checkParams(source.datum_type) && !checkParams(dest.datum_type)) {
+      return point;
+    }
+    point = geodeticToGeocentric(point, source.es, source.a);
+    if (checkParams(source.datum_type)) {
+      point = geocentricToWgs84(point, source.datum_type, source.datum_params);
+    }
+    if (checkParams(dest.datum_type)) {
+      point = geocentricFromWgs84(point, dest.datum_type, dest.datum_params);
+    }
+    return geocentricToGeodetic(point, dest.es, dest.a, dest.b);
+  }
+
+  // ../../node_modules/proj4/lib/adjust_axis.js
+  function adjust_axis_default(crs, denorm, point) {
+    var xin = point.x, yin = point.y, zin = point.z || 0;
+    var v, t, i;
+    var out = {};
+    for (i = 0; i < 3; i++) {
+      if (denorm && i === 2 && point.z === void 0) {
+        continue;
+      }
+      if (i === 0) {
+        v = xin;
+        if ("ew".indexOf(crs.axis[i]) !== -1) {
+          t = "x";
+        } else {
+          t = "y";
+        }
+      } else if (i === 1) {
+        v = yin;
+        if ("ns".indexOf(crs.axis[i]) !== -1) {
+          t = "y";
+        } else {
+          t = "x";
+        }
+      } else {
+        v = zin;
+        t = "z";
+      }
+      switch (crs.axis[i]) {
+        case "e":
+        case "w":
+        case "n":
+        case "s":
+          out[t] = v;
+          break;
+        case "u":
+          if (point[t] !== void 0) {
+            out.z = v;
+          }
+          break;
+        case "d":
+          if (point[t] !== void 0) {
+            out.z = -v;
+          }
+          break;
+        default:
+          return null;
+      }
+    }
+    return out;
+  }
+
+  // ../../node_modules/proj4/lib/common/toPoint.js
+  function toPoint_default(array) {
+    var out = {
+      x: array[0],
+      y: array[1]
+    };
+    if (array.length > 2) {
+      out.z = array[2];
+    }
+    if (array.length > 3) {
+      out.m = array[3];
+    }
+    return out;
+  }
+
+  // ../../node_modules/proj4/lib/checkSanity.js
+  function checkSanity_default(point) {
+    checkCoord(point.x);
+    checkCoord(point.y);
+  }
+  function checkCoord(num) {
+    if (typeof Number.isFinite === "function") {
+      if (Number.isFinite(num)) {
+        return;
+      }
+      throw new TypeError("coordinates must be finite numbers");
+    }
+    if (typeof num !== "number" || num !== num || !isFinite(num)) {
+      throw new TypeError("coordinates must be finite numbers");
+    }
+  }
+
+  // ../../node_modules/proj4/lib/transform.js
+  function checkNotWGS(source, dest) {
+    return (source.datum.datum_type === PJD_3PARAM || source.datum.datum_type === PJD_7PARAM) && dest.datumCode !== "WGS84" || (dest.datum.datum_type === PJD_3PARAM || dest.datum.datum_type === PJD_7PARAM) && source.datumCode !== "WGS84";
+  }
+  function transform(source, dest, point) {
+    var wgs842;
+    if (Array.isArray(point)) {
+      point = toPoint_default(point);
+    }
+    checkSanity_default(point);
+    if (source.datum && dest.datum && checkNotWGS(source, dest)) {
+      wgs842 = new Proj_default("WGS84");
+      point = transform(source, wgs842, point);
+      source = wgs842;
+    }
+    if (source.axis !== "enu") {
+      point = adjust_axis_default(source, false, point);
+    }
+    if (source.projName === "longlat") {
+      point = {
+        x: point.x * D2R,
+        y: point.y * D2R,
+        z: point.z || 0
+      };
+    } else {
+      if (source.to_meter) {
+        point = {
+          x: point.x * source.to_meter,
+          y: point.y * source.to_meter,
+          z: point.z || 0
+        };
+      }
+      point = source.inverse(point);
+      if (!point) {
+        return;
+      }
+    }
+    if (source.from_greenwich) {
+      point.x += source.from_greenwich;
+    }
+    point = datum_transform_default(source.datum, dest.datum, point);
+    if (dest.from_greenwich) {
+      point = {
+        x: point.x - dest.from_greenwich,
+        y: point.y,
+        z: point.z || 0
+      };
+    }
+    if (dest.projName === "longlat") {
+      point = {
+        x: point.x * R2D,
+        y: point.y * R2D,
+        z: point.z || 0
+      };
+    } else {
+      point = dest.forward(point);
+      if (dest.to_meter) {
+        point = {
+          x: point.x / dest.to_meter,
+          y: point.y / dest.to_meter,
+          z: point.z || 0
+        };
+      }
+    }
+    if (dest.axis !== "enu") {
+      return adjust_axis_default(dest, true, point);
+    }
+    return point;
+  }
+
+  // ../../node_modules/proj4/lib/core.js
+  var wgs84 = Proj_default("WGS84");
+  function transformer(from, to, coords) {
+    var transformedArray, out, keys;
+    if (Array.isArray(coords)) {
+      transformedArray = transform(from, to, coords) || { x: NaN, y: NaN };
+      if (coords.length > 2) {
+        if (typeof from.name !== "undefined" && from.name === "geocent" || typeof to.name !== "undefined" && to.name === "geocent") {
+          if (typeof transformedArray.z === "number") {
+            return [transformedArray.x, transformedArray.y, transformedArray.z].concat(coords.splice(3));
+          } else {
+            return [transformedArray.x, transformedArray.y, coords[2]].concat(coords.splice(3));
+          }
+        } else {
+          return [transformedArray.x, transformedArray.y].concat(coords.splice(2));
+        }
+      } else {
+        return [transformedArray.x, transformedArray.y];
+      }
+    } else {
+      out = transform(from, to, coords);
+      keys = Object.keys(coords);
+      if (keys.length === 2) {
+        return out;
+      }
+      keys.forEach(function(key) {
+        if (typeof from.name !== "undefined" && from.name === "geocent" || typeof to.name !== "undefined" && to.name === "geocent") {
+          if (key === "x" || key === "y" || key === "z") {
+            return;
+          }
+        } else {
+          if (key === "x" || key === "y") {
+            return;
+          }
+        }
+        out[key] = coords[key];
+      });
+      return out;
+    }
+  }
+  function checkProj(item) {
+    if (item instanceof Proj_default) {
+      return item;
+    }
+    if (item.oProj) {
+      return item.oProj;
+    }
+    return Proj_default(item);
+  }
+  function proj4(fromProj, toProj, coord) {
+    fromProj = checkProj(fromProj);
+    var single = false;
+    var obj;
+    if (typeof toProj === "undefined") {
+      toProj = fromProj;
+      fromProj = wgs84;
+      single = true;
+    } else if (typeof toProj.x !== "undefined" || Array.isArray(toProj)) {
+      coord = toProj;
+      toProj = fromProj;
+      fromProj = wgs84;
+      single = true;
+    }
+    toProj = checkProj(toProj);
+    if (coord) {
+      return transformer(fromProj, toProj, coord);
+    } else {
+      obj = {
+        forward: function(coords) {
+          return transformer(fromProj, toProj, coords);
+        },
+        inverse: function(coords) {
+          return transformer(toProj, fromProj, coords);
+        }
+      };
+      if (single) {
+        obj.oProj = toProj;
+      }
+      return obj;
+    }
+  }
+  var core_default = proj4;
+
+  // ../../node_modules/mgrs/mgrs.js
+  var NUM_100K_SETS = 6;
+  var SET_ORIGIN_COLUMN_LETTERS = "AJSAJS";
+  var SET_ORIGIN_ROW_LETTERS = "AFAFAF";
+  var A = 65;
+  var I = 73;
+  var O = 79;
+  var V = 86;
+  var Z = 90;
+  var mgrs_default = {
+    forward: forward2,
+    inverse: inverse2,
+    toPoint
+  };
+  function forward2(ll, accuracy) {
+    accuracy = accuracy || 5;
+    return encode(LLtoUTM({
+      lat: ll[1],
+      lon: ll[0]
+    }), accuracy);
+  }
+  function inverse2(mgrs) {
+    var bbox = UTMtoLL(decode(mgrs.toUpperCase()));
+    if (bbox.lat && bbox.lon) {
+      return [bbox.lon, bbox.lat, bbox.lon, bbox.lat];
+    }
+    return [bbox.left, bbox.bottom, bbox.right, bbox.top];
+  }
+  function toPoint(mgrs) {
+    var bbox = UTMtoLL(decode(mgrs.toUpperCase()));
+    if (bbox.lat && bbox.lon) {
+      return [bbox.lon, bbox.lat];
+    }
+    return [(bbox.left + bbox.right) / 2, (bbox.top + bbox.bottom) / 2];
+  }
+  function degToRad(deg) {
+    return deg * (Math.PI / 180);
+  }
+  function radToDeg(rad) {
+    return 180 * (rad / Math.PI);
+  }
+  function LLtoUTM(ll) {
+    var Lat = ll.lat;
+    var Long = ll.lon;
+    var a = 6378137;
+    var eccSquared = 669438e-8;
+    var k0 = 0.9996;
+    var LongOrigin;
+    var eccPrimeSquared;
+    var N, T, C, A2, M;
+    var LatRad = degToRad(Lat);
+    var LongRad = degToRad(Long);
+    var LongOriginRad;
+    var ZoneNumber;
+    ZoneNumber = Math.floor((Long + 180) / 6) + 1;
+    if (Long === 180) {
+      ZoneNumber = 60;
+    }
+    if (Lat >= 56 && Lat < 64 && Long >= 3 && Long < 12) {
+      ZoneNumber = 32;
+    }
+    if (Lat >= 72 && Lat < 84) {
+      if (Long >= 0 && Long < 9) {
+        ZoneNumber = 31;
+      } else if (Long >= 9 && Long < 21) {
+        ZoneNumber = 33;
+      } else if (Long >= 21 && Long < 33) {
+        ZoneNumber = 35;
+      } else if (Long >= 33 && Long < 42) {
+        ZoneNumber = 37;
+      }
+    }
+    LongOrigin = (ZoneNumber - 1) * 6 - 180 + 3;
+    LongOriginRad = degToRad(LongOrigin);
+    eccPrimeSquared = eccSquared / (1 - eccSquared);
+    N = a / Math.sqrt(1 - eccSquared * Math.sin(LatRad) * Math.sin(LatRad));
+    T = Math.tan(LatRad) * Math.tan(LatRad);
+    C = eccPrimeSquared * Math.cos(LatRad) * Math.cos(LatRad);
+    A2 = Math.cos(LatRad) * (LongRad - LongOriginRad);
+    M = a * ((1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * eccSquared * eccSquared * eccSquared / 256) * LatRad - (3 * eccSquared / 8 + 3 * eccSquared * eccSquared / 32 + 45 * eccSquared * eccSquared * eccSquared / 1024) * Math.sin(2 * LatRad) + (15 * eccSquared * eccSquared / 256 + 45 * eccSquared * eccSquared * eccSquared / 1024) * Math.sin(4 * LatRad) - 35 * eccSquared * eccSquared * eccSquared / 3072 * Math.sin(6 * LatRad));
+    var UTMEasting = k0 * N * (A2 + (1 - T + C) * A2 * A2 * A2 / 6 + (5 - 18 * T + T * T + 72 * C - 58 * eccPrimeSquared) * A2 * A2 * A2 * A2 * A2 / 120) + 5e5;
+    var UTMNorthing = k0 * (M + N * Math.tan(LatRad) * (A2 * A2 / 2 + (5 - T + 9 * C + 4 * C * C) * A2 * A2 * A2 * A2 / 24 + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) * A2 * A2 * A2 * A2 * A2 * A2 / 720));
+    if (Lat < 0) {
+      UTMNorthing += 1e7;
+    }
+    return {
+      northing: Math.round(UTMNorthing),
+      easting: Math.round(UTMEasting),
+      zoneNumber: ZoneNumber,
+      zoneLetter: getLetterDesignator(Lat)
+    };
+  }
+  function UTMtoLL(utm) {
+    var UTMNorthing = utm.northing;
+    var UTMEasting = utm.easting;
+    var zoneLetter = utm.zoneLetter;
+    var zoneNumber = utm.zoneNumber;
+    if (zoneNumber < 0 || zoneNumber > 60) {
+      return null;
+    }
+    var k0 = 0.9996;
+    var a = 6378137;
+    var eccSquared = 669438e-8;
+    var eccPrimeSquared;
+    var e1 = (1 - Math.sqrt(1 - eccSquared)) / (1 + Math.sqrt(1 - eccSquared));
+    var N1, T1, C12, R1, D, M;
+    var LongOrigin;
+    var mu, phi1Rad;
+    var x = UTMEasting - 5e5;
+    var y = UTMNorthing;
+    if (zoneLetter < "N") {
+      y -= 1e7;
+    }
+    LongOrigin = (zoneNumber - 1) * 6 - 180 + 3;
+    eccPrimeSquared = eccSquared / (1 - eccSquared);
+    M = y / k0;
+    mu = M / (a * (1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * eccSquared * eccSquared * eccSquared / 256));
+    phi1Rad = mu + (3 * e1 / 2 - 27 * e1 * e1 * e1 / 32) * Math.sin(2 * mu) + (21 * e1 * e1 / 16 - 55 * e1 * e1 * e1 * e1 / 32) * Math.sin(4 * mu) + 151 * e1 * e1 * e1 / 96 * Math.sin(6 * mu);
+    N1 = a / Math.sqrt(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad));
+    T1 = Math.tan(phi1Rad) * Math.tan(phi1Rad);
+    C12 = eccPrimeSquared * Math.cos(phi1Rad) * Math.cos(phi1Rad);
+    R1 = a * (1 - eccSquared) / Math.pow(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad), 1.5);
+    D = x / (N1 * k0);
+    var lat = phi1Rad - N1 * Math.tan(phi1Rad) / R1 * (D * D / 2 - (5 + 3 * T1 + 10 * C12 - 4 * C12 * C12 - 9 * eccPrimeSquared) * D * D * D * D / 24 + (61 + 90 * T1 + 298 * C12 + 45 * T1 * T1 - 252 * eccPrimeSquared - 3 * C12 * C12) * D * D * D * D * D * D / 720);
+    lat = radToDeg(lat);
+    var lon = (D - (1 + 2 * T1 + C12) * D * D * D / 6 + (5 - 2 * C12 + 28 * T1 - 3 * C12 * C12 + 8 * eccPrimeSquared + 24 * T1 * T1) * D * D * D * D * D / 120) / Math.cos(phi1Rad);
+    lon = LongOrigin + radToDeg(lon);
+    var result;
+    if (utm.accuracy) {
+      var topRight = UTMtoLL({
+        northing: utm.northing + utm.accuracy,
+        easting: utm.easting + utm.accuracy,
+        zoneLetter: utm.zoneLetter,
+        zoneNumber: utm.zoneNumber
+      });
+      result = {
+        top: topRight.lat,
+        right: topRight.lon,
+        bottom: lat,
+        left: lon
+      };
+    } else {
+      result = {
+        lat,
+        lon
+      };
+    }
+    return result;
+  }
+  function getLetterDesignator(lat) {
+    var LetterDesignator = "Z";
+    if (84 >= lat && lat >= 72) {
+      LetterDesignator = "X";
+    } else if (72 > lat && lat >= 64) {
+      LetterDesignator = "W";
+    } else if (64 > lat && lat >= 56) {
+      LetterDesignator = "V";
+    } else if (56 > lat && lat >= 48) {
+      LetterDesignator = "U";
+    } else if (48 > lat && lat >= 40) {
+      LetterDesignator = "T";
+    } else if (40 > lat && lat >= 32) {
+      LetterDesignator = "S";
+    } else if (32 > lat && lat >= 24) {
+      LetterDesignator = "R";
+    } else if (24 > lat && lat >= 16) {
+      LetterDesignator = "Q";
+    } else if (16 > lat && lat >= 8) {
+      LetterDesignator = "P";
+    } else if (8 > lat && lat >= 0) {
+      LetterDesignator = "N";
+    } else if (0 > lat && lat >= -8) {
+      LetterDesignator = "M";
+    } else if (-8 > lat && lat >= -16) {
+      LetterDesignator = "L";
+    } else if (-16 > lat && lat >= -24) {
+      LetterDesignator = "K";
+    } else if (-24 > lat && lat >= -32) {
+      LetterDesignator = "J";
+    } else if (-32 > lat && lat >= -40) {
+      LetterDesignator = "H";
+    } else if (-40 > lat && lat >= -48) {
+      LetterDesignator = "G";
+    } else if (-48 > lat && lat >= -56) {
+      LetterDesignator = "F";
+    } else if (-56 > lat && lat >= -64) {
+      LetterDesignator = "E";
+    } else if (-64 > lat && lat >= -72) {
+      LetterDesignator = "D";
+    } else if (-72 > lat && lat >= -80) {
+      LetterDesignator = "C";
+    }
+    return LetterDesignator;
+  }
+  function encode(utm, accuracy) {
+    var seasting = "00000" + utm.easting, snorthing = "00000" + utm.northing;
+    return utm.zoneNumber + utm.zoneLetter + get100kID(utm.easting, utm.northing, utm.zoneNumber) + seasting.substr(seasting.length - 5, accuracy) + snorthing.substr(snorthing.length - 5, accuracy);
+  }
+  function get100kID(easting, northing, zoneNumber) {
+    var setParm = get100kSetForZone(zoneNumber);
+    var setColumn = Math.floor(easting / 1e5);
+    var setRow = Math.floor(northing / 1e5) % 20;
+    return getLetter100kID(setColumn, setRow, setParm);
+  }
+  function get100kSetForZone(i) {
+    var setParm = i % NUM_100K_SETS;
+    if (setParm === 0) {
+      setParm = NUM_100K_SETS;
+    }
+    return setParm;
+  }
+  function getLetter100kID(column, row, parm) {
+    var index = parm - 1;
+    var colOrigin = SET_ORIGIN_COLUMN_LETTERS.charCodeAt(index);
+    var rowOrigin = SET_ORIGIN_ROW_LETTERS.charCodeAt(index);
+    var colInt = colOrigin + column - 1;
+    var rowInt = rowOrigin + row;
+    var rollover = false;
+    if (colInt > Z) {
+      colInt = colInt - Z + A - 1;
+      rollover = true;
+    }
+    if (colInt === I || colOrigin < I && colInt > I || (colInt > I || colOrigin < I) && rollover) {
+      colInt++;
+    }
+    if (colInt === O || colOrigin < O && colInt > O || (colInt > O || colOrigin < O) && rollover) {
+      colInt++;
+      if (colInt === I) {
+        colInt++;
+      }
+    }
+    if (colInt > Z) {
+      colInt = colInt - Z + A - 1;
+    }
+    if (rowInt > V) {
+      rowInt = rowInt - V + A - 1;
+      rollover = true;
+    } else {
+      rollover = false;
+    }
+    if (rowInt === I || rowOrigin < I && rowInt > I || (rowInt > I || rowOrigin < I) && rollover) {
+      rowInt++;
+    }
+    if (rowInt === O || rowOrigin < O && rowInt > O || (rowInt > O || rowOrigin < O) && rollover) {
+      rowInt++;
+      if (rowInt === I) {
+        rowInt++;
+      }
+    }
+    if (rowInt > V) {
+      rowInt = rowInt - V + A - 1;
+    }
+    var twoLetter = String.fromCharCode(colInt) + String.fromCharCode(rowInt);
+    return twoLetter;
+  }
+  function decode(mgrsString) {
+    if (mgrsString && mgrsString.length === 0) {
+      throw "MGRSPoint coverting from nothing";
+    }
+    var length = mgrsString.length;
+    var hunK = null;
+    var sb = "";
+    var testChar;
+    var i = 0;
+    while (!/[A-Z]/.test(testChar = mgrsString.charAt(i))) {
+      if (i >= 2) {
+        throw "MGRSPoint bad conversion from: " + mgrsString;
+      }
+      sb += testChar;
+      i++;
+    }
+    var zoneNumber = parseInt(sb, 10);
+    if (i === 0 || i + 3 > length) {
+      throw "MGRSPoint bad conversion from: " + mgrsString;
+    }
+    var zoneLetter = mgrsString.charAt(i++);
+    if (zoneLetter <= "A" || zoneLetter === "B" || zoneLetter === "Y" || zoneLetter >= "Z" || zoneLetter === "I" || zoneLetter === "O") {
+      throw "MGRSPoint zone letter " + zoneLetter + " not handled: " + mgrsString;
+    }
+    hunK = mgrsString.substring(i, i += 2);
+    var set = get100kSetForZone(zoneNumber);
+    var east100k = getEastingFromChar(hunK.charAt(0), set);
+    var north100k = getNorthingFromChar(hunK.charAt(1), set);
+    while (north100k < getMinNorthing(zoneLetter)) {
+      north100k += 2e6;
+    }
+    var remainder = length - i;
+    if (remainder % 2 !== 0) {
+      throw "MGRSPoint has to have an even number \nof digits after the zone letter and two 100km letters - front \nhalf for easting meters, second half for \nnorthing meters" + mgrsString;
+    }
+    var sep = remainder / 2;
+    var sepEasting = 0;
+    var sepNorthing = 0;
+    var accuracyBonus, sepEastingString, sepNorthingString, easting, northing;
+    if (sep > 0) {
+      accuracyBonus = 1e5 / Math.pow(10, sep);
+      sepEastingString = mgrsString.substring(i, i + sep);
+      sepEasting = parseFloat(sepEastingString) * accuracyBonus;
+      sepNorthingString = mgrsString.substring(i + sep);
+      sepNorthing = parseFloat(sepNorthingString) * accuracyBonus;
+    }
+    easting = sepEasting + east100k;
+    northing = sepNorthing + north100k;
+    return {
+      easting,
+      northing,
+      zoneLetter,
+      zoneNumber,
+      accuracy: accuracyBonus
+    };
+  }
+  function getEastingFromChar(e, set) {
+    var curCol = SET_ORIGIN_COLUMN_LETTERS.charCodeAt(set - 1);
+    var eastingValue = 1e5;
+    var rewindMarker = false;
+    while (curCol !== e.charCodeAt(0)) {
+      curCol++;
+      if (curCol === I) {
+        curCol++;
+      }
+      if (curCol === O) {
+        curCol++;
+      }
+      if (curCol > Z) {
+        if (rewindMarker) {
+          throw "Bad character: " + e;
+        }
+        curCol = A;
+        rewindMarker = true;
+      }
+      eastingValue += 1e5;
+    }
+    return eastingValue;
+  }
+  function getNorthingFromChar(n, set) {
+    if (n > "V") {
+      throw "MGRSPoint given invalid Northing " + n;
+    }
+    var curRow = SET_ORIGIN_ROW_LETTERS.charCodeAt(set - 1);
+    var northingValue = 0;
+    var rewindMarker = false;
+    while (curRow !== n.charCodeAt(0)) {
+      curRow++;
+      if (curRow === I) {
+        curRow++;
+      }
+      if (curRow === O) {
+        curRow++;
+      }
+      if (curRow > V) {
+        if (rewindMarker) {
+          throw "Bad character: " + n;
+        }
+        curRow = A;
+        rewindMarker = true;
+      }
+      northingValue += 1e5;
+    }
+    return northingValue;
+  }
+  function getMinNorthing(zoneLetter) {
+    var northing;
+    switch (zoneLetter) {
+      case "C":
+        northing = 11e5;
+        break;
+      case "D":
+        northing = 2e6;
+        break;
+      case "E":
+        northing = 28e5;
+        break;
+      case "F":
+        northing = 37e5;
+        break;
+      case "G":
+        northing = 46e5;
+        break;
+      case "H":
+        northing = 55e5;
+        break;
+      case "J":
+        northing = 64e5;
+        break;
+      case "K":
+        northing = 73e5;
+        break;
+      case "L":
+        northing = 82e5;
+        break;
+      case "M":
+        northing = 91e5;
+        break;
+      case "N":
+        northing = 0;
+        break;
+      case "P":
+        northing = 8e5;
+        break;
+      case "Q":
+        northing = 17e5;
+        break;
+      case "R":
+        northing = 26e5;
+        break;
+      case "S":
+        northing = 35e5;
+        break;
+      case "T":
+        northing = 44e5;
+        break;
+      case "U":
+        northing = 53e5;
+        break;
+      case "V":
+        northing = 62e5;
+        break;
+      case "W":
+        northing = 7e6;
+        break;
+      case "X":
+        northing = 79e5;
+        break;
+      default:
+        northing = -1;
+    }
+    if (northing >= 0) {
+      return northing;
+    } else {
+      throw "Invalid zone letter: " + zoneLetter;
+    }
+  }
+
+  // ../../node_modules/proj4/lib/Point.js
+  function Point(x, y, z) {
+    if (!(this instanceof Point)) {
+      return new Point(x, y, z);
+    }
+    if (Array.isArray(x)) {
+      this.x = x[0];
+      this.y = x[1];
+      this.z = x[2] || 0;
+    } else if (typeof x === "object") {
+      this.x = x.x;
+      this.y = x.y;
+      this.z = x.z || 0;
+    } else if (typeof x === "string" && typeof y === "undefined") {
+      var coords = x.split(",");
+      this.x = parseFloat(coords[0], 10);
+      this.y = parseFloat(coords[1], 10);
+      this.z = parseFloat(coords[2], 10) || 0;
+    } else {
+      this.x = x;
+      this.y = y;
+      this.z = z || 0;
+    }
+    console.warn("proj4.Point will be removed in version 3, use proj4.toPoint");
+  }
+  Point.fromMGRS = function(mgrsStr) {
+    return new Point(toPoint(mgrsStr));
+  };
+  Point.prototype.toMGRS = function(accuracy) {
+    return forward2([this.x, this.y], accuracy);
+  };
+  var Point_default = Point;
+
+  // ../../node_modules/proj4/lib/common/pj_enfn.js
+  var C00 = 1;
+  var C02 = 0.25;
+  var C04 = 0.046875;
+  var C06 = 0.01953125;
+  var C08 = 0.01068115234375;
+  var C22 = 0.75;
+  var C44 = 0.46875;
+  var C46 = 0.013020833333333334;
+  var C48 = 0.007120768229166667;
+  var C66 = 0.3645833333333333;
+  var C68 = 0.005696614583333333;
+  var C88 = 0.3076171875;
+  function pj_enfn_default(es) {
+    var en = [];
+    en[0] = C00 - es * (C02 + es * (C04 + es * (C06 + es * C08)));
+    en[1] = es * (C22 - es * (C04 + es * (C06 + es * C08)));
+    var t = es * es;
+    en[2] = t * (C44 - es * (C46 + es * C48));
+    t *= es;
+    en[3] = t * (C66 - es * C68);
+    en[4] = t * es * C88;
+    return en;
+  }
+
+  // ../../node_modules/proj4/lib/common/pj_mlfn.js
+  function pj_mlfn_default(phi, sphi, cphi, en) {
+    cphi *= sphi;
+    sphi *= sphi;
+    return en[0] * phi - cphi * (en[1] + sphi * (en[2] + sphi * (en[3] + sphi * en[4])));
+  }
+
+  // ../../node_modules/proj4/lib/common/pj_inv_mlfn.js
+  var MAX_ITER = 20;
+  function pj_inv_mlfn_default(arg, es, en) {
+    var k = 1 / (1 - es);
+    var phi = arg;
+    for (var i = MAX_ITER; i; --i) {
+      var s = Math.sin(phi);
+      var t = 1 - es * s * s;
+      t = (pj_mlfn_default(phi, s, Math.cos(phi), en) - arg) * (t * Math.sqrt(t)) * k;
+      phi -= t;
+      if (Math.abs(t) < EPSLN) {
+        return phi;
+      }
+    }
+    return phi;
+  }
+
+  // ../../node_modules/proj4/lib/projections/tmerc.js
+  function init3() {
+    this.x0 = this.x0 !== void 0 ? this.x0 : 0;
+    this.y0 = this.y0 !== void 0 ? this.y0 : 0;
+    this.long0 = this.long0 !== void 0 ? this.long0 : 0;
+    this.lat0 = this.lat0 !== void 0 ? this.lat0 : 0;
+    if (this.es) {
+      this.en = pj_enfn_default(this.es);
+      this.ml0 = pj_mlfn_default(this.lat0, Math.sin(this.lat0), Math.cos(this.lat0), this.en);
+    }
+  }
+  function forward3(p) {
+    var lon = p.x;
+    var lat = p.y;
+    var delta_lon = adjust_lon_default(lon - this.long0);
+    var con;
+    var x, y;
+    var sin_phi = Math.sin(lat);
+    var cos_phi = Math.cos(lat);
+    if (!this.es) {
+      var b = cos_phi * Math.sin(delta_lon);
+      if (Math.abs(Math.abs(b) - 1) < EPSLN) {
+        return 93;
+      } else {
+        x = 0.5 * this.a * this.k0 * Math.log((1 + b) / (1 - b)) + this.x0;
+        y = cos_phi * Math.cos(delta_lon) / Math.sqrt(1 - Math.pow(b, 2));
+        b = Math.abs(y);
+        if (b >= 1) {
+          if (b - 1 > EPSLN) {
+            return 93;
+          } else {
+            y = 0;
+          }
+        } else {
+          y = Math.acos(y);
+        }
+        if (lat < 0) {
+          y = -y;
+        }
+        y = this.a * this.k0 * (y - this.lat0) + this.y0;
+      }
+    } else {
+      var al = cos_phi * delta_lon;
+      var als = Math.pow(al, 2);
+      var c = this.ep2 * Math.pow(cos_phi, 2);
+      var cs = Math.pow(c, 2);
+      var tq = Math.abs(cos_phi) > EPSLN ? Math.tan(lat) : 0;
+      var t = Math.pow(tq, 2);
+      var ts = Math.pow(t, 2);
+      con = 1 - this.es * Math.pow(sin_phi, 2);
+      al = al / Math.sqrt(con);
+      var ml = pj_mlfn_default(lat, sin_phi, cos_phi, this.en);
+      x = this.a * (this.k0 * al * (1 + als / 6 * (1 - t + c + als / 20 * (5 - 18 * t + ts + 14 * c - 58 * t * c + als / 42 * (61 + 179 * ts - ts * t - 479 * t))))) + this.x0;
+      y = this.a * (this.k0 * (ml - this.ml0 + sin_phi * delta_lon * al / 2 * (1 + als / 12 * (5 - t + 9 * c + 4 * cs + als / 30 * (61 + ts - 58 * t + 270 * c - 330 * t * c + als / 56 * (1385 + 543 * ts - ts * t - 3111 * t)))))) + this.y0;
+    }
+    p.x = x;
+    p.y = y;
+    return p;
+  }
+  function inverse3(p) {
+    var con, phi;
+    var lat, lon;
+    var x = (p.x - this.x0) * (1 / this.a);
+    var y = (p.y - this.y0) * (1 / this.a);
+    if (!this.es) {
+      var f = Math.exp(x / this.k0);
+      var g = 0.5 * (f - 1 / f);
+      var temp = this.lat0 + y / this.k0;
+      var h = Math.cos(temp);
+      con = Math.sqrt((1 - Math.pow(h, 2)) / (1 + Math.pow(g, 2)));
+      lat = Math.asin(con);
+      if (y < 0) {
+        lat = -lat;
+      }
+      if (g === 0 && h === 0) {
+        lon = 0;
+      } else {
+        lon = adjust_lon_default(Math.atan2(g, h) + this.long0);
+      }
+    } else {
+      con = this.ml0 + y / this.k0;
+      phi = pj_inv_mlfn_default(con, this.es, this.en);
+      if (Math.abs(phi) < HALF_PI) {
+        var sin_phi = Math.sin(phi);
+        var cos_phi = Math.cos(phi);
+        var tan_phi = Math.abs(cos_phi) > EPSLN ? Math.tan(phi) : 0;
+        var c = this.ep2 * Math.pow(cos_phi, 2);
+        var cs = Math.pow(c, 2);
+        var t = Math.pow(tan_phi, 2);
+        var ts = Math.pow(t, 2);
+        con = 1 - this.es * Math.pow(sin_phi, 2);
+        var d = x * Math.sqrt(con) / this.k0;
+        var ds = Math.pow(d, 2);
+        con = con * tan_phi;
+        lat = phi - con * ds / (1 - this.es) * 0.5 * (1 - ds / 12 * (5 + 3 * t - 9 * c * t + c - 4 * cs - ds / 30 * (61 + 90 * t - 252 * c * t + 45 * ts + 46 * c - ds / 56 * (1385 + 3633 * t + 4095 * ts + 1574 * ts * t))));
+        lon = adjust_lon_default(this.long0 + d * (1 - ds / 6 * (1 + 2 * t + c - ds / 20 * (5 + 28 * t + 24 * ts + 8 * c * t + 6 * c - ds / 42 * (61 + 662 * t + 1320 * ts + 720 * ts * t)))) / cos_phi);
+      } else {
+        lat = HALF_PI * sign_default(y);
+        lon = 0;
+      }
+    }
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  var names4 = ["Transverse_Mercator", "Transverse Mercator", "tmerc"];
+  var tmerc_default = {
+    init: init3,
+    forward: forward3,
+    inverse: inverse3,
+    names: names4
+  };
+
+  // ../../node_modules/proj4/lib/common/sinh.js
+  function sinh_default(x) {
+    var r = Math.exp(x);
+    r = (r - 1 / r) / 2;
+    return r;
+  }
+
+  // ../../node_modules/proj4/lib/common/hypot.js
+  function hypot_default(x, y) {
+    x = Math.abs(x);
+    y = Math.abs(y);
+    var a = Math.max(x, y);
+    var b = Math.min(x, y) / (a ? a : 1);
+    return a * Math.sqrt(1 + Math.pow(b, 2));
+  }
+
+  // ../../node_modules/proj4/lib/common/log1py.js
+  function log1py_default(x) {
+    var y = 1 + x;
+    var z = y - 1;
+    return z === 0 ? x : x * Math.log(y) / z;
+  }
+
+  // ../../node_modules/proj4/lib/common/asinhy.js
+  function asinhy_default(x) {
+    var y = Math.abs(x);
+    y = log1py_default(y * (1 + y / (hypot_default(1, y) + 1)));
+    return x < 0 ? -y : y;
+  }
+
+  // ../../node_modules/proj4/lib/common/gatg.js
+  function gatg_default(pp, B) {
+    var cos_2B = 2 * Math.cos(2 * B);
+    var i = pp.length - 1;
+    var h1 = pp[i];
+    var h2 = 0;
+    var h;
+    while (--i >= 0) {
+      h = -h2 + cos_2B * h1 + pp[i];
+      h2 = h1;
+      h1 = h;
+    }
+    return B + h * Math.sin(2 * B);
+  }
+
+  // ../../node_modules/proj4/lib/common/clens.js
+  function clens_default(pp, arg_r) {
+    var r = 2 * Math.cos(arg_r);
+    var i = pp.length - 1;
+    var hr1 = pp[i];
+    var hr2 = 0;
+    var hr;
+    while (--i >= 0) {
+      hr = -hr2 + r * hr1 + pp[i];
+      hr2 = hr1;
+      hr1 = hr;
+    }
+    return Math.sin(arg_r) * hr;
+  }
+
+  // ../../node_modules/proj4/lib/common/cosh.js
+  function cosh_default(x) {
+    var r = Math.exp(x);
+    r = (r + 1 / r) / 2;
+    return r;
+  }
+
+  // ../../node_modules/proj4/lib/common/clens_cmplx.js
+  function clens_cmplx_default(pp, arg_r, arg_i) {
+    var sin_arg_r = Math.sin(arg_r);
+    var cos_arg_r = Math.cos(arg_r);
+    var sinh_arg_i = sinh_default(arg_i);
+    var cosh_arg_i = cosh_default(arg_i);
+    var r = 2 * cos_arg_r * cosh_arg_i;
+    var i = -2 * sin_arg_r * sinh_arg_i;
+    var j = pp.length - 1;
+    var hr = pp[j];
+    var hi1 = 0;
+    var hr1 = 0;
+    var hi = 0;
+    var hr2;
+    var hi2;
+    while (--j >= 0) {
+      hr2 = hr1;
+      hi2 = hi1;
+      hr1 = hr;
+      hi1 = hi;
+      hr = -hr2 + r * hr1 - i * hi1 + pp[j];
+      hi = -hi2 + i * hr1 + r * hi1;
+    }
+    r = sin_arg_r * cosh_arg_i;
+    i = cos_arg_r * sinh_arg_i;
+    return [r * hr - i * hi, r * hi + i * hr];
+  }
+
+  // ../../node_modules/proj4/lib/projections/etmerc.js
+  function init4() {
+    if (this.es === void 0 || this.es <= 0) {
+      throw new Error("incorrect elliptical usage");
+    }
+    this.x0 = this.x0 !== void 0 ? this.x0 : 0;
+    this.y0 = this.y0 !== void 0 ? this.y0 : 0;
+    this.long0 = this.long0 !== void 0 ? this.long0 : 0;
+    this.lat0 = this.lat0 !== void 0 ? this.lat0 : 0;
+    this.cgb = [];
+    this.cbg = [];
+    this.utg = [];
+    this.gtu = [];
+    var f = this.es / (1 + Math.sqrt(1 - this.es));
+    var n = f / (2 - f);
+    var np = n;
+    this.cgb[0] = n * (2 + n * (-2 / 3 + n * (-2 + n * (116 / 45 + n * (26 / 45 + n * (-2854 / 675))))));
+    this.cbg[0] = n * (-2 + n * (2 / 3 + n * (4 / 3 + n * (-82 / 45 + n * (32 / 45 + n * (4642 / 4725))))));
+    np = np * n;
+    this.cgb[1] = np * (7 / 3 + n * (-8 / 5 + n * (-227 / 45 + n * (2704 / 315 + n * (2323 / 945)))));
+    this.cbg[1] = np * (5 / 3 + n * (-16 / 15 + n * (-13 / 9 + n * (904 / 315 + n * (-1522 / 945)))));
+    np = np * n;
+    this.cgb[2] = np * (56 / 15 + n * (-136 / 35 + n * (-1262 / 105 + n * (73814 / 2835))));
+    this.cbg[2] = np * (-26 / 15 + n * (34 / 21 + n * (8 / 5 + n * (-12686 / 2835))));
+    np = np * n;
+    this.cgb[3] = np * (4279 / 630 + n * (-332 / 35 + n * (-399572 / 14175)));
+    this.cbg[3] = np * (1237 / 630 + n * (-12 / 5 + n * (-24832 / 14175)));
+    np = np * n;
+    this.cgb[4] = np * (4174 / 315 + n * (-144838 / 6237));
+    this.cbg[4] = np * (-734 / 315 + n * (109598 / 31185));
+    np = np * n;
+    this.cgb[5] = np * (601676 / 22275);
+    this.cbg[5] = np * (444337 / 155925);
+    np = Math.pow(n, 2);
+    this.Qn = this.k0 / (1 + n) * (1 + np * (1 / 4 + np * (1 / 64 + np / 256)));
+    this.utg[0] = n * (-0.5 + n * (2 / 3 + n * (-37 / 96 + n * (1 / 360 + n * (81 / 512 + n * (-96199 / 604800))))));
+    this.gtu[0] = n * (0.5 + n * (-2 / 3 + n * (5 / 16 + n * (41 / 180 + n * (-127 / 288 + n * (7891 / 37800))))));
+    this.utg[1] = np * (-1 / 48 + n * (-1 / 15 + n * (437 / 1440 + n * (-46 / 105 + n * (1118711 / 3870720)))));
+    this.gtu[1] = np * (13 / 48 + n * (-3 / 5 + n * (557 / 1440 + n * (281 / 630 + n * (-1983433 / 1935360)))));
+    np = np * n;
+    this.utg[2] = np * (-17 / 480 + n * (37 / 840 + n * (209 / 4480 + n * (-5569 / 90720))));
+    this.gtu[2] = np * (61 / 240 + n * (-103 / 140 + n * (15061 / 26880 + n * (167603 / 181440))));
+    np = np * n;
+    this.utg[3] = np * (-4397 / 161280 + n * (11 / 504 + n * (830251 / 7257600)));
+    this.gtu[3] = np * (49561 / 161280 + n * (-179 / 168 + n * (6601661 / 7257600)));
+    np = np * n;
+    this.utg[4] = np * (-4583 / 161280 + n * (108847 / 3991680));
+    this.gtu[4] = np * (34729 / 80640 + n * (-3418889 / 1995840));
+    np = np * n;
+    this.utg[5] = np * (-20648693 / 638668800);
+    this.gtu[5] = np * (212378941 / 319334400);
+    var Z2 = gatg_default(this.cbg, this.lat0);
+    this.Zb = -this.Qn * (Z2 + clens_default(this.gtu, 2 * Z2));
+  }
+  function forward4(p) {
+    var Ce = adjust_lon_default(p.x - this.long0);
+    var Cn = p.y;
+    Cn = gatg_default(this.cbg, Cn);
+    var sin_Cn = Math.sin(Cn);
+    var cos_Cn = Math.cos(Cn);
+    var sin_Ce = Math.sin(Ce);
+    var cos_Ce = Math.cos(Ce);
+    Cn = Math.atan2(sin_Cn, cos_Ce * cos_Cn);
+    Ce = Math.atan2(sin_Ce * cos_Cn, hypot_default(sin_Cn, cos_Cn * cos_Ce));
+    Ce = asinhy_default(Math.tan(Ce));
+    var tmp = clens_cmplx_default(this.gtu, 2 * Cn, 2 * Ce);
+    Cn = Cn + tmp[0];
+    Ce = Ce + tmp[1];
+    var x;
+    var y;
+    if (Math.abs(Ce) <= 2.623395162778) {
+      x = this.a * (this.Qn * Ce) + this.x0;
+      y = this.a * (this.Qn * Cn + this.Zb) + this.y0;
+    } else {
+      x = Infinity;
+      y = Infinity;
+    }
+    p.x = x;
+    p.y = y;
+    return p;
+  }
+  function inverse4(p) {
+    var Ce = (p.x - this.x0) * (1 / this.a);
+    var Cn = (p.y - this.y0) * (1 / this.a);
+    Cn = (Cn - this.Zb) / this.Qn;
+    Ce = Ce / this.Qn;
+    var lon;
+    var lat;
+    if (Math.abs(Ce) <= 2.623395162778) {
+      var tmp = clens_cmplx_default(this.utg, 2 * Cn, 2 * Ce);
+      Cn = Cn + tmp[0];
+      Ce = Ce + tmp[1];
+      Ce = Math.atan(sinh_default(Ce));
+      var sin_Cn = Math.sin(Cn);
+      var cos_Cn = Math.cos(Cn);
+      var sin_Ce = Math.sin(Ce);
+      var cos_Ce = Math.cos(Ce);
+      Cn = Math.atan2(sin_Cn * cos_Ce, hypot_default(sin_Ce, cos_Ce * cos_Cn));
+      Ce = Math.atan2(sin_Ce, cos_Ce * cos_Cn);
+      lon = adjust_lon_default(Ce + this.long0);
+      lat = gatg_default(this.cgb, Cn);
+    } else {
+      lon = Infinity;
+      lat = Infinity;
+    }
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  var names5 = ["Extended_Transverse_Mercator", "Extended Transverse Mercator", "etmerc"];
+  var etmerc_default = {
+    init: init4,
+    forward: forward4,
+    inverse: inverse4,
+    names: names5
+  };
+
+  // ../../node_modules/proj4/lib/common/adjust_zone.js
+  function adjust_zone_default(zone, lon) {
+    if (zone === void 0) {
+      zone = Math.floor((adjust_lon_default(lon) + Math.PI) * 30 / Math.PI) + 1;
+      if (zone < 0) {
+        return 0;
+      } else if (zone > 60) {
+        return 60;
+      }
+    }
+    return zone;
+  }
+
+  // ../../node_modules/proj4/lib/projections/utm.js
+  var dependsOn = "etmerc";
+  function init5() {
+    var zone = adjust_zone_default(this.zone, this.long0);
+    if (zone === void 0) {
+      throw new Error("unknown utm zone");
+    }
+    this.lat0 = 0;
+    this.long0 = (6 * Math.abs(zone) - 183) * D2R;
+    this.x0 = 5e5;
+    this.y0 = this.utmSouth ? 1e7 : 0;
+    this.k0 = 0.9996;
+    etmerc_default.init.apply(this);
+    this.forward = etmerc_default.forward;
+    this.inverse = etmerc_default.inverse;
+  }
+  var names6 = ["Universal Transverse Mercator System", "utm"];
+  var utm_default = {
+    init: init5,
+    names: names6,
+    dependsOn
+  };
+
+  // ../../node_modules/proj4/lib/common/srat.js
+  function srat_default(esinp, exp) {
+    return Math.pow((1 - esinp) / (1 + esinp), exp);
+  }
+
+  // ../../node_modules/proj4/lib/projections/gauss.js
+  var MAX_ITER2 = 20;
+  function init6() {
+    var sphi = Math.sin(this.lat0);
+    var cphi = Math.cos(this.lat0);
+    cphi *= cphi;
+    this.rc = Math.sqrt(1 - this.es) / (1 - this.es * sphi * sphi);
+    this.C = Math.sqrt(1 + this.es * cphi * cphi / (1 - this.es));
+    this.phic0 = Math.asin(sphi / this.C);
+    this.ratexp = 0.5 * this.C * this.e;
+    this.K = Math.tan(0.5 * this.phic0 + FORTPI) / (Math.pow(Math.tan(0.5 * this.lat0 + FORTPI), this.C) * srat_default(this.e * sphi, this.ratexp));
+  }
+  function forward5(p) {
+    var lon = p.x;
+    var lat = p.y;
+    p.y = 2 * Math.atan(this.K * Math.pow(Math.tan(0.5 * lat + FORTPI), this.C) * srat_default(this.e * Math.sin(lat), this.ratexp)) - HALF_PI;
+    p.x = this.C * lon;
+    return p;
+  }
+  function inverse5(p) {
+    var DEL_TOL = 1e-14;
+    var lon = p.x / this.C;
+    var lat = p.y;
+    var num = Math.pow(Math.tan(0.5 * lat + FORTPI) / this.K, 1 / this.C);
+    for (var i = MAX_ITER2; i > 0; --i) {
+      lat = 2 * Math.atan(num * srat_default(this.e * Math.sin(p.y), -0.5 * this.e)) - HALF_PI;
+      if (Math.abs(lat - p.y) < DEL_TOL) {
+        break;
+      }
+      p.y = lat;
+    }
+    if (!i) {
+      return null;
+    }
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  var names7 = ["gauss"];
+  var gauss_default = {
+    init: init6,
+    forward: forward5,
+    inverse: inverse5,
+    names: names7
+  };
+
+  // ../../node_modules/proj4/lib/projections/sterea.js
+  function init7() {
+    gauss_default.init.apply(this);
+    if (!this.rc) {
+      return;
+    }
+    this.sinc0 = Math.sin(this.phic0);
+    this.cosc0 = Math.cos(this.phic0);
+    this.R2 = 2 * this.rc;
+    if (!this.title) {
+      this.title = "Oblique Stereographic Alternative";
+    }
+  }
+  function forward6(p) {
+    var sinc, cosc, cosl, k;
+    p.x = adjust_lon_default(p.x - this.long0);
+    gauss_default.forward.apply(this, [p]);
+    sinc = Math.sin(p.y);
+    cosc = Math.cos(p.y);
+    cosl = Math.cos(p.x);
+    k = this.k0 * this.R2 / (1 + this.sinc0 * sinc + this.cosc0 * cosc * cosl);
+    p.x = k * cosc * Math.sin(p.x);
+    p.y = k * (this.cosc0 * sinc - this.sinc0 * cosc * cosl);
+    p.x = this.a * p.x + this.x0;
+    p.y = this.a * p.y + this.y0;
+    return p;
+  }
+  function inverse6(p) {
+    var sinc, cosc, lon, lat, rho;
+    p.x = (p.x - this.x0) / this.a;
+    p.y = (p.y - this.y0) / this.a;
+    p.x /= this.k0;
+    p.y /= this.k0;
+    if (rho = Math.sqrt(p.x * p.x + p.y * p.y)) {
+      var c = 2 * Math.atan2(rho, this.R2);
+      sinc = Math.sin(c);
+      cosc = Math.cos(c);
+      lat = Math.asin(cosc * this.sinc0 + p.y * sinc * this.cosc0 / rho);
+      lon = Math.atan2(p.x * sinc, rho * this.cosc0 * cosc - p.y * this.sinc0 * sinc);
+    } else {
+      lat = this.phic0;
+      lon = 0;
+    }
+    p.x = lon;
+    p.y = lat;
+    gauss_default.inverse.apply(this, [p]);
+    p.x = adjust_lon_default(p.x + this.long0);
+    return p;
+  }
+  var names8 = ["Stereographic_North_Pole", "Oblique_Stereographic", "Polar_Stereographic", "sterea", "Oblique Stereographic Alternative", "Double_Stereographic"];
+  var sterea_default = {
+    init: init7,
+    forward: forward6,
+    inverse: inverse6,
+    names: names8
+  };
+
+  // ../../node_modules/proj4/lib/projections/stere.js
+  function ssfn_(phit, sinphi, eccen) {
+    sinphi *= eccen;
+    return Math.tan(0.5 * (HALF_PI + phit)) * Math.pow((1 - sinphi) / (1 + sinphi), 0.5 * eccen);
+  }
+  function init8() {
+    this.coslat0 = Math.cos(this.lat0);
+    this.sinlat0 = Math.sin(this.lat0);
+    if (this.sphere) {
+      if (this.k0 === 1 && !isNaN(this.lat_ts) && Math.abs(this.coslat0) <= EPSLN) {
+        this.k0 = 0.5 * (1 + sign_default(this.lat0) * Math.sin(this.lat_ts));
+      }
+    } else {
+      if (Math.abs(this.coslat0) <= EPSLN) {
+        if (this.lat0 > 0) {
+          this.con = 1;
+        } else {
+          this.con = -1;
+        }
+      }
+      this.cons = Math.sqrt(Math.pow(1 + this.e, 1 + this.e) * Math.pow(1 - this.e, 1 - this.e));
+      if (this.k0 === 1 && !isNaN(this.lat_ts) && Math.abs(this.coslat0) <= EPSLN) {
+        this.k0 = 0.5 * this.cons * msfnz_default(this.e, Math.sin(this.lat_ts), Math.cos(this.lat_ts)) / tsfnz_default(this.e, this.con * this.lat_ts, this.con * Math.sin(this.lat_ts));
+      }
+      this.ms1 = msfnz_default(this.e, this.sinlat0, this.coslat0);
+      this.X0 = 2 * Math.atan(this.ssfn_(this.lat0, this.sinlat0, this.e)) - HALF_PI;
+      this.cosX0 = Math.cos(this.X0);
+      this.sinX0 = Math.sin(this.X0);
+    }
+  }
+  function forward7(p) {
+    var lon = p.x;
+    var lat = p.y;
+    var sinlat = Math.sin(lat);
+    var coslat = Math.cos(lat);
+    var A2, X, sinX, cosX, ts, rh;
+    var dlon = adjust_lon_default(lon - this.long0);
+    if (Math.abs(Math.abs(lon - this.long0) - Math.PI) <= EPSLN && Math.abs(lat + this.lat0) <= EPSLN) {
+      p.x = NaN;
+      p.y = NaN;
+      return p;
+    }
+    if (this.sphere) {
+      A2 = 2 * this.k0 / (1 + this.sinlat0 * sinlat + this.coslat0 * coslat * Math.cos(dlon));
+      p.x = this.a * A2 * coslat * Math.sin(dlon) + this.x0;
+      p.y = this.a * A2 * (this.coslat0 * sinlat - this.sinlat0 * coslat * Math.cos(dlon)) + this.y0;
+      return p;
+    } else {
+      X = 2 * Math.atan(this.ssfn_(lat, sinlat, this.e)) - HALF_PI;
+      cosX = Math.cos(X);
+      sinX = Math.sin(X);
+      if (Math.abs(this.coslat0) <= EPSLN) {
+        ts = tsfnz_default(this.e, lat * this.con, this.con * sinlat);
+        rh = 2 * this.a * this.k0 * ts / this.cons;
+        p.x = this.x0 + rh * Math.sin(lon - this.long0);
+        p.y = this.y0 - this.con * rh * Math.cos(lon - this.long0);
+        return p;
+      } else if (Math.abs(this.sinlat0) < EPSLN) {
+        A2 = 2 * this.a * this.k0 / (1 + cosX * Math.cos(dlon));
+        p.y = A2 * sinX;
+      } else {
+        A2 = 2 * this.a * this.k0 * this.ms1 / (this.cosX0 * (1 + this.sinX0 * sinX + this.cosX0 * cosX * Math.cos(dlon)));
+        p.y = A2 * (this.cosX0 * sinX - this.sinX0 * cosX * Math.cos(dlon)) + this.y0;
+      }
+      p.x = A2 * cosX * Math.sin(dlon) + this.x0;
+    }
+    return p;
+  }
+  function inverse7(p) {
+    p.x -= this.x0;
+    p.y -= this.y0;
+    var lon, lat, ts, ce, Chi;
+    var rh = Math.sqrt(p.x * p.x + p.y * p.y);
+    if (this.sphere) {
+      var c = 2 * Math.atan(rh / (2 * this.a * this.k0));
+      lon = this.long0;
+      lat = this.lat0;
+      if (rh <= EPSLN) {
+        p.x = lon;
+        p.y = lat;
+        return p;
+      }
+      lat = Math.asin(Math.cos(c) * this.sinlat0 + p.y * Math.sin(c) * this.coslat0 / rh);
+      if (Math.abs(this.coslat0) < EPSLN) {
+        if (this.lat0 > 0) {
+          lon = adjust_lon_default(this.long0 + Math.atan2(p.x, -1 * p.y));
+        } else {
+          lon = adjust_lon_default(this.long0 + Math.atan2(p.x, p.y));
+        }
+      } else {
+        lon = adjust_lon_default(this.long0 + Math.atan2(p.x * Math.sin(c), rh * this.coslat0 * Math.cos(c) - p.y * this.sinlat0 * Math.sin(c)));
+      }
+      p.x = lon;
+      p.y = lat;
+      return p;
+    } else {
+      if (Math.abs(this.coslat0) <= EPSLN) {
+        if (rh <= EPSLN) {
+          lat = this.lat0;
+          lon = this.long0;
+          p.x = lon;
+          p.y = lat;
+          return p;
+        }
+        p.x *= this.con;
+        p.y *= this.con;
+        ts = rh * this.cons / (2 * this.a * this.k0);
+        lat = this.con * phi2z_default(this.e, ts);
+        lon = this.con * adjust_lon_default(this.con * this.long0 + Math.atan2(p.x, -1 * p.y));
+      } else {
+        ce = 2 * Math.atan(rh * this.cosX0 / (2 * this.a * this.k0 * this.ms1));
+        lon = this.long0;
+        if (rh <= EPSLN) {
+          Chi = this.X0;
+        } else {
+          Chi = Math.asin(Math.cos(ce) * this.sinX0 + p.y * Math.sin(ce) * this.cosX0 / rh);
+          lon = adjust_lon_default(this.long0 + Math.atan2(p.x * Math.sin(ce), rh * this.cosX0 * Math.cos(ce) - p.y * this.sinX0 * Math.sin(ce)));
+        }
+        lat = -1 * phi2z_default(this.e, Math.tan(0.5 * (HALF_PI + Chi)));
+      }
+    }
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  var names9 = ["stere", "Stereographic_South_Pole", "Polar Stereographic (variant B)"];
+  var stere_default = {
+    init: init8,
+    forward: forward7,
+    inverse: inverse7,
+    names: names9,
+    ssfn_
+  };
+
+  // ../../node_modules/proj4/lib/projections/somerc.js
+  function init9() {
+    var phy0 = this.lat0;
+    this.lambda0 = this.long0;
+    var sinPhy0 = Math.sin(phy0);
+    var semiMajorAxis = this.a;
+    var invF = this.rf;
+    var flattening = 1 / invF;
+    var e2 = 2 * flattening - Math.pow(flattening, 2);
+    var e = this.e = Math.sqrt(e2);
+    this.R = this.k0 * semiMajorAxis * Math.sqrt(1 - e2) / (1 - e2 * Math.pow(sinPhy0, 2));
+    this.alpha = Math.sqrt(1 + e2 / (1 - e2) * Math.pow(Math.cos(phy0), 4));
+    this.b0 = Math.asin(sinPhy0 / this.alpha);
+    var k1 = Math.log(Math.tan(Math.PI / 4 + this.b0 / 2));
+    var k2 = Math.log(Math.tan(Math.PI / 4 + phy0 / 2));
+    var k3 = Math.log((1 + e * sinPhy0) / (1 - e * sinPhy0));
+    this.K = k1 - this.alpha * k2 + this.alpha * e / 2 * k3;
+  }
+  function forward8(p) {
+    var Sa1 = Math.log(Math.tan(Math.PI / 4 - p.y / 2));
+    var Sa2 = this.e / 2 * Math.log((1 + this.e * Math.sin(p.y)) / (1 - this.e * Math.sin(p.y)));
+    var S = -this.alpha * (Sa1 + Sa2) + this.K;
+    var b = 2 * (Math.atan(Math.exp(S)) - Math.PI / 4);
+    var I2 = this.alpha * (p.x - this.lambda0);
+    var rotI = Math.atan(Math.sin(I2) / (Math.sin(this.b0) * Math.tan(b) + Math.cos(this.b0) * Math.cos(I2)));
+    var rotB = Math.asin(Math.cos(this.b0) * Math.sin(b) - Math.sin(this.b0) * Math.cos(b) * Math.cos(I2));
+    p.y = this.R / 2 * Math.log((1 + Math.sin(rotB)) / (1 - Math.sin(rotB))) + this.y0;
+    p.x = this.R * rotI + this.x0;
+    return p;
+  }
+  function inverse8(p) {
+    var Y = p.x - this.x0;
+    var X = p.y - this.y0;
+    var rotI = Y / this.R;
+    var rotB = 2 * (Math.atan(Math.exp(X / this.R)) - Math.PI / 4);
+    var b = Math.asin(Math.cos(this.b0) * Math.sin(rotB) + Math.sin(this.b0) * Math.cos(rotB) * Math.cos(rotI));
+    var I2 = Math.atan(Math.sin(rotI) / (Math.cos(this.b0) * Math.cos(rotI) - Math.sin(this.b0) * Math.tan(rotB)));
+    var lambda = this.lambda0 + I2 / this.alpha;
+    var S = 0;
+    var phy = b;
+    var prevPhy = -1e3;
+    var iteration = 0;
+    while (Math.abs(phy - prevPhy) > 1e-7) {
+      if (++iteration > 20) {
+        return;
+      }
+      S = 1 / this.alpha * (Math.log(Math.tan(Math.PI / 4 + b / 2)) - this.K) + this.e * Math.log(Math.tan(Math.PI / 4 + Math.asin(this.e * Math.sin(phy)) / 2));
+      prevPhy = phy;
+      phy = 2 * Math.atan(Math.exp(S)) - Math.PI / 2;
+    }
+    p.x = lambda;
+    p.y = phy;
+    return p;
+  }
+  var names10 = ["somerc"];
+  var somerc_default = {
+    init: init9,
+    forward: forward8,
+    inverse: inverse8,
+    names: names10
+  };
+
+  // ../../node_modules/proj4/lib/projections/omerc.js
+  function init10() {
+    this.no_off = this.no_off || false;
+    this.no_rot = this.no_rot || false;
+    if (isNaN(this.k0)) {
+      this.k0 = 1;
+    }
+    var sinlat = Math.sin(this.lat0);
+    var coslat = Math.cos(this.lat0);
+    var con = this.e * sinlat;
+    this.bl = Math.sqrt(1 + this.es / (1 - this.es) * Math.pow(coslat, 4));
+    this.al = this.a * this.bl * this.k0 * Math.sqrt(1 - this.es) / (1 - con * con);
+    var t0 = tsfnz_default(this.e, this.lat0, sinlat);
+    var dl = this.bl / coslat * Math.sqrt((1 - this.es) / (1 - con * con));
+    if (dl * dl < 1) {
+      dl = 1;
+    }
+    var fl;
+    var gl;
+    if (!isNaN(this.longc)) {
+      if (this.lat0 >= 0) {
+        fl = dl + Math.sqrt(dl * dl - 1);
+      } else {
+        fl = dl - Math.sqrt(dl * dl - 1);
+      }
+      this.el = fl * Math.pow(t0, this.bl);
+      gl = 0.5 * (fl - 1 / fl);
+      this.gamma0 = Math.asin(Math.sin(this.alpha) / dl);
+      this.long0 = this.longc - Math.asin(gl * Math.tan(this.gamma0)) / this.bl;
+    } else {
+      var t1 = tsfnz_default(this.e, this.lat1, Math.sin(this.lat1));
+      var t2 = tsfnz_default(this.e, this.lat2, Math.sin(this.lat2));
+      if (this.lat0 >= 0) {
+        this.el = (dl + Math.sqrt(dl * dl - 1)) * Math.pow(t0, this.bl);
+      } else {
+        this.el = (dl - Math.sqrt(dl * dl - 1)) * Math.pow(t0, this.bl);
+      }
+      var hl = Math.pow(t1, this.bl);
+      var ll = Math.pow(t2, this.bl);
+      fl = this.el / hl;
+      gl = 0.5 * (fl - 1 / fl);
+      var jl = (this.el * this.el - ll * hl) / (this.el * this.el + ll * hl);
+      var pl = (ll - hl) / (ll + hl);
+      var dlon12 = adjust_lon_default(this.long1 - this.long2);
+      this.long0 = 0.5 * (this.long1 + this.long2) - Math.atan(jl * Math.tan(0.5 * this.bl * dlon12) / pl) / this.bl;
+      this.long0 = adjust_lon_default(this.long0);
+      var dlon10 = adjust_lon_default(this.long1 - this.long0);
+      this.gamma0 = Math.atan(Math.sin(this.bl * dlon10) / gl);
+      this.alpha = Math.asin(dl * Math.sin(this.gamma0));
+    }
+    if (this.no_off) {
+      this.uc = 0;
+    } else {
+      if (this.lat0 >= 0) {
+        this.uc = this.al / this.bl * Math.atan2(Math.sqrt(dl * dl - 1), Math.cos(this.alpha));
+      } else {
+        this.uc = -1 * this.al / this.bl * Math.atan2(Math.sqrt(dl * dl - 1), Math.cos(this.alpha));
+      }
+    }
+  }
+  function forward9(p) {
+    var lon = p.x;
+    var lat = p.y;
+    var dlon = adjust_lon_default(lon - this.long0);
+    var us, vs;
+    var con;
+    if (Math.abs(Math.abs(lat) - HALF_PI) <= EPSLN) {
+      if (lat > 0) {
+        con = -1;
+      } else {
+        con = 1;
+      }
+      vs = this.al / this.bl * Math.log(Math.tan(FORTPI + con * this.gamma0 * 0.5));
+      us = -1 * con * HALF_PI * this.al / this.bl;
+    } else {
+      var t = tsfnz_default(this.e, lat, Math.sin(lat));
+      var ql = this.el / Math.pow(t, this.bl);
+      var sl = 0.5 * (ql - 1 / ql);
+      var tl = 0.5 * (ql + 1 / ql);
+      var vl = Math.sin(this.bl * dlon);
+      var ul = (sl * Math.sin(this.gamma0) - vl * Math.cos(this.gamma0)) / tl;
+      if (Math.abs(Math.abs(ul) - 1) <= EPSLN) {
+        vs = Number.POSITIVE_INFINITY;
+      } else {
+        vs = 0.5 * this.al * Math.log((1 - ul) / (1 + ul)) / this.bl;
+      }
+      if (Math.abs(Math.cos(this.bl * dlon)) <= EPSLN) {
+        us = this.al * this.bl * dlon;
+      } else {
+        us = this.al * Math.atan2(sl * Math.cos(this.gamma0) + vl * Math.sin(this.gamma0), Math.cos(this.bl * dlon)) / this.bl;
+      }
+    }
+    if (this.no_rot) {
+      p.x = this.x0 + us;
+      p.y = this.y0 + vs;
+    } else {
+      us -= this.uc;
+      p.x = this.x0 + vs * Math.cos(this.alpha) + us * Math.sin(this.alpha);
+      p.y = this.y0 + us * Math.cos(this.alpha) - vs * Math.sin(this.alpha);
+    }
+    return p;
+  }
+  function inverse9(p) {
+    var us, vs;
+    if (this.no_rot) {
+      vs = p.y - this.y0;
+      us = p.x - this.x0;
+    } else {
+      vs = (p.x - this.x0) * Math.cos(this.alpha) - (p.y - this.y0) * Math.sin(this.alpha);
+      us = (p.y - this.y0) * Math.cos(this.alpha) + (p.x - this.x0) * Math.sin(this.alpha);
+      us += this.uc;
+    }
+    var qp = Math.exp(-1 * this.bl * vs / this.al);
+    var sp = 0.5 * (qp - 1 / qp);
+    var tp = 0.5 * (qp + 1 / qp);
+    var vp = Math.sin(this.bl * us / this.al);
+    var up = (vp * Math.cos(this.gamma0) + sp * Math.sin(this.gamma0)) / tp;
+    var ts = Math.pow(this.el / Math.sqrt((1 + up) / (1 - up)), 1 / this.bl);
+    if (Math.abs(up - 1) < EPSLN) {
+      p.x = this.long0;
+      p.y = HALF_PI;
+    } else if (Math.abs(up + 1) < EPSLN) {
+      p.x = this.long0;
+      p.y = -1 * HALF_PI;
+    } else {
+      p.y = phi2z_default(this.e, ts);
+      p.x = adjust_lon_default(this.long0 - Math.atan2(sp * Math.cos(this.gamma0) - vp * Math.sin(this.gamma0), Math.cos(this.bl * us / this.al)) / this.bl);
+    }
+    return p;
+  }
+  var names11 = ["Hotine_Oblique_Mercator", "Hotine Oblique Mercator", "Hotine_Oblique_Mercator_Azimuth_Natural_Origin", "Hotine_Oblique_Mercator_Azimuth_Center", "omerc"];
+  var omerc_default = {
+    init: init10,
+    forward: forward9,
+    inverse: inverse9,
+    names: names11
+  };
+
+  // ../../node_modules/proj4/lib/projections/lcc.js
+  function init11() {
+    if (!this.lat2) {
+      this.lat2 = this.lat1;
+    }
+    if (!this.k0) {
+      this.k0 = 1;
+    }
+    this.x0 = this.x0 || 0;
+    this.y0 = this.y0 || 0;
+    if (Math.abs(this.lat1 + this.lat2) < EPSLN) {
+      return;
+    }
+    var temp = this.b / this.a;
+    this.e = Math.sqrt(1 - temp * temp);
+    var sin1 = Math.sin(this.lat1);
+    var cos1 = Math.cos(this.lat1);
+    var ms1 = msfnz_default(this.e, sin1, cos1);
+    var ts1 = tsfnz_default(this.e, this.lat1, sin1);
+    var sin2 = Math.sin(this.lat2);
+    var cos2 = Math.cos(this.lat2);
+    var ms2 = msfnz_default(this.e, sin2, cos2);
+    var ts2 = tsfnz_default(this.e, this.lat2, sin2);
+    var ts0 = tsfnz_default(this.e, this.lat0, Math.sin(this.lat0));
+    if (Math.abs(this.lat1 - this.lat2) > EPSLN) {
+      this.ns = Math.log(ms1 / ms2) / Math.log(ts1 / ts2);
+    } else {
+      this.ns = sin1;
+    }
+    if (isNaN(this.ns)) {
+      this.ns = sin1;
+    }
+    this.f0 = ms1 / (this.ns * Math.pow(ts1, this.ns));
+    this.rh = this.a * this.f0 * Math.pow(ts0, this.ns);
+    if (!this.title) {
+      this.title = "Lambert Conformal Conic";
+    }
+  }
+  function forward10(p) {
+    var lon = p.x;
+    var lat = p.y;
+    if (Math.abs(2 * Math.abs(lat) - Math.PI) <= EPSLN) {
+      lat = sign_default(lat) * (HALF_PI - 2 * EPSLN);
+    }
+    var con = Math.abs(Math.abs(lat) - HALF_PI);
+    var ts, rh1;
+    if (con > EPSLN) {
+      ts = tsfnz_default(this.e, lat, Math.sin(lat));
+      rh1 = this.a * this.f0 * Math.pow(ts, this.ns);
+    } else {
+      con = lat * this.ns;
+      if (con <= 0) {
+        return null;
+      }
+      rh1 = 0;
+    }
+    var theta = this.ns * adjust_lon_default(lon - this.long0);
+    p.x = this.k0 * (rh1 * Math.sin(theta)) + this.x0;
+    p.y = this.k0 * (this.rh - rh1 * Math.cos(theta)) + this.y0;
+    return p;
+  }
+  function inverse10(p) {
+    var rh1, con, ts;
+    var lat, lon;
+    var x = (p.x - this.x0) / this.k0;
+    var y = this.rh - (p.y - this.y0) / this.k0;
+    if (this.ns > 0) {
+      rh1 = Math.sqrt(x * x + y * y);
+      con = 1;
+    } else {
+      rh1 = -Math.sqrt(x * x + y * y);
+      con = -1;
+    }
+    var theta = 0;
+    if (rh1 !== 0) {
+      theta = Math.atan2(con * x, con * y);
+    }
+    if (rh1 !== 0 || this.ns > 0) {
+      con = 1 / this.ns;
+      ts = Math.pow(rh1 / (this.a * this.f0), con);
+      lat = phi2z_default(this.e, ts);
+      if (lat === -9999) {
+        return null;
+      }
+    } else {
+      lat = -HALF_PI;
+    }
+    lon = adjust_lon_default(theta / this.ns + this.long0);
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  var names12 = ["Lambert Tangential Conformal Conic Projection", "Lambert_Conformal_Conic", "Lambert_Conformal_Conic_2SP", "lcc"];
+  var lcc_default = {
+    init: init11,
+    forward: forward10,
+    inverse: inverse10,
+    names: names12
+  };
+
+  // ../../node_modules/proj4/lib/projections/krovak.js
+  function init12() {
+    this.a = 6377397155e-3;
+    this.es = 0.006674372230614;
+    this.e = Math.sqrt(this.es);
+    if (!this.lat0) {
+      this.lat0 = 0.863937979737193;
+    }
+    if (!this.long0) {
+      this.long0 = 0.7417649320975901 - 0.308341501185665;
+    }
+    if (!this.k0) {
+      this.k0 = 0.9999;
+    }
+    this.s45 = 0.785398163397448;
+    this.s90 = 2 * this.s45;
+    this.fi0 = this.lat0;
+    this.e2 = this.es;
+    this.e = Math.sqrt(this.e2);
+    this.alfa = Math.sqrt(1 + this.e2 * Math.pow(Math.cos(this.fi0), 4) / (1 - this.e2));
+    this.uq = 1.04216856380474;
+    this.u0 = Math.asin(Math.sin(this.fi0) / this.alfa);
+    this.g = Math.pow((1 + this.e * Math.sin(this.fi0)) / (1 - this.e * Math.sin(this.fi0)), this.alfa * this.e / 2);
+    this.k = Math.tan(this.u0 / 2 + this.s45) / Math.pow(Math.tan(this.fi0 / 2 + this.s45), this.alfa) * this.g;
+    this.k1 = this.k0;
+    this.n0 = this.a * Math.sqrt(1 - this.e2) / (1 - this.e2 * Math.pow(Math.sin(this.fi0), 2));
+    this.s0 = 1.37008346281555;
+    this.n = Math.sin(this.s0);
+    this.ro0 = this.k1 * this.n0 / Math.tan(this.s0);
+    this.ad = this.s90 - this.uq;
+  }
+  function forward11(p) {
+    var gfi, u, deltav, s, d, eps, ro;
+    var lon = p.x;
+    var lat = p.y;
+    var delta_lon = adjust_lon_default(lon - this.long0);
+    gfi = Math.pow((1 + this.e * Math.sin(lat)) / (1 - this.e * Math.sin(lat)), this.alfa * this.e / 2);
+    u = 2 * (Math.atan(this.k * Math.pow(Math.tan(lat / 2 + this.s45), this.alfa) / gfi) - this.s45);
+    deltav = -delta_lon * this.alfa;
+    s = Math.asin(Math.cos(this.ad) * Math.sin(u) + Math.sin(this.ad) * Math.cos(u) * Math.cos(deltav));
+    d = Math.asin(Math.cos(u) * Math.sin(deltav) / Math.cos(s));
+    eps = this.n * d;
+    ro = this.ro0 * Math.pow(Math.tan(this.s0 / 2 + this.s45), this.n) / Math.pow(Math.tan(s / 2 + this.s45), this.n);
+    p.y = ro * Math.cos(eps) / 1;
+    p.x = ro * Math.sin(eps) / 1;
+    if (!this.czech) {
+      p.y *= -1;
+      p.x *= -1;
+    }
+    return p;
+  }
+  function inverse11(p) {
+    var u, deltav, s, d, eps, ro, fi1;
+    var ok;
+    var tmp = p.x;
+    p.x = p.y;
+    p.y = tmp;
+    if (!this.czech) {
+      p.y *= -1;
+      p.x *= -1;
+    }
+    ro = Math.sqrt(p.x * p.x + p.y * p.y);
+    eps = Math.atan2(p.y, p.x);
+    d = eps / Math.sin(this.s0);
+    s = 2 * (Math.atan(Math.pow(this.ro0 / ro, 1 / this.n) * Math.tan(this.s0 / 2 + this.s45)) - this.s45);
+    u = Math.asin(Math.cos(this.ad) * Math.sin(s) - Math.sin(this.ad) * Math.cos(s) * Math.cos(d));
+    deltav = Math.asin(Math.cos(s) * Math.sin(d) / Math.cos(u));
+    p.x = this.long0 - deltav / this.alfa;
+    fi1 = u;
+    ok = 0;
+    var iter = 0;
+    do {
+      p.y = 2 * (Math.atan(Math.pow(this.k, -1 / this.alfa) * Math.pow(Math.tan(u / 2 + this.s45), 1 / this.alfa) * Math.pow((1 + this.e * Math.sin(fi1)) / (1 - this.e * Math.sin(fi1)), this.e / 2)) - this.s45);
+      if (Math.abs(fi1 - p.y) < 1e-10) {
+        ok = 1;
+      }
+      fi1 = p.y;
+      iter += 1;
+    } while (ok === 0 && iter < 15);
+    if (iter >= 15) {
+      return null;
+    }
+    return p;
+  }
+  var names13 = ["Krovak", "krovak"];
+  var krovak_default = {
+    init: init12,
+    forward: forward11,
+    inverse: inverse11,
+    names: names13
+  };
+
+  // ../../node_modules/proj4/lib/common/mlfn.js
+  function mlfn_default(e0, e1, e2, e3, phi) {
+    return e0 * phi - e1 * Math.sin(2 * phi) + e2 * Math.sin(4 * phi) - e3 * Math.sin(6 * phi);
+  }
+
+  // ../../node_modules/proj4/lib/common/e0fn.js
+  function e0fn_default(x) {
+    return 1 - 0.25 * x * (1 + x / 16 * (3 + 1.25 * x));
+  }
+
+  // ../../node_modules/proj4/lib/common/e1fn.js
+  function e1fn_default(x) {
+    return 0.375 * x * (1 + 0.25 * x * (1 + 0.46875 * x));
+  }
+
+  // ../../node_modules/proj4/lib/common/e2fn.js
+  function e2fn_default(x) {
+    return 0.05859375 * x * x * (1 + 0.75 * x);
+  }
+
+  // ../../node_modules/proj4/lib/common/e3fn.js
+  function e3fn_default(x) {
+    return x * x * x * (35 / 3072);
+  }
+
+  // ../../node_modules/proj4/lib/common/gN.js
+  function gN_default(a, e, sinphi) {
+    var temp = e * sinphi;
+    return a / Math.sqrt(1 - temp * temp);
+  }
+
+  // ../../node_modules/proj4/lib/common/adjust_lat.js
+  function adjust_lat_default(x) {
+    return Math.abs(x) < HALF_PI ? x : x - sign_default(x) * Math.PI;
+  }
+
+  // ../../node_modules/proj4/lib/common/imlfn.js
+  function imlfn_default(ml, e0, e1, e2, e3) {
+    var phi;
+    var dphi;
+    phi = ml / e0;
+    for (var i = 0; i < 15; i++) {
+      dphi = (ml - (e0 * phi - e1 * Math.sin(2 * phi) + e2 * Math.sin(4 * phi) - e3 * Math.sin(6 * phi))) / (e0 - 2 * e1 * Math.cos(2 * phi) + 4 * e2 * Math.cos(4 * phi) - 6 * e3 * Math.cos(6 * phi));
+      phi += dphi;
+      if (Math.abs(dphi) <= 1e-10) {
+        return phi;
+      }
+    }
+    return NaN;
+  }
+
+  // ../../node_modules/proj4/lib/projections/cass.js
+  function init13() {
+    if (!this.sphere) {
+      this.e0 = e0fn_default(this.es);
+      this.e1 = e1fn_default(this.es);
+      this.e2 = e2fn_default(this.es);
+      this.e3 = e3fn_default(this.es);
+      this.ml0 = this.a * mlfn_default(this.e0, this.e1, this.e2, this.e3, this.lat0);
+    }
+  }
+  function forward12(p) {
+    var x, y;
+    var lam = p.x;
+    var phi = p.y;
+    lam = adjust_lon_default(lam - this.long0);
+    if (this.sphere) {
+      x = this.a * Math.asin(Math.cos(phi) * Math.sin(lam));
+      y = this.a * (Math.atan2(Math.tan(phi), Math.cos(lam)) - this.lat0);
+    } else {
+      var sinphi = Math.sin(phi);
+      var cosphi = Math.cos(phi);
+      var nl = gN_default(this.a, this.e, sinphi);
+      var tl = Math.tan(phi) * Math.tan(phi);
+      var al = lam * Math.cos(phi);
+      var asq = al * al;
+      var cl = this.es * cosphi * cosphi / (1 - this.es);
+      var ml = this.a * mlfn_default(this.e0, this.e1, this.e2, this.e3, phi);
+      x = nl * al * (1 - asq * tl * (1 / 6 - (8 - tl + 8 * cl) * asq / 120));
+      y = ml - this.ml0 + nl * sinphi / cosphi * asq * (0.5 + (5 - tl + 6 * cl) * asq / 24);
+    }
+    p.x = x + this.x0;
+    p.y = y + this.y0;
+    return p;
+  }
+  function inverse12(p) {
+    p.x -= this.x0;
+    p.y -= this.y0;
+    var x = p.x / this.a;
+    var y = p.y / this.a;
+    var phi, lam;
+    if (this.sphere) {
+      var dd = y + this.lat0;
+      phi = Math.asin(Math.sin(dd) * Math.cos(x));
+      lam = Math.atan2(Math.tan(x), Math.cos(dd));
+    } else {
+      var ml1 = this.ml0 / this.a + y;
+      var phi1 = imlfn_default(ml1, this.e0, this.e1, this.e2, this.e3);
+      if (Math.abs(Math.abs(phi1) - HALF_PI) <= EPSLN) {
+        p.x = this.long0;
+        p.y = HALF_PI;
+        if (y < 0) {
+          p.y *= -1;
+        }
+        return p;
+      }
+      var nl1 = gN_default(this.a, this.e, Math.sin(phi1));
+      var rl1 = nl1 * nl1 * nl1 / this.a / this.a * (1 - this.es);
+      var tl1 = Math.pow(Math.tan(phi1), 2);
+      var dl = x * this.a / nl1;
+      var dsq = dl * dl;
+      phi = phi1 - nl1 * Math.tan(phi1) / rl1 * dl * dl * (0.5 - (1 + 3 * tl1) * dl * dl / 24);
+      lam = dl * (1 - dsq * (tl1 / 3 + (1 + 3 * tl1) * tl1 * dsq / 15)) / Math.cos(phi1);
+    }
+    p.x = adjust_lon_default(lam + this.long0);
+    p.y = adjust_lat_default(phi);
+    return p;
+  }
+  var names14 = ["Cassini", "Cassini_Soldner", "cass"];
+  var cass_default = {
+    init: init13,
+    forward: forward12,
+    inverse: inverse12,
+    names: names14
+  };
+
+  // ../../node_modules/proj4/lib/common/qsfnz.js
+  function qsfnz_default(eccent, sinphi) {
+    var con;
+    if (eccent > 1e-7) {
+      con = eccent * sinphi;
+      return (1 - eccent * eccent) * (sinphi / (1 - con * con) - 0.5 / eccent * Math.log((1 - con) / (1 + con)));
+    } else {
+      return 2 * sinphi;
+    }
+  }
+
+  // ../../node_modules/proj4/lib/projections/laea.js
+  var S_POLE = 1;
+  var N_POLE = 2;
+  var EQUIT = 3;
+  var OBLIQ = 4;
+  function init14() {
+    var t = Math.abs(this.lat0);
+    if (Math.abs(t - HALF_PI) < EPSLN) {
+      this.mode = this.lat0 < 0 ? this.S_POLE : this.N_POLE;
+    } else if (Math.abs(t) < EPSLN) {
+      this.mode = this.EQUIT;
+    } else {
+      this.mode = this.OBLIQ;
+    }
+    if (this.es > 0) {
+      var sinphi;
+      this.qp = qsfnz_default(this.e, 1);
+      this.mmf = 0.5 / (1 - this.es);
+      this.apa = authset(this.es);
+      switch (this.mode) {
+        case this.N_POLE:
+          this.dd = 1;
+          break;
+        case this.S_POLE:
+          this.dd = 1;
+          break;
+        case this.EQUIT:
+          this.rq = Math.sqrt(0.5 * this.qp);
+          this.dd = 1 / this.rq;
+          this.xmf = 1;
+          this.ymf = 0.5 * this.qp;
+          break;
+        case this.OBLIQ:
+          this.rq = Math.sqrt(0.5 * this.qp);
+          sinphi = Math.sin(this.lat0);
+          this.sinb1 = qsfnz_default(this.e, sinphi) / this.qp;
+          this.cosb1 = Math.sqrt(1 - this.sinb1 * this.sinb1);
+          this.dd = Math.cos(this.lat0) / (Math.sqrt(1 - this.es * sinphi * sinphi) * this.rq * this.cosb1);
+          this.ymf = (this.xmf = this.rq) / this.dd;
+          this.xmf *= this.dd;
+          break;
+      }
+    } else {
+      if (this.mode === this.OBLIQ) {
+        this.sinph0 = Math.sin(this.lat0);
+        this.cosph0 = Math.cos(this.lat0);
+      }
+    }
+  }
+  function forward13(p) {
+    var x, y, coslam, sinlam, sinphi, q, sinb, cosb, b, cosphi;
+    var lam = p.x;
+    var phi = p.y;
+    lam = adjust_lon_default(lam - this.long0);
+    if (this.sphere) {
+      sinphi = Math.sin(phi);
+      cosphi = Math.cos(phi);
+      coslam = Math.cos(lam);
+      if (this.mode === this.OBLIQ || this.mode === this.EQUIT) {
+        y = this.mode === this.EQUIT ? 1 + cosphi * coslam : 1 + this.sinph0 * sinphi + this.cosph0 * cosphi * coslam;
+        if (y <= EPSLN) {
+          return null;
+        }
+        y = Math.sqrt(2 / y);
+        x = y * cosphi * Math.sin(lam);
+        y *= this.mode === this.EQUIT ? sinphi : this.cosph0 * sinphi - this.sinph0 * cosphi * coslam;
+      } else if (this.mode === this.N_POLE || this.mode === this.S_POLE) {
+        if (this.mode === this.N_POLE) {
+          coslam = -coslam;
+        }
+        if (Math.abs(phi + this.lat0) < EPSLN) {
+          return null;
+        }
+        y = FORTPI - phi * 0.5;
+        y = 2 * (this.mode === this.S_POLE ? Math.cos(y) : Math.sin(y));
+        x = y * Math.sin(lam);
+        y *= coslam;
+      }
+    } else {
+      sinb = 0;
+      cosb = 0;
+      b = 0;
+      coslam = Math.cos(lam);
+      sinlam = Math.sin(lam);
+      sinphi = Math.sin(phi);
+      q = qsfnz_default(this.e, sinphi);
+      if (this.mode === this.OBLIQ || this.mode === this.EQUIT) {
+        sinb = q / this.qp;
+        cosb = Math.sqrt(1 - sinb * sinb);
+      }
+      switch (this.mode) {
+        case this.OBLIQ:
+          b = 1 + this.sinb1 * sinb + this.cosb1 * cosb * coslam;
+          break;
+        case this.EQUIT:
+          b = 1 + cosb * coslam;
+          break;
+        case this.N_POLE:
+          b = HALF_PI + phi;
+          q = this.qp - q;
+          break;
+        case this.S_POLE:
+          b = phi - HALF_PI;
+          q = this.qp + q;
+          break;
+      }
+      if (Math.abs(b) < EPSLN) {
+        return null;
+      }
+      switch (this.mode) {
+        case this.OBLIQ:
+        case this.EQUIT:
+          b = Math.sqrt(2 / b);
+          if (this.mode === this.OBLIQ) {
+            y = this.ymf * b * (this.cosb1 * sinb - this.sinb1 * cosb * coslam);
+          } else {
+            y = (b = Math.sqrt(2 / (1 + cosb * coslam))) * sinb * this.ymf;
+          }
+          x = this.xmf * b * cosb * sinlam;
+          break;
+        case this.N_POLE:
+        case this.S_POLE:
+          if (q >= 0) {
+            x = (b = Math.sqrt(q)) * sinlam;
+            y = coslam * (this.mode === this.S_POLE ? b : -b);
+          } else {
+            x = y = 0;
+          }
+          break;
+      }
+    }
+    p.x = this.a * x + this.x0;
+    p.y = this.a * y + this.y0;
+    return p;
+  }
+  function inverse13(p) {
+    p.x -= this.x0;
+    p.y -= this.y0;
+    var x = p.x / this.a;
+    var y = p.y / this.a;
+    var lam, phi, cCe, sCe, q, rho, ab;
+    if (this.sphere) {
+      var cosz = 0, rh, sinz = 0;
+      rh = Math.sqrt(x * x + y * y);
+      phi = rh * 0.5;
+      if (phi > 1) {
+        return null;
+      }
+      phi = 2 * Math.asin(phi);
+      if (this.mode === this.OBLIQ || this.mode === this.EQUIT) {
+        sinz = Math.sin(phi);
+        cosz = Math.cos(phi);
+      }
+      switch (this.mode) {
+        case this.EQUIT:
+          phi = Math.abs(rh) <= EPSLN ? 0 : Math.asin(y * sinz / rh);
+          x *= sinz;
+          y = cosz * rh;
+          break;
+        case this.OBLIQ:
+          phi = Math.abs(rh) <= EPSLN ? this.lat0 : Math.asin(cosz * this.sinph0 + y * sinz * this.cosph0 / rh);
+          x *= sinz * this.cosph0;
+          y = (cosz - Math.sin(phi) * this.sinph0) * rh;
+          break;
+        case this.N_POLE:
+          y = -y;
+          phi = HALF_PI - phi;
+          break;
+        case this.S_POLE:
+          phi -= HALF_PI;
+          break;
+      }
+      lam = y === 0 && (this.mode === this.EQUIT || this.mode === this.OBLIQ) ? 0 : Math.atan2(x, y);
+    } else {
+      ab = 0;
+      if (this.mode === this.OBLIQ || this.mode === this.EQUIT) {
+        x /= this.dd;
+        y *= this.dd;
+        rho = Math.sqrt(x * x + y * y);
+        if (rho < EPSLN) {
+          p.x = this.long0;
+          p.y = this.lat0;
+          return p;
+        }
+        sCe = 2 * Math.asin(0.5 * rho / this.rq);
+        cCe = Math.cos(sCe);
+        x *= sCe = Math.sin(sCe);
+        if (this.mode === this.OBLIQ) {
+          ab = cCe * this.sinb1 + y * sCe * this.cosb1 / rho;
+          q = this.qp * ab;
+          y = rho * this.cosb1 * cCe - y * this.sinb1 * sCe;
+        } else {
+          ab = y * sCe / rho;
+          q = this.qp * ab;
+          y = rho * cCe;
+        }
+      } else if (this.mode === this.N_POLE || this.mode === this.S_POLE) {
+        if (this.mode === this.N_POLE) {
+          y = -y;
+        }
+        q = x * x + y * y;
+        if (!q) {
+          p.x = this.long0;
+          p.y = this.lat0;
+          return p;
+        }
+        ab = 1 - q / this.qp;
+        if (this.mode === this.S_POLE) {
+          ab = -ab;
+        }
+      }
+      lam = Math.atan2(x, y);
+      phi = authlat(Math.asin(ab), this.apa);
+    }
+    p.x = adjust_lon_default(this.long0 + lam);
+    p.y = phi;
+    return p;
+  }
+  var P00 = 0.3333333333333333;
+  var P01 = 0.17222222222222222;
+  var P02 = 0.10257936507936508;
+  var P10 = 0.06388888888888888;
+  var P11 = 0.0664021164021164;
+  var P20 = 0.016415012942191543;
+  function authset(es) {
+    var t;
+    var APA = [];
+    APA[0] = es * P00;
+    t = es * es;
+    APA[0] += t * P01;
+    APA[1] = t * P10;
+    t *= es;
+    APA[0] += t * P02;
+    APA[1] += t * P11;
+    APA[2] = t * P20;
+    return APA;
+  }
+  function authlat(beta, APA) {
+    var t = beta + beta;
+    return beta + APA[0] * Math.sin(t) + APA[1] * Math.sin(t + t) + APA[2] * Math.sin(t + t + t);
+  }
+  var names15 = ["Lambert Azimuthal Equal Area", "Lambert_Azimuthal_Equal_Area", "laea"];
+  var laea_default = {
+    init: init14,
+    forward: forward13,
+    inverse: inverse13,
+    names: names15,
+    S_POLE,
+    N_POLE,
+    EQUIT,
+    OBLIQ
+  };
+
+  // ../../node_modules/proj4/lib/common/asinz.js
+  function asinz_default(x) {
+    if (Math.abs(x) > 1) {
+      x = x > 1 ? 1 : -1;
+    }
+    return Math.asin(x);
+  }
+
+  // ../../node_modules/proj4/lib/projections/aea.js
+  function init15() {
+    if (Math.abs(this.lat1 + this.lat2) < EPSLN) {
+      return;
+    }
+    this.temp = this.b / this.a;
+    this.es = 1 - Math.pow(this.temp, 2);
+    this.e3 = Math.sqrt(this.es);
+    this.sin_po = Math.sin(this.lat1);
+    this.cos_po = Math.cos(this.lat1);
+    this.t1 = this.sin_po;
+    this.con = this.sin_po;
+    this.ms1 = msfnz_default(this.e3, this.sin_po, this.cos_po);
+    this.qs1 = qsfnz_default(this.e3, this.sin_po, this.cos_po);
+    this.sin_po = Math.sin(this.lat2);
+    this.cos_po = Math.cos(this.lat2);
+    this.t2 = this.sin_po;
+    this.ms2 = msfnz_default(this.e3, this.sin_po, this.cos_po);
+    this.qs2 = qsfnz_default(this.e3, this.sin_po, this.cos_po);
+    this.sin_po = Math.sin(this.lat0);
+    this.cos_po = Math.cos(this.lat0);
+    this.t3 = this.sin_po;
+    this.qs0 = qsfnz_default(this.e3, this.sin_po, this.cos_po);
+    if (Math.abs(this.lat1 - this.lat2) > EPSLN) {
+      this.ns0 = (this.ms1 * this.ms1 - this.ms2 * this.ms2) / (this.qs2 - this.qs1);
+    } else {
+      this.ns0 = this.con;
+    }
+    this.c = this.ms1 * this.ms1 + this.ns0 * this.qs1;
+    this.rh = this.a * Math.sqrt(this.c - this.ns0 * this.qs0) / this.ns0;
+  }
+  function forward14(p) {
+    var lon = p.x;
+    var lat = p.y;
+    this.sin_phi = Math.sin(lat);
+    this.cos_phi = Math.cos(lat);
+    var qs = qsfnz_default(this.e3, this.sin_phi, this.cos_phi);
+    var rh1 = this.a * Math.sqrt(this.c - this.ns0 * qs) / this.ns0;
+    var theta = this.ns0 * adjust_lon_default(lon - this.long0);
+    var x = rh1 * Math.sin(theta) + this.x0;
+    var y = this.rh - rh1 * Math.cos(theta) + this.y0;
+    p.x = x;
+    p.y = y;
+    return p;
+  }
+  function inverse14(p) {
+    var rh1, qs, con, theta, lon, lat;
+    p.x -= this.x0;
+    p.y = this.rh - p.y + this.y0;
+    if (this.ns0 >= 0) {
+      rh1 = Math.sqrt(p.x * p.x + p.y * p.y);
+      con = 1;
+    } else {
+      rh1 = -Math.sqrt(p.x * p.x + p.y * p.y);
+      con = -1;
+    }
+    theta = 0;
+    if (rh1 !== 0) {
+      theta = Math.atan2(con * p.x, con * p.y);
+    }
+    con = rh1 * this.ns0 / this.a;
+    if (this.sphere) {
+      lat = Math.asin((this.c - con * con) / (2 * this.ns0));
+    } else {
+      qs = (this.c - con * con) / this.ns0;
+      lat = this.phi1z(this.e3, qs);
+    }
+    lon = adjust_lon_default(theta / this.ns0 + this.long0);
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  function phi1z(eccent, qs) {
+    var sinphi, cosphi, con, com, dphi;
+    var phi = asinz_default(0.5 * qs);
+    if (eccent < EPSLN) {
+      return phi;
+    }
+    var eccnts = eccent * eccent;
+    for (var i = 1; i <= 25; i++) {
+      sinphi = Math.sin(phi);
+      cosphi = Math.cos(phi);
+      con = eccent * sinphi;
+      com = 1 - con * con;
+      dphi = 0.5 * com * com / cosphi * (qs / (1 - eccnts) - sinphi / com + 0.5 / eccent * Math.log((1 - con) / (1 + con)));
+      phi = phi + dphi;
+      if (Math.abs(dphi) <= 1e-7) {
+        return phi;
+      }
+    }
+    return null;
+  }
+  var names16 = ["Albers_Conic_Equal_Area", "Albers", "aea"];
+  var aea_default = {
+    init: init15,
+    forward: forward14,
+    inverse: inverse14,
+    names: names16,
+    phi1z
+  };
+
+  // ../../node_modules/proj4/lib/projections/gnom.js
+  function init16() {
+    this.sin_p14 = Math.sin(this.lat0);
+    this.cos_p14 = Math.cos(this.lat0);
+    this.infinity_dist = 1e3 * this.a;
+    this.rc = 1;
+  }
+  function forward15(p) {
+    var sinphi, cosphi;
+    var dlon;
+    var coslon;
+    var ksp;
+    var g;
+    var x, y;
+    var lon = p.x;
+    var lat = p.y;
+    dlon = adjust_lon_default(lon - this.long0);
+    sinphi = Math.sin(lat);
+    cosphi = Math.cos(lat);
+    coslon = Math.cos(dlon);
+    g = this.sin_p14 * sinphi + this.cos_p14 * cosphi * coslon;
+    ksp = 1;
+    if (g > 0 || Math.abs(g) <= EPSLN) {
+      x = this.x0 + this.a * ksp * cosphi * Math.sin(dlon) / g;
+      y = this.y0 + this.a * ksp * (this.cos_p14 * sinphi - this.sin_p14 * cosphi * coslon) / g;
+    } else {
+      x = this.x0 + this.infinity_dist * cosphi * Math.sin(dlon);
+      y = this.y0 + this.infinity_dist * (this.cos_p14 * sinphi - this.sin_p14 * cosphi * coslon);
+    }
+    p.x = x;
+    p.y = y;
+    return p;
+  }
+  function inverse15(p) {
+    var rh;
+    var sinc, cosc;
+    var c;
+    var lon, lat;
+    p.x = (p.x - this.x0) / this.a;
+    p.y = (p.y - this.y0) / this.a;
+    p.x /= this.k0;
+    p.y /= this.k0;
+    if (rh = Math.sqrt(p.x * p.x + p.y * p.y)) {
+      c = Math.atan2(rh, this.rc);
+      sinc = Math.sin(c);
+      cosc = Math.cos(c);
+      lat = asinz_default(cosc * this.sin_p14 + p.y * sinc * this.cos_p14 / rh);
+      lon = Math.atan2(p.x * sinc, rh * this.cos_p14 * cosc - p.y * this.sin_p14 * sinc);
+      lon = adjust_lon_default(this.long0 + lon);
+    } else {
+      lat = this.phic0;
+      lon = 0;
+    }
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  var names17 = ["gnom"];
+  var gnom_default = {
+    init: init16,
+    forward: forward15,
+    inverse: inverse15,
+    names: names17
+  };
+
+  // ../../node_modules/proj4/lib/common/iqsfnz.js
+  function iqsfnz_default(eccent, q) {
+    var temp = 1 - (1 - eccent * eccent) / (2 * eccent) * Math.log((1 - eccent) / (1 + eccent));
+    if (Math.abs(Math.abs(q) - temp) < 1e-6) {
+      if (q < 0) {
+        return -1 * HALF_PI;
+      } else {
+        return HALF_PI;
+      }
+    }
+    var phi = Math.asin(0.5 * q);
+    var dphi;
+    var sin_phi;
+    var cos_phi;
+    var con;
+    for (var i = 0; i < 30; i++) {
+      sin_phi = Math.sin(phi);
+      cos_phi = Math.cos(phi);
+      con = eccent * sin_phi;
+      dphi = Math.pow(1 - con * con, 2) / (2 * cos_phi) * (q / (1 - eccent * eccent) - sin_phi / (1 - con * con) + 0.5 / eccent * Math.log((1 - con) / (1 + con)));
+      phi += dphi;
+      if (Math.abs(dphi) <= 1e-10) {
+        return phi;
+      }
+    }
+    return NaN;
+  }
+
+  // ../../node_modules/proj4/lib/projections/cea.js
+  function init17() {
+    if (!this.sphere) {
+      this.k0 = msfnz_default(this.e, Math.sin(this.lat_ts), Math.cos(this.lat_ts));
+    }
+  }
+  function forward16(p) {
+    var lon = p.x;
+    var lat = p.y;
+    var x, y;
+    var dlon = adjust_lon_default(lon - this.long0);
+    if (this.sphere) {
+      x = this.x0 + this.a * dlon * Math.cos(this.lat_ts);
+      y = this.y0 + this.a * Math.sin(lat) / Math.cos(this.lat_ts);
+    } else {
+      var qs = qsfnz_default(this.e, Math.sin(lat));
+      x = this.x0 + this.a * this.k0 * dlon;
+      y = this.y0 + this.a * qs * 0.5 / this.k0;
+    }
+    p.x = x;
+    p.y = y;
+    return p;
+  }
+  function inverse16(p) {
+    p.x -= this.x0;
+    p.y -= this.y0;
+    var lon, lat;
+    if (this.sphere) {
+      lon = adjust_lon_default(this.long0 + p.x / this.a / Math.cos(this.lat_ts));
+      lat = Math.asin(p.y / this.a * Math.cos(this.lat_ts));
+    } else {
+      lat = iqsfnz_default(this.e, 2 * p.y * this.k0 / this.a);
+      lon = adjust_lon_default(this.long0 + p.x / (this.a * this.k0));
+    }
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  var names18 = ["cea"];
+  var cea_default = {
+    init: init17,
+    forward: forward16,
+    inverse: inverse16,
+    names: names18
+  };
+
+  // ../../node_modules/proj4/lib/projections/eqc.js
+  function init18() {
+    this.x0 = this.x0 || 0;
+    this.y0 = this.y0 || 0;
+    this.lat0 = this.lat0 || 0;
+    this.long0 = this.long0 || 0;
+    this.lat_ts = this.lat_ts || 0;
+    this.title = this.title || "Equidistant Cylindrical (Plate Carre)";
+    this.rc = Math.cos(this.lat_ts);
+  }
+  function forward17(p) {
+    var lon = p.x;
+    var lat = p.y;
+    var dlon = adjust_lon_default(lon - this.long0);
+    var dlat = adjust_lat_default(lat - this.lat0);
+    p.x = this.x0 + this.a * dlon * this.rc;
+    p.y = this.y0 + this.a * dlat;
+    return p;
+  }
+  function inverse17(p) {
+    var x = p.x;
+    var y = p.y;
+    p.x = adjust_lon_default(this.long0 + (x - this.x0) / (this.a * this.rc));
+    p.y = adjust_lat_default(this.lat0 + (y - this.y0) / this.a);
+    return p;
+  }
+  var names19 = ["Equirectangular", "Equidistant_Cylindrical", "eqc"];
+  var eqc_default = {
+    init: init18,
+    forward: forward17,
+    inverse: inverse17,
+    names: names19
+  };
+
+  // ../../node_modules/proj4/lib/projections/poly.js
+  var MAX_ITER3 = 20;
+  function init19() {
+    this.temp = this.b / this.a;
+    this.es = 1 - Math.pow(this.temp, 2);
+    this.e = Math.sqrt(this.es);
+    this.e0 = e0fn_default(this.es);
+    this.e1 = e1fn_default(this.es);
+    this.e2 = e2fn_default(this.es);
+    this.e3 = e3fn_default(this.es);
+    this.ml0 = this.a * mlfn_default(this.e0, this.e1, this.e2, this.e3, this.lat0);
+  }
+  function forward18(p) {
+    var lon = p.x;
+    var lat = p.y;
+    var x, y, el;
+    var dlon = adjust_lon_default(lon - this.long0);
+    el = dlon * Math.sin(lat);
+    if (this.sphere) {
+      if (Math.abs(lat) <= EPSLN) {
+        x = this.a * dlon;
+        y = -1 * this.a * this.lat0;
+      } else {
+        x = this.a * Math.sin(el) / Math.tan(lat);
+        y = this.a * (adjust_lat_default(lat - this.lat0) + (1 - Math.cos(el)) / Math.tan(lat));
+      }
+    } else {
+      if (Math.abs(lat) <= EPSLN) {
+        x = this.a * dlon;
+        y = -1 * this.ml0;
+      } else {
+        var nl = gN_default(this.a, this.e, Math.sin(lat)) / Math.tan(lat);
+        x = nl * Math.sin(el);
+        y = this.a * mlfn_default(this.e0, this.e1, this.e2, this.e3, lat) - this.ml0 + nl * (1 - Math.cos(el));
+      }
+    }
+    p.x = x + this.x0;
+    p.y = y + this.y0;
+    return p;
+  }
+  function inverse18(p) {
+    var lon, lat, x, y, i;
+    var al, bl;
+    var phi, dphi;
+    x = p.x - this.x0;
+    y = p.y - this.y0;
+    if (this.sphere) {
+      if (Math.abs(y + this.a * this.lat0) <= EPSLN) {
+        lon = adjust_lon_default(x / this.a + this.long0);
+        lat = 0;
+      } else {
+        al = this.lat0 + y / this.a;
+        bl = x * x / this.a / this.a + al * al;
+        phi = al;
+        var tanphi;
+        for (i = MAX_ITER3; i; --i) {
+          tanphi = Math.tan(phi);
+          dphi = -1 * (al * (phi * tanphi + 1) - phi - 0.5 * (phi * phi + bl) * tanphi) / ((phi - al) / tanphi - 1);
+          phi += dphi;
+          if (Math.abs(dphi) <= EPSLN) {
+            lat = phi;
+            break;
+          }
+        }
+        lon = adjust_lon_default(this.long0 + Math.asin(x * Math.tan(phi) / this.a) / Math.sin(lat));
+      }
+    } else {
+      if (Math.abs(y + this.ml0) <= EPSLN) {
+        lat = 0;
+        lon = adjust_lon_default(this.long0 + x / this.a);
+      } else {
+        al = (this.ml0 + y) / this.a;
+        bl = x * x / this.a / this.a + al * al;
+        phi = al;
+        var cl, mln, mlnp, ma;
+        var con;
+        for (i = MAX_ITER3; i; --i) {
+          con = this.e * Math.sin(phi);
+          cl = Math.sqrt(1 - con * con) * Math.tan(phi);
+          mln = this.a * mlfn_default(this.e0, this.e1, this.e2, this.e3, phi);
+          mlnp = this.e0 - 2 * this.e1 * Math.cos(2 * phi) + 4 * this.e2 * Math.cos(4 * phi) - 6 * this.e3 * Math.cos(6 * phi);
+          ma = mln / this.a;
+          dphi = (al * (cl * ma + 1) - ma - 0.5 * cl * (ma * ma + bl)) / (this.es * Math.sin(2 * phi) * (ma * ma + bl - 2 * al * ma) / (4 * cl) + (al - ma) * (cl * mlnp - 2 / Math.sin(2 * phi)) - mlnp);
+          phi -= dphi;
+          if (Math.abs(dphi) <= EPSLN) {
+            lat = phi;
+            break;
+          }
+        }
+        cl = Math.sqrt(1 - this.es * Math.pow(Math.sin(lat), 2)) * Math.tan(lat);
+        lon = adjust_lon_default(this.long0 + Math.asin(x * cl / this.a) / Math.sin(lat));
+      }
+    }
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  var names20 = ["Polyconic", "poly"];
+  var poly_default = {
+    init: init19,
+    forward: forward18,
+    inverse: inverse18,
+    names: names20
+  };
+
+  // ../../node_modules/proj4/lib/projections/nzmg.js
+  function init20() {
+    this.A = [];
+    this.A[1] = 0.6399175073;
+    this.A[2] = -0.1358797613;
+    this.A[3] = 0.063294409;
+    this.A[4] = -0.02526853;
+    this.A[5] = 0.0117879;
+    this.A[6] = -55161e-7;
+    this.A[7] = 26906e-7;
+    this.A[8] = -1333e-6;
+    this.A[9] = 67e-5;
+    this.A[10] = -34e-5;
+    this.B_re = [];
+    this.B_im = [];
+    this.B_re[1] = 0.7557853228;
+    this.B_im[1] = 0;
+    this.B_re[2] = 0.249204646;
+    this.B_im[2] = 3371507e-9;
+    this.B_re[3] = -1541739e-9;
+    this.B_im[3] = 0.04105856;
+    this.B_re[4] = -0.10162907;
+    this.B_im[4] = 0.01727609;
+    this.B_re[5] = -0.26623489;
+    this.B_im[5] = -0.36249218;
+    this.B_re[6] = -0.6870983;
+    this.B_im[6] = -1.1651967;
+    this.C_re = [];
+    this.C_im = [];
+    this.C_re[1] = 1.3231270439;
+    this.C_im[1] = 0;
+    this.C_re[2] = -0.577245789;
+    this.C_im[2] = -7809598e-9;
+    this.C_re[3] = 0.508307513;
+    this.C_im[3] = -0.112208952;
+    this.C_re[4] = -0.15094762;
+    this.C_im[4] = 0.18200602;
+    this.C_re[5] = 1.01418179;
+    this.C_im[5] = 1.64497696;
+    this.C_re[6] = 1.9660549;
+    this.C_im[6] = 2.5127645;
+    this.D = [];
+    this.D[1] = 1.5627014243;
+    this.D[2] = 0.5185406398;
+    this.D[3] = -0.03333098;
+    this.D[4] = -0.1052906;
+    this.D[5] = -0.0368594;
+    this.D[6] = 7317e-6;
+    this.D[7] = 0.0122;
+    this.D[8] = 394e-5;
+    this.D[9] = -13e-4;
+  }
+  function forward19(p) {
+    var n;
+    var lon = p.x;
+    var lat = p.y;
+    var delta_lat = lat - this.lat0;
+    var delta_lon = lon - this.long0;
+    var d_phi = delta_lat / SEC_TO_RAD * 1e-5;
+    var d_lambda = delta_lon;
+    var d_phi_n = 1;
+    var d_psi = 0;
+    for (n = 1; n <= 10; n++) {
+      d_phi_n = d_phi_n * d_phi;
+      d_psi = d_psi + this.A[n] * d_phi_n;
+    }
+    var th_re = d_psi;
+    var th_im = d_lambda;
+    var th_n_re = 1;
+    var th_n_im = 0;
+    var th_n_re1;
+    var th_n_im1;
+    var z_re = 0;
+    var z_im = 0;
+    for (n = 1; n <= 6; n++) {
+      th_n_re1 = th_n_re * th_re - th_n_im * th_im;
+      th_n_im1 = th_n_im * th_re + th_n_re * th_im;
+      th_n_re = th_n_re1;
+      th_n_im = th_n_im1;
+      z_re = z_re + this.B_re[n] * th_n_re - this.B_im[n] * th_n_im;
+      z_im = z_im + this.B_im[n] * th_n_re + this.B_re[n] * th_n_im;
+    }
+    p.x = z_im * this.a + this.x0;
+    p.y = z_re * this.a + this.y0;
+    return p;
+  }
+  function inverse19(p) {
+    var n;
+    var x = p.x;
+    var y = p.y;
+    var delta_x = x - this.x0;
+    var delta_y = y - this.y0;
+    var z_re = delta_y / this.a;
+    var z_im = delta_x / this.a;
+    var z_n_re = 1;
+    var z_n_im = 0;
+    var z_n_re1;
+    var z_n_im1;
+    var th_re = 0;
+    var th_im = 0;
+    for (n = 1; n <= 6; n++) {
+      z_n_re1 = z_n_re * z_re - z_n_im * z_im;
+      z_n_im1 = z_n_im * z_re + z_n_re * z_im;
+      z_n_re = z_n_re1;
+      z_n_im = z_n_im1;
+      th_re = th_re + this.C_re[n] * z_n_re - this.C_im[n] * z_n_im;
+      th_im = th_im + this.C_im[n] * z_n_re + this.C_re[n] * z_n_im;
+    }
+    for (var i = 0; i < this.iterations; i++) {
+      var th_n_re = th_re;
+      var th_n_im = th_im;
+      var th_n_re1;
+      var th_n_im1;
+      var num_re = z_re;
+      var num_im = z_im;
+      for (n = 2; n <= 6; n++) {
+        th_n_re1 = th_n_re * th_re - th_n_im * th_im;
+        th_n_im1 = th_n_im * th_re + th_n_re * th_im;
+        th_n_re = th_n_re1;
+        th_n_im = th_n_im1;
+        num_re = num_re + (n - 1) * (this.B_re[n] * th_n_re - this.B_im[n] * th_n_im);
+        num_im = num_im + (n - 1) * (this.B_im[n] * th_n_re + this.B_re[n] * th_n_im);
+      }
+      th_n_re = 1;
+      th_n_im = 0;
+      var den_re = this.B_re[1];
+      var den_im = this.B_im[1];
+      for (n = 2; n <= 6; n++) {
+        th_n_re1 = th_n_re * th_re - th_n_im * th_im;
+        th_n_im1 = th_n_im * th_re + th_n_re * th_im;
+        th_n_re = th_n_re1;
+        th_n_im = th_n_im1;
+        den_re = den_re + n * (this.B_re[n] * th_n_re - this.B_im[n] * th_n_im);
+        den_im = den_im + n * (this.B_im[n] * th_n_re + this.B_re[n] * th_n_im);
+      }
+      var den2 = den_re * den_re + den_im * den_im;
+      th_re = (num_re * den_re + num_im * den_im) / den2;
+      th_im = (num_im * den_re - num_re * den_im) / den2;
+    }
+    var d_psi = th_re;
+    var d_lambda = th_im;
+    var d_psi_n = 1;
+    var d_phi = 0;
+    for (n = 1; n <= 9; n++) {
+      d_psi_n = d_psi_n * d_psi;
+      d_phi = d_phi + this.D[n] * d_psi_n;
+    }
+    var lat = this.lat0 + d_phi * SEC_TO_RAD * 1e5;
+    var lon = this.long0 + d_lambda;
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  var names21 = ["New_Zealand_Map_Grid", "nzmg"];
+  var nzmg_default = {
+    init: init20,
+    forward: forward19,
+    inverse: inverse19,
+    names: names21
+  };
+
+  // ../../node_modules/proj4/lib/projections/mill.js
+  function init21() {
+  }
+  function forward20(p) {
+    var lon = p.x;
+    var lat = p.y;
+    var dlon = adjust_lon_default(lon - this.long0);
+    var x = this.x0 + this.a * dlon;
+    var y = this.y0 + this.a * Math.log(Math.tan(Math.PI / 4 + lat / 2.5)) * 1.25;
+    p.x = x;
+    p.y = y;
+    return p;
+  }
+  function inverse20(p) {
+    p.x -= this.x0;
+    p.y -= this.y0;
+    var lon = adjust_lon_default(this.long0 + p.x / this.a);
+    var lat = 2.5 * (Math.atan(Math.exp(0.8 * p.y / this.a)) - Math.PI / 4);
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  var names22 = ["Miller_Cylindrical", "mill"];
+  var mill_default = {
+    init: init21,
+    forward: forward20,
+    inverse: inverse20,
+    names: names22
+  };
+
+  // ../../node_modules/proj4/lib/projections/sinu.js
+  var MAX_ITER4 = 20;
+  function init22() {
+    if (!this.sphere) {
+      this.en = pj_enfn_default(this.es);
+    } else {
+      this.n = 1;
+      this.m = 0;
+      this.es = 0;
+      this.C_y = Math.sqrt((this.m + 1) / this.n);
+      this.C_x = this.C_y / (this.m + 1);
+    }
+  }
+  function forward21(p) {
+    var x, y;
+    var lon = p.x;
+    var lat = p.y;
+    lon = adjust_lon_default(lon - this.long0);
+    if (this.sphere) {
+      if (!this.m) {
+        lat = this.n !== 1 ? Math.asin(this.n * Math.sin(lat)) : lat;
+      } else {
+        var k = this.n * Math.sin(lat);
+        for (var i = MAX_ITER4; i; --i) {
+          var V2 = (this.m * lat + Math.sin(lat) - k) / (this.m + Math.cos(lat));
+          lat -= V2;
+          if (Math.abs(V2) < EPSLN) {
+            break;
+          }
+        }
+      }
+      x = this.a * this.C_x * lon * (this.m + Math.cos(lat));
+      y = this.a * this.C_y * lat;
+    } else {
+      var s = Math.sin(lat);
+      var c = Math.cos(lat);
+      y = this.a * pj_mlfn_default(lat, s, c, this.en);
+      x = this.a * lon * c / Math.sqrt(1 - this.es * s * s);
+    }
+    p.x = x;
+    p.y = y;
+    return p;
+  }
+  function inverse21(p) {
+    var lat, temp, lon, s;
+    p.x -= this.x0;
+    lon = p.x / this.a;
+    p.y -= this.y0;
+    lat = p.y / this.a;
+    if (this.sphere) {
+      lat /= this.C_y;
+      lon = lon / (this.C_x * (this.m + Math.cos(lat)));
+      if (this.m) {
+        lat = asinz_default((this.m * lat + Math.sin(lat)) / this.n);
+      } else if (this.n !== 1) {
+        lat = asinz_default(Math.sin(lat) / this.n);
+      }
+      lon = adjust_lon_default(lon + this.long0);
+      lat = adjust_lat_default(lat);
+    } else {
+      lat = pj_inv_mlfn_default(p.y / this.a, this.es, this.en);
+      s = Math.abs(lat);
+      if (s < HALF_PI) {
+        s = Math.sin(lat);
+        temp = this.long0 + p.x * Math.sqrt(1 - this.es * s * s) / (this.a * Math.cos(lat));
+        lon = adjust_lon_default(temp);
+      } else if (s - EPSLN < HALF_PI) {
+        lon = this.long0;
+      }
+    }
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  var names23 = ["Sinusoidal", "sinu"];
+  var sinu_default = {
+    init: init22,
+    forward: forward21,
+    inverse: inverse21,
+    names: names23
+  };
+
+  // ../../node_modules/proj4/lib/projections/moll.js
+  function init23() {
+  }
+  function forward22(p) {
+    var lon = p.x;
+    var lat = p.y;
+    var delta_lon = adjust_lon_default(lon - this.long0);
+    var theta = lat;
+    var con = Math.PI * Math.sin(lat);
+    while (true) {
+      var delta_theta = -(theta + Math.sin(theta) - con) / (1 + Math.cos(theta));
+      theta += delta_theta;
+      if (Math.abs(delta_theta) < EPSLN) {
+        break;
+      }
+    }
+    theta /= 2;
+    if (Math.PI / 2 - Math.abs(lat) < EPSLN) {
+      delta_lon = 0;
+    }
+    var x = 0.900316316158 * this.a * delta_lon * Math.cos(theta) + this.x0;
+    var y = 1.4142135623731 * this.a * Math.sin(theta) + this.y0;
+    p.x = x;
+    p.y = y;
+    return p;
+  }
+  function inverse22(p) {
+    var theta;
+    var arg;
+    p.x -= this.x0;
+    p.y -= this.y0;
+    arg = p.y / (1.4142135623731 * this.a);
+    if (Math.abs(arg) > 0.999999999999) {
+      arg = 0.999999999999;
+    }
+    theta = Math.asin(arg);
+    var lon = adjust_lon_default(this.long0 + p.x / (0.900316316158 * this.a * Math.cos(theta)));
+    if (lon < -Math.PI) {
+      lon = -Math.PI;
+    }
+    if (lon > Math.PI) {
+      lon = Math.PI;
+    }
+    arg = (2 * theta + Math.sin(2 * theta)) / Math.PI;
+    if (Math.abs(arg) > 1) {
+      arg = 1;
+    }
+    var lat = Math.asin(arg);
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  var names24 = ["Mollweide", "moll"];
+  var moll_default = {
+    init: init23,
+    forward: forward22,
+    inverse: inverse22,
+    names: names24
+  };
+
+  // ../../node_modules/proj4/lib/projections/eqdc.js
+  function init24() {
+    if (Math.abs(this.lat1 + this.lat2) < EPSLN) {
+      return;
+    }
+    this.lat2 = this.lat2 || this.lat1;
+    this.temp = this.b / this.a;
+    this.es = 1 - Math.pow(this.temp, 2);
+    this.e = Math.sqrt(this.es);
+    this.e0 = e0fn_default(this.es);
+    this.e1 = e1fn_default(this.es);
+    this.e2 = e2fn_default(this.es);
+    this.e3 = e3fn_default(this.es);
+    this.sinphi = Math.sin(this.lat1);
+    this.cosphi = Math.cos(this.lat1);
+    this.ms1 = msfnz_default(this.e, this.sinphi, this.cosphi);
+    this.ml1 = mlfn_default(this.e0, this.e1, this.e2, this.e3, this.lat1);
+    if (Math.abs(this.lat1 - this.lat2) < EPSLN) {
+      this.ns = this.sinphi;
+    } else {
+      this.sinphi = Math.sin(this.lat2);
+      this.cosphi = Math.cos(this.lat2);
+      this.ms2 = msfnz_default(this.e, this.sinphi, this.cosphi);
+      this.ml2 = mlfn_default(this.e0, this.e1, this.e2, this.e3, this.lat2);
+      this.ns = (this.ms1 - this.ms2) / (this.ml2 - this.ml1);
+    }
+    this.g = this.ml1 + this.ms1 / this.ns;
+    this.ml0 = mlfn_default(this.e0, this.e1, this.e2, this.e3, this.lat0);
+    this.rh = this.a * (this.g - this.ml0);
+  }
+  function forward23(p) {
+    var lon = p.x;
+    var lat = p.y;
+    var rh1;
+    if (this.sphere) {
+      rh1 = this.a * (this.g - lat);
+    } else {
+      var ml = mlfn_default(this.e0, this.e1, this.e2, this.e3, lat);
+      rh1 = this.a * (this.g - ml);
+    }
+    var theta = this.ns * adjust_lon_default(lon - this.long0);
+    var x = this.x0 + rh1 * Math.sin(theta);
+    var y = this.y0 + this.rh - rh1 * Math.cos(theta);
+    p.x = x;
+    p.y = y;
+    return p;
+  }
+  function inverse23(p) {
+    p.x -= this.x0;
+    p.y = this.rh - p.y + this.y0;
+    var con, rh1, lat, lon;
+    if (this.ns >= 0) {
+      rh1 = Math.sqrt(p.x * p.x + p.y * p.y);
+      con = 1;
+    } else {
+      rh1 = -Math.sqrt(p.x * p.x + p.y * p.y);
+      con = -1;
+    }
+    var theta = 0;
+    if (rh1 !== 0) {
+      theta = Math.atan2(con * p.x, con * p.y);
+    }
+    if (this.sphere) {
+      lon = adjust_lon_default(this.long0 + theta / this.ns);
+      lat = adjust_lat_default(this.g - rh1 / this.a);
+      p.x = lon;
+      p.y = lat;
+      return p;
+    } else {
+      var ml = this.g - rh1 / this.a;
+      lat = imlfn_default(ml, this.e0, this.e1, this.e2, this.e3);
+      lon = adjust_lon_default(this.long0 + theta / this.ns);
+      p.x = lon;
+      p.y = lat;
+      return p;
+    }
+  }
+  var names25 = ["Equidistant_Conic", "eqdc"];
+  var eqdc_default = {
+    init: init24,
+    forward: forward23,
+    inverse: inverse23,
+    names: names25
+  };
+
+  // ../../node_modules/proj4/lib/projections/vandg.js
+  function init25() {
+    this.R = this.a;
+  }
+  function forward24(p) {
+    var lon = p.x;
+    var lat = p.y;
+    var dlon = adjust_lon_default(lon - this.long0);
+    var x, y;
+    if (Math.abs(lat) <= EPSLN) {
+      x = this.x0 + this.R * dlon;
+      y = this.y0;
+    }
+    var theta = asinz_default(2 * Math.abs(lat / Math.PI));
+    if (Math.abs(dlon) <= EPSLN || Math.abs(Math.abs(lat) - HALF_PI) <= EPSLN) {
+      x = this.x0;
+      if (lat >= 0) {
+        y = this.y0 + Math.PI * this.R * Math.tan(0.5 * theta);
+      } else {
+        y = this.y0 + Math.PI * this.R * -Math.tan(0.5 * theta);
+      }
+    }
+    var al = 0.5 * Math.abs(Math.PI / dlon - dlon / Math.PI);
+    var asq = al * al;
+    var sinth = Math.sin(theta);
+    var costh = Math.cos(theta);
+    var g = costh / (sinth + costh - 1);
+    var gsq = g * g;
+    var m = g * (2 / sinth - 1);
+    var msq = m * m;
+    var con = Math.PI * this.R * (al * (g - msq) + Math.sqrt(asq * (g - msq) * (g - msq) - (msq + asq) * (gsq - msq))) / (msq + asq);
+    if (dlon < 0) {
+      con = -con;
+    }
+    x = this.x0 + con;
+    var q = asq + g;
+    con = Math.PI * this.R * (m * q - al * Math.sqrt((msq + asq) * (asq + 1) - q * q)) / (msq + asq);
+    if (lat >= 0) {
+      y = this.y0 + con;
+    } else {
+      y = this.y0 - con;
+    }
+    p.x = x;
+    p.y = y;
+    return p;
+  }
+  function inverse24(p) {
+    var lon, lat;
+    var xx, yy, xys, c1, c2, c3;
+    var a1;
+    var m1;
+    var con;
+    var th1;
+    var d;
+    p.x -= this.x0;
+    p.y -= this.y0;
+    con = Math.PI * this.R;
+    xx = p.x / con;
+    yy = p.y / con;
+    xys = xx * xx + yy * yy;
+    c1 = -Math.abs(yy) * (1 + xys);
+    c2 = c1 - 2 * yy * yy + xx * xx;
+    c3 = -2 * c1 + 1 + 2 * yy * yy + xys * xys;
+    d = yy * yy / c3 + (2 * c2 * c2 * c2 / c3 / c3 / c3 - 9 * c1 * c2 / c3 / c3) / 27;
+    a1 = (c1 - c2 * c2 / 3 / c3) / c3;
+    m1 = 2 * Math.sqrt(-a1 / 3);
+    con = 3 * d / a1 / m1;
+    if (Math.abs(con) > 1) {
+      if (con >= 0) {
+        con = 1;
+      } else {
+        con = -1;
+      }
+    }
+    th1 = Math.acos(con) / 3;
+    if (p.y >= 0) {
+      lat = (-m1 * Math.cos(th1 + Math.PI / 3) - c2 / 3 / c3) * Math.PI;
+    } else {
+      lat = -(-m1 * Math.cos(th1 + Math.PI / 3) - c2 / 3 / c3) * Math.PI;
+    }
+    if (Math.abs(xx) < EPSLN) {
+      lon = this.long0;
+    } else {
+      lon = adjust_lon_default(this.long0 + Math.PI * (xys - 1 + Math.sqrt(1 + 2 * (xx * xx - yy * yy) + xys * xys)) / 2 / xx);
+    }
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  var names26 = ["Van_der_Grinten_I", "VanDerGrinten", "vandg"];
+  var vandg_default = {
+    init: init25,
+    forward: forward24,
+    inverse: inverse24,
+    names: names26
+  };
+
+  // ../../node_modules/proj4/lib/projections/aeqd.js
+  function init26() {
+    this.sin_p12 = Math.sin(this.lat0);
+    this.cos_p12 = Math.cos(this.lat0);
+  }
+  function forward25(p) {
+    var lon = p.x;
+    var lat = p.y;
+    var sinphi = Math.sin(p.y);
+    var cosphi = Math.cos(p.y);
+    var dlon = adjust_lon_default(lon - this.long0);
+    var e0, e1, e2, e3, Mlp, Ml, tanphi, Nl1, Nl, psi, Az, G, H, GH, Hs, c, kp, cos_c, s, s2, s3, s4, s5;
+    if (this.sphere) {
+      if (Math.abs(this.sin_p12 - 1) <= EPSLN) {
+        p.x = this.x0 + this.a * (HALF_PI - lat) * Math.sin(dlon);
+        p.y = this.y0 - this.a * (HALF_PI - lat) * Math.cos(dlon);
+        return p;
+      } else if (Math.abs(this.sin_p12 + 1) <= EPSLN) {
+        p.x = this.x0 + this.a * (HALF_PI + lat) * Math.sin(dlon);
+        p.y = this.y0 + this.a * (HALF_PI + lat) * Math.cos(dlon);
+        return p;
+      } else {
+        cos_c = this.sin_p12 * sinphi + this.cos_p12 * cosphi * Math.cos(dlon);
+        c = Math.acos(cos_c);
+        kp = c ? c / Math.sin(c) : 1;
+        p.x = this.x0 + this.a * kp * cosphi * Math.sin(dlon);
+        p.y = this.y0 + this.a * kp * (this.cos_p12 * sinphi - this.sin_p12 * cosphi * Math.cos(dlon));
+        return p;
+      }
+    } else {
+      e0 = e0fn_default(this.es);
+      e1 = e1fn_default(this.es);
+      e2 = e2fn_default(this.es);
+      e3 = e3fn_default(this.es);
+      if (Math.abs(this.sin_p12 - 1) <= EPSLN) {
+        Mlp = this.a * mlfn_default(e0, e1, e2, e3, HALF_PI);
+        Ml = this.a * mlfn_default(e0, e1, e2, e3, lat);
+        p.x = this.x0 + (Mlp - Ml) * Math.sin(dlon);
+        p.y = this.y0 - (Mlp - Ml) * Math.cos(dlon);
+        return p;
+      } else if (Math.abs(this.sin_p12 + 1) <= EPSLN) {
+        Mlp = this.a * mlfn_default(e0, e1, e2, e3, HALF_PI);
+        Ml = this.a * mlfn_default(e0, e1, e2, e3, lat);
+        p.x = this.x0 + (Mlp + Ml) * Math.sin(dlon);
+        p.y = this.y0 + (Mlp + Ml) * Math.cos(dlon);
+        return p;
+      } else {
+        tanphi = sinphi / cosphi;
+        Nl1 = gN_default(this.a, this.e, this.sin_p12);
+        Nl = gN_default(this.a, this.e, sinphi);
+        psi = Math.atan((1 - this.es) * tanphi + this.es * Nl1 * this.sin_p12 / (Nl * cosphi));
+        Az = Math.atan2(Math.sin(dlon), this.cos_p12 * Math.tan(psi) - this.sin_p12 * Math.cos(dlon));
+        if (Az === 0) {
+          s = Math.asin(this.cos_p12 * Math.sin(psi) - this.sin_p12 * Math.cos(psi));
+        } else if (Math.abs(Math.abs(Az) - Math.PI) <= EPSLN) {
+          s = -Math.asin(this.cos_p12 * Math.sin(psi) - this.sin_p12 * Math.cos(psi));
+        } else {
+          s = Math.asin(Math.sin(dlon) * Math.cos(psi) / Math.sin(Az));
+        }
+        G = this.e * this.sin_p12 / Math.sqrt(1 - this.es);
+        H = this.e * this.cos_p12 * Math.cos(Az) / Math.sqrt(1 - this.es);
+        GH = G * H;
+        Hs = H * H;
+        s2 = s * s;
+        s3 = s2 * s;
+        s4 = s3 * s;
+        s5 = s4 * s;
+        c = Nl1 * s * (1 - s2 * Hs * (1 - Hs) / 6 + s3 / 8 * GH * (1 - 2 * Hs) + s4 / 120 * (Hs * (4 - 7 * Hs) - 3 * G * G * (1 - 7 * Hs)) - s5 / 48 * GH);
+        p.x = this.x0 + c * Math.sin(Az);
+        p.y = this.y0 + c * Math.cos(Az);
+        return p;
+      }
+    }
+  }
+  function inverse25(p) {
+    p.x -= this.x0;
+    p.y -= this.y0;
+    var rh, z, sinz, cosz, lon, lat, con, e0, e1, e2, e3, Mlp, M, N1, psi, Az, cosAz, tmp, A2, B, D, Ee, F, sinpsi;
+    if (this.sphere) {
+      rh = Math.sqrt(p.x * p.x + p.y * p.y);
+      if (rh > 2 * HALF_PI * this.a) {
+        return;
+      }
+      z = rh / this.a;
+      sinz = Math.sin(z);
+      cosz = Math.cos(z);
+      lon = this.long0;
+      if (Math.abs(rh) <= EPSLN) {
+        lat = this.lat0;
+      } else {
+        lat = asinz_default(cosz * this.sin_p12 + p.y * sinz * this.cos_p12 / rh);
+        con = Math.abs(this.lat0) - HALF_PI;
+        if (Math.abs(con) <= EPSLN) {
+          if (this.lat0 >= 0) {
+            lon = adjust_lon_default(this.long0 + Math.atan2(p.x, -p.y));
+          } else {
+            lon = adjust_lon_default(this.long0 - Math.atan2(-p.x, p.y));
+          }
+        } else {
+          lon = adjust_lon_default(this.long0 + Math.atan2(p.x * sinz, rh * this.cos_p12 * cosz - p.y * this.sin_p12 * sinz));
+        }
+      }
+      p.x = lon;
+      p.y = lat;
+      return p;
+    } else {
+      e0 = e0fn_default(this.es);
+      e1 = e1fn_default(this.es);
+      e2 = e2fn_default(this.es);
+      e3 = e3fn_default(this.es);
+      if (Math.abs(this.sin_p12 - 1) <= EPSLN) {
+        Mlp = this.a * mlfn_default(e0, e1, e2, e3, HALF_PI);
+        rh = Math.sqrt(p.x * p.x + p.y * p.y);
+        M = Mlp - rh;
+        lat = imlfn_default(M / this.a, e0, e1, e2, e3);
+        lon = adjust_lon_default(this.long0 + Math.atan2(p.x, -1 * p.y));
+        p.x = lon;
+        p.y = lat;
+        return p;
+      } else if (Math.abs(this.sin_p12 + 1) <= EPSLN) {
+        Mlp = this.a * mlfn_default(e0, e1, e2, e3, HALF_PI);
+        rh = Math.sqrt(p.x * p.x + p.y * p.y);
+        M = rh - Mlp;
+        lat = imlfn_default(M / this.a, e0, e1, e2, e3);
+        lon = adjust_lon_default(this.long0 + Math.atan2(p.x, p.y));
+        p.x = lon;
+        p.y = lat;
+        return p;
+      } else {
+        rh = Math.sqrt(p.x * p.x + p.y * p.y);
+        Az = Math.atan2(p.x, p.y);
+        N1 = gN_default(this.a, this.e, this.sin_p12);
+        cosAz = Math.cos(Az);
+        tmp = this.e * this.cos_p12 * cosAz;
+        A2 = -tmp * tmp / (1 - this.es);
+        B = 3 * this.es * (1 - A2) * this.sin_p12 * this.cos_p12 * cosAz / (1 - this.es);
+        D = rh / N1;
+        Ee = D - A2 * (1 + A2) * Math.pow(D, 3) / 6 - B * (1 + 3 * A2) * Math.pow(D, 4) / 24;
+        F = 1 - A2 * Ee * Ee / 2 - D * Ee * Ee * Ee / 6;
+        psi = Math.asin(this.sin_p12 * Math.cos(Ee) + this.cos_p12 * Math.sin(Ee) * cosAz);
+        lon = adjust_lon_default(this.long0 + Math.asin(Math.sin(Az) * Math.sin(Ee) / Math.cos(psi)));
+        sinpsi = Math.sin(psi);
+        lat = Math.atan2((sinpsi - this.es * F * this.sin_p12) * Math.tan(psi), sinpsi * (1 - this.es));
+        p.x = lon;
+        p.y = lat;
+        return p;
+      }
+    }
+  }
+  var names27 = ["Azimuthal_Equidistant", "aeqd"];
+  var aeqd_default = {
+    init: init26,
+    forward: forward25,
+    inverse: inverse25,
+    names: names27
+  };
+
+  // ../../node_modules/proj4/lib/projections/ortho.js
+  function init27() {
+    this.sin_p14 = Math.sin(this.lat0);
+    this.cos_p14 = Math.cos(this.lat0);
+  }
+  function forward26(p) {
+    var sinphi, cosphi;
+    var dlon;
+    var coslon;
+    var ksp;
+    var g, x, y;
+    var lon = p.x;
+    var lat = p.y;
+    dlon = adjust_lon_default(lon - this.long0);
+    sinphi = Math.sin(lat);
+    cosphi = Math.cos(lat);
+    coslon = Math.cos(dlon);
+    g = this.sin_p14 * sinphi + this.cos_p14 * cosphi * coslon;
+    ksp = 1;
+    if (g > 0 || Math.abs(g) <= EPSLN) {
+      x = this.a * ksp * cosphi * Math.sin(dlon);
+      y = this.y0 + this.a * ksp * (this.cos_p14 * sinphi - this.sin_p14 * cosphi * coslon);
+    }
+    p.x = x;
+    p.y = y;
+    return p;
+  }
+  function inverse26(p) {
+    var rh;
+    var z;
+    var sinz, cosz;
+    var con;
+    var lon, lat;
+    p.x -= this.x0;
+    p.y -= this.y0;
+    rh = Math.sqrt(p.x * p.x + p.y * p.y);
+    z = asinz_default(rh / this.a);
+    sinz = Math.sin(z);
+    cosz = Math.cos(z);
+    lon = this.long0;
+    if (Math.abs(rh) <= EPSLN) {
+      lat = this.lat0;
+      p.x = lon;
+      p.y = lat;
+      return p;
+    }
+    lat = asinz_default(cosz * this.sin_p14 + p.y * sinz * this.cos_p14 / rh);
+    con = Math.abs(this.lat0) - HALF_PI;
+    if (Math.abs(con) <= EPSLN) {
+      if (this.lat0 >= 0) {
+        lon = adjust_lon_default(this.long0 + Math.atan2(p.x, -p.y));
+      } else {
+        lon = adjust_lon_default(this.long0 - Math.atan2(-p.x, p.y));
+      }
+      p.x = lon;
+      p.y = lat;
+      return p;
+    }
+    lon = adjust_lon_default(this.long0 + Math.atan2(p.x * sinz, rh * this.cos_p14 * cosz - p.y * this.sin_p14 * sinz));
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+  var names28 = ["ortho"];
+  var ortho_default = {
+    init: init27,
+    forward: forward26,
+    inverse: inverse26,
+    names: names28
+  };
+
+  // ../../node_modules/proj4/lib/projections/qsc.js
+  var FACE_ENUM = {
+    FRONT: 1,
+    RIGHT: 2,
+    BACK: 3,
+    LEFT: 4,
+    TOP: 5,
+    BOTTOM: 6
+  };
+  var AREA_ENUM = {
+    AREA_0: 1,
+    AREA_1: 2,
+    AREA_2: 3,
+    AREA_3: 4
+  };
+  function init28() {
+    this.x0 = this.x0 || 0;
+    this.y0 = this.y0 || 0;
+    this.lat0 = this.lat0 || 0;
+    this.long0 = this.long0 || 0;
+    this.lat_ts = this.lat_ts || 0;
+    this.title = this.title || "Quadrilateralized Spherical Cube";
+    if (this.lat0 >= HALF_PI - FORTPI / 2) {
+      this.face = FACE_ENUM.TOP;
+    } else if (this.lat0 <= -(HALF_PI - FORTPI / 2)) {
+      this.face = FACE_ENUM.BOTTOM;
+    } else if (Math.abs(this.long0) <= FORTPI) {
+      this.face = FACE_ENUM.FRONT;
+    } else if (Math.abs(this.long0) <= HALF_PI + FORTPI) {
+      this.face = this.long0 > 0 ? FACE_ENUM.RIGHT : FACE_ENUM.LEFT;
+    } else {
+      this.face = FACE_ENUM.BACK;
+    }
+    if (this.es !== 0) {
+      this.one_minus_f = 1 - (this.a - this.b) / this.a;
+      this.one_minus_f_squared = this.one_minus_f * this.one_minus_f;
+    }
+  }
+  function forward27(p) {
+    var xy = { x: 0, y: 0 };
+    var lat, lon;
+    var theta, phi;
+    var t, mu;
+    var area = { value: 0 };
+    p.x -= this.long0;
+    if (this.es !== 0) {
+      lat = Math.atan(this.one_minus_f_squared * Math.tan(p.y));
+    } else {
+      lat = p.y;
+    }
+    lon = p.x;
+    if (this.face === FACE_ENUM.TOP) {
+      phi = HALF_PI - lat;
+      if (lon >= FORTPI && lon <= HALF_PI + FORTPI) {
+        area.value = AREA_ENUM.AREA_0;
+        theta = lon - HALF_PI;
+      } else if (lon > HALF_PI + FORTPI || lon <= -(HALF_PI + FORTPI)) {
+        area.value = AREA_ENUM.AREA_1;
+        theta = lon > 0 ? lon - SPI : lon + SPI;
+      } else if (lon > -(HALF_PI + FORTPI) && lon <= -FORTPI) {
+        area.value = AREA_ENUM.AREA_2;
+        theta = lon + HALF_PI;
+      } else {
+        area.value = AREA_ENUM.AREA_3;
+        theta = lon;
+      }
+    } else if (this.face === FACE_ENUM.BOTTOM) {
+      phi = HALF_PI + lat;
+      if (lon >= FORTPI && lon <= HALF_PI + FORTPI) {
+        area.value = AREA_ENUM.AREA_0;
+        theta = -lon + HALF_PI;
+      } else if (lon < FORTPI && lon >= -FORTPI) {
+        area.value = AREA_ENUM.AREA_1;
+        theta = -lon;
+      } else if (lon < -FORTPI && lon >= -(HALF_PI + FORTPI)) {
+        area.value = AREA_ENUM.AREA_2;
+        theta = -lon - HALF_PI;
+      } else {
+        area.value = AREA_ENUM.AREA_3;
+        theta = lon > 0 ? -lon + SPI : -lon - SPI;
+      }
+    } else {
+      var q, r, s;
+      var sinlat, coslat;
+      var sinlon, coslon;
+      if (this.face === FACE_ENUM.RIGHT) {
+        lon = qsc_shift_lon_origin(lon, +HALF_PI);
+      } else if (this.face === FACE_ENUM.BACK) {
+        lon = qsc_shift_lon_origin(lon, +SPI);
+      } else if (this.face === FACE_ENUM.LEFT) {
+        lon = qsc_shift_lon_origin(lon, -HALF_PI);
+      }
+      sinlat = Math.sin(lat);
+      coslat = Math.cos(lat);
+      sinlon = Math.sin(lon);
+      coslon = Math.cos(lon);
+      q = coslat * coslon;
+      r = coslat * sinlon;
+      s = sinlat;
+      if (this.face === FACE_ENUM.FRONT) {
+        phi = Math.acos(q);
+        theta = qsc_fwd_equat_face_theta(phi, s, r, area);
+      } else if (this.face === FACE_ENUM.RIGHT) {
+        phi = Math.acos(r);
+        theta = qsc_fwd_equat_face_theta(phi, s, -q, area);
+      } else if (this.face === FACE_ENUM.BACK) {
+        phi = Math.acos(-q);
+        theta = qsc_fwd_equat_face_theta(phi, s, -r, area);
+      } else if (this.face === FACE_ENUM.LEFT) {
+        phi = Math.acos(-r);
+        theta = qsc_fwd_equat_face_theta(phi, s, q, area);
+      } else {
+        phi = theta = 0;
+        area.value = AREA_ENUM.AREA_0;
+      }
+    }
+    mu = Math.atan(12 / SPI * (theta + Math.acos(Math.sin(theta) * Math.cos(FORTPI)) - HALF_PI));
+    t = Math.sqrt((1 - Math.cos(phi)) / (Math.cos(mu) * Math.cos(mu)) / (1 - Math.cos(Math.atan(1 / Math.cos(theta)))));
+    if (area.value === AREA_ENUM.AREA_1) {
+      mu += HALF_PI;
+    } else if (area.value === AREA_ENUM.AREA_2) {
+      mu += SPI;
+    } else if (area.value === AREA_ENUM.AREA_3) {
+      mu += 1.5 * SPI;
+    }
+    xy.x = t * Math.cos(mu);
+    xy.y = t * Math.sin(mu);
+    xy.x = xy.x * this.a + this.x0;
+    xy.y = xy.y * this.a + this.y0;
+    p.x = xy.x;
+    p.y = xy.y;
+    return p;
+  }
+  function inverse27(p) {
+    var lp = { lam: 0, phi: 0 };
+    var mu, nu, cosmu, tannu;
+    var tantheta, theta, cosphi, phi;
+    var t;
+    var area = { value: 0 };
+    p.x = (p.x - this.x0) / this.a;
+    p.y = (p.y - this.y0) / this.a;
+    nu = Math.atan(Math.sqrt(p.x * p.x + p.y * p.y));
+    mu = Math.atan2(p.y, p.x);
+    if (p.x >= 0 && p.x >= Math.abs(p.y)) {
+      area.value = AREA_ENUM.AREA_0;
+    } else if (p.y >= 0 && p.y >= Math.abs(p.x)) {
+      area.value = AREA_ENUM.AREA_1;
+      mu -= HALF_PI;
+    } else if (p.x < 0 && -p.x >= Math.abs(p.y)) {
+      area.value = AREA_ENUM.AREA_2;
+      mu = mu < 0 ? mu + SPI : mu - SPI;
+    } else {
+      area.value = AREA_ENUM.AREA_3;
+      mu += HALF_PI;
+    }
+    t = SPI / 12 * Math.tan(mu);
+    tantheta = Math.sin(t) / (Math.cos(t) - 1 / Math.sqrt(2));
+    theta = Math.atan(tantheta);
+    cosmu = Math.cos(mu);
+    tannu = Math.tan(nu);
+    cosphi = 1 - cosmu * cosmu * tannu * tannu * (1 - Math.cos(Math.atan(1 / Math.cos(theta))));
+    if (cosphi < -1) {
+      cosphi = -1;
+    } else if (cosphi > 1) {
+      cosphi = 1;
+    }
+    if (this.face === FACE_ENUM.TOP) {
+      phi = Math.acos(cosphi);
+      lp.phi = HALF_PI - phi;
+      if (area.value === AREA_ENUM.AREA_0) {
+        lp.lam = theta + HALF_PI;
+      } else if (area.value === AREA_ENUM.AREA_1) {
+        lp.lam = theta < 0 ? theta + SPI : theta - SPI;
+      } else if (area.value === AREA_ENUM.AREA_2) {
+        lp.lam = theta - HALF_PI;
+      } else {
+        lp.lam = theta;
+      }
+    } else if (this.face === FACE_ENUM.BOTTOM) {
+      phi = Math.acos(cosphi);
+      lp.phi = phi - HALF_PI;
+      if (area.value === AREA_ENUM.AREA_0) {
+        lp.lam = -theta + HALF_PI;
+      } else if (area.value === AREA_ENUM.AREA_1) {
+        lp.lam = -theta;
+      } else if (area.value === AREA_ENUM.AREA_2) {
+        lp.lam = -theta - HALF_PI;
+      } else {
+        lp.lam = theta < 0 ? -theta - SPI : -theta + SPI;
+      }
+    } else {
+      var q, r, s;
+      q = cosphi;
+      t = q * q;
+      if (t >= 1) {
+        s = 0;
+      } else {
+        s = Math.sqrt(1 - t) * Math.sin(theta);
+      }
+      t += s * s;
+      if (t >= 1) {
+        r = 0;
+      } else {
+        r = Math.sqrt(1 - t);
+      }
+      if (area.value === AREA_ENUM.AREA_1) {
+        t = r;
+        r = -s;
+        s = t;
+      } else if (area.value === AREA_ENUM.AREA_2) {
+        r = -r;
+        s = -s;
+      } else if (area.value === AREA_ENUM.AREA_3) {
+        t = r;
+        r = s;
+        s = -t;
+      }
+      if (this.face === FACE_ENUM.RIGHT) {
+        t = q;
+        q = -r;
+        r = t;
+      } else if (this.face === FACE_ENUM.BACK) {
+        q = -q;
+        r = -r;
+      } else if (this.face === FACE_ENUM.LEFT) {
+        t = q;
+        q = r;
+        r = -t;
+      }
+      lp.phi = Math.acos(-s) - HALF_PI;
+      lp.lam = Math.atan2(r, q);
+      if (this.face === FACE_ENUM.RIGHT) {
+        lp.lam = qsc_shift_lon_origin(lp.lam, -HALF_PI);
+      } else if (this.face === FACE_ENUM.BACK) {
+        lp.lam = qsc_shift_lon_origin(lp.lam, -SPI);
+      } else if (this.face === FACE_ENUM.LEFT) {
+        lp.lam = qsc_shift_lon_origin(lp.lam, +HALF_PI);
+      }
+    }
+    if (this.es !== 0) {
+      var invert_sign;
+      var tanphi, xa;
+      invert_sign = lp.phi < 0 ? 1 : 0;
+      tanphi = Math.tan(lp.phi);
+      xa = this.b / Math.sqrt(tanphi * tanphi + this.one_minus_f_squared);
+      lp.phi = Math.atan(Math.sqrt(this.a * this.a - xa * xa) / (this.one_minus_f * xa));
+      if (invert_sign) {
+        lp.phi = -lp.phi;
+      }
+    }
+    lp.lam += this.long0;
+    p.x = lp.lam;
+    p.y = lp.phi;
+    return p;
+  }
+  function qsc_fwd_equat_face_theta(phi, y, x, area) {
+    var theta;
+    if (phi < EPSLN) {
+      area.value = AREA_ENUM.AREA_0;
+      theta = 0;
+    } else {
+      theta = Math.atan2(y, x);
+      if (Math.abs(theta) <= FORTPI) {
+        area.value = AREA_ENUM.AREA_0;
+      } else if (theta > FORTPI && theta <= HALF_PI + FORTPI) {
+        area.value = AREA_ENUM.AREA_1;
+        theta -= HALF_PI;
+      } else if (theta > HALF_PI + FORTPI || theta <= -(HALF_PI + FORTPI)) {
+        area.value = AREA_ENUM.AREA_2;
+        theta = theta >= 0 ? theta - SPI : theta + SPI;
+      } else {
+        area.value = AREA_ENUM.AREA_3;
+        theta += HALF_PI;
+      }
+    }
+    return theta;
+  }
+  function qsc_shift_lon_origin(lon, offset) {
+    var slon = lon + offset;
+    if (slon < -SPI) {
+      slon += TWO_PI;
+    } else if (slon > +SPI) {
+      slon -= TWO_PI;
+    }
+    return slon;
+  }
+  var names29 = ["Quadrilateralized Spherical Cube", "Quadrilateralized_Spherical_Cube", "qsc"];
+  var qsc_default = {
+    init: init28,
+    forward: forward27,
+    inverse: inverse27,
+    names: names29
+  };
+
+  // ../../node_modules/proj4/lib/projections/robin.js
+  var COEFS_X = [
+    [1, 22199e-21, -715515e-10, 31103e-10],
+    [0.9986, -482243e-9, -24897e-9, -13309e-10],
+    [0.9954, -83103e-8, -448605e-10, -986701e-12],
+    [0.99, -135364e-8, -59661e-9, 36777e-10],
+    [0.9822, -167442e-8, -449547e-11, -572411e-11],
+    [0.973, -214868e-8, -903571e-10, 18736e-12],
+    [0.96, -305085e-8, -900761e-10, 164917e-11],
+    [0.9427, -382792e-8, -653386e-10, -26154e-10],
+    [0.9216, -467746e-8, -10457e-8, 481243e-11],
+    [0.8962, -536223e-8, -323831e-10, -543432e-11],
+    [0.8679, -609363e-8, -113898e-9, 332484e-11],
+    [0.835, -698325e-8, -640253e-10, 934959e-12],
+    [0.7986, -755338e-8, -500009e-10, 935324e-12],
+    [0.7597, -798324e-8, -35971e-9, -227626e-11],
+    [0.7186, -851367e-8, -701149e-10, -86303e-10],
+    [0.6732, -986209e-8, -199569e-9, 191974e-10],
+    [0.6213, -0.010418, 883923e-10, 624051e-11],
+    [0.5722, -906601e-8, 182e-6, 624051e-11],
+    [0.5322, -677797e-8, 275608e-9, 624051e-11]
+  ];
+  var COEFS_Y = [
+    [-520417e-23, 0.0124, 121431e-23, -845284e-16],
+    [0.062, 0.0124, -126793e-14, 422642e-15],
+    [0.124, 0.0124, 507171e-14, -160604e-14],
+    [0.186, 0.0123999, -190189e-13, 600152e-14],
+    [0.248, 0.0124002, 710039e-13, -224e-10],
+    [0.31, 0.0123992, -264997e-12, 835986e-13],
+    [0.372, 0.0124029, 988983e-12, -311994e-12],
+    [0.434, 0.0123893, -369093e-11, -435621e-12],
+    [0.4958, 0.0123198, -102252e-10, -345523e-12],
+    [0.5571, 0.0121916, -154081e-10, -582288e-12],
+    [0.6176, 0.0119938, -241424e-10, -525327e-12],
+    [0.6769, 0.011713, -320223e-10, -516405e-12],
+    [0.7346, 0.0113541, -397684e-10, -609052e-12],
+    [0.7903, 0.0109107, -489042e-10, -104739e-11],
+    [0.8435, 0.0103431, -64615e-9, -140374e-14],
+    [0.8936, 969686e-8, -64636e-9, -8547e-9],
+    [0.9394, 840947e-8, -192841e-9, -42106e-10],
+    [0.9761, 616527e-8, -256e-6, -42106e-10],
+    [1, 328947e-8, -319159e-9, -42106e-10]
+  ];
+  var FXC = 0.8487;
+  var FYC = 1.3523;
+  var C1 = R2D / 5;
+  var RC1 = 1 / C1;
+  var NODES = 18;
+  var poly3_val = function(coefs, x) {
+    return coefs[0] + x * (coefs[1] + x * (coefs[2] + x * coefs[3]));
+  };
+  var poly3_der = function(coefs, x) {
+    return coefs[1] + x * (2 * coefs[2] + x * 3 * coefs[3]);
+  };
+  function newton_rapshon(f_df, start2, max_err, iters) {
+    var x = start2;
+    for (; iters; --iters) {
+      var upd = f_df(x);
+      x -= upd;
+      if (Math.abs(upd) < max_err) {
+        break;
+      }
+    }
+    return x;
+  }
+  function init29() {
+    this.x0 = this.x0 || 0;
+    this.y0 = this.y0 || 0;
+    this.long0 = this.long0 || 0;
+    this.es = 0;
+    this.title = this.title || "Robinson";
+  }
+  function forward28(ll) {
+    var lon = adjust_lon_default(ll.x - this.long0);
+    var dphi = Math.abs(ll.y);
+    var i = Math.floor(dphi * C1);
+    if (i < 0) {
+      i = 0;
+    } else if (i >= NODES) {
+      i = NODES - 1;
+    }
+    dphi = R2D * (dphi - RC1 * i);
+    var xy = {
+      x: poly3_val(COEFS_X[i], dphi) * lon,
+      y: poly3_val(COEFS_Y[i], dphi)
+    };
+    if (ll.y < 0) {
+      xy.y = -xy.y;
+    }
+    xy.x = xy.x * this.a * FXC + this.x0;
+    xy.y = xy.y * this.a * FYC + this.y0;
+    return xy;
+  }
+  function inverse28(xy) {
+    var ll = {
+      x: (xy.x - this.x0) / (this.a * FXC),
+      y: Math.abs(xy.y - this.y0) / (this.a * FYC)
+    };
+    if (ll.y >= 1) {
+      ll.x /= COEFS_X[NODES][0];
+      ll.y = xy.y < 0 ? -HALF_PI : HALF_PI;
+    } else {
+      var i = Math.floor(ll.y * NODES);
+      if (i < 0) {
+        i = 0;
+      } else if (i >= NODES) {
+        i = NODES - 1;
+      }
+      for (; ; ) {
+        if (COEFS_Y[i][0] > ll.y) {
+          --i;
+        } else if (COEFS_Y[i + 1][0] <= ll.y) {
+          ++i;
+        } else {
+          break;
+        }
+      }
+      var coefs = COEFS_Y[i];
+      var t = 5 * (ll.y - coefs[0]) / (COEFS_Y[i + 1][0] - coefs[0]);
+      t = newton_rapshon(function(x) {
+        return (poly3_val(coefs, x) - ll.y) / poly3_der(coefs, x);
+      }, t, EPSLN, 100);
+      ll.x /= poly3_val(COEFS_X[i], t);
+      ll.y = (5 * i + t) * D2R;
+      if (xy.y < 0) {
+        ll.y = -ll.y;
+      }
+    }
+    ll.x = adjust_lon_default(ll.x + this.long0);
+    return ll;
+  }
+  var names30 = ["Robinson", "robin"];
+  var robin_default = {
+    init: init29,
+    forward: forward28,
+    inverse: inverse28,
+    names: names30
+  };
+
+  // ../../node_modules/proj4/lib/projections/geocent.js
+  function init30() {
+    this.name = "geocent";
+  }
+  function forward29(p) {
+    var point = geodeticToGeocentric(p, this.es, this.a);
+    return point;
+  }
+  function inverse29(p) {
+    var point = geocentricToGeodetic(p, this.es, this.a, this.b);
+    return point;
+  }
+  var names31 = ["Geocentric", "geocentric", "geocent", "Geocent"];
+  var geocent_default = {
+    init: init30,
+    forward: forward29,
+    inverse: inverse29,
+    names: names31
+  };
+
+  // ../../node_modules/proj4/projs.js
+  function projs_default(proj42) {
+    proj42.Proj.projections.add(tmerc_default);
+    proj42.Proj.projections.add(etmerc_default);
+    proj42.Proj.projections.add(utm_default);
+    proj42.Proj.projections.add(sterea_default);
+    proj42.Proj.projections.add(stere_default);
+    proj42.Proj.projections.add(somerc_default);
+    proj42.Proj.projections.add(omerc_default);
+    proj42.Proj.projections.add(lcc_default);
+    proj42.Proj.projections.add(krovak_default);
+    proj42.Proj.projections.add(cass_default);
+    proj42.Proj.projections.add(laea_default);
+    proj42.Proj.projections.add(aea_default);
+    proj42.Proj.projections.add(gnom_default);
+    proj42.Proj.projections.add(cea_default);
+    proj42.Proj.projections.add(eqc_default);
+    proj42.Proj.projections.add(poly_default);
+    proj42.Proj.projections.add(nzmg_default);
+    proj42.Proj.projections.add(mill_default);
+    proj42.Proj.projections.add(sinu_default);
+    proj42.Proj.projections.add(moll_default);
+    proj42.Proj.projections.add(eqdc_default);
+    proj42.Proj.projections.add(vandg_default);
+    proj42.Proj.projections.add(aeqd_default);
+    proj42.Proj.projections.add(ortho_default);
+    proj42.Proj.projections.add(qsc_default);
+    proj42.Proj.projections.add(robin_default);
+    proj42.Proj.projections.add(geocent_default);
+  }
+
+  // ../../node_modules/proj4/lib/index.js
+  core_default.defaultDatum = "WGS84";
+  core_default.Proj = Proj_default;
+  core_default.WGS84 = new core_default.Proj("WGS84");
+  core_default.Point = Point_default;
+  core_default.toPoint = toPoint_default;
+  core_default.defs = defs_default;
+  core_default.transform = transform;
+  core_default.mgrs = mgrs_default;
+  core_default.version = "__VERSION__";
+  projs_default(core_default);
+  var lib_default = core_default;
+
+  // ../../node_modules/@math.gl/proj4/dist/esm/lib/proj4-projection.js
+  var Proj4Projection = class {
+    static defineProjectionAliases(aliases) {
+      const aliasArray = [];
+      for (const alias in aliases) {
+        aliasArray.push([alias, aliases[alias]]);
+      }
+      lib_default.defs(aliasArray);
+    }
+    constructor({
+      from = "WGS84",
+      to = "WGS84"
+    }) {
+      _defineProperty(this, "_projection", void 0);
+      this._projection = lib_default(from, to);
+      if (!this._projection) {
+        throw new Error("Invalid projection");
+      }
+      this.project = this.project.bind(this);
+      this.unproject = this.unproject.bind(this);
+    }
+    project(coord) {
+      return this._projection.forward(coord);
+    }
+    unproject(coord) {
+      return this._projection.inverse(coord);
+    }
+  };
+
+  // ../gis/src/lib/transform.ts
+  function transformGeoJsonCoords(features, fn) {
+    for (const feature of features) {
+      feature.geometry.coordinates = coordMap(feature.geometry.coordinates, fn);
+    }
+    return features;
+  }
+  function coordMap(array, fn) {
+    if (isCoord(array)) {
+      return fn(array);
+    }
+    return array.map((item) => {
+      return coordMap(item, fn);
+    });
+  }
+  function isCoord(array) {
+    return Number.isFinite(array[0]) && Number.isFinite(array[1]);
+  }
+
+  // src/lib/parse-flatgeobuf.ts
+  var import_geojson = __toModule(require_geojson());
+  var import_generic = __toModule(require_generic());
+  var import_feature = __toModule(require_feature());
+
+  // src/lib/binary-geometries.ts
+  var import_header_generated = __toModule(require_header_generated());
+  function parsePoint(geometry) {
+    const xy = geometry.xyArray();
+    const z = geometry.zArray();
+    const positions = blitArrays(xy, z);
+    return { positions };
+  }
+  function parseLines(geometry) {
+    const xy = geometry.xyArray();
+    const z = geometry.zArray();
+    const positions = blitArrays(xy, z);
+    const ends = geometry.endsArray() && Array.from(geometry.endsArray()) || [xy.length / 2];
+    ends.unshift(0);
+    const pathIndices = { value: new Uint16Array(ends), size: 1 };
+    return {
+      positions,
+      pathIndices
+    };
+  }
+  function parsePolygons(geometry) {
+    const xy = geometry.xyArray();
+    const z = geometry.zArray();
+    const positions = blitArrays(xy, z);
+    const ends = geometry.endsArray() && Array.from(geometry.endsArray()) || [xy.length / 2];
+    ends.unshift(0);
+    const primitivePolygonIndices = { value: new Uint16Array(ends), size: 1 };
+    const polygonIndices = { value: new Uint16Array([0, xy.length / 2]), size: 1 };
+    return {
+      positions,
+      primitivePolygonIndices,
+      polygonIndices
+    };
+  }
+  function parseMultiPolygons(geometry) {
+    const parsedParts = [];
+    let nPositions = 0;
+    let nPrimitivePolygonIndices = 1;
+    let nPolygonIndices = 1;
+    for (let i = 0; i < geometry.partsLength(); i++) {
+      const part = geometry.parts(i);
+      const polygon = parsePolygons(part);
+      nPositions += polygon.positions.value.length;
+      nPrimitivePolygonIndices += polygon.primitivePolygonIndices.value.length - 1;
+      nPolygonIndices += polygon.polygonIndices.value.length - 1;
+      parsedParts.push(polygon);
+    }
+    const concatPositions = new Float64Array(nPositions);
+    const concatPrimitivePolygonIndices = new Uint32Array(nPrimitivePolygonIndices);
+    const concatPolygonIndices = new Uint32Array(nPolygonIndices);
+    let positionCounter = 0;
+    let primitivePolygonIndicesCounter = 1;
+    let polygonIndicesCounter = 1;
+    const positionSize = parsedParts[0].positions.size;
+    for (const parsedPart of parsedParts) {
+      concatPositions.set(parsedPart.positions.value, positionCounter * positionSize);
+      concatPrimitivePolygonIndices.set(parsedPart.primitivePolygonIndices.value.subarray(1).map((x) => x + positionCounter), primitivePolygonIndicesCounter);
+      concatPolygonIndices.set(parsedPart.polygonIndices.value.subarray(1).map((x) => x + positionCounter), polygonIndicesCounter);
+      positionCounter += parsedPart.positions.value.length / positionSize;
+      primitivePolygonIndicesCounter += parsedPart.primitivePolygonIndices.value.length - 1;
+      polygonIndicesCounter += parsedPart.polygonIndices.value.length - 1;
+    }
+    return {
+      positions: { value: concatPositions, size: positionSize },
+      primitivePolygonIndices: { value: concatPrimitivePolygonIndices, size: 1 },
+      polygonIndices: { value: concatPolygonIndices, size: 1 }
+    };
+  }
+  function blitArrays(xy, z) {
+    if (!z) {
+      return { value: xy, size: 2 };
+    }
+    if (z.length * 2 !== xy.length) {
+      throw new Error("Z array must be half XY array's length");
+    }
+    const totalLength = xy.length + z.length;
+    const xyz = new Float64Array(totalLength);
+    for (let i = 0; i < xy.length / 2; i++) {
+      xyz[i * 3 + 0] = xy[i * 2 + 0];
+      xyz[i * 3 + 1] = xy[i * 2 + 1];
+      xyz[i * 3 + 2] = z[i];
+    }
+    return { value: xyz, size: 3 };
+  }
+  function fromGeometry(geometry, type) {
+    switch (type) {
+      case import_header_generated.GeometryType.Point:
+      case import_header_generated.GeometryType.MultiPoint:
+        return parsePoint(geometry);
+      case import_header_generated.GeometryType.LineString:
+      case import_header_generated.GeometryType.MultiLineString:
+        return parseLines(geometry);
+      case import_header_generated.GeometryType.Polygon:
+        return parsePolygons(geometry);
+      case import_header_generated.GeometryType.MultiPolygon:
+        return parseMultiPolygons(geometry);
+      default:
+        throw new Error(`Unimplemented geometry type: ${type}`);
+    }
+  }
+
+  // src/lib/parse-flatgeobuf.ts
+  function binaryFromFeature(feature, header) {
+    const geometry = feature.geometry();
+    const geometryType = header.geometryType || geometry.type();
+    const parsedGeometry = fromGeometry(geometry, geometryType);
+    parsedGeometry.properties = (0, import_feature.parseProperties)(feature, header.columns);
+    return parsedGeometry;
+  }
+  function parseFlatGeobuf(arrayBuffer, options) {
+    const shape = options?.gis?.format || options?.flatgeobuf?.shape;
+    switch (shape) {
+      case "geojson-row-table": {
+        const table = {
+          shape: "geojson-row-table",
+          data: parseFlatGeobufToGeoJSON(arrayBuffer, options)
+        };
+        return table;
+      }
+      case "columnar-table":
+        return { shape: "columnar-table", data: parseFlatGeobufToBinary(arrayBuffer, options) };
+      case "geojson":
+        return parseFlatGeobufToGeoJSON(arrayBuffer, options);
+      case "binary":
+        return parseFlatGeobufToBinary(arrayBuffer, options);
+      default:
+        throw new Error(shape);
+    }
+  }
+  function parseFlatGeobufToBinary(arrayBuffer, options) {
+    const array = new Uint8Array(arrayBuffer);
+    return (0, import_generic.deserialize)(array, binaryFromFeature);
+  }
+  function parseFlatGeobufToGeoJSON(arrayBuffer, options) {
+    if (arrayBuffer.byteLength === 0) {
+      return [];
+    }
+    const { reproject = false, _targetCrs = "WGS84" } = options && options.gis || {};
+    const arr = new Uint8Array(arrayBuffer);
+    let headerMeta;
+    const { features } = (0, import_geojson.deserialize)(arr, false, (header) => {
+      headerMeta = header;
+    });
+    const crs = headerMeta && headerMeta.crs;
+    let projection;
+    if (reproject && crs) {
+      try {
+        projection = new Proj4Projection({ from: crs.wkt, to: _targetCrs });
+      } catch (e) {
+      }
+    }
+    if (projection) {
+      return transformGeoJsonCoords(features, (coords) => projection.project(coords));
+    }
+    return features;
+  }
+  function parseFlatGeobufInBatches(stream, options) {
+    if (options && options.gis && options.gis.format === "binary") {
+      return parseFlatGeobufInBatchesToBinary(stream, options);
+    }
+    return parseFlatGeobufInBatchesToGeoJSON(stream, options);
+  }
+  function parseFlatGeobufInBatchesToBinary(stream, options) {
+    const iterator = (0, import_generic.deserialize)(stream, binaryFromFeature);
+    return iterator;
+  }
+  async function* parseFlatGeobufInBatchesToGeoJSON(stream, options) {
+    const { reproject = false, _targetCrs = "WGS84" } = options && options.gis || {};
+    let headerMeta;
+    const iterator = (0, import_geojson.deserialize)(stream, false, (header) => {
+      headerMeta = header;
+    });
+    let projection;
+    let firstRecord = true;
+    for await (const feature of iterator) {
+      if (firstRecord) {
+        const crs = headerMeta && headerMeta.crs;
+        if (reproject && crs) {
+          projection = new Proj4Projection({ from: crs.wkt, to: _targetCrs });
+        }
+        firstRecord = false;
+      }
+      if (reproject && projection) {
+        yield transformGeoJsonCoords([feature], (coords) => projection.project(coords));
+      } else {
+        yield feature;
+      }
+    }
+  }
+
+  // src/index.ts
+  var FlatGeobufLoader2 = {
+    ...FlatGeobufLoader,
+    parse: async (arrayBuffer, options) => parseFlatGeobuf(arrayBuffer, options),
+    parseSync: parseFlatGeobuf,
+    parseInBatchesFromStream: parseFlatGeobufInBatches,
+    binary: true
+  };
+
+  // src/workers/flatgeobuf-worker.ts
+  createLoaderWorker(FlatGeobufLoader2);
+})();

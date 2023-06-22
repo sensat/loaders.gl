@@ -1,0 +1,1 @@
+{"version":3,"file":"arrow-writer.d.ts","sourceRoot":"","sources":["../src/arrow-writer.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAC,MAAM,EAAE,aAAa,EAAC,MAAM,0BAA0B,CAAC;AACpE,OAAO,EAAC,aAAa,EAAC,MAAM,oBAAoB,CAAC;AAOjD,KAAK,kBAAkB,GAAG,aAAa,GAAG;IACxC,KAAK,CAAC,EAAE,EAAE,CAAC;CACZ,CAAC;AAEF,0BAA0B;AAC1B,eAAO,MAAM,WAAW,EAAE,MAAM,CAAC,aAAa,EAAE,KAAK,EAAE,kBAAkB,CAgBxE,CAAC"}

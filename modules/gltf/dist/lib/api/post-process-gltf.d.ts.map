@@ -1,0 +1,1 @@
+{"version":3,"file":"post-process-gltf.d.ts","sourceRoot":"","sources":["../../../src/lib/api/post-process-gltf.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAC,eAAe,EAAC,MAAM,qBAAqB,CAAC;AACzD,OAAO,KAAK,EAAC,gBAAgB,EAAC,MAAM,uBAAuB,CAAC;AAiB5D,OAAO,KAAK,EACV,iBAAiB,EAclB,MAAM,oCAAoC,CAAC;AAmgB5C,wBAAgB,eAAe,CAC7B,IAAI,EAAE,eAAe,EACrB,OAAO,CAAC,EAAE,gBAAgB,GACzB,iBAAiB,CAEnB"}

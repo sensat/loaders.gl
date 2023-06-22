@@ -1,0 +1,44 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.convertGeometricErrorToScreenThreshold = convertGeometricErrorToScreenThreshold;
+exports.convertScreenThresholdToGeometricError = convertScreenThresholdToGeometricError;
+var DEFAULT_MAXIMUM_SCREEN_SPACE_ERROR = 16;
+function convertGeometricErrorToScreenThreshold(tile, coordinates) {
+  var lodSelection = [];
+  var boundingVolume = tile.boundingVolume;
+  var lodMetricValue = tile.lodMetricValue || 0.1;
+  var maxScreenThreshold = {
+    metricType: 'maxScreenThreshold',
+    maxError: coordinates.mbs[3] * 2 * DEFAULT_MAXIMUM_SCREEN_SPACE_ERROR / lodMetricValue
+  };
+  var maxScreenThresholdSQ = {
+    metricType: 'maxScreenThresholdSQ',
+    maxError: Math.PI * 0.25 * maxScreenThreshold.maxError * maxScreenThreshold.maxError
+  };
+  if (boundingVolume.constructor.name === 'OrientedBoundingBox') {
+    lodSelection.push(maxScreenThresholdSQ);
+    lodSelection.push(maxScreenThreshold);
+  } else {
+    lodSelection.push(maxScreenThreshold);
+    lodSelection.push(maxScreenThresholdSQ);
+  }
+  return lodSelection;
+}
+function convertScreenThresholdToGeometricError(node) {
+  var metricData = node.header.lodSelection.maxScreenThreshold || {};
+  var maxError = metricData.maxError;
+  if (!maxError) {
+    var sqMetricData = node.header.lodSelection.maxScreenThresholdSQ;
+    if (sqMetricData) {
+      maxError = Math.sqrt(sqMetricData.maxError / (Math.PI * 0.25));
+    }
+  }
+  if (!maxError) {
+    maxError = DEFAULT_MAXIMUM_SCREEN_SPACE_ERROR;
+  }
+  return node.header.mbs[3] * 2 * DEFAULT_MAXIMUM_SCREEN_SPACE_ERROR / maxError;
+}
+//# sourceMappingURL=lod-conversion-utils.js.map

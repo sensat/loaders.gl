@@ -1,0 +1,28 @@
+import { XMLLoader } from '@loaders.gl/xml';
+export function parseWMTSCapabilities(text, options) {
+  var _options, _XMLLoader$parseTextS;
+  options = {
+    ...options,
+    xml: {
+      ...((_options = options) === null || _options === void 0 ? void 0 : _options.xml),
+      removeNSPrefix: true
+    }
+  };
+  const parsedXML = (_XMLLoader$parseTextS = XMLLoader.parseTextSync) === null || _XMLLoader$parseTextS === void 0 ? void 0 : _XMLLoader$parseTextS.call(XMLLoader, text, options);
+  const xmlCapabilities = parsedXML.Capabilities || parsedXML;
+  return uncapitalizeKeys(xmlCapabilities);
+}
+function uncapitalizeKeys(object) {
+  if (object && typeof object === 'object') {
+    const newObject = {};
+    for (const [key, value] of Object.entries(object)) {
+      newObject[uncapitalize(key)] = uncapitalizeKeys(value);
+    }
+    return newObject;
+  }
+  return object;
+}
+function uncapitalize(str) {
+  return typeof str === 'string' ? str.charAt(0).toLowerCase() + str.slice(1) : str;
+}
+//# sourceMappingURL=parse-wmts.js.map

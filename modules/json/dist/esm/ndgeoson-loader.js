@@ -1,0 +1,27 @@
+import { parseNDJSONSync } from './lib/parsers/parse-ndjson';
+import { parseNDJSONInBatches } from './lib/parsers/parse-ndjson-in-batches';
+const VERSION = typeof "4.0.0-alpha.7" !== 'undefined' ? "4.0.0-alpha.7" : 'latest';
+const DEFAULT_NDGEOJSON_LOADER_OPTIONS = {
+  geojson: {
+    shape: 'object-row-table'
+  },
+  gis: {
+    format: 'geojson'
+  }
+};
+export const NDJSONLoader = {
+  name: 'NDJSON',
+  id: 'ndjson',
+  module: 'json',
+  version: VERSION,
+  extensions: ['ndjson', 'ndgeojson'],
+  mimeTypes: ['application/geo+x-ndjson', 'application/geo+x-ldjson', 'application/jsonlines', 'application/geo+json-seq', 'application/x-ndjson'],
+  category: 'table',
+  text: true,
+  parse: async arrayBuffer => parseNDJSONSync(new TextDecoder().decode(arrayBuffer)),
+  parseTextSync: parseNDJSONSync,
+  parseInBatches: parseNDJSONInBatches,
+  options: DEFAULT_NDGEOJSON_LOADER_OPTIONS
+};
+export const _typecheckNDJSONLoader = NDJSONLoader;
+//# sourceMappingURL=ndgeoson-loader.js.map

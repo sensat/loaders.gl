@@ -2,11 +2,11 @@
 test/data/test.png
 tmp
 
-# dists
-dist/*
-**/dist/*
-dist.js
-dist.min.js
+# # dists
+# dist/*
+# **/dist/*
+# dist.js
+# dist.min.js
 
 # lock files
 package-lock.json

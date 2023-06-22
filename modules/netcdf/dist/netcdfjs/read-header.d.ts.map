@@ -1,0 +1,1 @@
+{"version":3,"file":"read-header.d.ts","sourceRoot":"","sources":["../../src/netcdfjs/read-header.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAC,QAAQ,EAAC,MAAM,sBAAsB,CAAC;AACnD,OAAO,KAAK,EAAC,YAAY,EAAmD,MAAM,gBAAgB,CAAC;AAWnG;;;;;GAKG;AACH,wBAAgB,gBAAgB,CAAC,MAAM,EAAE,QAAQ,EAAE,OAAO,EAAE,MAAM,GAAG,YAAY,CA4BhF;AA2MD;;;;GAIG;AACH,wBAAgB,QAAQ,CAAC,MAAM,EAAE,QAAQ,GAAG,MAAM,CAWjD"}

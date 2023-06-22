@@ -1,0 +1,11 @@
+import { log } from './utils/log';
+const version = typeof "4.0.0-alpha.7" !== 'undefined' ? "4.0.0-alpha.7" : '';
+if (!globalThis.loaders) {
+  log.log(1, "loaders.gl ".concat(version))();
+  globalThis.loaders = Object.assign(globalThis.loaders || {}, {
+    VERSION: version,
+    log
+  });
+}
+export default globalThis.loaders;
+//# sourceMappingURL=init.js.map

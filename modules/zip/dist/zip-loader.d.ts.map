@@ -1,0 +1,1 @@
+{"version":3,"file":"zip-loader.d.ts","sourceRoot":"","sources":["../src/zip-loader.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAC,gBAAgB,EAAE,aAAa,EAAC,MAAM,0BAA0B,CAAC;AAO9E,KAAK,OAAO,GAAG,MAAM,CAAC,MAAM,EAAE,WAAW,CAAC,CAAC;AAE3C,eAAO,MAAM,SAAS,EAAE,gBAAgB,CAAC,OAAO,EAAE,KAAK,EAAE,aAAa,CAWrE,CAAC;AA8CF,eAAO,MAAM,mBAAmB,EAAE,gBAA4B,CAAC"}

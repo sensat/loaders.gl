@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","names":["_loadWasmNode","require"],"sources":["../../../../../src/lib/wasm/load-wasm/index.ts"],"sourcesContent":["export {loadWasm} from './load-wasm-node';\n"],"mappings":";;;;;;;;;;;AAAA,IAAAA,aAAA,GAAAC,OAAA"}

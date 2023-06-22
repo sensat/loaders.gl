@@ -1,0 +1,1 @@
+{"version":3,"file":"ndjson-loader.d.ts","sourceRoot":"","sources":["../src/ndjson-loader.ts"],"names":[],"mappings":"AAEA,OAAO,EAAC,gBAAgB,EAAE,aAAa,EAAC,MAAM,0BAA0B,CAAC;AACzE,OAAO,EAAC,cAAc,EAAE,aAAa,EAAE,UAAU,EAAC,MAAM,oBAAoB,CAAC;AAQ7E,eAAO,MAAM,YAAY,EAAE,gBAAgB,CACzC,cAAc,GAAG,aAAa,EAC9B,UAAU,EACV,aAAa,CAkBd,CAAC"}

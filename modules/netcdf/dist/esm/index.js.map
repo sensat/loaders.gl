@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","names":["NetCDFReader","NetCDFLoader"],"sources":["../../src/index.ts"],"sourcesContent":["export {NetCDFReader} from './netcdfjs/netcdf-reader';\n\nexport {NetCDFLoader} from './netcdf-loader';\n"],"mappings":"AAAA,SAAQA,YAAY,QAAO,0BAA0B;AAErD,SAAQC,YAAY,QAAO,iBAAiB"}

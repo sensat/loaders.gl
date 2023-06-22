@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","names":["_loadGeotiff","require","_tiffPixelSource","_interopRequireDefault"],"sources":["../../src/index.ts"],"sourcesContent":["export {loadGeoTiff} from './lib/load-geotiff';\nexport {default as TiffPixelSource} from './lib/tiff-pixel-source';\n"],"mappings":";;;;;;;;;;;;;;;;;;AAAA,IAAAA,YAAA,GAAAC,OAAA;AACA,IAAAC,gBAAA,GAAAC,sBAAA,CAAAF,OAAA"}
