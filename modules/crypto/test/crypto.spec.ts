@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
@@ -24,6 +25,13 @@ const TEST_CASES = [
     }
   },
   {
+    title: 'binary data, crc32 negative result case',
+    data: new Uint8Array(100),
+    digests: {
+      crc32: 'mYjGyg=='
+    }
+  },
+  {
     title: 'binary data',
     data: binaryData,
     digests: {
@@ -34,8 +42,7 @@ const TEST_CASES = [
     title: 'binary data (repeated)',
     data: repeatedData,
     digests: {
-      sha256: 'SnGMX2AgkPh21d2sxow8phQa8lh8rjf2Vc7GFCIwj2g='
-      // 'bSCTuOJei5XsmAnqtmm2Aw/2EvUHldNdAxYb3mjSK9s=',
+      sha256: 'bSCTuOJei5XsmAnqtmm2Aw/2EvUHldNdAxYb3mjSK9s='
     }
   }
 ];
@@ -82,7 +89,7 @@ test('crypto#streaming hashes', async (t) => {
         });
 
         // @ts-ignore
-        // eslint-disable-next-line no-unused-vars, no-empty, max-depth
+        // eslint-disable-next-line no-unused-vars, no-empty, max-depth, @typescript-eslint/no-unused-vars
         for await (const batch of nullIterator) {
         }
 

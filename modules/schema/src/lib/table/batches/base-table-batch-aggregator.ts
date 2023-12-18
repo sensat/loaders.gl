@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import type {Schema} from '../../../types/schema';
@@ -11,6 +12,7 @@ export class BaseTableBatchAggregator implements TableBatchAggregator {
   schema: Schema;
   options: TableBatchOptions;
 
+  shape?: 'array-row-table' | 'object-row-table';
   length: number = 0;
   rows: any[] | null = null;
   cursor: number = 0;
@@ -39,6 +41,8 @@ export class BaseTableBatchAggregator implements TableBatchAggregator {
       this.cursor = cursor as number;
     }
 
+    this.shape = 'array-row-table';
+
     this.rows = this.rows || new Array(DEFAULT_ROW_COUNT);
     this.rows[this.length] = row;
     this.length++;
@@ -48,6 +52,8 @@ export class BaseTableBatchAggregator implements TableBatchAggregator {
     if (Number.isFinite(cursor)) {
       this.cursor = cursor as number;
     }
+
+    this.shape = 'object-row-table';
 
     this.rows = this.rows || new Array(DEFAULT_ROW_COUNT);
     this.rows[this.length] = row;
@@ -64,7 +70,7 @@ export class BaseTableBatchAggregator implements TableBatchAggregator {
     this.rows = null;
 
     const batch: TableBatch = {
-      shape: this.options.shape,
+      shape: this.shape || 'array-row-table',
       batchType: 'data',
       data: rows,
       length: this.length,

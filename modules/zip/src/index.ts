@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 export {ZipLoader} from './zip-loader';
@@ -8,11 +9,13 @@ export {TarBuilder} from './tar-builder';
 export {
   parseZipCDFileHeader,
   makeZipCDHeaderIterator,
-  signature as cdSignature
+  signature as CD_HEADER_SIGNATURE,
+  generateCDHeader
 } from './parse-zip/cd-file-header';
 export {
   parseZipLocalFileHeader,
-  signature as localHeaderSignature
+  signature as localHeaderSignature,
+  generateLocalHeader
 } from './parse-zip/local-file-header';
 export {parseEoCDRecord} from './parse-zip/end-of-central-directory';
 export {searchFromTheEnd} from './parse-zip/search-from-the-end';

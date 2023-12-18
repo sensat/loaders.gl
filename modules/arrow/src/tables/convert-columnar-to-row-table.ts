@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import type {ColumnarTable, ObjectRowTable} from '@loaders.gl/schema';
@@ -24,6 +25,7 @@ export function convertColumnarToRowFormatTable(columnarTable: ColumnarTable): O
 
   return {
     shape: 'object-row-table',
+    schema: columnarTable.schema,
     data: rowFormatTable
   };
 }

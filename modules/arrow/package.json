@@ -1,6 +1,6 @@
 {
   "name": "@loaders.gl/arrow",
-  "version": "4.0.4",
+  "version": "4.1.0-alpha.4",
   "description": "Simple columnar table loader for the Apache Arrow format",
   "license": "MIT",
   "type": "module",
@@ -13,12 +13,17 @@
     "url": "https://github.com/sensat/loaders.gl"
   },
   "keywords": [
-    "webgl",
     "loader",
-    "3d",
-    "mesh",
-    "point cloud",
-    "PLY"
+    "parser",
+    "writer",
+    "encoder",
+    "geoarrow",
+    "apache-arrow",
+    "arrow",
+    "binary columnar",
+    "cloud native",
+    "webgl",
+    "webgpu"
   ],
   "types": "dist/index.d.ts",
   "main": "dist/index.cjs",
@@ -48,9 +53,10 @@
     "build-worker2": "esbuild src/workers/arrow-worker.ts --bundle --outfile=dist/arrow-worker.js --platform=browser --external:{stream}"
   },
   "dependencies": {
-    "@loaders.gl/gis": "4.0.4",
-    "@loaders.gl/loader-utils": "4.0.4",
-    "@loaders.gl/schema": "4.0.4",
+    "@loaders.gl/gis": "4.1.0-alpha.4",
+    "@loaders.gl/loader-utils": "4.1.0-alpha.4",
+    "@loaders.gl/schema": "4.1.0-alpha.4",
+    "@loaders.gl/wkt": "4.1.0-alpha.4",
     "@math.gl/polygon": "4.0.0",
     "apache-arrow": "^13.0.0"
   },

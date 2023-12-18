@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import {AttributeMetadataInfo} from './helpers/attribute-metadata-info';
@@ -1022,6 +1023,7 @@ export default class I3SConverter {
             const arrayToEncode = new Uint8Array(copyArrayBuffer);
             const ktx2TextureData = encode(
               {...texture.image, data: arrayToEncode},
+              // @ts-expect-error - Worker encoder typing is still WIP
               KTX2BasisWriterWorker,
               {
                 ...KTX2BasisWriterWorker.options,

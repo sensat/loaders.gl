@@ -1,3 +1,7 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright vis.gl contributors
+
 import type {GLTFPostprocessed, FeatureTableJson} from '@loaders.gl/gltf';
 export type {FeatureTableJson};
 
@@ -321,10 +325,10 @@ export type Subtree = {
    */
   childSubtreeAvailability: Availability;
   // TODO: These are unused properties. Improve types when they are required
-  propertyTables: unknown;
-  tileMetadata: unknown;
-  contentMetadata: unknown;
-  subtreeMetadata: unknown;
+  propertyTables?: unknown;
+  tileMetadata?: unknown;
+  contentMetadata?: unknown;
+  subtreeMetadata?: unknown;
 };
 
 export type Availability = {

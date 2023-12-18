@@ -1,6 +1,6 @@
 {
   "name": "@loaders.gl/compression",
-  "version": "4.0.4",
+  "version": "4.1.0-alpha.4",
   "description": "Decompression and compression plugins for loaders.gl",
   "license": "MIT",
   "type": "module",
@@ -13,11 +13,14 @@
     "url": "https://github.com/sensat/loaders.gl"
   },
   "keywords": [
-    "webgl",
-    "loader",
-    "3d",
-    "mesh",
-    "point cloud"
+    "compression",
+    "decompression",
+    "zip",
+    "gzip",
+    "deflate",
+    "lz4",
+    "zstd",
+    "brotli"
   ],
   "types": "dist/index.d.ts",
   "main": "dist/index.cjs",
@@ -48,8 +51,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.3.1",
-    "@loaders.gl/loader-utils": "4.0.4",
-    "@loaders.gl/worker-utils": "4.0.4",
+    "@loaders.gl/loader-utils": "4.1.0-alpha.4",
+    "@loaders.gl/worker-utils": "4.1.0-alpha.4",
     "@types/brotli": "^1.3.0",
     "@types/pako": "^1.0.1",
     "fflate": "0.7.4",

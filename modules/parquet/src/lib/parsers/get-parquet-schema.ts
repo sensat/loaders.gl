@@ -1,4 +1,8 @@
 // loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
+// loaders.gl
 import {Schema} from '@loaders.gl/schema';
 import {ParquetReader} from '../../parquetjs/parser/parquet-reader';
 import {convertParquetSchema} from '../arrow/convert-schema-from-parquet';

@@ -1,3 +1,7 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright vis.gl contributors
+
 import type {Tiles3DLoaderOptions} from '../../tiles-3d-loader';
 import type {LoaderOptions} from '@loaders.gl/loader-utils';
 import {path} from '@loaders.gl/loader-utils';
@@ -79,13 +83,7 @@ function getRefine(refine?: string): TILE_REFINEMENT | string | undefined {
   }
 }
 
-function resolveUri(uri: string = '', basePath: string): string {
-  if (uri === '') {
-    // if there's no URI we don't want to make a request to just the basePath
-    // and the URI may not exist if we're dealing with a sparse implicit tileset
-    return '';
-  }
-
+function resolveUri(uri: string, basePath: string): string {
   // url scheme per RFC3986
   const urlSchemeRegex = /^[a-z][0-9a-z+.-]*:/i;
 
@@ -109,7 +107,10 @@ export function normalizeTileData(
   let tileContentUrl: string | undefined;
   if (tile.content) {
     const contentUri = tile.content.uri || tile.content?.url;
-    tileContentUrl = resolveUri(contentUri, basePath);
+    if (typeof contentUri !== 'undefined') {
+      // sparse implicit tilesets may not define content for all nodes
+      tileContentUrl = resolveUri(contentUri, basePath);
+    }
   }
   const tilePostprocessed: Tiles3DTileJSONPostprocessed = {
     ...tile,
@@ -201,7 +202,8 @@ export async function normalizeImplicitTileHeaders(
   const replacedUrlTemplate = replaceContentUrlTemplate(subtreesUriTemplate, 0, 0, 0, 0);
   const subtreeUrl = resolveUri(replacedUrlTemplate, basePath);
   const subtree = await load(subtreeUrl, Tile3DSubtreeLoader, options);
-  const contentUrlTemplate = resolveUri(tile.content?.uri, basePath);
+  const tileContentUri = tile.content?.uri;
+  const contentUrlTemplate = tileContentUri ? resolveUri(tileContentUri, basePath) : '';
   const refine = tileset?.root?.refine;
   // @ts-ignore
   const rootLodMetricValue = tile.geometricError;

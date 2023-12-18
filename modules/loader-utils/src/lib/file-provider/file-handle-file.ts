@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import {FileProvider} from './file-provider';
@@ -12,13 +13,25 @@ export class FileHandleFile implements FileProvider {
   /** The FileHandle from which data is provided */
   private file: NodeFile;
 
-  /** The file length in bytes */
-  private size: bigint;
-
   /** Create a new FileHandleFile */
-  constructor(path: string) {
-    this.file = new NodeFile(path, 'r');
-    this.size = this.file.bigsize;
+  constructor(path: string, append: boolean = false) {
+    this.file = new NodeFile(path, append ? 'a+' : 'r');
+  }
+
+  /**
+   * Truncates the file descriptor.
+   * @param length desired file lenght
+   */
+  async truncate(length: number): Promise<void> {
+    await this.file.truncate(length);
+  }
+
+  /**
+   * Append data to a file.
+   * @param buffer data to append
+   */
+  async append(buffer: Uint8Array): Promise<void> {
+    await this.file.append(buffer);
   }
 
   /** Close file */
@@ -96,6 +109,6 @@ export class FileHandleFile implements FileProvider {
    * the length (in bytes) of the data.
    */
   get length(): bigint {
-    return this.size;
+    return this.file.bigsize;
   }
 }
