@@ -1,3 +1,7 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
 import {XMLParser} from 'fast-xml-parser';
 import {ensureArray, intToRgba} from '../utils/tiff-utils';
 

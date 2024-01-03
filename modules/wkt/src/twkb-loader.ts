@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
@@ -8,7 +9,7 @@ import {parseTWKBGeometry, isTWKB} from './lib/parse-twkb';
 
 export type WKBLoaderOptions = LoaderOptions & {
   wkb?: {
-    shape: 'binary-geometry' | 'geometry';
+    shape: 'geojson-geometry' | 'binary-geometry';
   };
 };
 
@@ -28,7 +29,7 @@ export const TWKBWorkerLoader: Loader<Geometry, never, WKBLoaderOptions> = {
   tests: [isTWKB],
   options: {
     wkb: {
-      shape: 'binary-geometry'
+      shape: 'binary-geometry' // 'geojson-geometry'
     }
   }
 };

@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
@@ -51,7 +52,7 @@ test('TWKBLoader#2D', async (t) => {
 //     }
 
 //     if (testCase.wkbXdr && testCase.binary && testCase.geoJSON) {
-//       t.deepEqual(parseSync(testCase.twkbXdr, TWKBLoader, {wkb: {shape: 'geometry'}}), testCase.geoJSON);
+//       t.deepEqual(parseSync(testCase.twkbXdr, TWKBLoader, {wkb: {shape: 'geojson-geometry'}}), testCase.geoJSON);
 //     }
 //   }
 

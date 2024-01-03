@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import {AttributeMetadataInfo} from './helpers/attribute-metadata-info';
@@ -50,7 +51,7 @@ import {GEOMETRY_DEFINITION as geometryDefinitionTemlate} from './json-templates
 import {SHARED_RESOURCES as sharedResourcesTemplate} from './json-templates/shared-resources';
 import {validateNodeBoundingVolumes} from './helpers/node-debug';
 import {KTX2BasisWriterWorker} from '@loaders.gl/textures';
-import {LoaderWithParser} from '@loaders.gl/loader-utils';
+import {FileHandleFile, LoaderWithParser} from '@loaders.gl/loader-utils';
 import {I3SMaterialDefinition, TextureSetDefinitionFormats} from '@loaders.gl/i3s';
 import {ImageWriter} from '@loaders.gl/images';
 import {GLTFImagePostprocessed} from '@loaders.gl/gltf';
@@ -80,6 +81,7 @@ import {createBoundingVolume} from '@loaders.gl/tiles';
 import {TraversalConversionProps, traverseDatasetWith} from './helpers/tileset-traversal';
 import {analyzeTileContent, mergePreprocessData} from './helpers/preprocess-3d-tiles';
 import {Progress} from './helpers/progress';
+import {addOneFile, composeHashFile} from '@loaders.gl/zip';
 
 const ION_DEFAULT_TOKEN = process.env?.IonToken;
 const HARDCODED_NODES_PER_PAGE = 64;
@@ -563,6 +565,9 @@ export default class I3SConverter {
         this.options.sevenZipExe
       );
 
+      const hashTable = await composeHashFile(new FileHandleFile(slpkFileName));
+      await addOneFile(slpkFileName, hashTable, '@specialIndexFileHASH128@');
+
       // TODO: `addFileToZip` corrupts archive so it can't be validated with windows i3s_converter.exe
       // const fileHash128Path = `${tilesetPath}/@specialIndexFileHASH128@`;
       // try {
@@ -1022,6 +1027,7 @@ export default class I3SConverter {
             const arrayToEncode = new Uint8Array(copyArrayBuffer);
             const ktx2TextureData = encode(
               {...texture.image, data: arrayToEncode},
+              // @ts-expect-error - Worker encoder typing is still WIP
               KTX2BasisWriterWorker,
               {
                 ...KTX2BasisWriterWorker.options,

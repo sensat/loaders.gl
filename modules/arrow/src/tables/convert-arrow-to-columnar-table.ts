@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import type {ColumnarTable} from '@loaders.gl/schema';
@@ -24,6 +25,7 @@ export function convertArrowToColumnarTable(table: ArrowTable): ColumnarTable {
 
   return {
     shape: 'columnar-table',
+    schema: table.schema,
     data: columnarTable
   };
 }

@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import {isTable, makeBatchFromTable, type Batch} from '@loaders.gl/schema';
@@ -111,6 +112,7 @@ async function parseWithLoaderInBatches(
   }
 
   const metadataBatch = {
+    shape: 'metadata',
     batchType: 'metadata',
     metadata: {
       _loader: loader,

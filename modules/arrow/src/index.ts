@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import type {ArrowLoaderOptions} from './arrow-loader';
@@ -52,7 +53,7 @@ export type {
   BinaryGeometriesFromArrowOptions
 } from './geoarrow/convert-geoarrow-to-binary-geometry';
 export {
-  BINARY_GEOMETRY_TEMPLATE,
+  getBinaryGeometryTemplate,
   getBinaryGeometriesFromArrow,
   getTriangleIndices,
   getMeanCentersFromBinaryGeometries
@@ -60,10 +61,16 @@ export {
 
 export {updateBoundsFromGeoArrowSamples} from './geoarrow/get-arrow-bounds';
 
-export {parseGeometryFromArrow} from './geoarrow/convert-geoarrow-to-geojson';
+export {parseGeometryFromArrow} from './geoarrow/convert-geoarrow-to-geojson-geometry';
 
 export {convertArrowToGeoJSONTable} from './tables/convert-arrow-to-geojson-table';
 
 // EXPERIMENTAL WORKER
+export {hardClone} from './workers/hard-clone';
 
-export {TriangulationWorker, triangulateOnWorker} from './triangulate-on-worker';
+export type {ParseGeoArrowInput, ParseGeoArrowResult} from './triangulate-on-worker';
+export {
+  TriangulationWorker,
+  triangulateOnWorker,
+  parseGeoArrowOnWorker
+} from './triangulate-on-worker';

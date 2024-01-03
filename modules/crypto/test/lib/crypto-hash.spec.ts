@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 /** eslint-disable @typescript-eslint/unbound-method */
@@ -69,12 +70,7 @@ test('CryptoHash#hash(MD5 = default)', async (t) => {
   t.equal(hash, 'YnxTb+lyen1CsNkpmLv+qA==', 'binary data MD5 hash is correct');
 
   hash = await cryptoHash.hash(repeatedData, 'base64');
-  t.equal(
-    hash,
-    // '2d4uZUoLXXO/XWJGnrVl5Q==',
-    'uZ5c9e72WDu/VNYYdsg/gg==',
-    'repeated data MD5 hash is correct'
-  );
+  t.equal(hash, '2d4uZUoLXXO/XWJGnrVl5Q==', 'repeated data MD5 hash is correct');
 
   t.end();
 });

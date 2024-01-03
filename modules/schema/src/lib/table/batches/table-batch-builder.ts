@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import type {Schema} from '../../../types/schema';
@@ -10,11 +11,11 @@ import {ColumnarTableBatchAggregator} from './columnar-table-batch-aggregator';
 
 // TODO define interface instead
 type TableBatchBuilderOptions = {
-  shape: 'row-table' | 'array-row-table' | 'object-row-table' | 'columnar-table' | 'arrow-table';
+  shape?: 'array-row-table' | 'object-row-table' | 'columnar-table' | 'arrow-table';
   batchSize?: number | 'auto';
   batchDebounceMs?: number;
-  limit: number;
-  _limitMB: number;
+  limit?: number;
+  _limitMB?: number;
 };
 
 type GetBatchOptions = {
@@ -23,7 +24,7 @@ type GetBatchOptions = {
 };
 
 const DEFAULT_OPTIONS: Required<TableBatchBuilderOptions> = {
-  shape: 'array-row-table',
+  shape: undefined!,
   batchSize: 'auto',
   batchDebounceMs: 0,
   limit: 0,
@@ -172,8 +173,6 @@ export class TableBatchBuilder {
 
   private _getTableBatchType(): TableBatchConstructor {
     switch (this.options.shape) {
-      case 'row-table':
-        return BaseTableBatchAggregator;
       case 'array-row-table':
       case 'object-row-table':
         return RowTableBatchAggregator;
@@ -185,7 +184,7 @@ export class TableBatchBuilder {
         }
         return TableBatchBuilder.ArrowBatch;
       default:
-        throw new Error(ERR_MESSAGE);
+        return BaseTableBatchAggregator;
     }
   }
 }
