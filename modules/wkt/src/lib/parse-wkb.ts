@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import type {
@@ -23,7 +24,11 @@ export function parseWKB(
   switch (shape) {
     case 'binary-geometry':
       return binaryGeometry;
+    case 'geojson-geometry':
+      return binaryToGeometry(binaryGeometry);
     case 'geometry':
+      // eslint-disable-next-line no-console
+      console.error('WKBLoader: "geometry" shape is deprecated, use "binary-geometry" instead');
       return binaryToGeometry(binaryGeometry);
     default:
       throw new Error(shape);

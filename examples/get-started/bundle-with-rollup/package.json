@@ -4,6 +4,7 @@
   "description": "Minimal working example of using loaders.gl with rollup.",
   "private": true,
   "license": "MIT",
+  "type": "module",
   "contributors": [
     "@nshen"
   ],
@@ -24,6 +25,6 @@
     "@rollup/plugin-typescript": "^11.0.0",
     "rollup": "^3.17.0",
     "serve": "^14.2.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.3.0"
   }
 }

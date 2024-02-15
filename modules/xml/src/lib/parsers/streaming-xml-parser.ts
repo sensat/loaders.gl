@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 // @ts-nocheck
@@ -90,7 +91,7 @@ export class StreamingXMLParser {
     } else if (Array.isArray(container)) {
       container.push(value);
     } else if (container) {
-      // debugger
+      // break for debug
     }
   }
 

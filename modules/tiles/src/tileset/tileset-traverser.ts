@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import type {Tile3D} from './tile-3d';
@@ -11,7 +12,6 @@ export type TilesetTraverserProps = {
   loadSiblings?: boolean;
   skipLevelOfDetail?: boolean;
   updateTransforms?: boolean;
-  maximumScreenSpaceError?: number;
   onTraversalEnd?: (frameState) => any;
   viewportTraversersMap?: Record<string, any>;
   basePath?: string;
@@ -20,7 +20,6 @@ export type TilesetTraverserProps = {
 export const DEFAULT_PROPS: Required<TilesetTraverserProps> = {
   loadSiblings: false,
   skipLevelOfDetail: false,
-  maximumScreenSpaceError: 2,
   updateTransforms: true,
   onTraversalEnd: () => {},
   viewportTraversersMap: {},
@@ -324,7 +323,7 @@ export class TilesetTraverser {
       screenSpaceError = tile.getScreenSpaceError(frameState, true);
     }
 
-    return screenSpaceError > this.options.maximumScreenSpaceError;
+    return screenSpaceError > tile.tileset.memoryAdjustedScreenSpaceError;
   }
 
   updateTileVisibility(tile: Tile3D, frameState: FrameState): void {
@@ -364,38 +363,35 @@ export class TilesetTraverser {
   executeEmptyTraversal(root: Tile3D, frameState: FrameState): boolean {
     let allDescendantsLoaded = true;
     const stack = this._emptyTraversalStack;
-
     stack.push(root);
 
-    while (stack.length > 0 && allDescendantsLoaded) {
+    while (stack.length > 0) {
       const tile = stack.pop();
+
+      const traverse = !tile.hasRenderContent && this.canTraverse(tile, frameState, false, false);
+      const emptyLeaf = !tile.hasRenderContent && tile.children.length === 0;
+
+      // Traversal stops but the tile does not have content yet
+      // There will be holes if the parent tries to refine to its children, so don't refine
+      // One exception: a parent may refine even if one of its descendants is an empty leaf
+      if (!traverse && !tile.contentAvailable && !emptyLeaf) {
+        allDescendantsLoaded = false;
+      }
 
       this.updateTile(tile, frameState);
 
       if (!tile.isVisibleAndInRequestVolume) {
-        // Load tiles that aren't visible since they are still needed for the parent to refine
         this.loadTile(tile, frameState);
+        this.touchTile(tile, frameState);
       }
-
-      this.touchTile(tile, frameState);
-
-      // Only traverse if the tile is empty - traversal stop at descendants with content
-      const traverse = !tile.hasRenderContent && this.canTraverse(tile, frameState, false, true);
 
       if (traverse) {
         const children = tile.children;
         for (const child of children) {
-          // eslint-disable-next-line max-depth
-          if (stack.find(child)) {
-            stack.delete(child);
-          }
           stack.push(child);
         }
-      } else if (!tile.contentAvailable && !tile.hasEmptyContent) {
-        allDescendantsLoaded = false;
       }
     }
-
     return allDescendantsLoaded;
   }
 }

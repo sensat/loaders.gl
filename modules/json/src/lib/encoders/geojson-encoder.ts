@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 // Copyright 2022 Foursquare Labs, Inc.
 
@@ -14,7 +15,7 @@ import type {GeoJSONWriterOptions} from '../../geojson-writer';
  */
 // eslint-disable-next-line max-statements
 export async function* encodeTableAsGeojsonInBatches(
-  batchIterator: AsyncIterable<TableBatch>, // | Iterable<TableBatch>,
+  batchIterator: AsyncIterable<TableBatch> | Iterable<TableBatch>, // | Iterable<TableBatch>,
   inputOpts: GeoJSONWriterOptions = {}
 ): AsyncIterable<ArrayBuffer> {
   // @ts-expect-error

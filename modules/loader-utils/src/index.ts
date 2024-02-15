@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 // TYPES
@@ -63,6 +64,7 @@ export {parseJSON} from './lib/parser-utils/parse-json';
 export {
   sliceArrayBuffer,
   concatenateArrayBuffers,
+  concatenateArrayBuffersFromArray,
   concatenateTypedArrays,
   compareArrayBuffers
 } from './lib/binary-utils/array-buffer-utils';
