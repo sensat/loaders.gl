@@ -1,5 +1,110 @@
 # CHANGELOG for loaders.gl
 
+## v4.2 (alpha)
+
+## v4.1
+
+### v4.1.1
+
+- fix(flatgeobuf): Add missing index files (#2884)
+
+### v4.1.0
+
+### v4.1.0-alpha.11
+
+- fix(tile-converter): add KHR_materials_unlit extension to materials (#2870)
+- fix(tile-converter): fix status dump structure (#2872)
+- Browser-test fix (#2874)
+- chore(zip): zip composition feature integration (#2871)
+- fix(i3s-scene-parser): provide unsupported layer types in the exception (#2863)
+- chore: Update examples to type: module (#2867)
+- chore: Require apache-arrow v15 or higher (#2865)
+- chore: Website polish (#2866)
+- docs: Update PMTiles format docs (#2864)
+- chore(zip): Zip composition function added (#2860)
+
+### v4.1.0-alpha.10
+
+- feat(tile-converter): add convertion status dump file (#2858)
+- chore: Fix publint issues, step 1 (#2862)
+- docs: Improve flatgeobuf docs (#2859)
+- concatenateArrayBuffers fix (#2856)
+- feat(tiles): Memory adjusted screen space error (#2851)
+- chore(deps): bump follow-redirects from 1.15.2 to 1.15.4 in /website (#2852)
+
+### v4.1.0-alpha.9
+
+- fix(tile-converter): support portable NodeJS (#2854)
+
+### v4.1.0-alpha.8
+
+- fix(flatgeobuf): restore worker build (#2855)
+
+### v4.1.0-alpha.7
+
+- chore(flatgeobuf): fork flatgeobuf TS to fix bundling and import issues (#2853)
+
+### v4.1.0-alpha.6
+
+- feat(tile-converter): --add-hash mode (#2849)
+
+### v4.1.0-alpha.5
+
+- chore(tile-converter): hash file creation and addition to the slpk implemented (#2848)
+- fix(3d-tiles): Update the empty traversal algorithm to match CesiumJS, possible fix for low-res flickering (#2847)
+- chore: Add missing icon for I3S BSL example (#2845)
+
+### v4.1.0-alpha.4
+
+- feat(zip): adding file to the end of zip archive implementation (#2842)
+- fix(3d-tiles): loadExplicitBitstream use offset+length to extract from combined binary blob (#2844)
+- chore(website): Add I3S Building Scene Layer as a separate example (#2840)
+- fix(loader-utils): Guard against infinite recursion (#2838)
+- feat(geotiff): Fix GeoTIFFLoader (#2841)
+- feat(geotiff): RGB GeoTIFFLoader (#2839)
+- feat(GeoArrow): add optional delay between batches in parseArrowInBatches (#2836)
+
+### v4.1.0-alpha.3
+
+- feat(mvt): Add templateUrl etc to MVTSource. (#2837)
+- fix(mvt): TileJSONLoader options.maxValues default (#2835)
+- chore(deps): bump vite from 4.4.9 to 4.5.1 (#2822)
+- fix(3d-tiles): Fix implicit tileset subtree parsing (#2823)
+- fix(json): Fix row-object and array-object shape inference (#2833)
+- fix: Fix version injection (#2834)
+- fix(zip): Local file header generation implemented (#2832)
+- fix: webpack bson bundling issue (#2831)
+- chore: Start adopting SPDX license headers (#2828)
+- chore: ensure all Writers have an encode() method (#2826)
+- feat(zip): Added append and truncate functionality (#2800)
+- fix(crypto): crc32 algorithm fix (#2819)
+- fix(crypto):  Reuse of Hash instance failures (#2824)
+
+### v4.1.0-alpha.2
+
+- feat(arrow): Triangulate on worker (#2789)
+
+### v4.1.0-alpha.1
+
+- feat(zip): cd header and zip64 info generation implemented (#2792)
+- fix: wms example (#2814)
+- fix(tile-converter): trailing slash Removing from path in i3s-server (#2813)
+- docs: fgb and tilejson docs, streamline fgbloader exports (#2811)
+- chore: upgrade to vite 5 (#2812)
+- chore: typescript 5.3 (#2810)
+- fix(GeoArrow): handle tessellation error & improve mean centers (#2803)
+- chore(parquet): GeoParquetLoader, collect the parquet loader zoo in one file (#2809)
+- GLTF: inline emod function to remove loaders.gl/math dependency (#2808)
+- chore(website): polish (#2807)
+- feat(website): Add Shapefile and KML examples (#2806)
+- chore(website): minor touches (#2805)
+- docs(las): Mark LAS v1.4 as not supported (#2804)
+- feat(website): Add GeoArrow example (#2802)
+- feat(flatgeobuf): Extract arrow compatible schema (#2801)
+- chore: update package.json keywords (#2797)
+- Convert GetImageParameters to WMSGetMapParameters (#2799)
+- chore(arrow): Support WKT and WKB geoarrow encodings (v4.1) (#2798)
+
 ## v4.0
 
 ### v4.0.5
@@ -2158,7 +2263,7 @@
 - core: Fixes to `parse` (#345)
 - docs: front page update
 - core: Add error handling to `parse*` functions (#342)
-- core: Name workers for debugger (#339)
+- core: Name workers for easier debugging (#339)
 - fix bug with read property match of undefined (#340) (#341)
 - Fix tranformMatrix regression (#338)
 - Add back DracoWorkerLoader (#337)

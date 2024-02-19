@@ -1,9 +1,14 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import {MD5Hash} from '@loaders.gl/crypto';
-import {FileProvider} from '@loaders.gl/loader-utils';
-import {makeZipCDHeaderIterator} from './parse-zip/cd-file-header';
+import {
+  FileProvider,
+  concatenateArrayBuffers,
+  concatenateArrayBuffersFromArray
+} from '@loaders.gl/loader-utils';
+import {ZipCDFileHeader, makeZipCDHeaderIterator} from './parse-zip/cd-file-header';
 
 /**
  * Reads hash file from buffer and returns it in ready-to-use form
@@ -40,6 +45,17 @@ export async function makeHashTableFromZipHeaders(
   fileProvider: FileProvider
 ): Promise<Record<string, bigint>> {
   const zipCDIterator = makeZipCDHeaderIterator(fileProvider);
+  return getHashTable(zipCDIterator);
+}
+
+/**
+ * creates hash table from file offset iterator
+ * @param zipCDIterator iterator to use
+ * @returns hash table
+ */
+export async function getHashTable(
+  zipCDIterator: AsyncIterable<ZipCDFileHeader>
+): Promise<Record<string, bigint>> {
   const md5Hash = new MD5Hash();
   const textEncoder = new TextEncoder();
 
@@ -53,4 +69,69 @@ export async function makeHashTableFromZipHeaders(
   }
 
   return hashTable;
+}
+
+/** item of the file offset list */
+type FileListItem = {
+  fileName: string;
+  localHeaderOffset: bigint;
+};
+
+/**
+ * creates hash file that later can be added to the SLPK archive
+ * @param zipCDIterator iterator to use
+ * @returns ArrayBuffer containing hash file
+ */
+export async function composeHashFile(
+  zipCDIterator: AsyncIterable<FileListItem> | Iterable<FileListItem>
+): Promise<ArrayBuffer> {
+  const md5Hash = new MD5Hash();
+  const textEncoder = new TextEncoder();
+
+  const hashArray: ArrayBuffer[] = [];
+
+  for await (const cdHeader of zipCDIterator) {
+    const filename = cdHeader.fileName.split('\\').join('/').toLocaleLowerCase();
+    const arrayBuffer = textEncoder.encode(filename).buffer;
+    const md5 = await md5Hash.hash(arrayBuffer, 'hex');
+    hashArray.push(
+      concatenateArrayBuffers(hexStringToBuffer(md5), bigintToBuffer(cdHeader.localHeaderOffset))
+    );
+  }
+
+  const bufferArray = hashArray.sort(compareHashes);
+
+  return concatenateArrayBuffersFromArray(bufferArray);
+}
+
+/**
+ * Function to compare md5 hashes according to https://github.com/Esri/i3s-spec/blob/master/docs/2.0/slpk_hashtable.pcsl.md
+ * @param arrA first hash to compare
+ * @param arrB second hash to compare
+ * @returns 0 if equal, negative number if a<b, pozitive if a>b
+ */
+function compareHashes(arrA: ArrayBuffer, arrB: ArrayBuffer): number {
+  const a = new BigUint64Array(arrA);
+  const b = new BigUint64Array(arrB);
+
+  return Number(a[0] === b[0] ? a[1] - b[1] : a[0] - b[0]);
+}
+
+/**
+ * converts hex string to buffer
+ * @param str hex string to convert
+ * @returns conversion result
+ */
+function hexStringToBuffer(str: string): ArrayBuffer {
+  const byteArray = str.match(/../g)?.map((h) => parseInt(h, 16));
+  return new Uint8Array(byteArray ?? new Array(16)).buffer;
+}
+
+/**
+ * converts bigint to buffer
+ * @param n bigint to convert
+ * @returns convertion result
+ */
+function bigintToBuffer(n: bigint): ArrayBuffer {
+  return new BigUint64Array([n]).buffer;
 }

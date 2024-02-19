@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import {LoaderOptions} from '../../loader-types';
@@ -18,14 +19,21 @@ export function mergeLoaderOptions<Options extends LoaderOptions>(
 
 function mergeOptionsRecursively(
   baseOptions: Record<string, unknown>,
-  newOptions: Record<string, unknown>
+  newOptions: Record<string, unknown>,
+  level = 0
 ): Record<string, unknown> {
+  // Sanity check (jest test runner overwrites the console object which can lead to infinite recursion)
+  if (level > 3) {
+    return newOptions;
+  }
+
   const options = {...baseOptions};
   for (const [key, newValue] of Object.entries(newOptions)) {
     if (newValue && typeof newValue === 'object' && !Array.isArray(newValue)) {
       options[key] = mergeOptionsRecursively(
         (options[key] as Record<string, unknown>) || {},
-        newOptions[key] as Record<string, unknown>
+        newOptions[key] as Record<string, unknown>,
+        level + 1
       );
       // Object.assign(options[key] as object, newOptions[key]);
     } else {

@@ -1,3 +1,7 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright vis.gl contributors
+
 import type {Tiles3DLoaderOptions} from '../../tiles-3d-loader';
 import type {LoaderOptions} from '@loaders.gl/loader-utils';
 import {path} from '@loaders.gl/loader-utils';
@@ -109,7 +113,10 @@ export function normalizeTileData(
   let tileContentUrl: string | undefined;
   if (tile.content) {
     const contentUri = tile.content.uri || tile.content?.url;
-    tileContentUrl = resolveUri(contentUri, basePath);
+    if (typeof contentUri !== 'undefined') {
+      // sparse implicit tilesets may not define content for all nodes
+      tileContentUrl = resolveUri(contentUri, basePath);
+    }
   }
   const tilePostprocessed: Tiles3DTileJSONPostprocessed = {
     ...tile,
@@ -201,7 +208,8 @@ export async function normalizeImplicitTileHeaders(
   const replacedUrlTemplate = replaceContentUrlTemplate(subtreesUriTemplate, 0, 0, 0, 0);
   const subtreeUrl = resolveUri(replacedUrlTemplate, basePath);
   const subtree = await load(subtreeUrl, Tile3DSubtreeLoader, options);
-  const contentUrlTemplate = resolveUri(tile.content?.uri, basePath);
+  const tileContentUri = tile.content?.uri;
+  const contentUrlTemplate = tileContentUri ? resolveUri(tileContentUri, basePath) : '';
   const refine = tileset?.root?.refine;
   // @ts-ignore
   const rootLodMetricValue = tile.geometricError;

@@ -1,3 +1,7 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright vis.gl contributors
+
 import './lib/classes/tile-3d-feature-table.spec';
 import './lib/classes/tile-3d-batch-table.spec';
 
@@ -9,6 +13,7 @@ import './lib/parsers/parse-3d-tile-header.spec';
 // TODO v4.0 restore these tests
 // import './lib/parsers/helpers/gpu-memory-usage.spec';
 import './lib/parsers/helpers/normalize-3d-tile-colors.spec';
+import './lib/parsers/helpers/parse-3d-tile-subtree.spec';
 
 // import './styles/expression.spec';
 // import './styles/conditions-expression.spec';

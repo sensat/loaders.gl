@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import type {LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
@@ -72,6 +73,7 @@ function parseTextSync(
       const table: GeoJSONTable = {
         shape: 'geojson-table',
         type: 'FeatureCollection',
+        schema: {metadata: {}, fields: []},
         features: geojson.features
       };
       return table;

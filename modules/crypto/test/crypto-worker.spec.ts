@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
@@ -16,7 +17,7 @@ test('CryptoWorker', async (t) => {
     _workerType: 'test'
   });
 
-  t.equal(hash, 'beRTbw==', 'CRC32 Hash correct');
+  t.equal(hash, 'khuskQ==', 'CRC32 Hash correct');
 
   hash = await processOnWorker(CryptoWorker, binaryData.slice(0), {
     operation: 'crc32c',

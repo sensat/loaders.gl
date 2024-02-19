@@ -1,8 +1,13 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 // Copyright Foursquare, Inc 20222
 
-import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
+import {
+  type WriterWithEncoder,
+  type WriterOptions,
+  concatenateArrayBuffersAsync
+} from '@loaders.gl/loader-utils';
 import type {Table, TableBatch} from '@loaders.gl/schema';
 import {encodeTableAsGeojsonInBatches} from './lib/encoders/geojson-encoder';
 
@@ -21,13 +26,20 @@ export const GeoJSONWriter: WriterWithEncoder<Table, TableBatch, GeoJSONWriterOp
   name: 'GeoJSON',
   extensions: ['geojson'],
   mimeTypes: ['application/geo+json'],
+  text: true,
   options: {
     geojson: {
       featureArray: false,
       geometryColumn: null
     }
   },
-  text: true,
-  encodeInBatches: (tableIterator: AsyncIterable<TableBatch>, options) =>
+
+  async encode(table: Table, options: GeoJSONWriterOptions): Promise<ArrayBuffer> {
+    const tableIterator = [table] as TableBatch[];
+    const batches = encodeTableAsGeojsonInBatches(tableIterator, options);
+    return await concatenateArrayBuffersAsync(batches);
+  },
+
+  encodeInBatches: (tableIterator: AsyncIterable<TableBatch> | Iterable<TableBatch>, options) =>
     encodeTableAsGeojsonInBatches(tableIterator, options)
 };

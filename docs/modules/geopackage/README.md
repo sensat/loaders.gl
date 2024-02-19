@@ -1,4 +1,4 @@
-# Overview 🚧
+# Overview
 
 ![ogc-logo](../../images/logos/ogc-logo-60.png)
 
@@ -14,7 +14,7 @@ npm install @loaders.gl/geopackage
 
 | Loader                                                                        |
 | ----------------------------------------------------------------------------- |
-| [`GeoPackageLoader`](modules/geopackage/docs/api-reference/geopackage-loader) |
+| [`GeoPackageLoader`](/docs/modules/geopackage/api-reference/geopackage-loader) |
 
 ## Attribution
 

@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import {
@@ -180,10 +181,6 @@ export type LoaderWithParser<DataT = any, BatchT = any, LoaderOptionsT = LoaderO
     options?: LoaderOptionsT,
     context?: LoaderContext
   ) => DataT;
-  /** Parse atomically from a string asynchronously */
-  parseText?: (text: string, options?: LoaderOptionsT, context?: LoaderContext) => Promise<DataT>;
-  /** Parse atomically from a string synchronously */
-  parseTextSync?: (text: string, options?: LoaderOptionsT, context?: LoaderContext) => DataT;
   /** Parse batches of data from an iterator (e.g. fetch stream), return an iterator that yield parsed batches. */
   parseInBatches?: (
     iterator: AsyncIterable<ArrayBuffer> | Iterable<ArrayBuffer>,
@@ -196,6 +193,11 @@ export type LoaderWithParser<DataT = any, BatchT = any, LoaderOptionsT = LoaderO
     options?: LoaderOptionsT,
     context?: LoaderContext
   ) => AsyncIterable<BatchT>;
+
+  /** Parse atomically from a string asynchronously */
+  parseText?: (text: string, options?: LoaderOptionsT, context?: LoaderContext) => Promise<DataT>;
+  /** Parse atomically from a string synchronously */
+  parseTextSync?: (text: string, options?: LoaderOptionsT, context?: LoaderContext) => DataT;
 };
 
 /**

@@ -8,7 +8,7 @@
 
  Create as many sidebars as you want.
  */
- const sidebars = {
+const sidebars = {
   examplesSidebar: [
     {
       type: 'doc',
@@ -17,30 +17,23 @@
     },
     {
       type: 'category',
-      label: 'Geospatial Loaders',
+      label: 'Geospatial Table Loaders',
       items: [
-        'geoparquet',
-        // 'geopackage', sql.js bundling issue...
         'flatgeobuf',
-        'geojson'
-      ],
+        'geoarrow',
+        'geoparquet',
+        'geojson',
+        'geospatial/shapefile',
+        'geospatial/kml',
+        'geospatial/gpx',
+        'geospatial/tcx',
+        'geopackage'
+      ]
     },
     {
       type: 'category',
       label: 'Geospatial Tile Loaders',
-      items: [
-        'pmtiles',
-        'wms'
-      ]
-    },
-    {
-      type: 'category',
-      label: '3D Tile Loaders',
-      items: [
-        'i3s',
-        // 'i3s-arcgis',
-        '3d-tiles'
-      ]
+      items: ['pmtiles', 'wms', 'i3s', 'i3s-building-scene-layer', '3d-tiles']
     },
     {
       type: 'category',
@@ -49,7 +42,7 @@
         'textures',
         // 'gltf',
         'pointcloud'
-      ],
+      ]
     }
     // {
     //   type: 'category',

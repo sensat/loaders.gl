@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import type {LoaderWithParser} from '@loaders.gl/loader-utils';
@@ -51,7 +52,7 @@ function parseGeometry(
         ? geometry.buffer.slice(geometry.byteOffset, geometry.byteOffset + geometry.byteLength)
         : (geometry as ArrayBuffer);
       const geojson = wkbLoader?.parseSync?.(arrayBuffer, {
-        wkb: {shape: 'geometry'}
+        wkb: {shape: 'geojson-geometry'}
       }) as unknown as Geometry;
       return geojson; // binaryGeometry ? binaryToGeometry(binaryGeometry) : null;
     // const binaryGeometry = WKBLoader.parseSync?.(geometry);

@@ -1,4 +1,5 @@
-// loaders.gl, MIT license
+// loaders.gl
+// SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
 import type {Loader, LoaderWithParser} from '@loaders.gl/loader-utils';
@@ -101,7 +102,7 @@ function parseInBatches(asyncIterator, options): AsyncIterable<TableBatch> {
     case 'binary':
       return makeBinaryGeometryIterator(geojsonIterator);
     default:
-      return geojsonIterator;
+      return geojsonIterator as AsyncIterable<TableBatch>;
   }
 }
 
