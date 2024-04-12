@@ -12,6 +12,7 @@ import {openJson, writeFile, writeFileForSlpk} from '../../lib/utils/file-utils'
 import I3SConverter from '../i3s-converter';
 import {NODE as nodeTemplate} from '../json-templates/node';
 import {I3SConvertedResources} from '../types';
+import {DumpMetadata} from '../../lib/utils/conversion-dump';
 
 /**
  * Wrapper for https://github.com/Esri/i3s-spec/blob/master/docs/1.7/3DNodeIndexDocument.cmn.md data
@@ -84,7 +85,7 @@ export class NodeIndexDocument {
 
     let data: Node3DIndexDocument | null = this.data;
     if (this.converter.options.instantNodeWriting) {
-      data = (await this.load()) as Node3DIndexDocument;
+      data = await this.load();
     }
     if (data) {
       data.children = data.children ?? [];
@@ -226,14 +227,21 @@ export class NodeIndexDocument {
    * @param converter - I3SConverter instance
    * @returns NodeIndexDocument instance
    */
-  static async createNode(
-    parentNode: NodeIndexDocument,
-    boundingVolumes: BoundingVolumes,
-    lodSelection: LodSelection[],
-    nodeInPage: NodeInPage,
-    resources: I3SConvertedResources,
-    converter: I3SConverter
-  ): Promise<NodeIndexDocument> {
+  static async createNode({
+    parentNode,
+    boundingVolumes,
+    lodSelection,
+    nodeInPage,
+    resources,
+    converter
+  }: {
+    parentNode: NodeIndexDocument;
+    boundingVolumes: BoundingVolumes;
+    lodSelection: LodSelection[];
+    nodeInPage: NodeInPage;
+    resources: I3SConvertedResources;
+    converter: I3SConverter;
+  }): Promise<NodeIndexDocument> {
     const data = await NodeIndexDocument.createNodeIndexDocument(
       parentNode,
       boundingVolumes,
@@ -282,15 +290,15 @@ export class NodeIndexDocument {
    * @param resources.attributes - feature attributes
    * @return 3DNodeIndexDocument https://github.com/Esri/i3s-spec/blob/master/docs/1.7/3DNodeIndexDocument.cmn.md object
    */
+  // eslint-disable-next-line complexity
   static async createNodeIndexDocument(
     parentNode: NodeIndexDocument,
     boundingVolumes: BoundingVolumes,
     lodSelection: LodSelection[],
     nodeInPage: NodeInPage,
-    resources: I3SConvertedResources
+    resources: I3SConvertedResources | DumpMetadata
   ): Promise<Node3DIndexDocument> {
-    const {texture, attributes} = resources;
-    const nodeId = nodeInPage.index!;
+    const nodeId = nodeInPage.index;
     const parentNodeData = await parentNode.load();
     const nodeData = {
       version: parentNodeData.version,
@@ -313,19 +321,29 @@ export class NodeIndexDocument {
       node.geometryData = [{href: './geometries/0'}];
       node.sharedResource = {href: './shared'};
 
-      if (texture) {
+      if (
+        ('texture' in resources && resources.texture) ||
+        ('texelCountHint' in resources && resources.texelCountHint)
+      ) {
         node.textureData = [{href: './textures/0'}, {href: './textures/1'}];
       }
 
       if (
-        attributes &&
-        attributes.length &&
-        parentNode.converter.layers0?.attributeStorageInfo?.length
+        ('attributes' in resources &&
+          resources.attributes &&
+          resources.attributes.length &&
+          parentNode.converter.layers0?.attributeStorageInfo?.length) ||
+        ('attributesCount' in resources &&
+          resources.attributesCount &&
+          parentNode.converter.layers0?.attributeStorageInfo?.length)
       ) {
+        const attributesLength =
+          ('attributes' in resources ? resources.attributes?.length : resources.attributesCount) ||
+          0;
         node.attributeData = [];
         const minimumLength =
-          attributes.length < parentNode.converter.layers0.attributeStorageInfo.length
-            ? attributes.length
+          attributesLength < parentNode.converter.layers0.attributeStorageInfo.length
+            ? attributesLength
             : parentNode.converter.layers0.attributeStorageInfo.length;
         for (let index = 0; index < minimumLength; index++) {
           const folderName = parentNode.converter.layers0.attributeStorageInfo[index].key;

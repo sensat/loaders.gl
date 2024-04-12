@@ -1,6 +1,6 @@
 {
   "name": "@loaders.gl/worker-utils",
-  "version": "4.1.1",
+  "version": "4.2.0",
   "description": "Utilities for running tasks on worker threads",
   "license": "MIT",
   "type": "module",
@@ -34,24 +34,24 @@
     "README.md"
   ],
   "browser": {
-    "child_process": false,
-    "module": false,
-    "path": false,
-    "fs": false,
-    "./src/lib/node/worker_threads.ts": "./src/lib/node/worker_threads-browser.ts",
+    "./dist/esm/lib/process-utils/child-process-proxy.js": false,
+    "./dist/lib/node/require-utils.node.js": false,
     "./dist/lib/node/worker_threads.js": "./dist/lib/node/worker_threads-browser.js",
     "./src/lib/node/require-utils.node.ts": false,
-    "./dist/lib/node/require-utils.node.js": false,
+    "./src/lib/node/worker_threads.ts": "./src/lib/node/worker_threads-browser.ts",
     "./src/lib/process-utils/child-process-proxy.ts": false,
-    "./dist/esm/lib/process-utils/child-process-proxy.js": false
+    "child_process": false,
+    "fs": false,
+    "module": false,
+    "path": false
   },
   "scripts": {
     "pre-build": "npm run build-worker && npm run build-worker-node",
     "build-worker": "esbuild src/workers/null-worker.ts --outfile=dist/null-worker.js --target=esnext --bundle --sourcemap --define:__VERSION__=\\\"$npm_package_version\\\"",
     "build-worker-node": "esbuild src/workers/null-worker.ts --outfile=dist/null-worker-node.js --platform=node --target=node16 --bundle --sourcemap --define:__VERSION__=\\\"$npm_package_version\\\""
   },
-  "dependencies": {
-    "@babel/runtime": "^7.3.1"
+  "peerDependencies": {
+    "@loaders.gl/core": "^4.0.0"
   },
   "gitHead": "c95a4ff72512668a93d9041ce8636bac09333fd5"
 }

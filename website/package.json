@@ -17,15 +17,16 @@
   "dependencies": {
     "@algolia/autocomplete-js": "^1.8.3",
     "@arcgis/core": "^4.25.0",
-    "@deck.gl/arcgis": "^8.9.28",
-    "@deck.gl/core": "^8.9.28",
-    "@deck.gl/extensions": "^8.9.28",
-    "@deck.gl/geo-layers": "^8.9.28",
-    "@deck.gl/layers": "^8.9.28",
-    "@deck.gl/mesh-layers": "^8.9.28",
-    "@deck.gl/react": "^8.9.28",
-    "@docusaurus/core": "^3.1.1",
-    "@docusaurus/preset-classic": "^3.1.1",
+    "@deck.gl-community/layers": "^9.0.0-alpha.1",
+    "@deck.gl/arcgis": "^9.0.4",
+    "@deck.gl/core": "^9.0.4",
+    "@deck.gl/extensions": "^9.0.4",
+    "@deck.gl/geo-layers": "^9.0.4",
+    "@deck.gl/layers": "^9.0.4",
+    "@deck.gl/mesh-layers": "^9.0.4",
+    "@deck.gl/react": "^9.0.4",
+    "@docusaurus/core": "^3.2.1",
+    "@docusaurus/preset-classic": "^3.2.1",
     "@esri/react-arcgis": "^5.2.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.34",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
@@ -37,7 +38,8 @@
     "@loaders.gl/loader-utils": "^4.0.0",
     "@loaders.gl/obj": "^4.0.0",
     "@loaders.gl/ply": "^4.0.0",
-    "@luma.gl/experimental": "^8.5.0",
+    "@loaders.gl/schema": "^4.0.0",
+    "@luma.gl/gltf": "^9.0.8",
     "@material-ui/core": "^4.10.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
@@ -62,16 +64,25 @@
     "react-dom": "^18.2.0",
     "react-map-gl": "^7.0.0",
     "sql.js": "1.8.0",
-    "styled-components": "^5.3.3"
+    "styled-components": "^5.3.3",
+    "zstd-codec": "^0.1.4"
   },
   "devDependencies": {
     "@cmfcmf/docusaurus-search-local": "^1.0.0",
-    "@docusaurus/module-type-aliases": "^3.1.1",
-    "@docusaurus/plugin-client-redirects": "^3.1.1",
-    "@docusaurus/plugin-content-docs": "^3.1.1",
-    "@docusaurus/tsconfig": "^3.1.1",
+    "@docusaurus/module-type-aliases": "^3.2.1",
+    "@docusaurus/plugin-client-redirects": "^3.2.1",
+    "@docusaurus/plugin-content-docs": "^3.2.1",
+    "@docusaurus/tsconfig": "^3.2.1",
     "babel-plugin-styled-components": "^2.0.0",
     "ts-node": "~10.9.1"
+  },
+  "resolutions": {
+    "@deck.gl/core": "^9.0.1",
+    "@deck.gl/extensions": "9.0.1",
+    "@deck.gl/geo-layers": "^9.0.1",
+    "@deck.gl/layers": "^9.0.1",
+    "@deck.gl/mesh-layers": "^9.0.1",
+    "@deck.gl/react": "^9.0.1"
   },
   "browser": {
     "fs": false,
@@ -86,6 +97,6 @@
   },
   "volta": {
     "node": "18.18.2",
-    "yarn": "1.22.19"
+    "yarn": "4.1.0"
   }
 }

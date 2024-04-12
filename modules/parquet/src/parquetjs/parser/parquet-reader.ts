@@ -5,8 +5,8 @@ import {ParquetSchema} from '../schema/schema';
 import {decodeSchema} from './decoders';
 import {materializeRows} from '../schema/shred';
 
-import {PARQUET_MAGIC, PARQUET_MAGIC_ENCRYPTED} from '../../constants';
-import {ColumnChunk, CompressionCodec, FileMetaData, RowGroup, Type} from '../parquet-thrift';
+import {PARQUET_MAGIC, PARQUET_MAGIC_ENCRYPTED} from '../../lib/constants';
+import {ColumnChunk, CompressionCodec, FileMetaData, RowGroup, Type} from '../parquet-thrift/index';
 import {
   ParquetRowGroup,
   ParquetCompression,
@@ -36,7 +36,8 @@ export type ParquetIterationProps = {
  */
 export class ParquetReader {
   static defaultProps: Required<ParquetReaderProps> = {
-    defaultDictionarySize: 1e6,
+    // max ArrayBuffer size in js is 2Gb
+    defaultDictionarySize: 2147483648,
     preserveBinary: false
   };
 

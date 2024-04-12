@@ -9,10 +9,20 @@ import {PCDMesh} from './lib/pcd-types';
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
 
+export type PCDLoaderOptions = LoaderOptions & {
+  pcd?: {
+    /** Override the URL to the worker bundle (by default loads from unpkg.com) */
+    workerUrl?: string;
+  };
+};
+
 /**
  * Worker loader for PCD - Point Cloud Data
  */
-export const PCDLoader: Loader<PCDMesh, never, LoaderOptions> = {
+export const PCDLoader = {
+  dataType: null as unknown as PCDMesh,
+  batchType: null as never,
+
   name: 'PCD (Point Cloud Data)',
   id: 'pcd',
   module: 'pcd',
@@ -23,4 +33,4 @@ export const PCDLoader: Loader<PCDMesh, never, LoaderOptions> = {
   options: {
     pcd: {}
   }
-};
+} as const satisfies Loader<PCDMesh, never, PCDLoaderOptions>;

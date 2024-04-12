@@ -1,3 +1,7 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright vis.gl contributors
+
 import type {LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
 import {parse} from '@loaders.gl/core';
 import type {I3STilesetHeader} from './types';
@@ -12,6 +16,7 @@ import {getUrlWithoutParams} from './lib/utils/url-utils';
 const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
 
 const TILESET_REGEX = /layers\/[0-9]+$/;
+const LOCAL_SLPK_REGEX = /\.slpk$/;
 const TILE_HEADER_REGEX = /nodes\/([0-9-]+|root)$/;
 const SLPK_HEX = '504b0304';
 const POINT_CLOUD = 'PointCloud';
@@ -23,7 +28,10 @@ export type I3SLoaderOptions = LoaderOptions & {
 /**
  * Loader for I3S - Indexed 3D Scene Layer
  */
-export const I3SLoader: LoaderWithParser<I3STilesetHeader, never, LoaderOptions> = {
+export const I3SLoader = {
+  dataType: null as unknown as I3STilesetHeader,
+  batchType: null as never,
+
   name: 'I3S (Indexed Scene Layers)',
   id: 'i3s',
   module: 'i3s',
@@ -46,7 +54,7 @@ export const I3SLoader: LoaderWithParser<I3STilesetHeader, never, LoaderOptions>
       coordinateSystem: COORDINATE_SYSTEM.METER_OFFSETS
     }
   }
-};
+} as const satisfies LoaderWithParser<I3STilesetHeader, never, LoaderOptions>;
 
 async function parseI3S(data, options: I3SLoaderOptions = {}, context): Promise<I3STilesetHeader> {
   const url = context.url;
@@ -63,7 +71,7 @@ async function parseI3S(data, options: I3SLoaderOptions = {}, context): Promise<
   // auto detect file type based on url
   let isTileset;
   if (options.i3s.isTileset === 'auto') {
-    isTileset = TILESET_REGEX.test(urlWithoutParams);
+    isTileset = TILESET_REGEX.test(urlWithoutParams) || LOCAL_SLPK_REGEX.test(urlWithoutParams);
   } else {
     isTileset = options.i3s.isTileset;
   }
