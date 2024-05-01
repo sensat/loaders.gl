@@ -215,7 +215,7 @@ export class Tileset3D {
   options: Props;
   loadOptions: LoaderOptions;
 
-  type: string;
+  type: TILESET_TYPE;
   tileset: TilesetJSON;
   loader: LoaderWithParser;
   url: string;

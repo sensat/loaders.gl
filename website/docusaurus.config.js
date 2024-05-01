@@ -48,6 +48,7 @@ const config = {
         excludeAliases: ['console']
       }
     ],
+    require.resolve('./webpack-plugin'),
     [
       './ocular-docusaurus-plugin',
       {
@@ -108,8 +109,6 @@ const config = {
 
             // '@deck.gl/react': resolve()
             // '@deck.gl/layers'
-            // '@luma.gl/experimental'
-            // '@luma.gl/experimental'
             // '@deck.gl/react'
             // '@deck.gl/layers'
             // '@deck.gl/react/typed'

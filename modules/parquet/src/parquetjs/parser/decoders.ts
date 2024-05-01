@@ -8,7 +8,7 @@ import {
   PrimitiveType,
   SchemaDefinition
 } from '../schema/declare';
-import {CursorBuffer, ParquetCodecOptions, PARQUET_CODECS} from '../codecs';
+import {CursorBuffer, ParquetCodecOptions, PARQUET_CODECS} from '../codecs/index';
 import {
   ConvertedType,
   Encoding,
@@ -17,9 +17,9 @@ import {
   PageType,
   SchemaElement,
   Type
-} from '../parquet-thrift';
+} from '../parquet-thrift/index';
 import {decompress} from '../compression';
-import {PARQUET_RDLVL_TYPE, PARQUET_RDLVL_ENCODING} from '../../constants';
+import {PARQUET_RDLVL_TYPE, PARQUET_RDLVL_ENCODING} from '../../lib/constants';
 import {decodePageHeader, getThriftEnum, getBitWidth} from '../utils/read-utils';
 
 /**
@@ -63,7 +63,13 @@ export async function decodeDataPages(
       continue;
     }
 
-    if (dictionary.length) {
+    const valueEncoding = getThriftEnum(
+      Encoding,
+      page.pageHeader.data_page_header?.encoding!
+    ) as ParquetCodec;
+    // Pages might be in different encodings. We don't need to decode in case
+    // of 'PLAIN' encoding because all values are already in place
+    if (dictionary.length && valueEncoding !== 'PLAIN') {
       // eslint-disable-next-line no-loop-func
       page.values = page.values.map((value) => dictionary[value]);
     }

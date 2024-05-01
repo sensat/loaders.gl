@@ -13,6 +13,7 @@ import {
 } from './lib/utils/cli-utils';
 import {addOneFile, composeHashFile, makeZipCDHeaderIterator} from '@loaders.gl/zip';
 import {FileHandleFile} from '@loaders.gl/loader-utils';
+// @ts-ignore
 import {copyFile} from 'node:fs/promises';
 
 type TileConversionOptions = {
@@ -59,6 +60,8 @@ type TileConversionOptions = {
   metadataClass?: string;
   /** With this options the tileset content will be analyzed without conversion */
   analyze?: boolean;
+  /** Skip all prompts that stop conversion and wait for a user input */
+  quiet?: boolean;
 };
 
 /* During validation we check that particular options are defined so they can't be undefined */
@@ -80,6 +83,7 @@ const TILESET_TYPE = {
  * CLI entry
  * @returns
  */
+// eslint-disable-next-line max-statements
 async function main() {
   const [, , ...args] = process.argv;
 
@@ -100,36 +104,40 @@ async function main() {
   if (options.addHash) {
     const validatedOptions = validateOptions(options, true);
     let finalPath = validatedOptions.tileset;
-    if (validatedOptions.output === 'data') {
-      const nameWithoutExt = validatedOptions.tileset.substring(
-        0,
-        validatedOptions.tileset.length - 5
-      );
 
-      const result = await inquirer.prompt<{isNewFileRequired: boolean}>([
-        {
-          name: 'isNewFileRequired',
-          type: 'list',
-          message: 'What would you like to do?',
-          choices: [
-            {
-              name: 'Add hash file to the current SLPK file',
-              value: false
-            },
-            {
-              name: `Create a new file ${nameWithoutExt}-hash.slpk with hash file inside`,
-              value: true
-            }
-          ]
+    if (!options.quiet) {
+      if (validatedOptions.output === 'data') {
+        const nameWithoutExt = validatedOptions.tileset.substring(
+          0,
+          validatedOptions.tileset.length - 5
+        );
+
+        const result = await inquirer.prompt<{isNewFileRequired: boolean}>([
+          {
+            name: 'isNewFileRequired',
+            type: 'list',
+            message: 'What would you like to do?',
+            choices: [
+              {
+                name: 'Add hash file to the current SLPK file',
+                value: false
+              },
+              {
+                name: `Create a new file ${nameWithoutExt}-hash.slpk with hash file inside`,
+                value: true
+              }
+            ]
+          }
+        ]);
+
+        if (result.isNewFileRequired) {
+          finalPath = `${nameWithoutExt}-hash.slpk`;
         }
-      ]);
-
-      if (result.isNewFileRequired) {
-        finalPath = `${nameWithoutExt}-hash.slpk`;
+      } else {
+        finalPath = validatedOptions.output;
       }
-    } else {
-      finalPath = validatedOptions.output;
     }
+
     if (finalPath !== validatedOptions.tileset) {
       await copyFile(validatedOptions.tileset, finalPath);
     }
@@ -146,7 +154,7 @@ async function main() {
 
 main().catch((error) => {
   console.log(error);
-  process.exit(1); // eslint-disable-line
+  process.exit(1); // eslint-disable-line no-process-exit
 });
 
 /**
@@ -190,6 +198,9 @@ function printHelp(): void {
     '--metadata-class [One of the list of feature metadata classes, detected by converter on "analyze" stage, default: not set]'
   );
   console.log('--validate [Enable validation]');
+  console.log(
+    '--quiet [Skip all prompts that stop conversion and wait for a user input: default: false]'
+  );
   process.exit(0); // eslint-disable-line
 }
 
@@ -210,7 +221,9 @@ async function convert(options: ValidatedTileConversionOptions) {
         outputPath: options.output,
         tilesetName: options.name,
         maxDepth: options.maxDepth,
-        egmFilePath: options.egm
+        egmFilePath: options.egm,
+        analyze: options.analyze,
+        inquirer: options.quiet ? undefined : inquirer
       });
       break;
     case TILESET_TYPE._3DTILES:
@@ -232,7 +245,7 @@ async function convert(options: ValidatedTileConversionOptions) {
         instantNodeWriting: options.instantNodeWriting,
         metadataClass: options.metadataClass,
         analyze: options.analyze,
-        inquirer
+        inquirer: options.quiet ? undefined : inquirer
       });
       break;
     default:
@@ -284,7 +297,7 @@ function validateOptions(
   }
   if (exceptions.length) {
     exceptions.forEach((exeption) => exeption());
-    process.exit(1);
+    process.exit(1); // eslint-disable-line no-process-exit
   }
   return <ValidatedTileConversionOptions>options;
 }
@@ -307,7 +320,8 @@ function parseOptions(args: string[]): TileConversionOptions {
     generateBoundingVolumes: false,
     validate: false,
     slpk: false,
-    addHash: false
+    addHash: false,
+    quiet: false
   };
 
   // eslint-disable-next-line complexity
@@ -367,6 +381,9 @@ function parseOptions(args: string[]): TileConversionOptions {
           break;
         case '--analyze':
           opts.analyze = getBooleanValue(index, args);
+          break;
+        case '--quiet':
+          opts.quiet = getBooleanValue(index, args);
           break;
         case '--metadata-class':
           opts.metadataClass = getStringValue(index, args);

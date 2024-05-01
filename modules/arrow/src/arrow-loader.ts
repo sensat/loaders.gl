@@ -17,15 +17,24 @@ import {parseArrowInBatches} from './parsers/parse-arrow-in-batches';
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
 
+/** ArrowLoader options */
 export type ArrowLoaderOptions = LoaderOptions & {
+  /** ArrowLoader options */
   arrow?: {
+    /** Shape of returned data */
     shape: 'arrow-table' | 'columnar-table' | 'array-row-table' | 'object-row-table';
+    /** Debounce time between batches (prevent excessive numbers of small batches) */
     batchDebounceMs?: number;
+    /** Override the URL to the worker bundle (by default loads from unpkg.com) */
+    workerUrl?: string;
   };
 };
 
 /** ArrowJS table loader */
-export const ArrowWorkerLoader: Loader<ArrowTable, never, ArrowLoaderOptions> = {
+export const ArrowWorkerLoader = {
+  dataType: null as unknown as ArrowTable,
+  batchType: null as never,
+
   name: 'Apache Arrow',
   id: 'arrow',
   module: 'arrow',
@@ -45,18 +54,18 @@ export const ArrowWorkerLoader: Loader<ArrowTable, never, ArrowLoaderOptions> = 
       shape: 'columnar-table'
     }
   }
-};
+} as const satisfies Loader<ArrowTable, never, ArrowLoaderOptions>;
 
 /** ArrowJS table loader */
-export const ArrowLoader: LoaderWithParser<
-  ArrowTable | ColumnarTable | ObjectRowTable | ArrayRowTable,
-  ArrowTableBatch,
-  ArrowLoaderOptions
-> = {
+export const ArrowLoader = {
   ...ArrowWorkerLoader,
   parse: async (arraybuffer: ArrayBuffer, options?: ArrowLoaderOptions) =>
     parseArrowSync(arraybuffer, options?.arrow),
   parseSync: (arraybuffer: ArrayBuffer, options?: ArrowLoaderOptions) =>
     parseArrowSync(arraybuffer, options?.arrow),
   parseInBatches: parseArrowInBatches
-};
+} as const satisfies LoaderWithParser<
+  ArrowTable | ColumnarTable | ObjectRowTable | ArrayRowTable,
+  ArrowTableBatch,
+  ArrowLoaderOptions
+>;

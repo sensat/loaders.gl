@@ -15,12 +15,13 @@ export {
   ParquetColumnarLoader
 } from './parquet-loader';
 
-// import type {ParquetWasmLoaderOptions} from './lib/wasm/parse-parquet-wasm';
-// import {parseParquetWasm} from './lib/wasm/parse-parquet-wasm';
-// import {ParquetWasmLoader as ParquetWasmWorkerLoader} from './parquet-wasm-loader';
-
 export {ParquetWriter as _ParquetWriter} from './parquet-writer';
-// export {ParquetWasmWriter} from './parquet-wasm-writer';
+
+// EXPERIMENTAL - expose Parquet WASM loaders/writer
+
+export type {ParquetWasmLoaderOptions} from './parquet-wasm-loader';
+export {ParquetWasmLoader, ParquetWasmWorkerLoader} from './parquet-wasm-loader';
+export {ParquetWasmWriter} from './parquet-wasm-writer';
 
 // EXPERIMENTAL - expose the internal parquetjs API
 
@@ -36,4 +37,4 @@ export {
 } from './lib/arrow/convert-schema-from-parquet';
 
 // Experimental
-export {BufferPolyfill, installBufferPolyfill} from './polyfills/buffer';
+export {BufferPolyfill, installBufferPolyfill} from './polyfills/buffer/index';

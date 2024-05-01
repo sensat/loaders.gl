@@ -9,10 +9,11 @@ import {VERSION} from './lib/utils/version';
 
 export type DracoLoaderOptions = LoaderOptions & {
   draco?: DracoParseOptions & {
+    /** @deprecated WASM decoding is faster but JS is more backwards compatible */
     decoderType?: 'wasm' | 'js';
+    /** @deprecated Specify where to load the Draco decoder library */
     libraryPath?: string;
-    extraAttributes?;
-    attributeNameEntry?: string;
+    /** Override the URL to the worker bundle (by default loads from unpkg.com) */
     workerUrl?: string;
   };
 };
@@ -20,7 +21,9 @@ export type DracoLoaderOptions = LoaderOptions & {
 /**
  * Worker loader for Draco3D compressed geometries
  */
-export const DracoLoader: Loader<DracoMesh, never, DracoLoaderOptions> = {
+export const DracoLoader = {
+  dataType: null as unknown as DracoMesh,
+  batchType: null as never,
   name: 'Draco',
   id: 'draco',
   module: 'draco',
@@ -39,4 +42,4 @@ export const DracoLoader: Loader<DracoMesh, never, DracoLoaderOptions> = {
       attributeNameEntry: undefined
     }
   }
-};
+} as const satisfies Loader<DracoMesh, never, DracoLoaderOptions>;

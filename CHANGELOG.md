@@ -1,6 +1,93 @@
 # CHANGELOG for loaders.gl
 
-## v4.2 (alpha)
+## v4.2
+
+### v4.2.0
+
+### v4.2.0-beta.2
+
+- fix(parquet): fix stack overflow for large datasets (#2960)
+- fix(parquet): incorrect dictionary loading (#2959)
+- fix(loader-utils): Do not require dataType and batchType on loaders. (#2961)
+
+### v4.2.0-beta.1
+
+- chore(worker-utils): Use polyfills in worker-utils to avoid build warnings (#2953)
+- docs: Polish release notes (#2957)
+- fix(core): Case insensitive MIME type comparison (#2956)
+- feat(3d-tiles): Test cleanup (#2954)
+- chore(draco): Clean up loader (#2955)
+- fix(wms): Use correct featureInfo parameters for WMS 1.3 (#2952)
+- fix(draco): Ignore unknown attribute types (#2951)
+- feat: Add options.<loader>.workerUrl (#2950)
+- Throws more useful error when fetch fails (#2921)
+- docs: update whats-new (#2946)
+- fix(csv): CSVLoader - narrow result types (#2945)
+- chore: Bump to 4.2-beta (#2948)
+- fix(examples): Fix texture example (+ website) (#2943)
+- fix(parquet): zstd decompression (#2937)
+- chore(compression/parquet): Improved handling of injected modules (#2940)
+- chore: Use `const satisfies on Loaders and Writers (#2938)
+- Fix laslaz-decoder.ts: free memory after laz file parsed. (#2933)
+
+### v4.2.0-alpha.6
+
+- docs: migration info loaders v4 (#2908)
+- feat(i3s): local slpk rendering example (#2906)
+- website: new hero example (#2907)
+- chore(lerc): Restore lerc module (#2912)
+- fix(parquet): Restore ParquetWASMLoader after esbuild upgrade (#2915)
+- fix(*): Fix transitive internal dependencies (#2919)
+- fix(parquet): Zstd-codec import turned on (#2922)
+- chore(deps): bump webpack-dev-middleware from 5.3.3 to 5.3.4 in /website (#2926)
+- chore(deps): bump follow-redirects from 1.15.4 to 1.15.6 in /website (#2920)
+- fix (parquet): Increased max dictionary size to the max size of ArrayBuffer (#2924)
+- chore(deps): bump katex from 0.16.9 to 0.16.10 in /website (#2927)
+- fix(tile-converter): --install-dependencies don't raise error (#2925)
+- chore(deps): bump express from 4.18.2 to 4.19.2 in /website (#2931)
+- chore: fix eslint issues (#2923)
+- chore: Upgrade website and examples to deck.gl v9 (#2932)
+- chore(deps): bump express from 4.18.2 to 4.19.2 (#2930)
+- chore: Upgrade to yarn 4 (#2917)
+- fix(gltf): Support models where some TextureInfo definitions use KHR_texture_transform and others do not. (#2928)
+- fix(wkt): Increased amount of memory for polygon indices (#2934)
+
+### v4.2.0-alpha.5
+
+- chore: Upgrade ocular-dev-tools to tsc+esbuild (#2897)
+- fix(core): Avoid reassigning loaders._state (#2905)
+- feat(loader-utils): Add RequestScheduler 'debounceTime' option (#2892)
+- chore: Port I3S examples to v9 (#2903)
+- chore: Move examples to deck.gl@9.0.0-beta.5 (#2901)
+- chore(examples): loading of slpk in browser experimental(#2904)
+- feat(pmtiles): Upgrade to pmtiles v3 (#2902)
+- chore(docs): Add I3S Picking Tutorial (#2896)
+- chore(examples): delete i3s example (#2899)
+- chore(docs): Add live example into I3S BSL tutorial (#2898)
+- chore(docs): Update i3s colorization tutorial (#2900)
+
+### v4.2.0-alpha.4
+
+- fix(tile-converter): compose SLPK hash file (#2895)
+- chore(i3s examples): Add i3s picking example (#2886)
+
+### v4.2.0-alpha.3
+
+- feat(tile-converter): quiet mode (#2891)
+- feat(parquet): restore ParquetWasm loader (#2868)
+- feat(tile-converter): 3d-tiles-converter progress (#2890)
+
+### v4.2.0-alpha.2
+
+- feat(tile-converter): convert SLPK (#2888)
+- feat(tile-converter): conversion dump json validation (#2883)
+- chore(examples): Rewrite I3S BSL example with React FC (#2885)
+- fix(flatgeobuf): Add missing index files (#2884)
+- feat(tile-converter): add 3d-tiles-converter resume (#2882)
+
+### v4.2.0-alpha.1
+
+- feat(tile-converter): add conversion resume (#2869)
 
 ## v4.1
 

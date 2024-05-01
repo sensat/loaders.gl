@@ -1,6 +1,6 @@
 {
   "name": "@loaders.gl/textures",
-  "version": "4.1.1",
+  "version": "4.2.0",
   "description": "Framework-independent loaders for compressed and super compressed (basis) textures ",
   "license": "MIT",
   "type": "module",
@@ -41,9 +41,10 @@
     "README.md"
   ],
   "scripts": {
-    "pre-build": "npm run copy-libs && npm run build-bundle && npm run build-bundle -- --env=dev && npm run build-workers",
+    "pre-build": "npm run copy-libs && npm run build-bundle && npm run build-bundle-dev && npm run build-workers",
     "copy-libs": "cp -rf ./src/libs ./dist/libs",
-    "build-bundle": "ocular-bundle ./src/index.ts",
+    "build-bundle": "ocular-bundle ./bundle.ts --output=dist/dist.min.js",
+    "build-bundle-dev": "ocular-bundle ./bundle.ts --env=dev --output=dist/dist.dev.js",
     "build-workers": "npm run build-basis-worker && npm run build-basis-worker-node && npm run build-npy-worker && npm run build-compressed-texture-worker && npm run build-crunch-worker && npm run build-ktx2-basis-writer-worker && npm run build-ktx2-basis-writer-worker-node",
     "build-basis-worker": "esbuild src/workers/basis-worker.ts --outfile=dist/basis-worker.js --target=esnext --bundle --define:__VERSION__=\\\"$npm_package_version\\\"",
     "build-basis-worker-node": "esbuild src/workers/basis-worker-node.ts --outfile=dist/basis-worker-node.js --target=node16  --platform=node --bundle --define:__VERSION__=\\\"$npm_package_version\\\"",
@@ -54,15 +55,16 @@
     "build-crunch-worker": "esbuild src/workers/crunch-worker.ts --outfile=dist/crunch-worker.js --target=esnext --bundle --define:__VERSION__=\\\"$npm_package_version\\\""
   },
   "dependencies": {
-    "@loaders.gl/images": "4.1.1",
-    "@loaders.gl/loader-utils": "4.1.1",
-    "@loaders.gl/schema": "4.1.1",
-    "@loaders.gl/worker-utils": "4.1.1",
+    "@loaders.gl/images": "4.2.0",
+    "@loaders.gl/loader-utils": "4.2.0",
+    "@loaders.gl/schema": "4.2.0",
+    "@loaders.gl/worker-utils": "4.2.0",
+    "@math.gl/types": "^4.0.1",
     "ktx-parse": "^0.0.4",
     "texture-compressor": "^1.0.2"
   },
-  "devDependencies": {
-    "@loaders.gl/polyfills": "4.1.1"
+  "peerDependencies": {
+    "@loaders.gl/core": "^4.0.0"
   },
   "gitHead": "c95a4ff72512668a93d9041ce8636bac09333fd5"
 }

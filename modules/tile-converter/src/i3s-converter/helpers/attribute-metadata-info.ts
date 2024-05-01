@@ -9,6 +9,12 @@ import type {
 
 import {AttributeType} from '../types';
 
+export type AttributeMetadataInfoObject = {
+  attributeStorageInfo: AttributeStorageInfo[];
+  fields: Field[];
+  popupInfo: PopupInfo | undefined;
+};
+
 export class AttributeMetadataInfo {
   private _attributeStorageInfo: AttributeStorageInfo[];
   private _fields: Field[];
@@ -88,11 +94,21 @@ export class AttributeMetadataInfo {
       Use attributeStorageInfo as a source of attribute names to create the popupInfo.
       */
       const attributeNames: string[] = [];
-      for (let info of this._attributeStorageInfo) {
+      for (const info of this._attributeStorageInfo) {
         attributeNames.push(info.name);
       }
       this._popupInfo = this.createPopupInfo(attributeNames);
     }
+  }
+
+  /**
+   * Set AttributeMetadataInfo from object
+   * @param object - object with AttributeMetadataInfo props
+   */
+  fromObject(object: AttributeMetadataInfoObject) {
+    this._attributeStorageInfo = object.attributeStorageInfo;
+    this._fields = object.fields;
+    this._popupInfo = object.popupInfo;
   }
 
   /**

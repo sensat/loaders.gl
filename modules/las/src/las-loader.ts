@@ -12,6 +12,8 @@ export type LASLoaderOptions = LoaderOptions & {
     fp64?: boolean;
     skip?: number;
     colorDepth?: number | string;
+    /** Override the URL to the worker bundle (by default loads from unpkg.com) */
+    workerUrl?: string;
   };
   onProgress?: Function;
 };
@@ -20,7 +22,10 @@ export type LASLoaderOptions = LoaderOptions & {
  * Loader for the LAS (LASer) point cloud format
  * @note Does not support LAS v1.4
  */
-export const LASLoader: Loader<LASMesh, never, LASLoaderOptions> = {
+export const LASLoader = {
+  dataType: null as unknown as LASMesh,
+  batchType: null as never,
+
   name: 'LAS',
   id: 'las',
   module: 'las',
@@ -39,4 +44,4 @@ export const LASLoader: Loader<LASMesh, never, LASLoaderOptions> = {
       colorDepth: 8
     }
   }
-};
+} as const satisfies Loader<LASMesh, never, LASLoaderOptions>;
