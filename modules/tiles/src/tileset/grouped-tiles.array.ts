@@ -14,6 +14,14 @@ export class GroupedTilesArray {
     this.array.push(other);
   }
 
+  /**
+   * Adds the content of another GroupedTilesArray instance to this one.
+   * Optionally, a maximum size can be specified which will add items in
+   * order of _displayPriority up until the maximum size is reached.
+   * @param other The other instance to read from
+   * @param maxSize Optional maximum size of this GroupedTilesArray after
+   * the operation.
+   */
   addTilesOrGroups(other: GroupedTilesArray, maxSize: number = 0) {
     const totalItems = this.array.length + other.array.length;
 
