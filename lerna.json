@@ -6,7 +6,6 @@
     "bootstrap": {}
   },
   "npmClient": "yarn",
-  "useWorkspaces": true,
   "exact": true,
   "packages": [
     "modules/*"

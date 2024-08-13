@@ -136,12 +136,12 @@ export class TilesetTraverser {
 
         // replace tiles
       } else if (tile.refine === TILE_REFINEMENT.REPLACE) {
-        // Always load tiles in the base traversal
-        // Select tiles that can't refine further
+        // Always load and select replacement tiles (so we can handle refinement at a global scale later)
+        // note (ck): This differs from the normal loadersgl implementation as we want to keep track of replaced
+        // root nodes so we can decide which level of detail to render based on the global tile budget rather than
+        // a per tile budget.
         this.loadTile(tile, frameState);
-        if (stoppedRefining) {
-          this.selectTile(tile, frameState);
-        }
+        this.selectTile(tile, frameState);
       }
 
       // 3. update cache, most recent touched tiles have higher priority to be fetched from server
@@ -259,8 +259,8 @@ export class TilesetTraverser {
       // only be necessary to set the replacedTileId once, on load.
       if (tile.parent?.refine === TILE_REFINEMENT.REPLACE) {
         // The root tile of a tileset does not have an ID, so when the tileset root is a REPLACE
-        // tile , its children set the _replacedTileId to the URL for the whole tileset.
-        tile._replacedTileId = tile.parent._replacedTileId ?? tile.parent.id ?? tile.tileset.url;
+        // tile, its children set the _replacedTileId to the URL for the whole tileset.
+        tile._replacedTileId = tile.parent.id ?? tile.tileset.url;
       }
     }
   }
