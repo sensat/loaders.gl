@@ -14,8 +14,82 @@ export class GroupedTilesArray {
     this.array.push(other);
   }
 
-  addTilesOrGroups(other: GroupedTilesArray) {
-    this.array.push(...other.array);
+  /**
+   * Adds the content of another GroupedTilesArray instance to this one.
+   * Optionally, a maximum size can be specified which will add items in
+   * order of _displayPriority up until the maximum size is reached.
+   * @param other The other instance to read from
+   * @param maxSize Optional maximum size of this GroupedTilesArray after
+   * the operation.
+   */
+  addTilesOrGroups(other: GroupedTilesArray, maxSize: number = 0) {
+    const totalItems = this.array.length + other.array.length;
+
+    if (maxSize <= 0 || totalItems <= maxSize) {
+      // unlimited, or enough space to append all elements
+      this.array = this.array.concat(other.array);
+    } else {
+      // add as many items as possible by display priority, up to the maximum size
+      const replacedTileIds = new Set<string>();
+      let itemsToAdd = maxSize - this.array.length;
+
+      // shallow copy of other array to not modify other group
+      const otherArray = other.array.slice();
+
+      // ensure array is sorted DESCENDING by priority
+      otherArray.sort((a, b) => b._displayPriority - a._displayPriority);
+
+      while (itemsToAdd > 0 && otherArray.length > 0) {
+        // popping off end means iterating the list ASCENDING in priority
+        const nextItem = otherArray.pop()!; // safe assertion as we just checked the length
+
+        const nextItemReplacedIds =
+          nextItem instanceof Tile3D
+            ? [nextItem._replacedTileId]
+            : nextItem.tiles.map((tile) => tile._replacedTileId);
+
+        const tilesInItem = nextItem instanceof Tile3D ? 1 : nextItem.tiles.length;
+        if (tilesInItem > itemsToAdd) {
+          // can't add the next item as it'd make the list too long
+          break;
+        }
+
+        // add the item
+        this.array.push(nextItem);
+        itemsToAdd -= tilesInItem;
+
+        // update replaced tile Ids (and increase the count if needed)
+        for (let i = 0; i < nextItemReplacedIds.length; i++) {
+          const replacedTileId = nextItemReplacedIds[i];
+
+          if (replacedTileId !== undefined && !replacedTileIds.has(replacedTileId)) {
+            // we're replacing a new item, so we need to add an extra item
+            itemsToAdd++;
+            replacedTileIds.add(replacedTileId);
+          }
+        }
+      }
+
+      // splice out any replaced tiles
+      this.array = this.array
+        .map((tileOrGroup) => {
+          if (tileOrGroup instanceof TileGroup3D) {
+            const filteredGroup = new TileGroup3D();
+
+            for (let i = 0; i < tileOrGroup.tiles.length; i++) {
+              const tile = tileOrGroup.tiles[i];
+              if (!replacedTileIds.has(tile.id)) {
+                filteredGroup.addTile(tile);
+              }
+            }
+
+            return filteredGroup.tiles.length > 0 ? filteredGroup : null;
+          }
+
+          return !replacedTileIds.has(tileOrGroup.id) ? tileOrGroup : null;
+        })
+        .filter((item): item is Tile3D | TileGroup3D => item !== null);
+    }
   }
 
   numTiles() {
