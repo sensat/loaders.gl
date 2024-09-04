@@ -23,73 +23,73 @@ export class GroupedTilesArray {
    * the operation.
    */
   addTilesOrGroups(other: GroupedTilesArray, maxSize: number = 0) {
-    const totalItems = this.array.length + other.array.length;
+    if (maxSize <= 0) {
+      // unlimited, so we can ignore this condition. however, it's
+      // not safe to just append the two lists as they may have REPLACE
+      // strategies, so we could end up selecting both a parent and child.
+      maxSize = Number.MAX_SAFE_INTEGER;
+    }
 
-    if (maxSize <= 0 || totalItems <= maxSize) {
-      // unlimited, or enough space to append all elements
-      this.array = this.array.concat(other.array);
-    } else {
-      // add as many items as possible by display priority, up to the maximum size
-      const replacedTileIds = new Set<string>();
-      let itemsToAdd = maxSize - this.array.length;
+    // add as many items as possible by display priority, up to the maximum size
+    const replacedTileIds = new Set<string>();
+    let itemsToAdd = maxSize - this.array.length;
 
-      // shallow copy of other array to not modify other group
-      const otherArray = other.array.slice();
+    // shallow copy of other array to not modify other group
+    const otherArray = other.array.slice();
 
-      // ensure array is sorted DESCENDING by priority
-      otherArray.sort((a, b) => b._displayPriority - a._displayPriority);
+    // ensure array is sorted DESCENDING by priority
+    otherArray.sort((a, b) => b._displayPriority - a._displayPriority);
 
-      while (itemsToAdd > 0 && otherArray.length > 0) {
-        // popping off end means iterating the list ASCENDING in priority
-        const nextItem = otherArray.pop()!; // safe assertion as we just checked the length
+    while (itemsToAdd > 0 && otherArray.length > 0) {
+      // popping off end means iterating the list ASCENDING in priority
+      const nextItem = otherArray.pop()!; // safe assertion as we just checked the length
 
-        const nextItemReplacedIds =
-          nextItem instanceof Tile3D
-            ? [nextItem._replacedTileId]
-            : nextItem.tiles.map((tile) => tile._replacedTileId);
+      const nextItemReplacedIds =
+        nextItem instanceof Tile3D
+          ? [nextItem._replacedTileId]
+          : nextItem.tiles.map((tile) => tile._replacedTileId);
 
-        const tilesInItem = nextItem instanceof Tile3D ? 1 : nextItem.tiles.length;
-        if (tilesInItem > itemsToAdd) {
-          // can't add the next item as it'd make the list too long
-          break;
-        }
-
-        // add the item
-        this.array.push(nextItem);
-        itemsToAdd -= tilesInItem;
-
-        // update replaced tile Ids (and increase the count if needed)
-        for (let i = 0; i < nextItemReplacedIds.length; i++) {
-          const replacedTileId = nextItemReplacedIds[i];
-
-          if (replacedTileId !== undefined && !replacedTileIds.has(replacedTileId)) {
-            // we're replacing a new item, so we need to add an extra item
-            itemsToAdd++;
-            replacedTileIds.add(replacedTileId);
-          }
-        }
+      const tilesInItem = nextItem instanceof Tile3D ? 1 : nextItem.tiles.length;
+      if (tilesInItem > itemsToAdd) {
+        // can't add the next item as it'd make the list too long
+        break;
       }
 
-      // splice out any replaced tiles
-      this.array = this.array
-        .map((tileOrGroup) => {
-          if (tileOrGroup instanceof TileGroup3D) {
-            const filteredGroup = new TileGroup3D();
+      // add the item
+      this.array.push(nextItem);
+      itemsToAdd -= tilesInItem;
 
-            for (let i = 0; i < tileOrGroup.tiles.length; i++) {
-              const tile = tileOrGroup.tiles[i];
-              if (!replacedTileIds.has(tile.id)) {
-                filteredGroup.addTile(tile);
-              }
+      // update replaced tile Ids (and increase the count if needed)
+      for (let i = 0; i < nextItemReplacedIds.length; i++) {
+        const replacedTileId = nextItemReplacedIds[i];
+
+        if (replacedTileId !== undefined && !replacedTileIds.has(replacedTileId)) {
+          // we're replacing a new item, so we need to add an extra item
+          itemsToAdd++;
+          replacedTileIds.add(replacedTileId);
+        }
+      }
+    }
+
+    // splice out any replaced tiles
+    this.array = this.array
+      .map((tileOrGroup) => {
+        if (tileOrGroup instanceof TileGroup3D) {
+          const filteredGroup = new TileGroup3D();
+
+          for (let i = 0; i < tileOrGroup.tiles.length; i++) {
+            const tile = tileOrGroup.tiles[i];
+            if (!replacedTileIds.has(tile.id)) {
+              filteredGroup.addTile(tile);
             }
-
-            return filteredGroup.tiles.length > 0 ? filteredGroup : null;
           }
 
-          return !replacedTileIds.has(tileOrGroup.id) ? tileOrGroup : null;
-        })
-        .filter((item): item is Tile3D | TileGroup3D => item !== null);
-    }
+          return filteredGroup.tiles.length > 0 ? filteredGroup : null;
+        }
+
+        return !replacedTileIds.has(tileOrGroup.id) ? tileOrGroup : null;
+      })
+      .filter((item): item is Tile3D | TileGroup3D => item !== null);
   }
 
   numTiles() {
