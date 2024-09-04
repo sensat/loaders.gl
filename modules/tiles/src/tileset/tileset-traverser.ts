@@ -244,7 +244,13 @@ export class TilesetTraverser {
         selected.addTile(tile);
         return;
       }
-      this.selectedTileGroups[tile.id] = tile;
+
+      if (tile.refine !== TILE_REFINEMENT.REPLACE) {
+        // don't set the tile for REPLACE tiles as that should be handled above.
+        // if we do, we'll never select the refined tiles as we'll have put a tile
+        // instead of a TileGroup3D in the selectedTileGroups at that tile id.
+        this.selectedTileGroups[tile.id] = tile;
+      }
     }
   }
 
