@@ -1,5 +1,45 @@
 # What's New
 
+## v4.3
+
+Release Date: October 16, 2024
+
+A minor release that includes:
+
+- **TypeScript** - Typecript v5.6.
+- **Node.js** - Node.js v20 is now the primary supported Node.js version.
+- **Loader/Writer APIs** - Improved type inference for loader / writer options and return types.
+- **[`DataSource`](/docs/developer-guide/using-sources) API** Multi-step data loadingi mprovements. 
+- **Website** - Live examples are now available for more loaders / formats.
+- **Examples** - Migrated to React functional components. Minimized boilerplate code.
+
+**@loaders.gl/core**
+
+- `Loader` type inference improvements: `load()`, `parse()`, `parseSync()` and `parseInBatches()` now infer correct option and return types when an array of loaders is passed.
+- `Writer` type inference improvements: `encode()`, `encodeSync()` and `encodeInBatches()` now infer correct option and data types matching the specified writer.
+- [`createDataSource`](/docs/modules/core/api-reference/create-data-source) - Create a `DataSource` from a list of `Source` objects.
+- [`selectSource`](/docs/modules/core/api-reference/select-source) - Select the appropriate `Source` from a list of `Source` objects.
+
+**@loaders.gl/mvt**
+
+- [`TableTileSource`](/docs/modules/mvt/api-reference/table-tile-source) - Geospatial tables can now be vector tiled dynamically in the browser.
+
+**@loaders.gl/textures**
+
+- [`Comp[ressedTextureLoader]`](/docs/modules/textures/api-reference/compressed-texture-loader) - Now supports mipmaps in KTX2 textures.
+
+**@loaders.gl/3d-tiles**
+
+- **3D Tiles 1.1 Writing** [`Tile3DWriter`](/docs/modules/3d-tiles/api-reference/tile3d-writer) now supports writing 3DTiles 1.1
+- **3D Tiles 1.1 Extensions** `EXT_mesh_features` and `EXT_structural_metadata` are now supported.
+
+**@loaders.gl/tile-converter**
+
+- Removed 'extended SLPK' usage from the converter, `--slpk` is now a default behavior
+- Removed `slpk-extractor` tool
+- Added option `--egm=None` to disable egm conversion
+- `tile-conveter` source code has been converted to TypeScript
+
 ## v4.2
 
 Release Date: April 9, 2024
@@ -93,12 +133,12 @@ A major release that brings:
 **@loaders.gl/pmtiles** - NEW
 
 - New [`PMTilesSource`](/docs/modules/pmtiles/api-reference/pmtiles-source) supports the [PMTiles](/docs/modules/pmtiles/formats/pmtiles) format.
-- New [PMTiles example](/examples/pmtiles).
+- New [PMTiles example](/examples/tiles/pmtiles).
 
 **@loaders.gl/parquet** 
 
 - The [`ParquetLoader`](/docs/modules/parquet/api-reference/parquet-loader) now supports loading [GeoParquet](/docs/modules/parquet/formats/geoparquet) files.
-- New [GeoParquet example](/examples/geoparquet).
+- New [GeoParquet example](/examples/geospatial/geoparquet).
 
 **@loaders.gl/mvt**
 

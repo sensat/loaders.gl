@@ -20,7 +20,12 @@ import {Ellipsoid} from '@math.gl/geospatial';
 
 import {DracoWriterWorker} from '@loaders.gl/draco';
 import {assert, encode} from '@loaders.gl/core';
-import {concatenateArrayBuffers, concatenateTypedArrays} from '@loaders.gl/loader-utils';
+import {
+  concatenateArrayBuffers,
+  concatenateTypedArrays,
+  NumberArray,
+  TypedArray
+} from '@loaders.gl/loader-utils';
 import md5 from 'md5';
 import {v4 as uuidv4} from 'uuid';
 import {generateAttributes} from './geometry-attributes';
@@ -38,7 +43,6 @@ import {
   MaterialDefinitionInfo,
   TextureDefinitionInfo
 } from '@loaders.gl/i3s';
-import {NumberArray, TypedArray} from '@loaders.gl/loader-utils';
 import {Geoid} from '@math.gl/geoid';
 import {prepareDataForAttributesConversion} from './gltf-attributes';
 import {getTextureByMetadataClass, handleBatchIdsExtensions} from './batch-ids-extensions';
@@ -121,7 +125,7 @@ export default async function convertB3dmToI3sGeometry({
   draco: boolean;
   generateBoundingVolumes: boolean;
   shouldMergeMaterials: boolean;
-  geoidHeightModel: Geoid;
+  geoidHeightModel: Geoid | null;
   libraries: Record<string, string>;
   metadataClass?: string;
 }): Promise<I3SConvertedResources[] | null> {
@@ -197,7 +201,7 @@ export default async function convertB3dmToI3sGeometry({
  */
 function _generateBoundingVolumesFromGeometry(
   convertedAttributesMap: Map<string, ConvertedAttributes>,
-  geoidHeightModel: Geoid
+  geoidHeightModel: Geoid | null
 ) {
   for (const attributes of convertedAttributesMap.values()) {
     const boundingVolumes = createBoundingVolumesFromGeometry(
@@ -211,8 +215,10 @@ function _generateBoundingVolumesFromGeometry(
     for (let index = 0; index < attributes.positions.length; index += VALUES_PER_VERTEX) {
       const vertex = attributes.positions.subarray(index, index + VALUES_PER_VERTEX);
       Ellipsoid.WGS84.cartesianToCartographic(Array.from(vertex), scratchVector);
-      scratchVector[2] =
-        scratchVector[2] - geoidHeightModel.getHeight(scratchVector[1], scratchVector[0]);
+      if (geoidHeightModel) {
+        scratchVector[2] =
+          scratchVector[2] - geoidHeightModel.getHeight(scratchVector[1], scratchVector[0]);
+      }
       scratchVector = scratchVector.subtract(cartographicOrigin);
       attributes.positions.set(scratchVector, index);
     }

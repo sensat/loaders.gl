@@ -29,14 +29,24 @@ export type {
   LoaderOptions,
   LoaderOptionsType,
   LoaderReturnType,
-  LoaderBatchType
+  LoaderBatchType,
+  LoaderArrayOptionsType,
+  LoaderArrayReturnType,
+  LoaderArrayBatchType
 } from './loader-types';
 
 export {parseFromContext, parseSyncFromContext, parseInBatchesFromContext} from './loader-types';
 
 // writers
 
-export type {Writer, WriterWithEncoder, WriterOptions, WriterOptionsType} from './writer-types';
+export type {
+  Writer,
+  WriterWithEncoder,
+  WriterOptions,
+  WriterOptionsType,
+  WriterDataType,
+  WriterBatchType
+} from './writer-types';
 
 // GENERAL UTILS
 export {assert} from './lib/env-utils/assert';
@@ -133,30 +143,32 @@ export type {FileSystem, RandomAccessFileSystem} from './lib/filesystems/filesys
 export {NodeFileSystemFacade as NodeFilesystem} from './lib/filesystems/node-filesystem-facade';
 
 // TODO - replace with ReadableFile
-export type {FileProvider} from './lib/file-provider/file-provider';
-export {isFileProvider} from './lib/file-provider/file-provider';
+export type {FileProviderInterface} from './lib/file-provider/file-provider-interface';
+export {isFileProvider} from './lib/file-provider/file-provider-interface';
+export {FileProvider} from './lib/file-provider/file-provider';
 export {FileHandleFile} from './lib/file-provider/file-handle-file';
 export {DataViewFile} from './lib/file-provider/data-view-file';
 
 // EXPERIMENTAL: DATA SOURCES
-export type {Service} from './service-types';
+export type {Source} from './source-types';
 
 export type {DataSourceProps} from './lib/sources/data-source';
 export {DataSource} from './lib/sources/data-source';
 
+export {ImageSource} from './lib/sources/image-source';
 export type {ImageType} from './lib/sources/utils/image-type';
 export type {ImageSourceProps, ImageSourceMetadata} from './lib/sources/image-source';
 export type {GetImageParameters} from './lib/sources/image-source';
-export {ImageSource} from './lib/sources/image-source';
 
-export type {
-  TileSourceProps,
-  TileSourceMetadata,
-  GetTileParameters,
-  TileLoadParameters
-} from './lib/sources/tile-source';
-export type {TileSource} from './lib/sources/tile-source';
+export {VectorSource} from './lib/sources/vector-source';
+export type {VectorSourceProps, VectorSourceMetadata} from './lib/sources/vector-source';
+export type {GetFeaturesParameters} from './lib/sources/vector-source';
+
+export type {TileSource, TileSourceProps} from './lib/sources/tile-source';
+export type {TileSourceMetadata, GetTileParameters} from './lib/sources/tile-source';
+export type {GetTileDataParameters} from './lib/sources/tile-source';
 
 export type {ImageTileSource} from './lib/sources/image-tile-source';
 
-export type {VectorTileSource} from './lib/sources/vector-tile-source';
+export type {VectorTileSource, VectorTileSourceProps} from './lib/sources/vector-tile-source';
+export type {VectorTile} from './lib/sources/vector-tile-source';

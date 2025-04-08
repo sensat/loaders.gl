@@ -1,4 +1,4 @@
-# ParquetLoader 🆕 🚧
+# ParquetLoader
 
 <p class="badges">
   <img src="https://img.shields.io/badge/From-v3.1-blue.svg?style=flat-square" alt="From-v3.1" />
@@ -10,7 +10,7 @@ Streaming loader for Apache Parquet encoded files.
 
 | Loader         | Characteristic                                       |
 | -------------- | ---------------------------------------------------- |
-| File Format    | [Parquet](/docs/modules/parquet/formats/parquet)      |
+| File Format    | [Parquet](/docs/modules/parquet/formats/parquet)     |
 | Data Format    | [Classic Table](/docs/specifications/category-table) |
 | File Extension | `.parquet`,                                          |
 | MIME Type      | N/A (`application/octet-stream`)                     |
@@ -77,6 +77,5 @@ For details see [parquet documentation](https://parquet.apache.org/docs/).
 
 Supports table category options such as `batchType` and `batchSize`.
 
-| Option                 | From                                                                                  | Type       | Default                                                                                                                                          | Description                                                                                                                           |
-| ---------------------- | ------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
-
+| Option | From | Type | Default | Description |
+| ------ | ---- | ---- | ------- | ----------- |

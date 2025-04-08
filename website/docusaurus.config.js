@@ -162,6 +162,23 @@ const config = {
       '@docusaurus/plugin-client-redirects',
       {
         createRedirects(existingPath) {
+          const pageRedirects = {
+            '/examples/flatgeobuf': '/examples/geospatial/flatgeobuf',
+            '/examples/geoarrow': '/examples/geospatial/geoarrow',
+            '/examples/geoparquet': '/examples/geospatial/geoparquet',
+            '/examples/geojson': '/examples/geospatial/geojson',
+    
+            '/examples/pmtiles': '/examples/tiles/pmtiles',
+            '/examples/wms': '/examples/tiles/wms',
+          };
+          for (const [oldLink, newLink] of Object.entries(pageRedirects)) {
+            if (existingPath.includes(oldLink)) {
+              return existingPath.replace(oldLink, newLink);
+            }
+          }
+          if (pageRedirects[existingPath]) {
+            return [pageRedirects[existingPath]];
+          }
           // docs/modules/*/api-reference <= modules/*/docs/api-reference
           if (existingPath.includes('/docs/modules/')) {
             return [

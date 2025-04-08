@@ -1,5 +1,151 @@
 # CHANGELOG for loaders.gl
 
+## v4.3.2
+
+- fix(i3s): fix for /sublayers paths (#3150)
+
+## v4.3.1
+
+- Returning --slpk for backward compatibility (#3138)
+- docs: Final 4.3 release docs (#3134)
+- chore: Update dependencies to ^4.3.0 (#3133)
+
+## v4.3
+
+### v4.3.0-beta.3
+
+- Whats new updated (#3131)
+- fix(wms): createImageSource back-compatibility fix (#3132)
+
+### v4.3.0-beta.2
+
+- fix(wms): Export deprecated type (#3130)
+
+### v4.3.0-beta.1
+
+- chore(arrow): table conversion (#3108)
+- chore(CSV): Convert parser to typescript (#3107)
+- fix(parquet): More robust Buffer polyfill export (#3105)
+- chore: eslint cleanup (#3103)
+- feat(core): Type inference for arrays of loader objects (#3102)
+- chore(deps): bump micromatch from 4.0.5 to 4.0.8 in /website (#3098)
+- chore: Update typescript and other dependencies (#3097)
+- fix(parquet): ParquetLoader worker: false (#3079)
+- chore: Bump to 4.3.0-beta (#3096)
+- chore: Add issue templates (#3095)
+- chore: prettier (#3094)
+- chore(deps): bump vite from 4.5.3 to 4.5.5 (#3091)
+- chore(deps): bump express from 4.19.2 to 4.21.0 in /website (#3087)
+- chore(deps): bump fast-xml-parser from 4.2.7 to 4.5.0 in /website (#3083)
+- chore(deps): bump webpack from 5.89.0 to 5.94.0 in /website (#3078)
+- chore(deps): bump micromatch in /test/apps/typescript-test (#3067)
+
+### v4.3.0-alpha.8
+
+- fix(3d-tiles): Rewrite of parseImplicitTiles for readability (#3086)
+- feat(converter): support writing 3DTILES of version 1.1 (#3054)
+- chore: bump ocular-dev-tools (#3075)
+- feat(gltf): ext-structural-metadata encoding (#3080)
+- chore(examples): bump @deck.gl version (#3081)
+- chore: Bump to math.gl@4.1.0 (#3082)
+
+### v4.3.0-alpha.7
+
+- fix(tile-converter): Fix according to new NodeJS security limitations (#3071)
+- fix(tile-converter): Added flag to size calculation (#3069)
+- chore(gltf): fix env dependency in a test (#3068)
+- chore(potree): test PotreeSource on a supported dataset (#3065)
+
+### v4.3.0-alpha.6
+
+- fix(tile-converter): Returned non-slpk behavior for calculateFilesSize function (#3066)
+- fix(tile-converter): Wrong percent calculation fix (#3063)
+- Create security policy (#3064)
+- test(potree): Add tests for PotreeSource (#3062)
+- fix(potree): hierarchy loading (#3061)
+- chore(deps): bump elliptic from 6.5.4 to 6.5.7 in /website (#3058)
+- chore(deps): bump axios from 1.6.8 to 1.7.4 (#3059)
+- chore(deps): bump @75lb/deep-merge from 1.1.1 to 1.1.2 (#3060)
+- chore: Upgrade to node@20 and yarn@4.4.0 (#3056)
+- chore(tile-converter): egm=None feature updated (#3055)
+- fix(terrain): Add terrain-worker.js bundle to exports path (#3051)
+- chore(deps): bump fast-xml-parser from 4.2.5 to 4.4.1 (#3049)
+- chore(deps): bump ws from 5.2.3 to 5.2.4 (#3046)
+
+### v4.3.0-alpha.5
+
+- Directory structure mode removerd fron i3s-server (#3048)
+- feat(potree): data source initial (#3050)
+- chore(tile-converter): Slpk extractor removed (#3044)
+- chore: puppeteer version upgraded (#3045)
+- chore:(tile-converter) Remove "expanded slpk" usage from tile-converter (#3042)
+
+### v4.3.0-alpha.4
+
+- fix(mvt): Add mvt-worker.js bundle to exports path (#3035)
+- chore(deps): bump braces from 3.0.2 to 3.0.3 (#3027)
+- Tiles traverser: do not check for visibility in canTraverse. (#3032)
+- feat(tile-converter): Option not to use Geod transformation (#3033)
+- Send json data as object rather then Buffer (#3031)
+- feat(copc): Now module for COPC format (#3030)
+- chore(loader-utils): Example working on range requests (#2966)
+- fix(core): checkResponse crash when Request body is already used (#3026)
+- feat(pmtiles): Experimental PMTilesLoader (#3023)
+- Add Open.js Code Of Conduct File (#3022)
+- docs: Release notes for 4.3 (#3020)
+- fix(examples): geoparquet tooltips (#3021)
+- examples: Modernize pointcloud example (#3018)
+- feat(ktx2): Support loading mipmaps in KTX2 textures (#2999)
+- examples: modernize WMS example (#3019)
+- chore(tile-converter): upgrade node in the docker image (#3017)
+- chore: CHANGELOG.md (#3016)
+- chore: gitHead change
+
+### v4.3.0-alpha.3
+
+- fix(i3s): slpk full path on Windows (#3011)
+- feat(mvt): TableTileSource refactor, improved typing (#2990)
+- chore: Cleanup of Source parameters (#3015)
+- fix(csv): move d3-dsv from devDependencies to dependencies (#3009)
+- fix(loader-utils): add missing dependency for @probe.gl/log (#3008)
+- docs: Fix table formatting (#3014)
+- feat: Add VectorSource (#3012)
+- fix: ReadableStream (#3013)
+- chore(loader-utils): Preparing to migrate from FileProviders to ReadableFiles (#3000)
+- feat(core): Add createDataSource API (#3002)
+- chore(mvt): prep for refactor (#3005)
+- chore(mv): rename vector-tiler files (#3004)
+- chore: Source-related code org (#3003)
+
+### v4.3.0-alpha.2
+
+- examples: Modernize geospatial example (#2996)
+- examples: Modernize tiles example (#2995)
+- feat(tile-converter): Add absolute path support for i3s-server (#2970)
+- chore: update yarn and docusaurus deps (#2994)
+- example: TileSourceLayer can now render MVTLayer (#2992)
+- feat(parquet): Adopt new parquet-wasm File reader API. (#2987)
+- feat(mvt): TableTileSource uses probe.gl Stats and Log (#2989)
+- feat(mvt): Add WGS84 support to GeoJSONTileSource (#2977)
+- fix(zip): zip optimization for range requests (#2983)
+- chore: Bump ocular-dev-tools@alpha.31 (#2988)
+- chore(parquet): Upgrade parquet-wasm 0.6.0 (#2986)
+- fix: restore bench tests (#2985)
+- chore(parquet): Upgrade parquet-wasm 0.6.0
+- chore(parquet): more GeoParquet docs & examples (#2984)
+- fix: yarn.lock (#2982)
+
+### v4.3.0-alpha.1
+
+- fix(tile-converter): failing i3s-server (#2980)
+- chore: Standardize tileIndex zoom->z (#2976)
+- chore(mvt): loader and source cleanup (#2975)
+- feat(parquet): support 'limit' option (#2973)
+- chore(mvt): Deduplicate vector tile code (#2974)
+- feat(mvt): TableTileSource (#2969)
+- chore(mvt): refactor for clarity (#2971)
+- docs: v4.2 release notes (#2963)
+
 ## v4.2
 
 ### v4.2.2
@@ -45,7 +191,7 @@
 - website: new hero example (#2907)
 - chore(lerc): Restore lerc module (#2912)
 - fix(parquet): Restore ParquetWASMLoader after esbuild upgrade (#2915)
-- fix(*): Fix transitive internal dependencies (#2919)
+- fix(\*): Fix transitive internal dependencies (#2919)
 - fix(parquet): Zstd-codec import turned on (#2922)
 - chore(deps): bump webpack-dev-middleware from 5.3.3 to 5.3.4 in /website (#2926)
 - chore(deps): bump follow-redirects from 1.15.4 to 1.15.6 in /website (#2920)
@@ -63,7 +209,7 @@
 ### v4.2.0-alpha.5
 
 - chore: Upgrade ocular-dev-tools to tsc+esbuild (#2897)
-- fix(core): Avoid reassigning loaders._state (#2905)
+- fix(core): Avoid reassigning loaders.\_state (#2905)
 - feat(loader-utils): Add RequestScheduler 'debounceTime' option (#2892)
 - chore: Port I3S examples to v9 (#2903)
 - chore: Move examples to deck.gl@9.0.0-beta.5 (#2901)
@@ -173,7 +319,7 @@
 - chore: ensure all Writers have an encode() method (#2826)
 - feat(zip): Added append and truncate functionality (#2800)
 - fix(crypto): crc32 algorithm fix (#2819)
-- fix(crypto):  Reuse of Hash instance failures (#2824)
+- fix(crypto): Reuse of Hash instance failures (#2824)
 
 ### v4.1.0-alpha.2
 
@@ -405,7 +551,7 @@
 - chore: Add loader type parameters (#2626)
 - feat(tile-converter): support EXT_mesh_features and EXT_structural_metadata (#2566)
 - feat(core): non-specific parse functions return unknown (#2625)
-- chore(csv): Ensure tests  use typed CSVLoader (#2621)
+- chore(csv): Ensure tests use typed CSVLoader (#2621)
 - docs(core): Typed loaders (#2624)
 - chore(zip): Remove zip module dependency on @loaders.gl/core (#2622)
 - chore: Clean up module imports, remove default exports in images module (#2617) (#2623)
@@ -762,7 +908,7 @@
 - feat(wms): New WMS loader module (#2292)
 - chore(deps): bump @xmldom/xmldom from 0.7.6 to 0.7.7 (#2287)
 - chore(deps): bump loader-utils from 1.4.1 to 1.4.2 in /website (#2290)
-- chore(mvt): convert GeoJSONTiler to TypeScript (#2294)
+- chore(mvt): convert TableTiler to TypeScript (#2294)
 - feat(mvt): automatic tile generation from GeoJSON (geojson-vt fork). (#2293)
 - fix(tile-converter): lint error (#2289)
 - feat(xml): New XML loader module (#2291)

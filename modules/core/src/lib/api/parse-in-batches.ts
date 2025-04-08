@@ -3,9 +3,17 @@
 // Copyright (c) vis.gl contributors
 
 import {isTable, makeBatchFromTable, type Batch} from '@loaders.gl/schema';
-import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
-import type {LoaderContext, BatchableDataType} from '@loaders.gl/loader-utils';
-import type {LoaderBatchType, LoaderOptionsType} from '@loaders.gl/loader-utils';
+import type {
+  Loader,
+  LoaderWithParser,
+  LoaderOptions,
+  LoaderContext,
+  BatchableDataType,
+  LoaderOptionsType,
+  LoaderBatchType,
+  LoaderArrayOptionsType,
+  LoaderArrayBatchType
+} from '@loaders.gl/loader-utils';
 import {concatenateArrayBuffersAsync} from '@loaders.gl/loader-utils';
 import {isLoaderObject} from '../loader-utils/normalize-loader';
 import {normalizeOptions} from '../loader-utils/option-utils';
@@ -33,15 +41,19 @@ export async function parseInBatches<
 /**
  * Parses `data` using one of the supplied loaders
  */
-export async function parseInBatches(
+export async function parseInBatches<
+  LoaderArrayT extends Loader[],
+  OptionsT extends LoaderOptions = LoaderArrayOptionsType<LoaderArrayT>
+>(
   data: BatchableDataType,
-  loaders: Loader[],
-  options?: LoaderOptions,
+  loaders: LoaderArrayT,
+  options?: OptionsT,
   context?: LoaderContext
-): Promise<AsyncIterable<unknown>>;
+): Promise<LoaderArrayBatchType<LoaderArrayT>>;
 
 /**
  * Parses `data` in batches by selecting a pre-registered loader
+ * @deprecated Loader registration is deprecated, use parseInBatches(data, loaders, options) instead
  */
 export async function parseInBatches(
   data: BatchableDataType,

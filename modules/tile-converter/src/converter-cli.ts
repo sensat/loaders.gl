@@ -26,13 +26,15 @@ type TileConversionOptions = {
   /** Output folder. This folder will be created by converter if doesn't exist. It is relative to the converter path.
    * Default: "data" folder */
   output: string;
-  /** Keep created 3DNodeIndexDocument files on disk instead of memory. This option reduce memory usage but decelerates conversion speed */
+  /** 3DTiles version.
+   * Default: version "1.1" */
+  outputVersion?: string;
+  /** Keep created 3DNodeIndexDocument files on disk instead of memory. This option reduces memory usage but decelerates conversion speed */
   instantNodeWriting: boolean;
   /** Try to merge similar materials to be able to merge meshes into one node (I3S to 3DTiles conversion only) */
   mergeMaterials: boolean;
-  /** 3DTiles->I3S only. location of 7z.exe archiver to create slpk on Windows OS, default: "C:\Program Files\7-Zip\7z.exe" */
-  sevenZipExe: string;
   /** location of the Earth Gravity Model (*.pgm) file to convert heights from ellipsoidal to gravity-related format,
+   * "None" for not using Earth Gravity Model (*.pgm)
    * default: "./deps/egm2008-5.pgm". A model file can be loaded from GeographicLib
    * https://geographiclib.sourceforge.io/html/geoid.html */
   egm: string;
@@ -52,11 +54,9 @@ type TileConversionOptions = {
   validate: boolean;
   /** Maximal depth of the hierarchical tiles tree traversal, default: infinite */
   maxDepth?: number;
-  /** 3DTiles->I3S only. Whether the converter generates *.slpk (Scene Layer Package) I3S output file */
-  slpk: boolean;
-  /** adds hash file to the slpk if there's no one */
+  /** Adds a hash file to an .slpk without hash */
   addHash: boolean;
-  /** Feature metadata class from EXT_FEATURE_METADATA or EXT_STRUCTURAL_METADATA extensions  */
+  /** Set feature metadata class from EXT_FEATURE_METADATA or EXT_STRUCTURAL_METADATA extensions  */
   metadataClass?: string;
   /** With this options the tileset content will be analyzed without conversion */
   analyze?: boolean;
@@ -171,21 +171,23 @@ function printHelp(): void {
   console.log('--name [Tileset name]');
   console.log('--output [Output folder, default: "data" folder]');
   console.log(
-    '--instant-node-writing [Keep created 3DNodeIndexDocument files on disk instead of memory. This option reduce memory usage but decelerates conversion speed]'
+    '--instant-node-writing [Keep created 3DNodeIndexDocument files on disk instead of memory. This option reduces memory usage but decelerates conversion speed]'
   );
   console.log(
-    '--split-nodes [Prevent to merge similar materials that could lead to incorrect visualization (I3S to 3DTiles conversion only)]'
+    '--split-nodes [Prevent merging similar materials that could lead to incorrect visualization (I3S to 3DTiles conversion only)]'
   );
-  console.log('--slpk [Generate slpk (Scene Layer Packages) I3S output file]');
+  console.log(
+    '--slpk [(Deprecated since version 4.3.0) Whether the converter generates *.slpk (Scene Layer Package) I3S output files. Note: For versions 4.3.0 and up *.slpk is the default output without this option specified.]'
+  );
   console.log(
     '--tileset [tileset.json file (3DTiles) / http://..../SceneServer/layers/0 resource (I3S)]'
   );
   console.log('--input-type [tileset input type: I3S or 3DTILES]');
   console.log(
-    '--7zExe [location of 7z.exe archiver to create slpk on Windows, default: "C:\\Program Files\\7-Zip\\7z.exe"]'
+    '--output-version [3DTiles version: 1.0 or 1.1, default: 1.1]. This option supports only 1.0/1.1 values for 3DTiles output. I3S output version setting is not supported yet.'
   );
   console.log(
-    '--egm [location of Earth Gravity Model *.pgm file to convert heights from ellipsoidal to gravity-related format. A model file can be loaded from GeographicLib https://geographiclib.sourceforge.io/html/geoid.html], default: "./deps/egm2008-5.zip"'
+    '--egm [location of Earth Gravity Model *.pgm file to convert heights from ellipsoidal to gravity-related format or "None" to not use it. A model file can be loaded from GeographicLib https://geographiclib.sourceforge.io/html/geoid.html], default: "./deps/egm2008-5.zip"'
   );
   console.log('--token [Token for Cesium ION tilesets authentication]');
   console.log('--no-draco [Disable draco compression for geometry]');
@@ -219,6 +221,7 @@ async function convert(options: ValidatedTileConversionOptions) {
       await tiles3DConverter.convert({
         inputUrl: options.tileset,
         outputPath: options.output,
+        outputVersion: options.outputVersion,
         tilesetName: options.name,
         maxDepth: options.maxDepth,
         egmFilePath: options.egm,
@@ -233,8 +236,6 @@ async function convert(options: ValidatedTileConversionOptions) {
         outputPath: options.output,
         tilesetName: options.name,
         maxDepth: options.maxDepth,
-        slpk: options.slpk,
-        sevenZipExe: options.sevenZipExe,
         egmFilePath: options.egm,
         token: options.token,
         draco: options.draco,
@@ -274,7 +275,6 @@ function validateOptions(
       condition: (value: any) => addHash || Boolean(value) || Boolean(options.analyze)
     },
     output: {getMessage: () => console.log('Missed: --output [Output path name]')},
-    sevenZipExe: {getMessage: () => console.log('Missed: --7zExe [7z archiver executable path]')},
     egm: {getMessage: () => console.log('Missed: --egm [*.pgm earth gravity model file path]')},
     tileset: {getMessage: () => console.log('Missed: --tileset [tileset.json file]')},
     inputType: {
@@ -282,6 +282,17 @@ function validateOptions(
         console.log('Missed/Incorrect: --input-type [tileset input type: I3S or 3DTILES]'),
       condition: (value) =>
         addHash || (Boolean(value) && Object.values(TILESET_TYPE).includes(value.toUpperCase()))
+    },
+    outputVersion: {
+      getMessage: () =>
+        console.log('Incorrect: --output-version [1.0 or 1.1] is for --input-type "I3S" only'),
+      condition: (value) =>
+        addHash ||
+        (Boolean(value) &&
+          Object.values(['1.0', '1.1']).includes(value) &&
+          Boolean(options.inputType === 'I3S')) ||
+        Boolean(options.inputType !== 'I3S') ||
+        Boolean(options.analyze)
     }
   };
   const exceptions: (() => void)[] = [];
@@ -310,16 +321,15 @@ function validateOptions(
 function parseOptions(args: string[]): TileConversionOptions {
   const opts: TileConversionOptions = {
     output: 'data',
+    outputVersion: '1.1',
     instantNodeWriting: false,
     mergeMaterials: true,
-    sevenZipExe: 'C:\\Program Files\\7-Zip\\7z.exe',
     egm: join(process.cwd(), 'deps', 'egm2008-5.pgm'),
     draco: true,
     installDependencies: false,
     generateTextures: false,
     generateBoundingVolumes: false,
     validate: false,
-    slpk: false,
     addHash: false,
     quiet: false
   };
@@ -340,6 +350,9 @@ function parseOptions(args: string[]): TileConversionOptions {
         case '--output':
           opts.output = getStringValue(index, args);
           break;
+        case '--output-version':
+          opts.outputVersion = getStringValue(index, args);
+          break;
         case '--instant-node-writing':
           opts.instantNodeWriting = getBooleanValue(index, args);
           break;
@@ -349,14 +362,8 @@ function parseOptions(args: string[]): TileConversionOptions {
         case '--max-depth':
           opts.maxDepth = getIntegerValue(index, args);
           break;
-        case '--slpk':
-          opts.slpk = getBooleanValue(index, args);
-          break;
         case '--add-hash':
           opts.addHash = getBooleanValue(index, args);
-          break;
-        case '--7zExe':
-          opts.sevenZipExe = getStringValue(index, args);
           break;
         case '--egm':
           opts.egm = getStringValue(index, args);
@@ -390,6 +397,10 @@ function parseOptions(args: string[]): TileConversionOptions {
           break;
         case '--help':
           printHelp();
+          break;
+        // we need this option for backward compatibility
+        // do nothing but don't throw the error
+        case '--slpk':
           break;
         default:
           console.warn(`Unknown option ${arg}`);

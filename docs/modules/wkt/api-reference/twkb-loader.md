@@ -1,4 +1,4 @@
-# TWKBLoader 🆕 🚧
+# TWKBLoader 🚧
 
 <p class="badges">
   <img src="https://img.shields.io/badge/From-v4.0-blue.svg?style=flat-square" alt="From-v4.0" />
@@ -12,7 +12,7 @@ Loader for the [Well-known binary][wkb] format for representation of geometry.
 | --------------------- | --------------------------------------------- |
 | File Extension        | `.wkb`,                                       |
 | File Type             | Binary                                        |
-| File Format           | [Tiny Well Known Binary][twkb]                      |
+| File Format           | [Tiny Well Known Binary][twkb]                |
 | Data Format           | [Geometry](/docs/specifications/category-gis) |
 | Supported APIs        | `load`, `parse`, `parseSync`                  |
 | Decoder Type          | Synchronous                                   |

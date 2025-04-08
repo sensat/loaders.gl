@@ -1,15 +1,11 @@
-require('@babel/register')({
-  extensions: ['.js', '.jsx', '.ts', '.tsx']
-});
+import '@loaders.gl/polyfills';
+import {Bench} from '@probe.gl/bench';
 
-require('@loaders.gl/polyfills');
-const {Bench} = require('@probe.gl/bench');
-
-const {addModuleBenchmarksToSuite} = require('./modules');
+import {addModuleBenchmarksToSuite} from './modules';
 
 const suite = new Bench({
   // Speed for CI testing
   minIterations: 1
 });
 
-addModuleBenchmarksToSuite(suite).then(_ => suite.run());
+addModuleBenchmarksToSuite(suite).then((_) => suite.run());

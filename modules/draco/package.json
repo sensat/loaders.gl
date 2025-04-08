@@ -1,16 +1,15 @@
 {
   "name": "@loaders.gl/draco",
-  "version": "4.2.2",
+  "version": "4.3.3",
   "description": "Framework-independent loader and writer for Draco compressed meshes and point clouds",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sensat/loaders.gl"
+    "url": "https://github.com/visgl/loaders.gl"
   },
   "keywords": [
     "loader",
@@ -58,16 +57,16 @@
     "build-writer-worker-node": "esbuild src/workers/draco-writer-worker-node.ts --outfile=dist/draco-writer-worker-node.js --target=node16 --platform=node --bundle --sourcemap --define:__VERSION__=\\\"$npm_package_version\\\""
   },
   "dependencies": {
-    "@loaders.gl/loader-utils": "4.2.2",
-    "@loaders.gl/schema": "4.2.2",
-    "@loaders.gl/worker-utils": "4.2.2",
+    "@loaders.gl/loader-utils": "4.3.3",
+    "@loaders.gl/schema": "4.3.3",
+    "@loaders.gl/worker-utils": "4.3.3",
     "draco3d": "1.5.7"
   },
   "devDependencies": {
     "@types/draco3d": "^1.4.9"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "^4.0.0"
+    "@loaders.gl/core": "^4.3.0"
   },
-  "gitHead": "c95a4ff72512668a93d9041ce8636bac09333fd5"
+  "gitHead": "3213679d79e6ff2814d48fd3337acfa446c74099"
 }

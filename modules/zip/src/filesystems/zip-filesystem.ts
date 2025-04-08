@@ -2,9 +2,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {FileSystem, isBrowser} from '@loaders.gl/loader-utils';
-import {FileProvider, isFileProvider} from '@loaders.gl/loader-utils';
-import {FileHandleFile} from '@loaders.gl/loader-utils';
+import {
+  FileSystem,
+  isBrowser,
+  FileProviderInterface,
+  isFileProvider,
+  FileHandleFile
+} from '@loaders.gl/loader-utils';
 import {ZipCDFileHeader, makeZipCDHeaderIterator} from '../parse-zip/cd-file-header';
 import {parseZipLocalFileHeader} from '../parse-zip/local-file-header';
 import {DeflateCompression} from '@loaders.gl/compression';
@@ -29,7 +33,7 @@ export const ZIP_COMPRESSION_HANDLERS: {[key: number]: CompressionHandler} = {
  */
 export class ZipFileSystem implements FileSystem {
   /** FileProvider instance promise */
-  public fileProvider: FileProvider | null = null;
+  public fileProvider: FileProviderInterface | null = null;
   public fileName?: string;
   public archive: IndexedArchive | null = null;
 
@@ -37,7 +41,7 @@ export class ZipFileSystem implements FileSystem {
    * Constructor
    * @param file - instance of FileProvider or file path string
    */
-  constructor(file: FileProvider | IndexedArchive | string) {
+  constructor(file: FileProviderInterface | IndexedArchive | string) {
     // Try to open file in NodeJS
     if (typeof file === 'string') {
       this.fileName = file;
