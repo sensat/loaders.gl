@@ -5,9 +5,7 @@
 import test from 'tape-promise/tape';
 
 import {fetchFile, isBrowser} from '@loaders.gl/core';
-import {FileHandleFile} from '@loaders.gl/loader-utils';
-import {DataViewFile} from '@loaders.gl/loader-utils';
-import {FileProvider} from '@loaders.gl/loader-utils';
+import {FileHandleFile, DataViewFile, FileProvider} from '@loaders.gl/loader-utils';
 import {ZipFileSystem} from '../../src/filesystems/zip-filesystem';
 
 const ZIP_FILE_PATH = '@loaders.gl/zip/test/data/test-store.zip';
@@ -47,7 +45,7 @@ test('zip#ZipFileSystem - get stat for the first file', async (t) => {
   t.equal(stats.fileName, 'test-file.txt');
   t.equal(stats.fileNameLength, 13);
   t.equal(stats.extraFieldLength, 24);
-  t.equal(stats.extraOffset, 145n);
+  t.equal(stats.extraOffset, 59n);
   t.equal(stats.localHeaderOffset, 0n);
   t.equal(stats.size, 15);
   t.end();

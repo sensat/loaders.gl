@@ -1,6 +1,6 @@
 // loaders.gl
 // SPDX-License-Identifier: MIT
-// Copyright vis.gl contributors
+// Copyright (c) vis.gl contributors
 
 /** For local coordinates, the tileIndex is not required */
 type MVTLocalCoordinatesOptions = {

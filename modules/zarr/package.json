@@ -1,16 +1,15 @@
 {
   "name": "@loaders.gl/zarr",
-  "version": "4.2.2",
+  "version": "4.3.3",
   "description": "Framework-independent loaders for Zarr",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sensat/loaders.gl"
+    "url": "https://github.com/visgl/loaders.gl"
   },
   "keywords": [
     "webgl",
@@ -43,7 +42,7 @@
     "zarr": "^0.5.0"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "^4.0.0"
+    "@loaders.gl/core": "^4.3.0"
   },
-  "gitHead": "c95a4ff72512668a93d9041ce8636bac09333fd5"
+  "gitHead": "3213679d79e6ff2814d48fd3337acfa446c74099"
 }

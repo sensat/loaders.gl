@@ -1,16 +1,15 @@
 {
   "name": "@loaders.gl/math",
-  "version": "4.2.2",
+  "version": "4.3.3",
   "description": "Experimental math classes for loaders.gl",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sensat/loaders.gl"
+    "url": "https://github.com/visgl/loaders.gl"
   },
   "keywords": [
     "3d",
@@ -40,12 +39,12 @@
     "pre-build": "echo \"Nothing to build in @loaders.gl/math\""
   },
   "dependencies": {
-    "@loaders.gl/images": "4.2.2",
-    "@loaders.gl/loader-utils": "4.2.2",
-    "@math.gl/core": "^4.0.0"
+    "@loaders.gl/images": "4.3.3",
+    "@loaders.gl/loader-utils": "4.3.3",
+    "@math.gl/core": "^4.1.0"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "^4.0.0"
+    "@loaders.gl/core": "^4.3.0"
   },
-  "gitHead": "c95a4ff72512668a93d9041ce8636bac09333fd5"
+  "gitHead": "3213679d79e6ff2814d48fd3337acfa446c74099"
 }

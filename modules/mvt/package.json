@@ -1,16 +1,15 @@
 {
   "name": "@loaders.gl/mvt",
   "description": "Loader for Mapbox Vector Tiles",
-  "version": "4.2.2",
+  "version": "4.3.3",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sensat/loaders.gl"
+    "url": "https://github.com/visgl/loaders.gl"
   },
   "keywords": [
     "geometry",
@@ -27,6 +26,9 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./mvt-worker.js": {
+      "import": "./dist/mvt-worker.js"
     }
   },
   "sideEffects": false,
@@ -42,18 +44,19 @@
     "build-worker": "esbuild src/workers/mvt-worker.ts --bundle --outfile=dist/mvt-worker.js --define:__VERSION__=\\\"$npm_package_version\\\""
   },
   "dependencies": {
-    "@loaders.gl/gis": "4.2.2",
-    "@loaders.gl/images": "4.2.2",
-    "@loaders.gl/loader-utils": "4.2.2",
-    "@loaders.gl/schema": "4.2.2",
-    "@math.gl/polygon": "^4.0.0",
+    "@loaders.gl/gis": "4.3.3",
+    "@loaders.gl/images": "4.3.3",
+    "@loaders.gl/loader-utils": "4.3.3",
+    "@loaders.gl/schema": "4.3.3",
+    "@math.gl/polygon": "^4.1.0",
+    "@probe.gl/stats": "^4.0.0",
     "pbf": "^3.2.1"
   },
   "devDependencies": {
     "@types/pbf": "^3.0.2"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "^4.0.0"
+    "@loaders.gl/core": "^4.3.0"
   },
-  "gitHead": "c95a4ff72512668a93d9041ce8636bac09333fd5"
+  "gitHead": "3213679d79e6ff2814d48fd3337acfa446c74099"
 }

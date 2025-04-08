@@ -2,7 +2,8 @@ import type {
   AttributeStorageInfo,
   FeatureAttribute,
   NodeReference,
-  I3STilesetHeader
+  I3STilesetHeader,
+  I3STileAttributes
 } from '@loaders.gl/i3s';
 import type {Tile3DBoundingVolume, Tiles3DTileJSON} from '@loaders.gl/3d-tiles';
 
@@ -17,18 +18,22 @@ import {PGMLoader} from '../pgm-loader';
 import {i3sObbTo3dTilesObb} from './helpers/i3s-obb-to-3d-tiles-obb';
 import {convertScreenThresholdToGeometricError} from '../lib/utils/lod-conversion-utils';
 import {writeFile, removeDir} from '../lib/utils/file-utils';
-import {calculateFilesSize, timeConverter} from '../lib/utils/statistic-utills';
+import {calculateDatasetSize, timeConverter} from '../lib/utils/statistic-utils';
 import {TILESET as tilesetTemplate} from './json-templates/tileset';
 import {createObbFromMbs} from '../i3s-converter/helpers/coordinate-converter';
 import {WorkerFarm} from '@loaders.gl/worker-utils';
 import {BROWSER_ERROR_MESSAGE} from '../constants';
-import B3dmConverter, {I3SAttributesData} from './helpers/b3dm-converter';
+import {
+  Tiles3DContentConverter,
+  type I3SAttributesData
+} from './helpers/3d-tiles-content-converter';
 import {I3STileHeader} from '@loaders.gl/i3s/src/types';
 import {getNodeCount, loadFromArchive, loadI3SContent, openSLPK} from './helpers/load-i3s';
 import {I3SLoaderOptions} from '@loaders.gl/i3s/src/i3s-loader';
 import {ZipFileSystem} from '../../../zip/src';
 import {ConversionDump, ConversionDumpOptions} from '../lib/utils/conversion-dump';
 import {Progress} from '../i3s-converter/helpers/progress';
+import {PromptModule} from 'inquirer';
 
 const I3S = 'I3S';
 
@@ -58,6 +63,7 @@ export default class Tiles3DConverter {
   };
   conversionDump: ConversionDump;
   progress: Progress;
+  fileExt: string;
 
   constructor() {
     this.options = {};
@@ -70,6 +76,7 @@ export default class Tiles3DConverter {
     this.workerSource = {};
     this.conversionDump = new ConversionDump();
     this.progress = new Progress();
+    this.fileExt = '';
   }
 
   /**
@@ -77,6 +84,7 @@ export default class Tiles3DConverter {
    * @param options
    * @param options.inputUrl the url to read the tileset from
    * @param options.outputPath the output filename
+   * @param options.outputVersion the version of 3DTiles
    * @param options.tilesetName the output name of the tileset
    * @param options.egmFilePath location of *.pgm file to convert heights from ellipsoidal to gravity-related format
    * @param options.maxDepth The max tree depth of conversion
@@ -86,18 +94,29 @@ export default class Tiles3DConverter {
     inputUrl: string;
     outputPath: string;
     tilesetName: string;
+    outputVersion?: string;
     maxDepth?: number;
     egmFilePath: string;
-    inquirer?: Promise<unknown>;
+    inquirer?: {prompt: PromptModule};
     analyze?: boolean;
   }): Promise<string | undefined> {
     if (isBrowser) {
       console.log(BROWSER_ERROR_MESSAGE); // eslint-disable-line no-console
       return BROWSER_ERROR_MESSAGE;
     }
-    const {inputUrl, outputPath, tilesetName, maxDepth, egmFilePath, inquirer, analyze} = options;
+    const {
+      inputUrl,
+      outputPath,
+      outputVersion,
+      tilesetName,
+      maxDepth,
+      egmFilePath,
+      inquirer,
+      analyze
+    } = options;
     this.conversionStartTime = process.hrtime();
-    this.options = {maxDepth, inquirer};
+    this.options = {maxDepth, inquirer, outputVersion};
+    this.fileExt = this.options.outputVersion === '1.0' ? 'b3dm' : 'glb';
 
     console.log('Loading egm file...'); // eslint-disable-line
     this.geoidHeightModel = await load(egmFilePath, PGMLoader);
@@ -172,7 +191,7 @@ export default class Tiles3DConverter {
 
     await this._addChildren(rootNode, rootTile, 1);
 
-    const tileset = transform({root: rootTile}, tilesetTemplate());
+    const tileset = transform({asset: {version: outputVersion}, root: rootTile}, tilesetTemplate());
     await writeFile(this.tilesetPath, JSON.stringify(tileset), 'tileset.json');
     await this.conversionDump.deleteDumpFile();
 
@@ -243,7 +262,7 @@ export default class Tiles3DConverter {
     if (sourceChild.contentUrl) {
       if (
         this.conversionDump.restored &&
-        this.conversionDump.isFileConversionComplete(`${sourceChild.id}.b3dm`) &&
+        this.conversionDump.isFileConversionComplete(`${sourceChild.id}.${this.fileExt}`) &&
         (sourceChild.obb || sourceChild.mbs)
       ) {
         const {child} = this._createChildAndBoundingVolume(sourceChild);
@@ -265,7 +284,7 @@ export default class Tiles3DConverter {
 
       this.vertexCounter += content?.vertexCount || 0;
 
-      let featureAttributes: FeatureAttribute | null = null;
+      let featureAttributes: I3STileAttributes | null = null;
       if (this.attributeStorageInfo) {
         featureAttributes = await this._loadChildAttributes(sourceChild, this.attributeStorageInfo);
       }
@@ -278,13 +297,21 @@ export default class Tiles3DConverter {
         textureFormat: sourceChild.textureFormat
       };
 
-      const b3dmConverter = new B3dmConverter();
-      const b3dm = await b3dmConverter.convert(i3sAttributesData, featureAttributes);
+      const converter = new Tiles3DContentConverter({outputVersion: this.options.outputVersion});
+      const contentData = await converter.convert(
+        i3sAttributesData,
+        featureAttributes,
+        this.attributeStorageInfo
+      );
 
-      await this.conversionDump.addNode(`${sourceChild.id}.b3dm`, sourceChild.id);
-      await writeFile(this.tilesetPath, new Uint8Array(b3dm), `${sourceChild.id}.b3dm`);
+      await this.conversionDump.addNode(`${sourceChild.id}.${this.fileExt}`, sourceChild.id);
+      await writeFile(
+        this.tilesetPath,
+        new Uint8Array(contentData),
+        `${sourceChild.id}.${this.fileExt}`
+      );
       await this.conversionDump.updateConvertedNodesDumpFile(
-        `${sourceChild.id}.b3dm`,
+        `${sourceChild.id}.${this.fileExt}`,
         sourceChild.id,
         true
       );
@@ -378,7 +405,7 @@ export default class Tiles3DConverter {
       geometricError: convertScreenThresholdToGeometricError(sourceChild),
       children: [],
       content: {
-        uri: `${sourceChild.id}.b3dm`,
+        uri: `${sourceChild.id}.${this.fileExt}`,
         boundingVolume
       }
     };
@@ -416,7 +443,7 @@ export default class Tiles3DConverter {
   private async _loadChildAttributes(
     sourceChild: I3STileHeader,
     attributeStorageInfo: AttributeStorageInfo[]
-  ): Promise<FeatureAttribute> {
+  ): Promise<I3STileAttributes> {
     const promises: any[] = [];
     const {attributeUrls = []} = sourceChild;
 
@@ -474,7 +501,7 @@ export default class Tiles3DConverter {
     outputPath: string;
     tilesetName: string;
   }): Promise<void> {
-    const filesSize = await calculateFilesSize(params);
+    const filesSize = await calculateDatasetSize(params);
     const diff = process.hrtime(this.conversionStartTime);
     const conversionTime = timeConverter(diff);
 

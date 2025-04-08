@@ -17,25 +17,28 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Geospatial Table Loaders',
+      label: 'Geospatial Table Formats',
       items: [
-        'flatgeobuf',
-        'geoarrow',
-        'geoparquet',
-        'geojson',
+        'geospatial/flatgeobuf',
+        'geospatial/geoarrow',
+        'geospatial/geoparquet',
+        'geospatial/geopackage',
+        'geospatial/geojson',
         'geospatial/shapefile',
         'geospatial/kml',
         'geospatial/gpx',
-        'geospatial/tcx',
-        'geopackage'
+        'geospatial/tcx'
       ]
     },
     {
       type: 'category',
-      label: 'Geospatial Tile Loaders',
+      label: 'Geospatial Tile Formats',
+      items: ['tiles/mvt', 'tiles/pmtiles', 'tiles/table-tiler', 'tiles/wms']
+    },
+    {
+      type: 'category',
+      label: '3D Tile Formats',
       items: [
-        'pmtiles',
-        'wms',
         'i3s-building-scene-layer',
         'i3s-picking',
         'i3s-colorization-by-attributes',
@@ -44,11 +47,22 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'General Loaders',
+      label: 'Point Cloud Formats',
+      items: [
+        'pointclouds/draco',
+        'pointclouds/las',
+        'pointclouds/pcd',
+        'pointclouds/ply',
+        'pointclouds/obj'
+      ]
+    },
+    {
+      type: 'category',
+      label: 'General Formats',
+      collapsed: false,
       items: [
         'textures',
         // 'gltf',
-        'pointcloud'
       ]
     }
     // {

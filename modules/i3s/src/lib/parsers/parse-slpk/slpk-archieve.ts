@@ -1,5 +1,5 @@
 import {MD5Hash} from '@loaders.gl/crypto';
-import {FileProvider} from '@loaders.gl/loader-utils';
+import {FileProviderInterface} from '@loaders.gl/loader-utils';
 import {IndexedArchive, parseZipLocalFileHeader} from '@loaders.gl/zip';
 import {GZipCompression} from '@loaders.gl/compression';
 
@@ -10,31 +10,35 @@ const PATH_DESCRIPTIONS: {test: RegExp; extensions: string[]}[] = [
     extensions: ['3dSceneLayer.json.gz']
   },
   {
-    test: /^nodepages\/\d+$/,
+    test: /nodepages\/\d+$/,
     extensions: ['.json.gz']
   },
   {
-    test: /^nodes\/(\d+|root)$/,
+    test: /sublayers\/\d+$/,
+    extensions: ['/3dSceneLayer.json.gz']
+  },
+  {
+    test: /nodes\/(\d+|root)$/,
     extensions: ['/3dNodeIndexDocument.json.gz']
   },
   {
-    test: /^nodes\/\d+\/textures\/.+$/,
-    extensions: ['.jpg', '.png', '.bin.dds.gz', '.ktx']
+    test: /nodes\/\d+\/textures\/.+$/,
+    extensions: ['.jpg', '.png', '.bin.dds.gz', '.ktx', '.ktx2']
   },
   {
-    test: /^nodes\/\d+\/geometries\/\d+$/,
+    test: /nodes\/\d+\/geometries\/\d+$/,
     extensions: ['.bin.gz', '.draco.gz']
   },
   {
-    test: /^nodes\/\d+\/attributes\/f_\d+\/\d+$/,
+    test: /nodes\/\d+\/attributes\/f_\d+\/\d+$/,
     extensions: ['.bin.gz']
   },
   {
-    test: /^statistics\/f_\d+\/\d+$/,
+    test: /statistics\/(f_\d+\/\d+|summary)$/,
     extensions: ['.json.gz']
   },
   {
-    test: /^nodes\/\d+\/shared$/,
+    test: /nodes\/\d+\/shared$/,
     extensions: ['/sharedResource.json.gz']
   }
 ];
@@ -56,7 +60,11 @@ export class SLPKArchive extends IndexedArchive {
    * @param hashTable - pre-loaded hashTable. If presented, getFile will skip reading the hash file
    * @param fileName - name of the archive. It is used to add to an URL of a loader context
    */
-  constructor(fileProvider: FileProvider, hashTable?: Record<string, bigint>, fileName?: string) {
+  constructor(
+    fileProvider: FileProviderInterface,
+    hashTable?: Record<string, bigint>,
+    fileName?: string
+  ) {
     super(fileProvider, hashTable, fileName);
     this.hashTable = hashTable;
   }
