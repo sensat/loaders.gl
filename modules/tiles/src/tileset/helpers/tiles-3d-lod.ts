@@ -147,7 +147,7 @@ export function getTiles3DScreenSpaceError(tile, frameState, useParentLodMetric)
   const {viewDistanceScale, rootViewDistanceScale} = tileset.options;
 
   const tileViewDistanceScale = !defined(tile.parent)
-    ? rootViewDistanceScale ?? viewDistanceScale
+    ? (rootViewDistanceScale ?? viewDistanceScale)
     : viewDistanceScale;
 
   let error =
