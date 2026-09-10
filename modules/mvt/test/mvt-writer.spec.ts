@@ -7,7 +7,8 @@ import {encode, fetchFile, parse} from '@sensat/loaders-gl-core';
 import {MVTLoader, MVTWriter} from '@sensat/loaders-gl-mvt';
 
 const RECTANGLE_URL = '@sensat/loaders-gl-mvt/test/data/mapbox-vt-pbf-fixtures/rectangle.geojson';
-const RECTANGLE_TILE = '@sensat/loaders-gl-mvt/test/data/mapbox-vt-pbf-fixtures/rectangle-1.0.0.pbf';
+const RECTANGLE_TILE =
+  '@sensat/loaders-gl-mvt/test/data/mapbox-vt-pbf-fixtures/rectangle-1.0.0.pbf';
 
 test('MVTWriter#import', async (t) => {
   t.ok(MVTWriter, 'MVTWriter is defined');

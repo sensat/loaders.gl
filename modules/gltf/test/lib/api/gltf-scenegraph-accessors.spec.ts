@@ -9,7 +9,8 @@ import type {TypedArray} from '@sensat/loaders-gl-schema';
 const GLB_TILE_WITH_DRACO_URL = '@sensat/loaders-gl-gltf/test/data/3d-tiles/143.glb';
 
 const GLB_MESHOPT_GEOMETRY_URL = '@sensat/loaders-gl-gltf/test/data/meshopt/pirate.glb';
-const GLB_KTX2_GEOMETRY_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/VNext/agi-ktx2/0/0.glb';
+const GLB_KTX2_GEOMETRY_URL =
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/VNext/agi-ktx2/0/0.glb';
 
 test('GLTFScenegraph#ctor', (t) => {
   const gltfScenegraph = new GLTFScenegraph();

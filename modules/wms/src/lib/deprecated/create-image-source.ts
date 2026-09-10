@@ -2,7 +2,11 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Source, SourceArrayDataSourceType, DataSourceOptions} from '@sensat/loaders-gl-loader-utils';
+import type {
+  Source,
+  SourceArrayDataSourceType,
+  DataSourceOptions
+} from '@sensat/loaders-gl-loader-utils';
 import type {WMSSourceOptions} from '../../wms-source';
 import {WMSSource} from '../../wms-source';
 import {ArcGISImageServerSource} from '../../arcgis/arcgis-image-source';

@@ -4,7 +4,11 @@
 
 import test from 'tape-promise/tape';
 import {fetchFile} from '@sensat/loaders-gl-core';
-import {loadImageTexture, loadImageTextureArray, loadImageTextureCube} from '@sensat/loaders-gl-textures';
+import {
+  loadImageTexture,
+  loadImageTextureArray,
+  loadImageTextureCube
+} from '@sensat/loaders-gl-textures';
 import {isImage} from '@sensat/loaders-gl-images';
 
 const LUT_URL = '@sensat/loaders-gl-images/test/data/ibl/brdfLUT.png';

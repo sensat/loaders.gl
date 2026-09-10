@@ -5,7 +5,10 @@
 import test, {Test} from 'tape-promise/tape';
 
 import {getGeometryColumnsFromSchema} from '@sensat/loaders-gl-geoarrow';
-import {getBinaryGeometryTemplate, convertGeoArrowToBinaryFeatureCollection} from '@sensat/loaders-gl-gis';
+import {
+  getBinaryGeometryTemplate,
+  convertGeoArrowToBinaryFeatureCollection
+} from '@sensat/loaders-gl-gis';
 import {convertArrowToSchema} from '@sensat/loaders-gl-schema-utils';
 import {load} from '@sensat/loaders-gl-core';
 import {ArrowLoader} from '@sensat/loaders-gl-arrow';

@@ -1,7 +1,12 @@
 import test from 'tape-promise/tape';
 import {validateWriter, validateMeshCategoryData} from 'test/common/conformance';
 
-import {DracoLoader, DracoWriterOptions, DracoWriter, DracoWriterWorker} from '@sensat/loaders-gl-draco';
+import {
+  DracoLoader,
+  DracoWriterOptions,
+  DracoWriter,
+  DracoWriterWorker
+} from '@sensat/loaders-gl-draco';
 import {encode, fetchFile, parse} from '@sensat/loaders-gl-core';
 // import {getMeshSize} from '@sensat/loaders-gl-schema-utils';
 import draco3d from 'draco3d';

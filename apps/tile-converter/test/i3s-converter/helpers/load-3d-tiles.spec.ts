@@ -6,7 +6,8 @@ import {
   loadTile3DContent
 } from '../../../src/i3s-converter/helpers/load-3d-tiles';
 
-const TILESET_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedColors/tileset.json';
+const TILESET_URL =
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedColors/tileset.json';
 const NESTED_TILESET_URL =
   '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Tilesets/TilesetOfTilesets/tileset.json';
 

@@ -17,9 +17,12 @@ const FRANKFURT_B3DM_FILE_PATH =
   '@sensat/loaders-gl-tile-converter/test/data/Frankfurt/L5/OF/474_5548_-1_lv5_group_0.osgb_3.b3dm';
 const BERLIN_B3DM_FILE_PATH =
   '@sensat/loaders-gl-tile-converter/test/data/Berlin/1511577738.buildings.b3dm';
-const NEW_YORK_B3DM_FILE_PATH = '@sensat/loaders-gl-tile-converter/test/data/NewYork/75343/6/5/1.b3dm';
-const FERRY_GLTF_FILE_PATH = '@sensat/loaders-gl-tile-converter/test/data/Ferry/754834/6/0000000.glb';
-const MUSCATATUCK_GLB_FILE_PATH = '@sensat/loaders-gl-tile-converter/test/data/Muscatatuck/0/0/0.glb';
+const NEW_YORK_B3DM_FILE_PATH =
+  '@sensat/loaders-gl-tile-converter/test/data/NewYork/75343/6/5/1.b3dm';
+const FERRY_GLTF_FILE_PATH =
+  '@sensat/loaders-gl-tile-converter/test/data/Ferry/754834/6/0000000.glb';
+const MUSCATATUCK_GLB_FILE_PATH =
+  '@sensat/loaders-gl-tile-converter/test/data/Muscatatuck/0/0/0.glb';
 const TRIANGLE_STRIP_B3DM_FILE_PATH =
   '@sensat/loaders-gl-tile-converter/test/data/TriangleStrip/lod1_0.b3dm';
 const HELSINKI_GLB_FILE_PATH =

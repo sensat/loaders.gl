@@ -12,7 +12,8 @@ import {DracoLoader} from '@sensat/loaders-gl-draco';
 
 const TILE_B3DM_WITH_DRACO_URL = '@sensat/loaders-gl-3d-tiles/test/data/143.b3dm';
 
-const TILESET_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedColors/tileset.json';
+const TILESET_URL =
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedColors/tileset.json';
 const ACTUAL_B3DM =
   '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedWithVertexColors/batchedWithVertexColors.b3dm';
 const DEPRECATED_B3DM_1 =

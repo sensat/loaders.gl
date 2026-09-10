@@ -16,7 +16,10 @@ import {
   CompressionWorker
 } from '@sensat/loaders-gl-compression';
 import {processOnWorker, isBrowser, WorkerFarm} from '@sensat/loaders-gl-worker-utils';
-import {concatenateArrayBuffers, concatenateArrayBuffersAsync} from '@sensat/loaders-gl-loader-utils';
+import {
+  concatenateArrayBuffers,
+  concatenateArrayBuffersAsync
+} from '@sensat/loaders-gl-loader-utils';
 import {getData, compareArrayBuffers} from './utils/test-utils';
 
 // Import big dependencies

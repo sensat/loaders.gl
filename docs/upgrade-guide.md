@@ -320,14 +320,14 @@ Some general changes:
 
 ### `@sensat/loaders-gl-core`
 
-| Removal            | Replacement                                                            |
-| ------------------ | ---------------------------------------------------------------------- |
+| Removal            | Replacement                                                                   |
+| ------------------ | ----------------------------------------------------------------------------- |
 | `TextEncoder`      | Use global `TextEncoder` instead and `@sensat/loaders-gl-polyfills` if needed |
 | `TextDecoder`      | Use global `TextDecoder` instead and `@sensat/loaders-gl-polyfills` if needed |
-| `createReadStream` | `fetch().then(resp => resp.body)`                                      |
-| `parseFile`        | `parse`                                                                |
-| `parseFileSync`    | `parseSync`                                                            |
-| `loadFile`         | `load`                                                                 |
+| `createReadStream` | `fetch().then(resp => resp.body)`                                             |
+| `parseFile`        | `parse`                                                                       |
+| `parseFileSync`    | `parseSync`                                                                   |
+| `loadFile`         | `load`                                                                        |
 
 ### `@sensat/loaders-gl-images`
 

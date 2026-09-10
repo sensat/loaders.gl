@@ -8,7 +8,10 @@ import {CSVWriterOptions, CSVWriter} from '@sensat/loaders-gl-csv';
 import {encodeTableAsText} from '@sensat/loaders-gl-core';
 
 import {Table} from '@sensat/loaders-gl-schema';
-import {makeTestTable, tableWithGeometryColumn} from '@sensat/loaders-gl-schema-utils/test/shared-utils';
+import {
+  makeTestTable,
+  tableWithGeometryColumn
+} from '@sensat/loaders-gl-schema-utils/test/shared-utils';
 
 type TestCase = {
   name: string;

@@ -6,7 +6,10 @@
 
 import test from 'tape-promise/tape';
 import {compareArrayBuffers, getBinaryData} from '../test-utils/test-utils';
-import {concatenateArrayBuffers, concatenateArrayBuffersAsync} from '@sensat/loaders-gl-loader-utils';
+import {
+  concatenateArrayBuffers,
+  concatenateArrayBuffersAsync
+} from '@sensat/loaders-gl-loader-utils';
 import {fetchFile, loadInBatches} from '@sensat/loaders-gl-core';
 import {CSVLoader} from '@sensat/loaders-gl-csv';
 import {CryptoHash} from '@sensat/loaders-gl-crypto';

@@ -7,7 +7,8 @@ import {BROWSER_ERROR_MESSAGE} from '../../src/constants';
 import {parseSLPKArchive} from '@sensat/loaders-gl-i3s';
 import {NodeFile} from '@sensat/loaders-gl-loader-utils';
 
-const TILESET_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedColors/tileset.json';
+const TILESET_URL =
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedColors/tileset.json';
 const TILESET_WITH_TEXTURES =
   '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedTextured/tileset.json';
 const TILESET_WITH_KTX_2_TEXTURE =

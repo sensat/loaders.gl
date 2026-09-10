@@ -2,7 +2,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Schema, ColumnarTableBatch, ArrowTableBatch, TypedArray} from '@sensat/loaders-gl-schema';
+import type {
+  Schema,
+  ColumnarTableBatch,
+  ArrowTableBatch,
+  TypedArray
+} from '@sensat/loaders-gl-schema';
 import {isTypedArray} from '@math.gl/types';
 import {getArrayTypeFromDataType} from '../../schema/data-type';
 import {TableBatchAggregator} from './table-batch-aggregator';

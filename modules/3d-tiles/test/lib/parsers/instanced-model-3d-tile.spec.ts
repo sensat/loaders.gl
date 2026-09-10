@@ -23,10 +23,12 @@ const ORIENTATION_URL =
 // TODO - looks like original source code mixes up 16/32 in the name here?
 const OCT16P_ORIENTATION_URL =
   '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedOct32POrientation/tileset.json';
-const SCALE_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedScale/tileset.json';
+const SCALE_URL =
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedScale/tileset.json';
 const SCALE_NON_UNIFORM_URL =
   '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedScaleNonUniform/tileset.json';
-const RTC_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedRTC/tileset.json';
+const RTC_URL =
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedRTC/tileset.json';
 const QUANTIZED_URL =
   '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedQuantized/tileset.json';
 const QUANTIZED_OCT32_PORIENTATION_URL =

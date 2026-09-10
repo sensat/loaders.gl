@@ -8,7 +8,8 @@ import {ObjectRowTableBatch, getTableLength} from '@sensat/loaders-gl-schema-uti
 import {JSONLoader, _GeoJSONLoader as GeoJSONLoader} from '@sensat/loaders-gl-json';
 
 const GEOJSON_PATH = '@sensat/loaders-gl-json/test/data/geojson-big.json';
-const GEOJSON_KEPLER_DATASET_PATH = '@sensat/loaders-gl-json/test/data/kepler-dataset-sf-incidents.json';
+const GEOJSON_KEPLER_DATASET_PATH =
+  '@sensat/loaders-gl-json/test/data/kepler-dataset-sf-incidents.json';
 
 test('JSONLoader#load(geojson.json)', async (t) => {
   const table = await load(GEOJSON_PATH, JSONLoader, {json: {table: true}});

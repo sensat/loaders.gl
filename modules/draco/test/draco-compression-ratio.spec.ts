@@ -5,7 +5,8 @@ import {fetchFile, parse, encode} from '@sensat/loaders-gl-core';
 import {DracoWriter, DracoLoader} from '@sensat/loaders-gl-draco';
 import {validateMeshCategoryData} from 'test/common/conformance';
 
-const POSITIONS_URL = '@sensat/loaders-gl-draco/test/data/raw-attribute-buffers/lidar-positions.bin';
+const POSITIONS_URL =
+  '@sensat/loaders-gl-draco/test/data/raw-attribute-buffers/lidar-positions.bin';
 const COLORS_URL = '@sensat/loaders-gl-draco/test/data/raw-attribute-buffers/lidar-colors.bin';
 
 test('DracoWriter#compressRawBuffers', async (t) => {

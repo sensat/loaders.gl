@@ -1,7 +1,8 @@
 import {fetchFile, parse, encode} from '@sensat/loaders-gl-core';
 import {DracoLoader, DracoWriter, DracoWriterOptions} from '@sensat/loaders-gl-draco';
 
-const POSITIONS_URL = '@sensat/loaders-gl-draco/test/data/raw-attribute-buffers/lidar-positions.bin';
+const POSITIONS_URL =
+  '@sensat/loaders-gl-draco/test/data/raw-attribute-buffers/lidar-positions.bin';
 const COLORS_URL = '@sensat/loaders-gl-draco/test/data/raw-attribute-buffers/lidar-colors.bin';
 
 const OPTIONS: DracoWriterOptions[] = [

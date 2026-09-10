@@ -4,7 +4,10 @@
 
 /* eslint-disable max-len */
 import test from 'tape-promise/tape';
-import {isLoaderObject, normalizeLoader} from '@sensat/loaders-gl-core/lib/loader-utils/normalize-loader';
+import {
+  isLoaderObject,
+  normalizeLoader
+} from '@sensat/loaders-gl-core/lib/loader-utils/normalize-loader';
 
 import * as threeDTiles from '@sensat/loaders-gl-3d-tiles';
 import * as arrow from '@sensat/loaders-gl-arrow';

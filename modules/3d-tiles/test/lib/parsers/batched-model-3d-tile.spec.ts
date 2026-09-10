@@ -31,7 +31,8 @@ const WITH_TRANSFORM_SPHERE_URL =
   '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedWithTransformSphere/tileset.json';
 const WITH_TRANSFORM_REGION_URL =
   '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedWithTransformRegion/tileset.json';
-const TEXTURED_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedTextured/tileset.json';
+const TEXTURED_URL =
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedTextured/tileset.json';
 // const DEPRECATED1_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedDeprecated1/tileset.json';
 // const DEPRECATED2_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedDeprecated2/tileset.json';
 // const WITH_RTC_CENTER_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedWithRtcCenter/tileset.json';

@@ -6,7 +6,11 @@ import type {Schema, TableBatch} from '@sensat/loaders-gl-schema';
 import type {JSONLoaderOptions, MetadataBatch, JSONBatch} from '../../json-loader';
 
 import {TableBatchBuilder} from '@sensat/loaders-gl-schema-utils';
-import {assert, makeTextDecoderIterator, toArrayBufferIterator} from '@sensat/loaders-gl-loader-utils';
+import {
+  assert,
+  makeTextDecoderIterator,
+  toArrayBufferIterator
+} from '@sensat/loaders-gl-loader-utils';
 import StreamingJSONParser from '../json-parser/streaming-json-parser';
 import JSONPath from '../jsonpath/jsonpath';
 

@@ -13,7 +13,12 @@ import type {
   LoaderWithParser
 } from '@sensat/loaders-gl-loader-utils';
 import {DataSource, getRequiredOptions, log} from '@sensat/loaders-gl-loader-utils';
-import type {Schema, GeoJSONTable, Feature, BinaryFeatureCollection} from '@sensat/loaders-gl-schema';
+import type {
+  Schema,
+  GeoJSONTable,
+  Feature,
+  BinaryFeatureCollection
+} from '@sensat/loaders-gl-schema';
 import {deduceTableSchema} from '@sensat/loaders-gl-schema-utils';
 import {Stats, Stat} from '@probe.gl/stats';
 

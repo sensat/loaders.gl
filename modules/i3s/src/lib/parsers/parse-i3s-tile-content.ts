@@ -2,7 +2,11 @@ import type {TypedArray} from '@sensat/loaders-gl-schema';
 import {load, parse} from '@sensat/loaders-gl-core';
 import {Vector3, Matrix4} from '@math.gl/core';
 import {Ellipsoid} from '@math.gl/geospatial';
-import {StrictLoaderOptions, LoaderContext, parseFromContext} from '@sensat/loaders-gl-loader-utils';
+import {
+  StrictLoaderOptions,
+  LoaderContext,
+  parseFromContext
+} from '@sensat/loaders-gl-loader-utils';
 import {ImageLoader} from '@sensat/loaders-gl-images';
 import {DracoLoader, DracoMesh} from '@sensat/loaders-gl-draco';
 import {BasisLoader, CompressedTextureLoader} from '@sensat/loaders-gl-textures';

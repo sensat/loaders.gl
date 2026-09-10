@@ -3,7 +3,10 @@
 // Copyright (c) vis.gl contributors
 
 import {MD5Hash} from '@sensat/loaders-gl-crypto';
-import {concatenateArrayBuffers, concatenateArrayBuffersFromArray} from '@sensat/loaders-gl-loader-utils';
+import {
+  concatenateArrayBuffers,
+  concatenateArrayBuffersFromArray
+} from '@sensat/loaders-gl-loader-utils';
 import type {ReadableFile} from '@sensat/loaders-gl-loader-utils';
 import {ZipCDFileHeader, makeZipCDHeaderIterator} from './parse-zip/cd-file-header';
 

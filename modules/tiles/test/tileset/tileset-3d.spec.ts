@@ -9,7 +9,8 @@ import {Tiles3DLoader} from '@sensat/loaders-gl-3d-tiles';
 
 // Parent tile with content and four child tiles with content
 const TILESET_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Tilesets/Tileset/tileset.json';
-const KTX2_TILESET_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/VNext/agi-ktx2/tileset.json';
+const KTX2_TILESET_URL =
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/VNext/agi-ktx2/tileset.json';
 const TILESET_GLOBAL_URL =
   '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Tilesets/TilesetGlobal/tileset.json';
 
@@ -119,7 +120,8 @@ test('Tileset3D#throws with undefined url', (t) => {
 });
 
 test('Tileset3D#url set up correctly given tileset JSON filepath', async (t) => {
-  const path = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Tilesets/TilesetOfTilesets/tileset.json';
+  const path =
+    '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Tilesets/TilesetOfTilesets/tileset.json';
 
   const tilesetJson = await load(path, Tiles3DLoader);
   const tileset = new Tileset3D(tilesetJson);
@@ -129,7 +131,8 @@ test('Tileset3D#url set up correctly given tileset JSON filepath', async (t) => 
 });
 
 test('Tileset3D#url set up correctly given path with query string', async (t) => {
-  const path = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Tilesets/TilesetOfTilesets/tileset.json';
+  const path =
+    '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Tilesets/TilesetOfTilesets/tileset.json';
   const param = '?param1=1&param2=2';
   // TODO - params do not work with fetchFile...
   const tilesetJson = await load(path + param, Tiles3DLoader);
@@ -172,7 +175,8 @@ test('Tileset3D#url set up correctly given path with query string', async (t) =>
 });
 
 test('Tileset3D#getTileUrl should not ends with sign ? or &', async (t) => {
-  const path = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Tilesets/TilesetOfTilesets/tileset2.json';
+  const path =
+    '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Tilesets/TilesetOfTilesets/tileset2.json';
   const tilesetJson = await load(path, Tiles3DLoader);
   const tileset = new Tileset3D(tilesetJson);
   const urlEnds = tileset.getTileUrl(tileset.url).slice(-1);

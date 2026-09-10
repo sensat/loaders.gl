@@ -10,7 +10,8 @@ import {parse, parseSync, encodeSync} from '@sensat/loaders-gl-core';
 import {Tiles3DLoader, Tile3DWriter, TILE3D_TYPE} from '@sensat/loaders-gl-3d-tiles';
 import {loadRootTileFromTileset} from '../utils/load-utils';
 
-const COMPOSITE_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Composite/Composite/tileset.json';
+const COMPOSITE_URL =
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Composite/Composite/tileset.json';
 const COMPOSITE_OF_COMPOSITE_URL =
   '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Composite/CompositeOfComposite/tileset.json';
 const COMPOSITE_OF_INSTANCED_URL =

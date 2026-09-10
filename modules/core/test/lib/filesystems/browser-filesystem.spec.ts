@@ -3,7 +3,11 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {fetchFile, isBrowser, _BrowserFileSystem as BrowserFileSystem} from '@sensat/loaders-gl-core';
+import {
+  fetchFile,
+  isBrowser,
+  _BrowserFileSystem as BrowserFileSystem
+} from '@sensat/loaders-gl-core';
 
 export const IMAGE_URLS = [
   '@sensat/loaders-gl-images/test/data/img1-preview.png',

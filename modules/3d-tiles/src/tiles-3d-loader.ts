@@ -2,7 +2,11 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import type {LoaderWithParser, StrictLoaderOptions, LoaderContext} from '@sensat/loaders-gl-loader-utils';
+import type {
+  LoaderWithParser,
+  StrictLoaderOptions,
+  LoaderContext
+} from '@sensat/loaders-gl-loader-utils';
 // / import type { GLTFLoaderOptions } from '@sensat/loaders-gl-gltf';
 import type {DracoLoaderOptions} from '@sensat/loaders-gl-draco';
 import type {ImageLoaderOptions} from '@sensat/loaders-gl-images';
