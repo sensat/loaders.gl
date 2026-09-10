@@ -8,6 +8,8 @@ export type {FeatureTableJson};
 import {LoaderWithParser} from '@loaders.gl/loader-utils';
 import {Matrix4, Vector3} from '@math.gl/core';
 import {TILESET_TYPE, LOD_METRIC_TYPE, TILE_TYPE, TILE_REFINEMENT} from '@loaders.gl/tiles';
+import type {ImplicitSubtreeReference} from '@loaders.gl/tiles';
+import type {TilesetSpatialReference} from '@loaders.gl/tiles';
 
 export type B3DMContent = {
   batchTableJson?: FeatureTableJson;
@@ -40,28 +42,67 @@ export type GLTFHeader = {
 };
 
 /**
+ * A 3D Tiles metadata entity reference.
+ *
+ * The loader preserves the entity exactly as authored. `properties` may contain scalar,
+ * array, or property-table references; decoding those values requires the schema and binary
+ * property-table tranche and is intentionally outside this type.
+ */
+export type Tiles3DMetadataEntity = {
+  /** Application-defined metadata entity identifier. */
+  id?: string;
+  /** Identifier of the class declared in the tileset schema. */
+  class?: string;
+  /** Raw metadata properties, retained without value or enum decoding. */
+  properties?: Record<string, unknown>;
+  /** Index of the metadata group associated with this entity. */
+  group?: number;
+  /** Optional human-readable metadata name. */
+  name?: string;
+  /** Extension objects attached to this metadata entity. */
+  extensions?: Record<string, unknown>;
+  /** Application-specific metadata. */
+  extras?: unknown;
+  /** Forward-compatible fields from newer 3D Tiles revisions. */
+  [key: string]: unknown;
+};
+
+/** Inline 3D Tiles metadata schema, preserved for application-level interpretation. */
+export type Tiles3DMetadataSchema = {
+  /** Class definitions keyed by class identifier. */
+  classes?: Record<string, unknown>;
+  /** Enum definitions keyed by enum identifier. */
+  enums?: Record<string, unknown>;
+  /** Extension objects attached to the schema. */
+  extensions?: Record<string, unknown>;
+  /** Application-specific schema data. */
+  extras?: unknown;
+  /** Forward-compatible schema fields. */
+  [key: string]: unknown;
+};
+
+/** Metadata group declared by a tileset. */
+export type Tiles3DMetadataGroup = Tiles3DMetadataEntity;
+
+/**
  * A 3D Tiles tileset JSON
  * https://github.com/CesiumGS/3d-tiles/tree/main/specification#property-reference
  */
 export type Tiles3DTilesetJSON = {
-  shape: 'tileset3d';
-  /** Metadata about the entire tileset.
-   * https://github.com/CesiumGS/3d-tiles/tree/main/specification#asset
-   */
-  asset: {
-    /** The 3D Tiles version. The version defines the JSON schema for the tileset JSON and the base set of tile formats. */
-    version: string;
-    /** Application-specific version of this tileset, e.g., for when an existing tileset is updated. */
-    tilesetVersion?: string;
-    /** Dictionary object with extension-specific objects. */
-    extensions?: object;
-    /** Application-specific data. */
-    extras?: any;
-    /** Not mentioned in 1.0 spec but some tilesets contain this option */
-    gltfUpAxis?: string;
-  };
+  /** Metadata about the entire tileset. */
+  asset: Tiles3DTilesetAsset;
   /** A dictionary object of metadata about per-feature properties. */
   properties?: Record<string, TilesetProperty>;
+  /** Inline definition of metadata classes and enums. */
+  schema?: Tiles3DMetadataSchema;
+  /** URI of an external metadata schema. */
+  schemaUri?: string;
+  /** Statistics about metadata entities in the tileset. */
+  statistics?: unknown;
+  /** Metadata groups referenced by tile contents. */
+  groups?: Tiles3DMetadataGroup[];
+  /** Metadata entity associated with the complete tileset. */
+  metadata?: Tiles3DMetadataEntity;
   /** The error, in meters, introduced if this tileset is not rendered. At runtime, the geometric error is used to compute screen space error (SSE), i.e., the error measured in pixels. */
   geometricError: number;
   /** A tile in a 3D Tiles tileset. */
@@ -71,13 +112,31 @@ export type Tiles3DTilesetJSON = {
   /** Names of 3D Tiles extensions required to properly load this tileset. */
   extensionsRequired?: string[];
   /** Dictionary object with extension-specific objects. */
-  extensions?: object;
+  extensions?: Record<string, unknown>;
   /** Application-specific data. */
-  extras?: any;
+  extras?: unknown;
+  /** Normalized CRS discovery metadata added by the loader. */
+  spatialMetadata?: TilesetSpatialReference;
+};
+
+/** Metadata about the complete 3D Tiles tileset asset. */
+export type Tiles3DTilesetAsset = {
+  /** 3D Tiles version defining the tileset JSON contract and base tile formats. */
+  version: string;
+  /** Application-specific version of this tileset. */
+  tilesetVersion?: string;
+  /** Extension objects keyed by extension name. */
+  extensions?: Record<string, unknown>;
+  /** Application-specific data. */
+  extras?: unknown;
+  /** Non-standard glTF up-axis used by some tilesets. */
+  gltfUpAxis?: string;
 };
 
 /** TilesetJSON postprocessed by Tiles3DLoader */
 export type Tiles3DTilesetJSONPostprocessed = Omit<Tiles3DTilesetJSON, 'root'> & {
+  /** loaders.gl data shape discriminator added during parsing. */
+  shape: 'tileset3d';
   /** @deprecated Loader used */
   loader: LoaderWithParser;
   /** URL used to load a tileset resource */
@@ -103,8 +162,8 @@ export type Tiles3DTilesetJSONPostprocessed = Omit<Tiles3DTilesetJSON, 'root'> &
 export type Tiles3DTileJSON = {
   /** A bounding volume that encloses a tile or its content. */
   boundingVolume: Tile3DBoundingVolume;
-  /** A bounding volume that encloses a tile or its content. */
-  viewerRequestVolume?: object;
+  /** A bounding volume that limits requests to cameras inside the volume. */
+  viewerRequestVolume?: Tile3DBoundingVolume;
   /** The error, in meters, introduced if this tile is rendered and its children are not. At runtime, the geometric error is used to compute screen space error (SSE), i.e., the error measured in pixels. */
   geometricError: number;
   /**
@@ -115,13 +174,20 @@ export type Tiles3DTileJSON = {
   /** A floating-point 4x4 affine transformation matrix, stored in column-major order, that transforms the tile's content */
   transform?: number[];
   /** Metadata about the tile's content and a link to the content. */
-  content?: Tiles3DTileContentJSON;
+  /**
+   * Tile content metadata. 3D Tiles 1.1 permits either one content object or an array of
+   * independent content objects; loaders.gl preserves the source shape during parsing.
+   */
+  content?: Tiles3DTileContentJSON | Tiles3DTileContentJSON[];
   /** An array of objects that define child tiles. */
   children: Tiles3DTileJSON[];
   /** Dictionary object with extension-specific objects. */
   extensions?: object;
   /** Application-specific data. */
   extras?: any;
+
+  /** Metadata entity associated with this tile, preserved without value decoding. */
+  metadata?: Tiles3DMetadataEntity;
 
   /** 3DTiles v1.1 properties
    * https://github.com/CesiumGS/3d-tiles/blob/draft-1.1/specification/schema/tile.schema.json
@@ -135,6 +201,8 @@ export type Tiles3DTileJSONPostprocessed = Omit<Tiles3DTileJSON, 'refine' | 'chi
   id?: string;
   /** Content full URL */
   contentUrl?: string;
+  /** Resolved URLs for every content object when the source uses multiple contents. */
+  contentUrls?: string[];
   /** LOD metric type */
   lodMetricType?: LOD_METRIC_TYPE.GEOMETRIC_ERROR;
   /** LOD metric value */
@@ -150,20 +218,26 @@ export type Tiles3DTileJSONPostprocessed = Omit<Tiles3DTileJSON, 'refine' | 'chi
   refine?: TILE_REFINEMENT | string;
   /** An array of objects that define child tiles. */
   children: Tiles3DTileJSONPostprocessed[];
+  /** Lazy source reference used to request and materialize one implicit subtree during traversal. */
+  implicitSubtree?: ImplicitSubtreeReference;
 };
 
 /** Metadata about the tile's content and a link to the content. */
 export type Tiles3DTileContentJSON = {
   /** A uri that points to the tile's content. When the uri is relative, it is relative to the referring tileset JSON file. */
-  uri: string;
+  uri?: string;
   /** url doesn't allign the spec but we support it same way as uri */
   url?: string;
   /** A bounding volume that encloses a tile or its content. At least one bounding volume property is required. Bounding volumes include box, region, or sphere. */
   boundingVolume?: Tile3DBoundingVolume;
   /** Dictionary object with extension-specific objects. */
-  extensions?: object;
+  extensions?: Record<string, unknown>;
   /** Application-specific data. */
-  extras?: any;
+  extras?: unknown;
+  /** Metadata entity associated with this content, preserved without value decoding. */
+  metadata?: Tiles3DMetadataEntity;
+  /** Index of the tileset metadata group associated with this content. */
+  group?: number;
 };
 
 /** A bounding volume that encloses a tile or its content.
@@ -181,9 +255,9 @@ export type Tile3DBoundingVolume = {
    * Longitudes and latitudes are in radians, and heights are in meters above (or below) the WGS84 ellipsoid. */
   region?: number[];
   /** Dictionary object with extension-specific objects. */
-  extensions?: object;
+  extensions?: Record<string, unknown>;
   /** Application-specific data. */
-  extras?: any;
+  extras?: unknown;
 };
 
 /**
@@ -196,9 +270,9 @@ export type TilesetProperty = {
   /** The minimum value of this property of all the features in the tileset. */
   minimum: number;
   /** Dictionary object with extension-specific objects. */
-  extensions?: object;
+  extensions?: Record<string, unknown>;
   /** Application-specific data. */
-  extras?: any;
+  extras?: unknown;
 };
 
 export type Tiles3DTileContent = {
@@ -316,7 +390,7 @@ export type Subtree = {
    * An array of content availability objects. If the tile has a single content this array will have one element; if the tile has multiple contents -
    * as supported by 3DTILES_multiple_contents and 3D Tiles 1.1 - this array will have multiple elements.
    */
-  contentAvailability: Availability | Availability[];
+  contentAvailability?: Availability | Availability[];
   /** The availability of children subtrees. The availability bitstream is a 1D boolean array where subtrees are ordered by their Morton index in the level of the tree
    * immediately below the bottom row of the subtree. A child subtree's availability is determined by a single bit, 1 meaning a subtree exists at that spatial index,
    * and 0 meaning it does not. The number of elements in the array is `N^subtreeLevels` where N is 4 for subdivision scheme `QUADTREE` and 8 for `OCTREE`.
@@ -343,6 +417,8 @@ export type Availability = {
    * The schemas of vNext and 1.1 are same but there are tiles with `bufferView` property instead of `bitstream`
    */
   bufferView?: number;
+  /** Number of available elements represented by the availability declaration. */
+  availableCount?: number;
   /**
    * Postprocessing property
    * contain availability bits loaded from the bufferView
@@ -357,16 +433,23 @@ export type ExplicitBitstream = Uint8Array;
  */
 export type SubdivisionScheme = 'QUADTREE' | 'OCTREE';
 
-type GLTFStyleBuffer = {
-  name: string;
+/** Binary buffer declared by a 3D Tiles subtree. */
+export type GLTFStyleBuffer = {
+  /** Optional application-specific buffer name. */
+  name?: string;
+  /** URI of an external buffer. Omitted for a buffer embedded in a binary subtree. */
   uri?: string;
+  /** Buffer byte length. */
   byteLength: number;
 };
 
 /** Subtree buffer view */
 export type GLTFStyleBufferView = {
+  /** Index of the buffer containing this view. */
   buffer: number;
+  /** Byte offset of this view within its buffer. */
   byteOffset: number;
+  /** Byte length of this view. */
   byteLength: number;
 };
 
@@ -387,7 +470,7 @@ export type ImplicitTilingExensionData = ImplicitTilingData & {
  * This object allows a tile to be implicitly subdivided. Tile and content availability and metadata is stored in subtrees which are referenced externally.
  * https://github.com/CesiumGS/3d-tiles/blob/draft-1.1/specification/schema/tile.implicitTiling.schema.json
  * */
-type ImplicitTilingData = {
+export type ImplicitTilingData = {
   /** A string describing the subdivision scheme used within the tileset. */
   subdivisionScheme: 'QUADTREE' | 'OCTREE' | string;
   /** The number of distinct levels in each subtree. For example, a quadtree with `subtreeLevels = 2` will have subtrees with 5 nodes (one root and 4 children). */

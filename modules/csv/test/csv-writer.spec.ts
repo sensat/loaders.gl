@@ -1,22 +1,15 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-// Copyright 2022 Foursquare Labs, Inc.
-
-import test from 'tape-promise/tape';
-import {CSVWriterOptions, CSVWriter} from '@loaders.gl/csv';
-import {encodeTableAsText} from '@loaders.gl/core';
-
+import {expect, test} from 'vitest';
+import {CSVLoader, CSVWriterOptions, CSVWriter} from '@loaders.gl/csv';
+import {encodeTableAsText, parse, preload} from '@loaders.gl/core';
 import {Table} from '@loaders.gl/schema';
-import {makeTestTable, tableWithGeometryColumn} from '@loaders.gl/schema/test/shared-utils';
-
+import {convertTable} from '@loaders.gl/schema-utils';
+import {makeTestTable, tableWithGeometryColumn} from '@loaders.gl/schema-utils/test/shared-utils';
 type TestCase = {
   name: string;
   options?: CSVWriterOptions;
   input: Table;
   expected: any;
 };
-
 const cases: TestCase[] = [
   {
     name: 'empty table',
@@ -138,12 +131,27 @@ b,2
 c,3`
   }
 ];
-
-test('CSVWriter ', async (t) => {
+test('CSVWriter ', async () => {
   for (const {name, input, options, expected} of cases) {
     const output = await encodeTableAsText(input, CSVWriter, options);
-    t.equal(output, expected, name);
+    expect(output, name).toBe(expected);
   }
-
-  t.end();
+});
+test('CSVWriter#arrow-table ', async () => {
+  const preloadedLoader = await preload(CSVLoader);
+  for (const {name, input, options, expected} of cases) {
+    const arrowInput =
+      expected === ''
+        ? convertTable(input, 'arrow-table')
+        : await parse(expected, preloadedLoader, {
+            core: {worker: false},
+            csv: {
+              shape: 'arrow-table',
+              header: true,
+              dynamicTyping: false
+            }
+          });
+    const output = await encodeTableAsText(arrowInput, CSVWriter, options);
+    expect(output, name).toBe(expected);
+  }
 });

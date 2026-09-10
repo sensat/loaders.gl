@@ -1,4 +1,8 @@
-import {createLoaderWorker} from '@loaders.gl/loader-utils';
-import {PLYLoader} from '../index';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
 
-createLoaderWorker(PLYLoader);
+import {createLoaderWorker} from '@loaders.gl/loader-utils';
+import {PLYLoaderWithParser} from '../ply-loader-with-parser';
+
+createLoaderWorker(PLYLoaderWithParser);

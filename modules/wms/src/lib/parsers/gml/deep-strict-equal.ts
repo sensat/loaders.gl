@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 // https://github.com/nodejs/node/commit/c1d82ac2ff15594840e2a1b9531b506ae067ed27;
 
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
@@ -57,7 +59,7 @@ export function deepStrictEqual(actual: unknown, expected: unknown, strict?: boo
     (expected === null || typeof expected !== 'object')
   ) {
     // eslint-disable-next-line eqeqeq
-    return strict ? actual === expected : actual == expected;
+    return strict ? actual === expected : actual === expected;
 
     // 7.5 For all other Object pairs, including Array objects, equivalence is
     // determined by having the same number of owned properties (as verified
@@ -78,7 +80,7 @@ function isPrimitive(arg) {
 
 function isArguments(object) {
   // eslint-disable-next-line eqeqeq
-  return Object.prototype.toString.call(object) == '[object Arguments]';
+  return Object.prototype.toString.call(object) === '[object Arguments]';
 }
 
 // eslint-disable-next-line complexity

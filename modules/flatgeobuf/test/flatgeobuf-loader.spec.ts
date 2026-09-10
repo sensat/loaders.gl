@@ -4,10 +4,11 @@
 
 /* eslint-disable camelcase */
 
-import test from 'tape-promise/tape';
+import {expect, test} from 'vitest';
+import {validateLoader} from 'test/common/conformance';
 import {FlatGeobufLoader} from '@loaders.gl/flatgeobuf';
 import {setLoaderOptions, load, loadInBatches} from '@loaders.gl/core';
-
+import {convertGeoArrowToTable, getGeoMetadata} from '@loaders.gl/geoarrow';
 const FLATGEOBUF_COUNTRIES_DATA_URL = '@loaders.gl/flatgeobuf/test/data/countries.fgb';
 const FGB_METADATA = {
   metadata: {
@@ -51,31 +52,123 @@ const FGB_METADATA = {
     }
   ]
 };
-
 setLoaderOptions({
   _workerType: 'test'
 });
-
-test('FlatGeobufLoader#load', async (t) => {
-  const geojsonTable = await load(FLATGEOBUF_COUNTRIES_DATA_URL, FlatGeobufLoader, {worker: false});
-  t.equal(geojsonTable.features.length, 179);
-  t.equal(geojsonTable.schema.fields.length, 2);
-  t.deepEqual(geojsonTable.schema, FGB_METADATA);
-  t.end();
+test('FlatGeobufLoader#loader conformance', () => {
+  validateLoader(FlatGeobufLoader, 'FlatGeobufLoader');
 });
-
-test('FlatGeobufLoader#loadInBatches', async (t) => {
-  const iterator = await loadInBatches(FLATGEOBUF_COUNTRIES_DATA_URL, FlatGeobufLoader, {
-    worker: false
+test('FlatGeobufLoader#load', async () => {
+  const geojsonTable = await load(FLATGEOBUF_COUNTRIES_DATA_URL, FlatGeobufLoader, {
+    core: {worker: false}
   });
-  t.ok(iterator);
-
+  expect(geojsonTable.features.length).toBe(179);
+  expect(geojsonTable.schema.fields.length).toBe(2);
+  expect(geojsonTable.schema.fields.map(field => field.name)).toEqual(['id', 'name']);
+});
+test('FlatGeobufLoader#load arrow-table round-trips to GeoJSON', async () => {
+  const arrowTable = await load(FLATGEOBUF_COUNTRIES_DATA_URL, FlatGeobufLoader, {
+    core: {worker: false},
+    flatgeobuf: {shape: 'arrow-table'}
+  });
+  const geojsonTable = await load(FLATGEOBUF_COUNTRIES_DATA_URL, FlatGeobufLoader, {
+    core: {worker: false}
+  });
+  expect(arrowTable.shape, 'returns Arrow table shape').toBe('arrow-table');
+  expect(arrowTable.data.numRows, 'preserves row count').toBe(geojsonTable.features.length);
+  expect(arrowTable.schema.fields.length, 'adds a geometry field').toBe(3);
+  expect(arrowTable.schema.fields[2].name, 'geometry field appended').toBe('geometry');
+  expect(arrowTable.schema.fields[2].type, 'geometry field is Arrow binary').toBe('binary');
+  expect(
+    arrowTable.schema.fields[2].metadata?.['ARROW:extension:name'],
+    'geometry field includes GeoArrow WKB metadata'
+  ).toBe('geoarrow.wkb');
+  const geoMetadata = getGeoMetadata(arrowTable.schema.metadata);
+  expect(geoMetadata?.primary_column, 'geo metadata primary column is set').toBe('geometry');
+  expect(geoMetadata?.columns.geometry.encoding, 'geo metadata uses WKB encoding').toBe('wkb');
+  expect(
+    geoMetadata?.columns.geometry.geometry_types,
+    'geo metadata captures FlatGeobuf geometry type'
+  ).toEqual(['MultiPolygon']);
+  const roundTripped = convertGeoArrowToTable(arrowTable.data, 'geojson-table');
+  expect(normalizeFeatures(roundTripped.features), 'Arrow output round-trips to GeoJSON').toEqual(
+    normalizeFeatures(geojsonTable.features)
+  );
+});
+test('FlatGeobufLoader#load arrow-table reprojects like geojson-table', async () => {
+  const arrowTable = await load(FLATGEOBUF_COUNTRIES_DATA_URL, FlatGeobufLoader, {
+    core: {worker: false},
+    flatgeobuf: {shape: 'arrow-table'},
+    gis: {reproject: true, _targetCrs: 'EPSG:3857'}
+  });
+  const geojsonTable = await load(FLATGEOBUF_COUNTRIES_DATA_URL, FlatGeobufLoader, {
+    core: {worker: false},
+    gis: {reproject: true, _targetCrs: 'EPSG:3857'}
+  });
+  const roundTripped = convertGeoArrowToTable(arrowTable.data, 'geojson-table');
+  expect(
+    normalizeFeatures(roundTripped.features),
+    'reprojected Arrow output matches GeoJSON output'
+  ).toEqual(normalizeFeatures(geojsonTable.features));
+});
+test('FlatGeobufLoader#loadInBatches', async () => {
+  const iterator = await loadInBatches(FLATGEOBUF_COUNTRIES_DATA_URL, FlatGeobufLoader, {
+    core: {worker: false}
+  });
+  expect(iterator).toBeTruthy();
   const features: any[] = [];
   for await (const feature of iterator) {
     features.push(feature);
   }
-
-  // t.equal(features.length, 179);
-  t.ok(features.length);
-  t.end();
+  expect(features.length).toBeTruthy();
 });
+test('FlatGeobufLoader#loadInBatches arrow-table yields stable schema', async () => {
+  const iterator = await loadInBatches(FLATGEOBUF_COUNTRIES_DATA_URL, FlatGeobufLoader, {
+    core: {worker: false},
+    flatgeobuf: {shape: 'arrow-table'}
+  });
+  let arrowTable = null;
+  let schema = null;
+  for await (const batch of iterator) {
+    schema ||= batch.schema;
+    expect(batch.schema, 'batch schema remains stable').toEqual(schema);
+    arrowTable = batch;
+  }
+  expect(schema, 'Arrow batches expose schema').toBeTruthy();
+  const roundTripped = convertGeoArrowToTable(arrowTable.data, 'geojson-table');
+  const geojsonTable = await load(FLATGEOBUF_COUNTRIES_DATA_URL, FlatGeobufLoader, {
+    core: {worker: false}
+  });
+  expect(
+    normalizeFeatures(roundTripped.features),
+    'batched Arrow output round-trips to GeoJSON'
+  ).toEqual(normalizeFeatures(geojsonTable.features));
+});
+function normalizeFeatures(features: any[]) {
+  return features.map(feature => ({
+    ...feature,
+    geometry: normalizeGeometry(feature.geometry),
+    properties: {...(feature.properties || {})}
+  }));
+}
+function normalizeGeometry(geometry: any) {
+  if (!geometry) {
+    return geometry;
+  }
+  switch (geometry.type) {
+    case 'MultiPoint':
+      return geometry.coordinates.length === 1
+        ? {type: 'Point', coordinates: geometry.coordinates[0]}
+        : geometry;
+    case 'MultiLineString':
+      return geometry.coordinates.length === 1
+        ? {type: 'LineString', coordinates: geometry.coordinates[0]}
+        : geometry;
+    case 'MultiPolygon':
+      return geometry.coordinates.length === 1
+        ? {type: 'Polygon', coordinates: geometry.coordinates[0]}
+        : geometry;
+    default:
+      return geometry;
+  }
+}

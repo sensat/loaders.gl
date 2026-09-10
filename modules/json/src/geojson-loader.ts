@@ -2,122 +2,85 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderWithParser} from '@loaders.gl/loader-utils';
-import type {BinaryFeatureCollection, GeoJSONTable, TableBatch} from '@loaders.gl/schema';
+import type {Loader} from '@loaders.gl/loader-utils';
+import type {
+  ArrowTable,
+  ArrowTableBatch,
+  BinaryFeatureCollection,
+  GeoJSONTable,
+  Schema,
+  TableBatch
+} from '@loaders.gl/schema';
+import type * as arrow from 'apache-arrow';
 import type {JSONLoaderOptions} from './json-loader';
-import {geojsonToBinary} from '@loaders.gl/gis';
-// import {parseJSONSync} from './lib/parsers/parse-json';
-import {parseJSONInBatches} from './lib/parsers/parse-json-in-batches';
+import {GeoJSONFormat} from './json-format';
+import type {ArrowConversionOptions} from './lib/parsers/convert-row-table-to-arrow';
+import type {GeoArrowEncodingPreference} from '@loaders.gl/schema';
 
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
 
-export type GeoJSONLoaderOptions = JSONLoaderOptions & {
+export type GeoJSONLoaderOptions = Omit<JSONLoaderOptions, 'json'> & {
+  /** Preferred encoding for Arrow geometry output. */
+  geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
+  /** GeoJSON-specific loader options. */
   geojson?: {
-    shape?: 'geojson-table';
+    /** Requested GeoJSON output shape. */
+    shape?: 'geojson-table' | 'arrow-table' | 'binary-feature-collection';
+    /** Preferred encoding for Arrow geometry output. */
+    geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
   };
-  gis?: {
-    format?: 'geojson' | 'binary';
+  /** JSON parser and GeoArrow conversion options used by GeoJSONLoader. */
+  json?: Omit<NonNullable<JSONLoaderOptions['json']>, 'shape'> & {
+    /** Optional schema used when converting GeoJSON features to GeoArrow. */
+    schema?: Schema | arrow.Schema;
+    /** Optional recovery policy used when converting GeoJSON features to GeoArrow. */
+    arrowConversion?: ArrowConversionOptions;
+    /** Geometry column name to use when converting GeoJSON features to GeoArrow WKB. */
+    geoarrowGeometryColumn?: string;
+    /** Preferred encoding for Arrow geometry output. */
+    geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
   };
 };
 
-/**
- * GeoJSON loader
- */
-export const GeoJSONWorkerLoader = {
-  dataType: null as unknown as GeoJSONTable,
-  batchType: null as unknown as TableBatch,
+/** Preloads the parser-bearing GeoJSON loader implementation. */
+async function preload() {
+  const {GeoJSONLoaderWithParser} = await import('./geojson-loader-with-parser');
+  return GeoJSONLoaderWithParser;
+}
 
-  name: 'GeoJSON',
-  id: 'geojson',
-  module: 'geojson',
+/** Metadata-only GeoJSON worker loader. */
+export const GeoJSONWorkerLoader = {
+  dataType: null as unknown as GeoJSONTable | BinaryFeatureCollection | ArrowTable,
+  batchType: null as unknown as TableBatch | ArrowTableBatch,
+
+  ...GeoJSONFormat,
   version: VERSION,
   worker: true,
-  extensions: ['geojson'],
-  mimeTypes: ['application/geo+json'],
-  category: 'geometry',
-  text: true,
   options: {
     geojson: {
       shape: 'geojson-table'
     },
     json: {
-      shape: 'object-row-table',
-      jsonpaths: ['$', '$.features']
-    },
-    gis: {
-      format: 'geojson'
+      jsonpaths: ['$.features'],
+      schema: undefined,
+      arrowConversion: undefined,
+      geoarrowGeometryColumn: undefined
     }
-  }
-} as const satisfies Loader<GeoJSONTable, TableBatch, GeoJSONLoaderOptions>;
+  },
+  preload
+} as const satisfies Loader<
+  GeoJSONTable | BinaryFeatureCollection | ArrowTable,
+  TableBatch | ArrowTableBatch,
+  GeoJSONLoaderOptions
+>;
 
+/** Metadata-only GeoJSON loader. */
 export const GeoJSONLoader = {
-  ...GeoJSONWorkerLoader,
-  // @ts-expect-error
-  parse,
-  // @ts-expect-error
-  parseTextSync,
-  parseInBatches
-} as const satisfies LoaderWithParser<GeoJSONTable, TableBatch, GeoJSONLoaderOptions>;
-
-async function parse(
-  arrayBuffer: ArrayBuffer,
-  options?: GeoJSONLoaderOptions
-): Promise<GeoJSONTable | BinaryFeatureCollection> {
-  return parseTextSync(new TextDecoder().decode(arrayBuffer), options);
-}
-
-function parseTextSync(
-  text: string,
-  options?: GeoJSONLoaderOptions
-): GeoJSONTable | BinaryFeatureCollection {
-  // Apps can call the parse method directly, we so apply default options here
-  options = {...GeoJSONLoader.options, ...options};
-  options.geojson = {...GeoJSONLoader.options.geojson, ...options.geojson};
-  options.gis = options.gis || {};
-
-  let geojson;
-  try {
-    geojson = JSON.parse(text);
-  } catch {
-    geojson = {};
-  }
-
-  const table: GeoJSONTable = {
-    shape: 'geojson-table',
-    // TODO - deduce schema from geojson
-    // TODO check that parsed data is of type FeatureCollection
-    type: 'FeatureCollection',
-    features: geojson?.features || []
-  };
-
-  switch (options.gis.format) {
-    case 'binary':
-      return geojsonToBinary(table.features);
-    default:
-      return table;
-  }
-}
-
-function parseInBatches(asyncIterator, options): AsyncIterable<TableBatch> {
-  // Apps can call the parse method directly, we so apply default options here
-  options = {...GeoJSONLoader.options, ...options};
-  options.json = {...GeoJSONLoader.options.geojson, ...options.geojson};
-
-  const geojsonIterator = parseJSONInBatches(asyncIterator, options);
-
-  switch (options.gis.format) {
-    case 'binary':
-      return makeBinaryGeometryIterator(geojsonIterator);
-    default:
-      return geojsonIterator as AsyncIterable<TableBatch>;
-  }
-}
-
-async function* makeBinaryGeometryIterator(geojsonIterator) {
-  for await (const batch of geojsonIterator) {
-    batch.data = geojsonToBinary(batch.data);
-    yield batch;
-  }
-}
+  ...GeoJSONWorkerLoader
+} as const satisfies Loader<
+  GeoJSONTable | BinaryFeatureCollection | ArrowTable,
+  TableBatch | ArrowTableBatch,
+  GeoJSONLoaderOptions
+>;

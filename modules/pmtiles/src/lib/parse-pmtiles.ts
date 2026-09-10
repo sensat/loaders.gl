@@ -4,7 +4,7 @@
 
 import {LoaderOptions} from '@loaders.gl/loader-utils';
 import type {TileJSON} from '@loaders.gl/mvt';
-import {TileJSONLoader} from '@loaders.gl/mvt';
+import {parseTileJSON} from '@loaders.gl/mvt';
 // import {Source, PMTiles, Header, TileType} from 'pmtiles';
 import * as pmtiles from 'pmtiles';
 const {TileType} = pmtiles;
@@ -18,6 +18,7 @@ export type PMTilesMetadata = {
   /** MIME type for tile contents. Unknown tile types will return 'application/octet-stream */
   tileMIMEType:
     | 'application/vnd.mapbox-vector-tile'
+    | 'application/vnd.maplibre-tile'
     | 'image/png'
     | 'image/jpeg'
     | 'image/webp'
@@ -71,8 +72,7 @@ export function parsePMTilesHeader(
   let tilejson: TileJSON | null = null;
   if (pmtilesMetadata) {
     try {
-      const string = JSON.stringify(pmtilesMetadata);
-      tilejson = TileJSONLoader.parseTextSync?.(string, loadOptions) || null;
+      tilejson = parseTileJSON(pmtilesMetadata, (loadOptions as any)?.tilejson) || null;
     } catch (error) {
       // eslint-disable-next-line no-console
       console.warn('PMTiles metadata could not be interpreted as TileJSON', error);
@@ -124,6 +124,7 @@ function decodeTileType(
   tileType: pmtiles.TileType
 ):
   | 'application/vnd.mapbox-vector-tile'
+  | 'application/vnd.maplibre-tile'
   | 'image/png'
   | 'image/jpeg'
   | 'image/webp'
@@ -132,6 +133,8 @@ function decodeTileType(
   switch (tileType) {
     case TileType.Mvt:
       return 'application/vnd.mapbox-vector-tile';
+    case TileType.Mlt:
+      return 'application/vnd.maplibre-tile';
     case TileType.Png:
       return 'image/png';
     case TileType.Jpeg:

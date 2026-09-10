@@ -1,0 +1,70 @@
+{
+  "zarr_format": 3,
+  "node_type": "array",
+  "shape": [
+    1,
+    3,
+    1,
+    167,
+    439
+  ],
+  "data_type": "int8",
+  "chunk_grid": {
+    "name": "regular",
+    "configuration": {
+      "chunk_shape": [
+        1,
+        1,
+        1,
+        167,
+        439
+      ]
+    }
+  },
+  "chunk_key_encoding": {
+    "name": "default",
+    "configuration": {
+      "separator": "/"
+    }
+  },
+  "codecs": [
+    {
+      "name": "bytes",
+      "configuration": {
+        "endian": "little"
+      }
+    }
+  ],
+  "fill_value": 0,
+  "dimension_names": [
+    "t",
+    "c",
+    "z",
+    "y",
+    "x"
+  ],
+  "attributes": {
+    "long_name": "Example georeferenced image",
+    "proj:code": "EPSG:4326",
+    "spatial:dimensions": [
+      "y",
+      "x"
+    ],
+    "spatial:bbox": [
+      -20,
+      -6.7,
+      23.9,
+      10
+    ],
+    "spatial:transform": [
+      0.1,
+      0,
+      -20,
+      0,
+      -0.1,
+      10
+    ],
+    "spatial:registration": "pixel",
+    "_FillValue": 0
+  }
+}

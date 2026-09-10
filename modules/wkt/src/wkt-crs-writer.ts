@@ -2,12 +2,14 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
-import {VERSION} from './lib/utils/version';
-
-import type {WKTCRS} from './lib/parse-wkt-crs';
-import type {EncodeWKTCRSOptions} from './lib/encode-wkt-crs';
-import {encodeWKTCRS} from './lib/encode-wkt-crs';
+import {
+  type WriterWithEncoder,
+  type WriterOptions,
+  ensureArrayBuffer
+} from '@loaders.gl/loader-utils';
+import {encodeWKTCRS, type EncodeWKTCRSOptions, type WKTCRSAst} from '@math.gl/crs';
+import {VERSION} from './lib/version';
+import {WKTCRSFormat} from './wkt-format';
 
 export type WKTCRSWriterOptions = WriterOptions & {
   'wkt-crs'?: EncodeWKTCRSOptions;
@@ -19,6 +21,7 @@ export type WKTCRSWriterOptions = WriterOptions & {
  * @see Wikipedia Page: https://en.wikipedia.org/wiki/Well-known_text_representation_of_coordinate_reference_systems
  */
 export const WKTCRSWriter = {
+  ...WKTCRSFormat,
   name: 'WKT CRS (Well-Known Text Coordinate Reference System)',
   id: 'wkt-crs',
   module: 'wkt-crs',
@@ -32,8 +35,8 @@ export const WKTCRSWriter = {
     'wkt-crs': {}
   },
   encode: async (wktcrs, options) =>
-    new TextEncoder().encode(encodeWKTCRS(wktcrs, options?.['wkt-crs'])),
+    ensureArrayBuffer(new TextEncoder().encode(encodeWKTCRS(wktcrs, options?.['wkt-crs']))),
   encodeSync: (wktcrs, options) =>
-    new TextEncoder().encode(encodeWKTCRS(wktcrs, options?.['wkt-crs'])),
+    ensureArrayBuffer(new TextEncoder().encode(encodeWKTCRS(wktcrs, options?.['wkt-crs']))),
   encodeTextSync: (wktcrs, options) => encodeWKTCRS(wktcrs, options?.['wkt-crs'])
-} as const satisfies WriterWithEncoder<WKTCRS, never, WKTCRSWriterOptions>;
+} as const satisfies WriterWithEncoder<WKTCRSAst, never, WKTCRSWriterOptions>;

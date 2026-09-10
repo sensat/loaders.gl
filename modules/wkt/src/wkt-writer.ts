@@ -3,9 +3,10 @@
 // Copyright (c) vis.gl contributors
 
 import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
-import {VERSION} from './lib/utils/version';
-import {encodeWKT} from './lib/encode-wkt';
-import {Geometry} from '@loaders.gl/schema';
+import type {Geometry} from '@loaders.gl/schema';
+import {convertGeometryToWKT} from '@loaders.gl/gis';
+import {VERSION} from './lib/version';
+import {WKTFormat} from './wkt-format';
 
 export type WKTWriterOptions = WriterOptions & {
   wkt?: {};
@@ -15,20 +16,24 @@ export type WKTWriterOptions = WriterOptions & {
  * WKT exporter
  */
 export const WKTWriter = {
+  ...WKTFormat,
   name: 'WKT (Well Known Text)',
   id: 'wkt',
   module: 'wkt',
   version: VERSION,
   extensions: ['wkt'],
+  mimeTypes: ['application/wkt', 'text/plain'],
   text: true,
-  encode: async (geometry: Geometry) => encodeWKTSync(geometry),
-  encodeSync: encodeWKTSync,
-  encodeTextSync: encodeWKT,
+  encode: async (geometry: Geometry) => convertGeometryToWKTSync(geometry),
+  encodeSync: convertGeometryToWKTSync,
+  encodeTextSync: (geometry: Geometry) => convertGeometryToWKT(geometry),
   options: {
     wkt: {}
   }
 } as const satisfies WriterWithEncoder<Geometry, never, WKTWriterOptions>;
 
-function encodeWKTSync(geometry: Geometry): ArrayBuffer {
-  return new TextEncoder().encode(encodeWKT(geometry)).buffer;
+function convertGeometryToWKTSync(geometry: Geometry): ArrayBuffer {
+  const wktString = convertGeometryToWKT(geometry);
+  const wktTypedArray = new TextEncoder().encode(wktString);
+  return wktTypedArray.buffer;
 }

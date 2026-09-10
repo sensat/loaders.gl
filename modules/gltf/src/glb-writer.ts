@@ -7,6 +7,9 @@ import type {GLB} from './lib/types/glb-types';
 import type {GLBEncodeOptions} from './lib/encoders/encode-glb';
 import {encodeGLBSync} from './lib/encoders/encode-glb';
 import {VERSION} from './lib/utils/version';
+import {GLBFormat} from './gltf-format';
+
+export type {GLBChunk} from './lib/types/glb-types';
 
 export type GLBWriterOptions = WriterOptions & {
   glb?: GLBEncodeOptions;
@@ -17,14 +20,8 @@ export type GLBWriterOptions = WriterOptions & {
  * GLB is the binary container format for GLTF
  */
 export const GLBWriter = {
-  name: 'GLB',
-  id: 'glb',
-  module: 'gltf',
+  ...GLBFormat,
   version: VERSION,
-
-  extensions: ['glb'],
-  mimeTypes: ['model/gltf-binary'],
-  binary: true,
   options: {
     glb: {}
   },
@@ -35,14 +32,15 @@ export const GLBWriter = {
 
 function encodeSync(glb, options) {
   const {byteOffset = 0} = options ?? {};
+  const glbOptions = options?.glb ?? {};
 
   // Calculate length and allocate buffer
-  const byteLength = encodeGLBSync(glb, null, byteOffset, options);
+  const byteLength = encodeGLBSync(glb, null, byteOffset, glbOptions);
   const arrayBuffer = new ArrayBuffer(byteLength);
 
   // Encode into buffer
   const dataView = new DataView(arrayBuffer);
-  encodeGLBSync(glb, dataView, byteOffset, options);
+  encodeGLBSync(glb, dataView, byteOffset, glbOptions);
 
   return arrayBuffer;
 }

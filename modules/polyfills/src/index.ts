@@ -1,3 +1,7 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
 /* eslint-disable dot-notation */
 import {isBrowser} from './utils/is-browser';
 
@@ -8,6 +12,12 @@ import {atob, btoa} from './buffer/btoa.node';
 
 import {encodeImageNode} from './images/encode-image-node';
 import {parseImageNode, NODE_FORMAT_SUPPORT} from './images/parse-image-node';
+import {
+  createImageBitmapNode,
+  NodeImageBitmap,
+  getImageBitmapDataNode,
+  isNodeImageBitmap
+} from './images/node-image-bitmap';
 
 // FILESYSTEM POLYFILLS
 import {NodeFile} from './filesystems/node-file';
@@ -17,7 +27,6 @@ import {fetchNode} from './filesystems/fetch-node';
 import {NodeHash} from './crypto/node-hash';
 
 // NODE VERSION
-// @ts-expect-error
 import {versions} from 'node:process';
 export const nodeVersion = parseInt(versions.node.split('.')[0]);
 
@@ -85,6 +94,17 @@ if (!('btoa' in globalThis) && btoa) {
 globalThis.loaders.encodeImageNode = encodeImageNode;
 globalThis.loaders.parseImageNode = parseImageNode;
 globalThis.loaders.imageFormatsNode = NODE_FORMAT_SUPPORT;
+globalThis.loaders.createImageBitmapNode = createImageBitmapNode;
+globalThis.loaders.getImageBitmapDataNode = getImageBitmapDataNode;
+globalThis.loaders.isImageBitmapNode = isNodeImageBitmap;
+
+if (!globalThis.ImageBitmap) {
+  (globalThis as any).ImageBitmap = NodeImageBitmap;
+}
+
+if (!('getImageBitmapData' in globalThis)) {
+  (globalThis as any).getImageBitmapData = getImageBitmapDataNode;
+}
 
 // Deprecated, remove after republish
 globalThis._parseImageNode = parseImageNode;

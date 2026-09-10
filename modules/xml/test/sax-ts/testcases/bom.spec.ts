@@ -1,14 +1,9 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-// Forked from sax-ts & sax under ISC license
-
-import test from 'tape-promise/tape';
+// SPDX-License-Identifier: ISC
+import {test} from 'vitest';
 import {testSax} from '../utils/test-utils';
-
 // BOM at the very beginning of the stream should be ignored
-test('SAXParser#bom', (t) => {
-  testSax(t, {
+test('SAXParser#bom', () => {
+  testSax({
     xml: '\uFEFF<P></P>',
     expect: [
       ['opentagstart', {name: 'P', attributes: {}}],
@@ -16,9 +11,8 @@ test('SAXParser#bom', (t) => {
       ['closetag', 'P']
     ]
   });
-
   // In all other places it should be consumed
-  testSax(t, {
+  testSax({
     xml: '\uFEFF<P BOM="\uFEFF">\uFEFFStarts and ends with BOM\uFEFF</P>',
     expect: [
       ['opentagstart', {name: 'P', attributes: {}}],
@@ -28,9 +22,8 @@ test('SAXParser#bom', (t) => {
       ['closetag', 'P']
     ]
   });
-
   // BOM after a whitespace is an error
-  testSax(t, {
+  testSax({
     xml: ' \uFEFF<P></P>',
     expect: [
       ['error', 'Non-whitespace before first tag.\nLine: 0\nColumn: 2\nChar: \uFEFF'],
@@ -43,9 +36,8 @@ test('SAXParser#bom', (t) => {
       strict: true
     }
   });
-
   // There is only one BOM allowed at the start
-  testSax(t, {
+  testSax({
     xml: '\uFEFF\uFEFF<P></P>',
     expect: [
       ['error', 'Non-whitespace before first tag.\nLine: 0\nColumn: 2\nChar: \uFEFF'],
@@ -58,6 +50,4 @@ test('SAXParser#bom', (t) => {
       strict: true
     }
   });
-
-  t.end();
 });

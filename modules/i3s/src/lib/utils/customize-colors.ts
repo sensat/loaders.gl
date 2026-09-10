@@ -1,10 +1,13 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
 import type {MeshAttribute, TypedArray} from '@loaders.gl/schema';
 import type {AttributeStorageInfo, COLOR, Field} from '../../types';
 
-import {load} from '@loaders.gl/core';
-import {getAttributeValueType, I3SAttributeLoader} from '../../i3s-attribute-loader';
+import {getAttributeValueType} from '../../i3s-attribute-loader';
 import {getUrlWithToken} from './url-utils';
-import {I3STileAttributes} from '../parsers/parse-i3s-attribute';
+import {I3STileAttributes, parseI3STileAttribute} from '../parsers/parse-i3s-attribute';
 
 type ColorsByAttribute = {
   /** Feature attribute name */
@@ -160,7 +163,15 @@ async function loadFeatureAttributeData(
   }
   const objectIdAttributeUrl = getUrlWithToken(attributeUrls[attributeIndex], token);
   const attributeType = getAttributeValueType(attributeStorageInfo[attributeIndex]);
-  const objectIdAttributeData = await load(objectIdAttributeUrl, I3SAttributeLoader, {
+  const response = await fetch(objectIdAttributeUrl);
+  if (!response.ok) {
+    throw new Error(
+      `Failed to load I3S attribute ${attributeName}: ${response.status} ${response.statusText}`
+    );
+  }
+
+  const arrayBuffer = await response.arrayBuffer();
+  const objectIdAttributeData = parseI3STileAttribute(arrayBuffer, {
     attributeName,
     attributeType
   });

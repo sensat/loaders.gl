@@ -1,4 +1,6 @@
-import {describe, it, expect} from 'test/utils/expect-assertions';
+// SPDX-License-Identifier: MIT
+
+import {describe, expect, it} from 'vitest';
 import {NetCDFReader} from '@loaders.gl/netcdf';
 import {fetchFile} from '@loaders.gl/core';
 
@@ -10,7 +12,7 @@ describe('NetCDFReader', () => {
     const data = await response.arrayBuffer();
     expect(function notValid() {
       return new NetCDFReader(data);
-    }).toThrow('Not a valid NetCDF v3.x file: should start with CDF');
+    }).toThrow(/NetCDF: file should start with 'CDF'/);
   });
 
   it('read header information', async () => {
@@ -144,7 +146,7 @@ describe('NetCDFReader', () => {
     const reader = new NetCDFReader(data);
 
     expect(reader.getDataVariable.bind(reader, "n'importe quoi")).toThrow(
-      'Not a valid NetCDF v3.x file: variable not found'
+      /NetCDF: variable not found/
     );
   });
 

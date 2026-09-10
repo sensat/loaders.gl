@@ -1,6 +1,12 @@
-// Forked from https://github.com/kbajalc/parquets under MIT license (Copyright (c) 2017 ironSource Ltd.)
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+// Copyright (c) 2017 ironSource Ltd.
+// Forked from https://github.com/kbajalc/parquets under MIT license
 
 import {PARQUET_CODECS} from '../codecs/index';
+import {isByteStreamSplitType} from '../codecs/byte-stream-split';
+import {isDeltaEncodingType} from '../codecs/delta';
 import {PARQUET_COMPRESSION_METHODS} from '../compression';
 import {
   FieldDefinition,
@@ -11,7 +17,8 @@ import {
   RepetitionType,
   SchemaDefinition
 } from './declare';
-import {materializeRows, shredBuffer, shredRecord} from './shred';
+import type {ArrayType} from '@loaders.gl/schema';
+import {materializeColumns, materializeRows, shredBuffer, shredRecord} from './shred';
 import {PARQUET_LOGICAL_TYPES} from './types';
 
 /**
@@ -36,9 +43,19 @@ export class ParquetSchema {
    */
   findField(path: string | string[]): ParquetField {
     if (typeof path === 'string') {
+      // Flat schemas dominate analytical Parquet. Avoid split/array allocation for every Arrow
+      // field lookup while retaining the existing traversal for genuinely nested paths.
+      if (!path.includes(',')) {
+        return this.fields[path];
+      }
       // tslint:disable-next-line:no-parameter-reassignment
       path = path.split(',');
     } else {
+      // Column metadata already stores paths as arrays; the one-segment case needs no defensive
+      // clone or shift and is exercised once per selected flat column.
+      if (path.length === 1) {
+        return this.fields[path[0]];
+      }
       // tslint:disable-next-line:no-parameter-reassignment
       path = path.slice(0); // clone array
     }
@@ -76,6 +93,11 @@ export class ParquetSchema {
 
   materializeRows(rowGroup: ParquetRowGroup): ParquetRow[] {
     return materializeRows(this, rowGroup);
+  }
+
+  /** Materializes one decoded row group as top-level column arrays. */
+  materializeColumns(rowGroup: ParquetRowGroup): Record<string, ArrayType> {
+    return materializeColumns(this, rowGroup);
   }
 
   compress(type: ParquetCompression): this {
@@ -136,6 +158,8 @@ function buildFields(
         name,
         path: cpath,
         key: cpath.join(),
+        logicalType: opts.logicalType,
+        fieldId: opts.fieldId,
         repetitionType,
         rLevelMax,
         dLevelMax,
@@ -155,6 +179,13 @@ function buildFields(
     if (!(opts.encoding in PARQUET_CODECS)) {
       throw new Error(`unsupported parquet encoding: ${opts.encoding}`);
     }
+    const primitiveType = opts.physicalType || typeDef.primitiveType;
+    if (opts.encoding === 'BYTE_STREAM_SPLIT' && !isByteStreamSplitType(primitiveType)) {
+      throw new Error(`BYTE_STREAM_SPLIT does not support ${primitiveType}`);
+    }
+    if (opts.encoding.startsWith('DELTA_') && !isDeltaEncodingType(opts.encoding, primitiveType)) {
+      throw new Error(`${opts.encoding} does not support ${primitiveType}`);
+    }
 
     opts.compression = opts.compression || 'UNCOMPRESSED';
     if (!(opts.compression in PARQUET_COMPRESSION_METHODS)) {
@@ -165,15 +196,18 @@ function buildFields(
     const cpath = path.concat([name]);
     fieldList[name] = {
       name,
-      primitiveType: typeDef.primitiveType,
+      primitiveType,
       originalType: typeDef.originalType,
+      logicalType: opts.logicalType,
+      fieldId: opts.fieldId,
       path: cpath,
       key: cpath.join(),
       repetitionType,
       encoding: opts.encoding,
       compression: opts.compression,
       typeLength: opts.typeLength || typeDef.typeLength,
-      presision: opts.presision,
+      presision: opts.precision ?? opts.presision,
+      precision: opts.precision ?? opts.presision,
       scale: opts.scale,
       rLevelMax,
       dLevelMax

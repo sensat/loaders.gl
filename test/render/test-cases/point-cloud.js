@@ -1,3 +1,7 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
 import {load, fetchFile, parse, encode} from '@loaders.gl/core';
 import {DracoWriter, DracoLoader} from '@loaders.gl/draco';
 import {LASLoader} from '@loaders.gl/las';
@@ -17,8 +21,8 @@ const KITTI_COLORS_URL =
 let kittiPointCloud;
 
 async function loadKittiPointCloud() {
-  const KITTI_POSITIONS = await fetchFile(KITTI_POSITIONS_URL).then((res) => res.arrayBuffer());
-  const KITTI_COLORS = await fetchFile(KITTI_COLORS_URL).then((res) => res.arrayBuffer());
+  const KITTI_POSITIONS = await fetchFile(KITTI_POSITIONS_URL).then(res => res.arrayBuffer());
+  const KITTI_COLORS = await fetchFile(KITTI_COLORS_URL).then(res => res.arrayBuffer());
 
   if (!kittiPointCloud) {
     kittiPointCloud = {
@@ -35,7 +39,7 @@ export default [
     name: 'LAZ pointcloud',
     disabled: true, // Seems breaking on master
     onInitialize: async ({gl}) => {
-      const lazPointCloud = await load(LAS_BINARY_URL, LASLoader, {skip: 10});
+      const lazPointCloud = await load(LAS_BINARY_URL, LASLoader);
       const model = getModel(gl, lazPointCloud);
       return {model, lazPointCloud};
     },

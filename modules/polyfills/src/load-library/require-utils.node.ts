@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 // Fork of https://github.com/floatdrop/require-from-string/blob/master/index.js
 // Copyright (c) Vsevolod Strukchinsky <floatdrop@gmail.com> (github.com/floatdrop)
 // MIT license
@@ -7,6 +9,7 @@
 import Module from 'module';
 import path from 'path';
 import fs from 'fs';
+import {ensureArrayBuffer} from '@loaders.gl/loader-utils';
 
 /**
  * Load a file from local file system
@@ -19,7 +22,7 @@ export async function readFileAsArrayBuffer(filename: string): Promise<ArrayBuff
     return await response.arrayBuffer();
   }
   const buffer = fs.readFileSync(filename);
-  return buffer.buffer;
+  return ensureArrayBuffer(buffer.buffer);
 }
 
 /**

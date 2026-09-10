@@ -3,6 +3,9 @@
 // Copyright (c) vis.gl contributors
 
 import {createLoaderWorker} from '@loaders.gl/loader-utils';
-import {WKTLoader} from '../wkt-loader';
+import {WKTLoaderWithParser} from '../wkt-loader-with-parser';
+import {WKBLoaderWithParser} from '../wkb-loader-with-parser';
 
-createLoaderWorker(WKTLoader);
+createLoaderWorker(WKTLoaderWithParser, options =>
+  options._workerLoaderId === 'wkb' ? WKBLoaderWithParser : WKTLoaderWithParser
+);

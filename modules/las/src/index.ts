@@ -1,22 +1,70 @@
-import type {LoaderWithParser} from '@loaders.gl/loader-utils';
-import type {LASLoaderOptions} from './las-loader';
-import type {LASMesh} from './lib/las-types';
-import {LASLoader as LASWorkerLoader} from './las-loader';
-import {parseLAS} from './lib/parse-las';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
 
 // LASLoader
 
-export type {LASLoaderOptions};
-export {LASWorkerLoader};
+export {LASFormat} from './las-format';
 
-/**
- * Loader for the LAS (LASer) point cloud format
- * @note Does not support LAS v1.4
- */
-export const LASLoader = {
-  ...LASWorkerLoader,
-  parse: async (arrayBuffer: ArrayBuffer, options?: LASLoaderOptions) =>
-    parseLAS(arrayBuffer, options),
-  parseSync: (arrayBuffer: ArrayBuffer, options?: LASLoaderOptions) =>
-    parseLAS(arrayBuffer, options)
-} as const satisfies LoaderWithParser<LASMesh, never, LASLoaderOptions>;
+export type {LASColumnName, LASLoaderOptions} from './las-loader-types';
+
+export type {LASExtraBytesWriter, LASWriterOptions} from './las-writer';
+export {LASWriter} from './las-writer';
+export type {
+  LASExtendedVariableLengthRecord,
+  LASExtraBytesDescriptor,
+  LASGeoTIFFKey,
+  LASGeoTIFFKeyDirectory,
+  LASHeader,
+  LASMetadata,
+  LASVariableLengthRecord,
+  LASWaveformPacketDescriptor
+} from './lib/las-types';
+export {
+  decodeLASWaveformSamples,
+  getLASWaveformStorage,
+  parseLASWaveformPacketReference,
+  readLASWaveformPacket,
+  readLASWaveformPackets,
+  scaleLASWaveformSamples
+} from './lib/las-waveform';
+export type {
+  LASWaveformPacket,
+  LASWaveformPacketReference,
+  LASWaveformReadOptions,
+  LASWaveformStorage
+} from './lib/las-waveform';
+export {
+  createLASTypedExtraBytesAttributes,
+  createLASTypedExtraBytesValue,
+  parseLASExtraBytes,
+  populateLASTypedExtraBytes
+} from './lib/las-extra-bytes';
+export type {
+  LASTypedExtraBytesAttribute,
+  LASTypedExtraBytesValue
+} from './lib/las-extra-bytes';
+
+export {LASLoader} from './las-loader-types';
+export {LASCOPCLoader} from './las-copc-loader-types';
+export {LAZPerfLoader} from './lazperf-loader-types';
+export {LAZRsLoader} from './laz-rs-loader-types';
+export {decodeLAZFileInBatches} from './lib/typescript/parse-las';
+export {
+  NeedsMoreData,
+  createLAZChunkDecoder,
+  createLAZChunkEncoder,
+  decodeLAZChunk,
+  decodeLAZChunkInBatches,
+  encodeLAZChunk
+} from '@loaders.gl/loader-utils';
+export type {
+  FeedableLAZChunkDecoder,
+  FeedableLAZChunkEncoder,
+  LAZChunkDecoderOptions,
+  LAZChunkMetadata
+} from '@loaders.gl/loader-utils';
+
+// DEPRECATED EXPORTS
+/** @deprecated Use LASLoader. */
+export {LASWorkerLoader} from './las-loader-types';

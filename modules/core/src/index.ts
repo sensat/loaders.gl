@@ -7,6 +7,7 @@ export type {
   Loader,
   LoaderWithParser,
   LoaderContext,
+  CoreAPI,
   LoaderOptions,
   Writer,
   WriterOptions,
@@ -19,6 +20,7 @@ export type {
   FileSystem,
   RandomAccessFileSystem
 } from '@loaders.gl/loader-utils';
+export type {SourceLoader} from '@loaders.gl/loader-utils';
 
 // FILE READING AND WRITING
 export {fetchFile} from './lib/fetch/fetch-file';
@@ -35,8 +37,11 @@ export {selectLoader, selectLoaderSync} from './lib/api/select-loader';
 
 // LOADING (READING + PARSING)
 export {parse} from './lib/api/parse';
+export {parseFile} from './lib/api/parse-file';
 export {parseSync} from './lib/api/parse-sync';
 export {parseInBatches} from './lib/api/parse-in-batches';
+export {preload, preloadSync} from './lib/api/preload';
+export {coreApi} from './lib/api/core-api';
 
 export {load} from './lib/api/load';
 export {loadInBatches} from './lib/api/load-in-batches';
@@ -59,7 +64,7 @@ export {makeIterator} from './iterators/make-iterator/make-iterator';
 export {makeStream} from './iterators/make-stream/make-stream';
 
 // CORE LOADERS
-export {NullWorkerLoader, NullLoader} from './null-loader';
+export {NullLoader} from './null-loader';
 export {JSONLoader} from '@loaders.gl/loader-utils';
 
 // EXPERIMENTAL
@@ -94,4 +99,8 @@ export {
   isResponse,
   isReadableStream,
   isWritableStream
-} from './javascript-utils/is-type';
+} from '@loaders.gl/loader-utils';
+
+// DEPRECATED EXPORTS
+/** @deprecated Use NullLoader. */
+export {NullWorkerLoader} from './null-loader';

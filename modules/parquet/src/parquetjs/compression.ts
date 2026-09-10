@@ -1,97 +1,103 @@
-// Forked from https://github.com/kbajalc/parquets under MIT license (Copyright (c) 2017 ironSource Ltd.)
-/* eslint-disable camelcase */
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+// Copyright (c) 2017 ironSource Ltd.
+// Forked from https://github.com/kbajalc/parquets under MIT license
 // Forked from https://github.com/ironSource/parquetjs under MIT license
 
 import {
-  Compression,
-  NoCompression,
-  GZipCompression,
-  SnappyCompression,
-  BrotliCompression,
-  // LZOCompression,
-  LZ4Compression,
-  ZstdCompression
+  BrotliCompressor,
+  BrotliDecompressor,
+  GZipCompressor,
+  GZipDecompressor,
+  LZ4Compressor,
+  LZ4Decompressor,
+  SnappyCompressor,
+  SnappyDecompressor,
+  ZstdCompressor,
+  ZstdDecompressor,
+  Decompressor,
+  type Compressor
 } from '@loaders.gl/compression';
+import {SnappyHysnappyDecompressor} from '@loaders.gl/compression/snappy-decompressor-hysnappy';
 import {registerJSModules} from '@loaders.gl/loader-utils';
 
 import {ParquetCompression} from './schema/declare';
-
-/** We can't use loaders-util buffer handling since we are dependent on buffers even in the browser */
-function toBuffer(arrayBuffer: ArrayBuffer): Buffer {
-  return Buffer.from(arrayBuffer);
-}
-
-function toArrayBuffer(buffer: Buffer): ArrayBuffer {
-  // TODO - per docs we should just be able to call buffer.buffer, but there are issues
-  if (Buffer.isBuffer(buffer)) {
-    const typedArray = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.length);
-    return typedArray.slice().buffer;
-  }
-  return buffer;
-}
-
-// TODO switch to worker compression to avoid bundling...
-
-// import brotli from 'brotli'; - brotli has problems with decompress in browsers
-// import brotliDecompress from 'brotli/decompress';
-import lz4js from 'lz4js';
-// import lzo from 'lzo';
-// import {ZstdCodec} from 'zstd-codec';
-
-// Inject large dependencies through Compression constructor options
-const modules = {
-  // brotli has problems with decompress in browsers
-  // brotli: {
-  //   decompress: brotliDecompress,
-  //   compress: () => {
-  //     throw new Error('brotli compress');
-  //   }
-  // },
-  lz4js
-  // lzo
-  // 'zstd-codec': ZstdCodec
-};
+import {toArrayBuffer, toUint8Array} from './utils/binary-utils';
 
 /**
  * See https://github.com/apache/parquet-format/blob/master/Compression.md
  */
-// @ts-expect-error
-export const PARQUET_COMPRESSION_METHODS: Record<ParquetCompression, Compression> = {
-  UNCOMPRESSED: new NoCompression(),
-  GZIP: new GZipCompression(),
-  SNAPPY: new SnappyCompression(),
-  BROTLI: new BrotliCompression({modules}),
-  // TODO: Understand difference between LZ4 and LZ4_RAW
-  LZ4: new LZ4Compression({modules}),
-  LZ4_RAW: new LZ4Compression({modules}),
-  //
-  // LZO: new LZOCompression({modules}),
-  ZSTD: new ZstdCompression({modules})
+export const PARQUET_COMPRESSION_METHODS: Partial<Record<ParquetCompression, true>> = {
+  UNCOMPRESSED: true,
+  GZIP: true,
+  SNAPPY: true,
+  BROTLI: true,
+  // TODO: Understand difference between LZ4 and LZ4_RAW.
+  LZ4: true,
+  LZ4_RAW: true,
+  ZSTD: true
 };
 
+/** Reader-scoped function that decompresses one independently encoded Parquet page. */
+export type ParquetPageDecompressor = (value: Uint8Array, size: number) => Promise<Uint8Array>;
+
+/** Fast Snappy decoder that permanently falls back to snappyjs when WASM is unavailable. */
+class ParquetSnappyDecompressor extends Decompressor {
+  /** Compression format name. */
+  readonly name = 'snappy';
+  /** Snappy does not have a standard standalone file extension. */
+  readonly extensions: string[] = [];
+  /** Snappy does not have a standard HTTP content encoding. */
+  readonly contentEncodings: string[] = [];
+  /** snappyjs keeps this composite decoder available without WebAssembly. */
+  readonly isSupported = true;
+  /** Preferred compact WASM decoder for page-sized frames. */
+  private readonly hysnappy = new SnappyHysnappyDecompressor();
+  /** Always-supported JavaScript decoder. */
+  private readonly snappyjs = new SnappyDecompressor();
+  /** Whether this instance has selected the JavaScript fallback. */
+  private useSnappyjs = !this.hysnappy.isSupported;
+
+  /** Decodes with hysnappy, retaining snappyjs after the first WASM setup or runtime failure. */
+  override async decompress(input: ArrayBuffer, size?: number): Promise<ArrayBuffer> {
+    if (!this.useSnappyjs) {
+      try {
+        return await this.hysnappy.decompress(input, size);
+      } catch {
+        // CSP can reject WebAssembly compilation even when the WebAssembly global exists. Once
+        // that happens, avoid paying the same rejected initialization cost for every Parquet page.
+        this.useSnappyjs = true;
+      }
+    }
+    return await this.snappyjs.decompress(input, size);
+  }
+}
+
 /**
- * Register compressions that have big external libraries
- * @param options.modules External library dependencies
+ * Registers optional codec modules without eagerly loading codec-backed implementations.
+ *
+ * @param options.modules External library dependencies.
  */
 export async function preloadCompressions(options?: {modules?: {[key: string]: any}}) {
   registerJSModules(options?.modules);
-  const compressions = Object.values(PARQUET_COMPRESSION_METHODS);
-  return await Promise.all(
-    compressions.map((compression) => compression.preload(options?.modules))
-  );
 }
 
 /**
  * Deflate a value using compression method `method`
  */
-export async function deflate(method: ParquetCompression, value: Buffer): Promise<Buffer> {
-  const compression = PARQUET_COMPRESSION_METHODS[method];
-  if (!compression) {
+export async function deflate(method: ParquetCompression, value: Uint8Array): Promise<Uint8Array> {
+  if (!(method in PARQUET_COMPRESSION_METHODS)) {
     throw new Error(`parquet: invalid compression method: ${method}`);
   }
+  if (method === 'UNCOMPRESSED') {
+    return value;
+  }
+
+  const compression = await getParquetCompressor(method);
   const inputArrayBuffer = toArrayBuffer(value);
   const compressedArrayBuffer = await compression.compress(inputArrayBuffer);
-  return toBuffer(compressedArrayBuffer);
+  return toUint8Array(compressedArrayBuffer);
 }
 
 /**
@@ -99,106 +105,84 @@ export async function deflate(method: ParquetCompression, value: Buffer): Promis
  */
 export async function decompress(
   method: ParquetCompression,
-  value: Buffer,
+  value: Uint8Array,
   size: number
-): Promise<Buffer> {
-  const compression = PARQUET_COMPRESSION_METHODS[method];
-  if (!compression) {
+): Promise<Uint8Array> {
+  if (!(method in PARQUET_COMPRESSION_METHODS)) {
     throw new Error(`parquet: invalid compression method: ${method}`);
   }
   const inputArrayBuffer = toArrayBuffer(value);
+  if (method === 'UNCOMPRESSED') {
+    return toUint8Array(inputArrayBuffer);
+  }
+
+  const compression = await getParquetDecompressor(method);
   const compressedArrayBuffer = await compression.decompress(inputArrayBuffer, size);
-  return toBuffer(compressedArrayBuffer);
+  return toUint8Array(compressedArrayBuffer);
 }
 
-/*
- * Inflate a value using compression method `method`
+/**
+ * Creates a reusable decoder for the independently compressed pages in one Parquet reader.
+ *
+ * Reusing the lazy codec preserves its selected backend and avoids repeating dynamic import and
+ * preload work for every page while keeping module injection scoped to a reader invocation.
  */
-export function inflate(method: ParquetCompression, value: Buffer, size: number): Buffer {
-  if (!(method in PARQUET_COMPRESSION_METHODS)) {
-    throw new Error(`invalid compression method: ${method}`);
-  }
-  // @ts-ignore
-  return PARQUET_COMPRESSION_METHODS[method].inflate(value, size);
+export function createParquetPageDecompressor(method: ParquetCompression): ParquetPageDecompressor {
+  const decompressor = method === 'UNCOMPRESSED' ? null : createParquetDecompressor(method);
+  return async (value: Uint8Array, size: number): Promise<Uint8Array> => {
+    const inputArrayBuffer = toArrayBuffer(value);
+    if (!decompressor) {
+      return toUint8Array(inputArrayBuffer);
+    }
+    const decompressedArrayBuffer = await decompressor.decompress(inputArrayBuffer, size);
+    return toUint8Array(decompressedArrayBuffer);
+  };
 }
 
-/*
-function deflate_identity(value: Buffer): Buffer {
-  return value;
+/** Returns a new lazily selecting compressor for one Parquet method. */
+async function getParquetCompressor(method: ParquetCompression): Promise<Compressor> {
+  return createParquetCompressor(method);
 }
 
-function deflate_gzip(value: Buffer): Buffer {
-  return zlib.gzipSync(value);
+/** Returns a new lazily selecting decompressor for one Parquet method. */
+async function getParquetDecompressor(method: ParquetCompression): Promise<Decompressor> {
+  return createParquetDecompressor(method);
 }
 
-function deflate_snappy(value: Buffer): Buffer {
-  return snappyjs.compress(value);
-}
-
-function deflate_lzo(value: Buffer): Buffer {
-  lzo = lzo || Util.load('lzo');
-  return lzo.compress(value);
-}
-
-function deflate_brotli(value: Buffer): Buffer {
-  brotli = brotli || Util.load('brotli');
-  const result = brotli.compress(value, {
-    mode: 0,
-    quality: 8,
-    lgwin: 22
-  });
-  return result ? Buffer.from(result) : Buffer.alloc(0);
-}
-
-function deflate_lz4(value: Buffer): Buffer {
-  lz4js = lz4js || Util.load('lz4js');
-  try {
-    // let result = Buffer.alloc(lz4js.encodeBound(value.length));
-    // const compressedSize = lz4.encodeBlock(value, result);
-    // // remove unnecessary bytes
-    // result = result.slice(0, compressedSize);
-    // return result;
-    return Buffer.from(lz4js.compress(value));
-  } catch (err) {
-    throw err;
-  }
-}
-function inflate_identity(value: Buffer): Buffer {
-  return value;
-}
-
-function inflate_gzip(value: Buffer): Buffer {
-  return zlib.gunzipSync(value);
-}
-
-function inflate_snappy(value: Buffer): Buffer {
-  return snappyjs.uncompress(value);
-}
-
-function inflate_lzo(value: Buffer, size: number): Buffer {
-  lzo = lzo || Util.load('lzo');
-  return lzo.decompress(value, size);
-}
-
-function inflate_lz4(value: Buffer, size: number): Buffer {
-  lz4js = lz4js || Util.load('lz4js');
-  try {
-    // let result = Buffer.alloc(size);
-    // const uncompressedSize = lz4js.decodeBlock(value, result);
-    // // remove unnecessary bytes
-    // result = result.slice(0, uncompressedSize);
-    // return result;
-    return Buffer.from(lz4js.decompress(value, size));
-  } catch (err) {
-    throw err;
+/** Creates the root-level default compressor for one Parquet method. */
+function createParquetCompressor(method: ParquetCompression): Compressor {
+  switch (method) {
+    case 'GZIP':
+      return new GZipCompressor();
+    case 'SNAPPY':
+      return new SnappyCompressor();
+    case 'BROTLI':
+      return new BrotliCompressor();
+    case 'LZ4':
+    case 'LZ4_RAW':
+      return new LZ4Compressor();
+    case 'ZSTD':
+      return new ZstdCompressor();
+    default:
+      throw new Error(`parquet: invalid compression method: ${method}`);
   }
 }
 
-function inflate_brotli(value: Buffer): Buffer {
-  brotli = brotli || Util.load('brotli');
-  if (!value.length) {
-    return Buffer.alloc(0);
+/** Creates the root-level default decompressor for one Parquet method. */
+function createParquetDecompressor(method: ParquetCompression): Decompressor {
+  switch (method) {
+    case 'GZIP':
+      return new GZipDecompressor();
+    case 'SNAPPY':
+      return new ParquetSnappyDecompressor();
+    case 'BROTLI':
+      return new BrotliDecompressor();
+    case 'LZ4':
+    case 'LZ4_RAW':
+      return new LZ4Decompressor();
+    case 'ZSTD':
+      return new ZstdDecompressor();
+    default:
+      throw new Error(`parquet: invalid compression method: ${method}`);
   }
-  return Buffer.from(brotli.decompress(value));
 }
-*/

@@ -1,5 +1,9 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
 /* eslint-disable camelcase, indent */
-export type {GLB} from './lib/types/glb-types';
+export type {GLB, GLBChunk} from './lib/types/glb-types';
 
 // Raw GLTF Types (i.e. not post-processed)
 export type {
@@ -16,14 +20,19 @@ export type {
   GLTFSkin,
   GLTFTexture,
   GLTFImage,
+  GLTFFile,
+  GLTFExternalAsset,
   GLTFObject,
   // The following extensions are handled by the GLTFLoader and removed from the parsed glTF (disable via options.gltf.excludeExtensions)
   GLTF_KHR_binary_glTF,
   GLTF_KHR_draco_mesh_compression,
   GLTF_KHR_texture_basisu,
+  GLTF_KHR_meshopt_compression,
   GLTF_EXT_meshopt_compression,
   GLTF_EXT_texture_webp
 } from './lib/types/gltf-json-schema';
+
+export type {GLTFShape, GLTFBoundingVolume} from './lib/types/gltf-shape-schema';
 
 // 3DTiles extensions
 export type {
@@ -77,11 +86,63 @@ export type {
   GLTFTexturePostprocessed
 } from './lib/types/gltf-postprocessed-schema';
 
-export type {GLTFWithBuffers, FeatureTableJson} from './lib/types/gltf-types';
+export type {
+  GLTFWithBuffers,
+  GLTFExternalFile,
+  FeatureTableJson
+} from './lib/types/gltf-types';
+export {
+  GLTFSchema,
+  GLTFIdSchema,
+  GLTFObjectSchema,
+  GLTFAccessorSchema,
+  GLTFAccessorSparseSchema,
+  GLTFAccessorSparseIndicesSchema,
+  GLTFAccessorSparseValuesSchema,
+  GLTFAnimationSchema,
+  GLTFAnimationChannelSchema,
+  GLTFAnimationChannelTargetSchema,
+  GLTFAnimationSamplerSchema,
+  GLTFAssetSchema,
+  GLTFBufferSchema,
+  GLTFBufferViewSchema,
+  GLTFCameraSchema,
+  GLTFCameraOrthographicSchema,
+  GLTFCameraPerspectiveSchema,
+  GLTFImageSchema,
+  GLTFExternalAssetSchema,
+  GLTFMaterialSchema,
+  GLTFMaterialNormalTextureInfoSchema,
+  GLTFMaterialOcclusionTextureInfoSchema,
+  GLTFMaterialPbrMetallicRoughnessSchema,
+  GLTFMeshSchema,
+  GLTFMeshPrimitiveSchema,
+  GLTFNodeSchema,
+  GLTFSamplerSchema,
+  GLTFSceneSchema,
+  GLTFSkinSchema,
+  GLTFTextureSchema,
+  GLTFTextureInfoSchema,
+  GLTFTextureInfoMetadataSchema,
+  GLTFKHRBinarySchema,
+  GLTFKHRDracoMeshCompressionSchema,
+  GLTFKHRTextureBasisuSchema,
+  GLTFKHRMeshoptCompressionSchema,
+  GLTFEXTMeshoptCompressionSchema,
+  GLTFEXTTextureWebpSchema,
+  GLTFMSFTTextureDdsSchema,
+  GLTFShapeSchema,
+  GLTFBoundingVolumeSchema
+} from './lib/types/gltf-zod-schema';
+export {GLTFFormat, GLBFormat} from './gltf-format';
 
 // glTF loader/writer definition objects
 export {GLTFLoader} from './gltf-loader';
 export {GLTFWriter} from './gltf-writer';
+export {
+  compressGLTFWithDraco,
+  type GLTFDracoWriterOptions
+} from './lib/encoders/encode-gltf-draco';
 
 // GLB Loader & Writer (for custom formats that want to leverage the GLB binary "envelope")
 export {GLBLoader} from './glb-loader';
@@ -89,8 +150,41 @@ export {GLBWriter} from './glb-writer';
 
 // glTF Data Access Helper Class
 export {GLTFScenegraph} from './lib/api/gltf-scenegraph';
+export {
+  GLTFIterator,
+  type GLTFIteratorType,
+  type GLTFIteratorMetadata,
+  type GLTFIteratorReferences,
+  type GLTFAccessorReferences,
+  type GLTFAnimationReferences,
+  type GLTFAnimationChannelReferences,
+  type GLTFAnimationChannelTargetReferences,
+  type GLTFAnimationSamplerReferences,
+  type GLTFBufferViewReferences,
+  type GLTFBufferViewOwnerReferences,
+  type GLTFExternalAssetReferences,
+  type GLTFMaterialReferences,
+  type GLTFTextureInfoReferences,
+  type GLTFMeshReferences,
+  type GLTFMeshPrimitiveReferences,
+  type GLTFNodeReferences,
+  type GLTFSceneReferences,
+  type GLTFSkinReferences,
+  type GLTFTextureReferences
+} from './lib/api/gltf-iterator';
+export {getGLTFCullingShape, getGLTFNodeCullingShape} from './lib/api/gltf-culling';
 export {postProcessGLTF} from './lib/api/post-process-gltf';
+export {
+  convertGLTFV1ToGLTF2,
+  normalizeGLTFV1,
+  type GLTFV1NormalizationOptions,
+  type GLTFV1NormalizationReport
+} from './lib/api/normalize-gltf-v1';
 export {getMemoryUsageGLTF as _getMemoryUsageGLTF} from './lib/gltf-utils/gltf-utils';
+export {
+  findGLTFFileIndex,
+  resolveGLTFFile
+} from './lib/gltf-utils/resolve-gltf-file';
 
 export {
   createExtStructuralMetadata,

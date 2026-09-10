@@ -2,47 +2,49 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
-import {BinaryGeometry, Geometry} from '@loaders.gl/schema';
-import {VERSION} from './lib/utils/version';
-import {parseWKB} from './lib/parse-wkb';
-import {isWKB} from './lib/parse-wkb-header';
+import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {Geometry} from '@loaders.gl/schema';
+import {VERSION} from './lib/version';
+import {WKBFormat} from './wkt-format';
 
 export type WKBLoaderOptions = LoaderOptions & {
   wkb?: {
-    /** 'geometry' is deprecated use 'geojson-geometry' */
-    shape: 'geojson-geometry' | 'binary-geometry' | 'geometry';
+    /** Shape is deprecated, only geojson is supported */
+    shape?: 'geojson-geometry';
+    /** Override the URL to the shared WKT/WKB worker bundle. */
+    workerUrl?: string;
   };
 };
 
 /**
- * Worker loader for WKB (Well-Known Binary)
+ * Preloads the parser-bearing WKB loader implementation.
  */
-export const WKBWorkerLoader = {
-  dataType: null as unknown as Geometry | BinaryGeometry,
-  batchType: null as never,
-  name: 'WKB',
-  id: 'wkb',
-  module: 'wkt',
-  version: VERSION,
-  worker: true,
-  category: 'geometry',
-  extensions: ['wkb'],
-  mimeTypes: [],
-  // TODO can we define static, serializable tests, eg. some binary strings?
-  tests: [isWKB],
-  options: {
-    wkb: {
-      shape: 'binary-geometry' // 'geojson-geometry'
-    }
-  }
-} as const satisfies Loader<Geometry | BinaryGeometry, never, WKBLoaderOptions>;
+async function preload() {
+  const {WKBLoaderWithParser} = await import('./wkb-loader-with-parser');
+  return WKBLoaderWithParser;
+}
 
 /**
- * Loader for WKB (Well-Known Binary)
+ * Metadata-only worker loader for WKB (Well-Known Binary)
+ */
+export const WKBWorkerLoader = {
+  dataType: null as unknown as Geometry,
+  batchType: null as never,
+  ...WKBFormat,
+  version: VERSION,
+  worker: true,
+  workerFile: 'wkt-worker.js',
+  options: {
+    wkb: {
+      shape: 'geojson-geometry'
+    }
+  },
+  preload
+} as const satisfies Loader<Geometry, never, WKBLoaderOptions>;
+
+/**
+ * Metadata-only loader for WKB (Well-Known Binary)
  */
 export const WKBLoader = {
-  ...WKBWorkerLoader,
-  parse: async (arrayBuffer: ArrayBuffer) => parseWKB(arrayBuffer),
-  parseSync: parseWKB
-} as const satisfies LoaderWithParser<BinaryGeometry | Geometry, never, WKBLoaderOptions>;
+  ...WKBWorkerLoader
+} as const satisfies Loader<Geometry, never, WKBLoaderOptions>;

@@ -3,9 +3,10 @@
 // Copyright (c) vis.gl contributors
 
 import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
-import {VERSION} from './lib/utils/version';
-import {encodeWKB} from './lib/encode-wkb';
 import type {Geometry, Feature} from '@loaders.gl/schema';
+import {convertGeometryToWKB} from '@loaders.gl/gis';
+import {VERSION} from './lib/version';
+import {WKBFormat} from './wkt-format';
 
 export type WKBWriterOptions = WriterOptions & {
   wkb?: {
@@ -24,21 +25,23 @@ export type WKBWriterOptions = WriterOptions & {
  * WKB exporter
  */
 export const WKBWriter = {
+  ...WKBFormat,
   name: 'WKB (Well Known Binary)',
   id: 'wkb',
   module: 'wkt',
   version: VERSION,
   extensions: ['wkb'],
+  mimeTypes: ['application/wkb', 'application/octet-stream'],
   options: {
     wkb: {
       hasZ: false,
       hasM: false
     }
   },
-  async encode(data: Geometry | Feature, options?: WriterOptions): Promise<ArrayBuffer> {
-    return encodeWKB(data, options?.wkb);
+  async encode(data: Geometry | Feature, options?: WKBWriterOptions): Promise<ArrayBuffer> {
+    return convertGeometryToWKB(data); // , options?.wkb);
   },
-  encodeSync(data: Geometry | Feature, options?: WriterOptions): ArrayBuffer {
-    return encodeWKB(data, options?.wkb);
+  encodeSync(data: Geometry | Feature, options?: WKBWriterOptions): ArrayBuffer {
+    return convertGeometryToWKB(data); // , options?.wkb);
   }
-} as const satisfies WriterWithEncoder<Geometry | Feature, never, WriterOptions>;
+} as const satisfies WriterWithEncoder<Geometry | Feature, never, WKBWriterOptions>;

@@ -2,105 +2,152 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {
-  FetchLike,
-  TransformBatches /* , DataType, SyncDataType, BatchableDataType */
-} from './types';
+import type {Format} from './format-types';
+import type {LoadWorker} from '@loaders.gl/worker-utils';
+import {DataType, FetchLike, TransformBatches} from './types';
 import {ReadableFile} from './lib/files/file';
+import type {CoreAPI} from './lib/sources/data-source';
+import type {RequestCredential} from './lib/request-utils/request-credentials';
+import type {ExperimentalScanOptions} from './lib/scan-utils/experimental-scan-options';
 
 // LOADERS
 
 /**
  * Core Loader Options
  */
-export type LoaderOptions = {
-  /** fetch options or a custom fetch function */
-  fetch?: typeof fetch | FetchLike | RequestInit | null;
-  /** Do not throw on errors */
-  nothrow?: boolean;
+export type StrictLoaderOptions = {
+  /** Experimental common scan request. Format loaders implement the fields they support. */
+  _scan?: ExperimentalScanOptions;
+  core?: {
+    /** Base URL for resolving relative paths */
+    baseUrl?: string;
+    /** fetch options or a custom fetch function */
+    fetch?: typeof fetch | FetchLike | RequestInit | null;
+    /** Exact-origin credentials applied to top-level and nested requests. */
+    credentials?: readonly RequestCredential[];
+    /** Do not throw on errors */
+    nothrow?: boolean;
+    /** Shared default shape for loaders that support shape selection. Loader-scoped `shape` options override this default. */
+    shape?: string;
 
-  /** loader selection, search first for supplied mimeType */
-  mimeType?: string;
-  /** loader selection, provide fallback mimeType is server does not provide */
-  fallbackMimeType?: string;
-  /** loader selection, avoid searching registered loaders */
-  ignoreRegisteredLoaders?: boolean;
+    /** loader selection, search first for supplied mimeType */
+    mimeType?: string;
+    /** loader selection, provide fallback mimeType is server does not provide */
+    fallbackMimeType?: string;
+    /** loader selection, avoid searching registered loaders */
+    ignoreRegisteredLoaders?: boolean;
 
-  // general
-  /** Experimental: Supply a logger to the parser */
-  log?: any;
+    // general
+    /** Experimental: Supply a logger to the parser */
+    log?: any;
 
-  // batched parsing
+    // batched parsing
 
-  /** Size of each batch. `auto` matches batches to size of incoming chunks */
-  batchSize?: number | 'auto';
-  /** Minimal amount of time between batches */
-  batchDebounceMs?: number;
-  /** Stop loading after a given number of rows (compare SQL limit clause) */
-  limit?: 0;
-  /** Experimental: Stop loading after reaching */
-  _limitMB?: 0;
-  /** Generate metadata batches */
-  metadata?: boolean;
-  /** Transforms to run on incoming batches */
-  transforms?: TransformBatches[];
+    /** Size of each batch. `auto` matches batches to size of incoming chunks */
+    batchSize?: number | 'auto';
+    /** Minimal amount of time between batches */
+    batchDebounceMs?: number;
+    /** Stop loading after a given number of rows (compare SQL limit clause) */
+    limit?: 0;
+    /** Experimental: Stop loading after reaching */
+    _limitMB?: 0;
+    /** Generate metadata batches */
+    metadata?: boolean;
+    /** Transforms to run on incoming batches */
+    transforms?: TransformBatches[];
 
-  // module loading
+    // module loading
+
+    /** Force to load WASM libraries from local file system in NodeJS or from loaders.gl CDN in a web browser */
+    useLocalLibraries?: boolean;
+
+    // workers
+
+    /** CDN load workers from */
+    CDN?: string | null;
+    /** Set to `false` to disable workers, or `'auto'` to use loader work estimates. */
+    worker?: boolean | 'auto';
+    /** Work-score threshold used by `worker: 'auto'`. */
+    workerThreshold?: number;
+    /** Number of concurrent workers (per loader) on desktop browser */
+    maxConcurrency?: number;
+    /** Number of concurrent workers (per loader) on mobile browsers */
+    maxMobileConcurrency?: number;
+    /** Set to `false` to prevent reuse workers */
+    reuseWorkers?: boolean;
+    /** Controls whether worker result transfer prepares standalone ArrayBuffers. */
+    workerTransferBufferCopy?: 'none' | 'sliced' | 'all';
+    /** Whether to use workers under Node.js (experimental) */
+    _nodeWorkers?: boolean;
+    /** set to 'test' to run local worker */
+    _workerType?: string;
+  };
 
   /** Any additional JS libraries */
-  modules?: Record<string, any>;
-  /** Force to load WASM libraries from local file system in NodeJS or from loaders.gl CDN in a web browser */
+  modules?: Record<string, unknown>;
+
+  // Accept other keys (loader options objects, e.g. `options.csv`, `options.json` ...)
+  [loaderId: string]: Record<string, unknown> | undefined;
+};
+
+/**
+ * Core Loader Options
+ */
+export type LoaderOptions = {
+  /** Experimental common scan request. Format loaders implement the fields they support. */
+  _scan?: ExperimentalScanOptions;
+  core?: StrictLoaderOptions['core'];
+  modules?: StrictLoaderOptions['modules'];
+
+  // Deprecated top-level aliases for core options
+  /** @deprecated Use options.core.baseUrl */
+  baseUri?: string;
+  /** @deprecated Use options.core.fetch */
+  fetch?: typeof fetch | FetchLike | RequestInit | null;
+  /** @deprecated Use options.core.mimeType */
+  mimeType?: string;
+  /** @deprecated Use options.core.fallbackMimeType */
+  fallbackMimeType?: string;
+  /** @deprecated Use options.core.ignoreRegisteredLoaders */
+  ignoreRegisteredLoaders?: boolean;
+  /** @deprecated Use options.core.nothrow */
+  nothrow?: boolean;
+  /** @deprecated Use options.core.log */
+  log?: any;
+  /** @deprecated Use options.core.useLocalLibraries */
   useLocalLibraries?: boolean;
-
-  // workers
-
-  /** CDN load workers from */
+  /** @deprecated Use options.core.CDN */
   CDN?: string | null;
-  /** Set to `false` to disable workers */
-  worker?: boolean;
-  /** Number of concurrent workers (per loader) on desktop browser */
+  /** @deprecated Use options.core.worker */
+  worker?: boolean | 'auto';
+  /** @deprecated Use options.core.maxConcurrency */
   maxConcurrency?: number;
-  /** Number of concurrent workers (per loader) on mobile browsers */
+  /** @deprecated Use options.core.maxMobileConcurrency */
   maxMobileConcurrency?: number;
-  /** Set to `false` to prevent reuse workers */
+  /** @deprecated Use options.core.reuseWorkers */
   reuseWorkers?: boolean;
-  /** Whether to use workers under Node.js (experimental) */
+  /** @deprecated Use options.core.workerTransferBufferCopy */
+  workerTransferBufferCopy?: 'none' | 'sliced' | 'all';
+  /** @deprecated Use options.core._nodeWorkers */
   _nodeWorkers?: boolean;
-  /** set to 'test' to run local worker */
+  /** @deprecated Use options.core._workerType */
   _workerType?: string;
-
-  /** @deprecated `options.batchType` removed, Use `options.<loader>.type` instead */
-  batchType?: 'row' | 'columnar' | 'arrow';
-  /** @deprecated `options.throw removed`, Use `options.nothrow` instead */
-  throws?: boolean;
-  /** @deprecated `options.dataType` no longer used */
-  dataType?: never;
-  /** @deprecated `options.uri` no longer used */
-  uri?: never;
-  /** @deprecated Use `options.fetch.method` */
-  method?: never;
-  /** @deprecated Use `options.fetch.headers` */
-  headers?: never;
-  /** @deprecated Use `options.fetch.body` */
-  body?: never;
-  /** @deprecated Use `options.fetch.mode` */
-  mode?: never;
-  /** @deprecated Use `options.fetch.credentials` */
-  credentials?: never;
-  /** @deprecated Use `options.fetch.cache` */
-  cache?: never;
-  /** @deprecated Use `options.fetch.redirect` */
-  redirect?: never;
-  /** @deprecated Use `options.fetch.referrer` */
-  referrer?: never;
-  /** @deprecated Use `options.fetch.referrerPolicy` */
-  referrerPolicy?: never;
-  /** @deprecated Use `options.fetch.integrity` */
-  integrity?: never;
-  /** @deprecated Use `options.fetch.keepalive` */
-  keepalive?: never;
-  /** @deprecated Use `options.fetch.signal` */
-  signal?: never;
+  /** @deprecated Use options.core._workerType */
+  _worker?: string;
+  /** @deprecated Use options.core.limit */
+  limit?: 0;
+  /** @deprecated Use options.core._limitMB */
+  _limitMB?: 0;
+  /** @deprecated Use options.core.shape */
+  shape?: string;
+  /** @deprecated Use options.core.batchSize */
+  batchSize?: number | 'auto';
+  /** @deprecated Use options.core.batchDebounceMs */
+  batchDebounceMs?: number;
+  /** @deprecated Use options.core.metadata */
+  metadata?: boolean;
+  /** @deprecated Use options.core.transforms */
+  transforms?: TransformBatches[];
 
   // Accept other keys (loader options objects, e.g. `options.csv`, `options.json` ...)
   [loaderId: string]: unknown;
@@ -113,7 +160,7 @@ type PreloadOptions = {
 /**
  * A worker loader definition that can be used with `@loaders.gl/core` functions
  */
-export type Loader<DataT = any, BatchT = any, LoaderOptionsT = LoaderOptions> = {
+export type Loader<DataT = any, BatchT = any, LoaderOptionsT = StrictLoaderOptions> = Format & {
   /** The result type of this loader  */
   dataType?: DataT;
   /** The batched result type of this loader  */
@@ -123,6 +170,38 @@ export type Loader<DataT = any, BatchT = any, LoaderOptionsT = LoaderOptions> = 
   options: LoaderOptionsT;
   /** Deprecated Options */
   deprecatedOptions?: Record<string, string | Record<string, string>>;
+  /** Version should be injected by build tools */
+  version: string;
+  /** A boolean, or a URL */
+  worker?: string | boolean;
+  /** Browser worker filename when it differs from the loader id. */
+  workerFile?: string;
+  /** Creates a built-in browser worker, typically using `type: 'module'`. */
+  loadWorker?: LoadWorker;
+  /**
+   * Optionally warm the loader before parse/load is invoked.
+   * Can be used to avoid a later delay and may return a parser-bearing loader that also supports `parseSync`.
+   */
+  preload?: Preload;
+  /** Serializes parser output before returning it from a worker. */
+  serializeWorkerResult?: (
+    result: DataT,
+    options?: LoaderOptionsT,
+    context?: LoaderContext
+  ) => unknown;
+  /** Deserializes parser output returned from a worker. */
+  deserializeWorkerResult?: (
+    result: unknown,
+    options?: LoaderOptionsT,
+    context?: LoaderContext
+  ) => DataT;
+  /** Estimates parser work without consuming the input. Scores range from 0 (trivial) to 1 (expensive). */
+  getWorkerEstimate?: (
+    data: DataType,
+    options?: LoaderOptionsT,
+    context?: LoaderContext
+  ) => number | undefined;
+  // end Worker
 
   /** Human readable name */
   name: string;
@@ -130,19 +209,12 @@ export type Loader<DataT = any, BatchT = any, LoaderOptionsT = LoaderOptions> = 
   id: string;
   /** module is used to generate worker threads, need to be the module directory name */
   module: string;
-  /** Version should be injected by build tools */
-  version: string;
-  /** A boolean, or a URL */
-  worker?: string | boolean;
-  // end Worker
-
   /** Which category does this loader belong to */
   category?: string;
   /** File extensions that are potential matches with this loader. */
   extensions: string[];
   /** MIMETypes that indicate a match with this loader. @note Some MIMETypes are generic and supported by many loaders */
   mimeTypes: string[];
-
   /** Is the input of this loader binary */
   binary?: boolean;
   /** Is the input of this loader text */
@@ -161,19 +233,19 @@ export type Loader<DataT = any, BatchT = any, LoaderOptionsT = LoaderOptions> = 
  * A "bundled" loader definition that can be used with `@loaders.gl/core` functions
  * If a worker loader is supported it will also be supported.
  */
-export type LoaderWithParser<DataT = any, BatchT = any, LoaderOptionsT = LoaderOptions> = Loader<
-  DataT,
-  BatchT,
-  LoaderOptionsT
-> & {
-  /** Perform actions before load. @deprecated Not officially supported. */
-  preload?: Preload;
+export type LoaderWithParser<
+  DataT = any,
+  BatchT = any,
+  LoaderOptionsT = StrictLoaderOptions
+> = Loader<DataT, BatchT, LoaderOptionsT> & {
   /** Parse asynchronously and atomically from an arraybuffer */
   parse: (
     arrayBuffer: ArrayBuffer,
     options?: LoaderOptionsT,
     context?: LoaderContext
   ) => Promise<DataT>;
+  /** Parse asynchronously and atomically from a browser Blob without first copying to an ArrayBuffer. */
+  parseBlob?: (blob: Blob, options?: LoaderOptionsT, context?: LoaderContext) => Promise<DataT>;
   /** Parse asynchronously and atomically from a random access "file like" input */
   parseFile?: (
     file: ReadableFile,
@@ -188,10 +260,24 @@ export type LoaderWithParser<DataT = any, BatchT = any, LoaderOptionsT = LoaderO
   ) => DataT;
   /** Parse batches of data from an iterator (e.g. fetch stream), return an iterator that yield parsed batches. */
   parseInBatches?: (
-    iterator: AsyncIterable<ArrayBuffer> | Iterable<ArrayBuffer>,
+    iterator:
+      | AsyncIterable<ArrayBufferLike | ArrayBufferView>
+      | Iterable<ArrayBufferLike | ArrayBufferView>,
     options?: LoaderOptionsT,
     context?: LoaderContext
   ) => AsyncIterable<BatchT>;
+  /** Serializes one parser batch before returning it from a worker. */
+  serializeWorkerBatch?: (
+    batch: BatchT,
+    options?: LoaderOptionsT,
+    context?: LoaderContext
+  ) => unknown;
+  /** Deserializes one parser batch returned from a worker. */
+  deserializeWorkerBatch?: (
+    batch: unknown,
+    options?: LoaderOptionsT,
+    context?: LoaderContext
+  ) => BatchT;
   /** For random access, file like sources, source that don't integrate with fetch. */
   parseFileInBatches?: (
     file: ReadableFile,
@@ -231,6 +317,8 @@ export type LoaderContext = {
 
   /** Provides access to any application overrides of fetch() */
   fetch: typeof fetch | FetchLike;
+  /** Provides access to the core parsing and loading API without importing `@loaders.gl/core`. */
+  coreApi: CoreAPI;
 
   /** TBD */
   response?: Response;
@@ -291,20 +379,43 @@ export type LoaderContext = {
 //   context?: LoaderContext
 // ) => AsyncIterable<any>;
 
+/**
+ * Optionally resolves a loader to a parser-bearing implementation before parsing begins.
+ * Can be used to avoid a later delay and may return a loader that supports `parseSync`.
+ */
 type Preload = (url: string, options?: PreloadOptions) => any;
 
 /** Typescript helper to extract options type from a loader type */
 export type LoaderOptionsType<T = Loader> =
-  T extends Loader<any, any, infer Options> ? Options : never;
+  T extends Loader<unknown, unknown, infer Options> ? Options : never;
+export type LoaderShapeType<T extends Loader = Loader> = LoaderOptionsType<T>[T['id']] extends {
+  shape?: infer Shape;
+}
+  ? Extract<Shape, string>
+  : LoaderOptionsType<T>[T['id']] extends {shape: infer Shape}
+    ? Extract<Shape, string>
+    : never;
+type LoaderShapeOrString<Shape extends string> = [Shape] extends [never] ? string : Shape;
+export type LoaderOptionsWithShape<
+  Options extends LoaderOptions,
+  Shape extends string
+> = Options extends LoaderOptions
+  ? Omit<Options, 'core'> & {
+      core?: Omit<NonNullable<Options['core']>, 'shape'> & {shape?: LoaderShapeOrString<Shape>};
+    }
+  : never;
 /** Typescript helper to extract data type from a loader type */
 export type LoaderReturnType<T = Loader> =
-  T extends Loader<infer Return, any, any> ? Return : never;
+  T extends Loader<infer Return, unknown, unknown> ? Return : never;
 /** Typescript helper to extract batch type from a loader type */
-export type LoaderBatchType<T = Loader> = T extends Loader<any, infer Batch, any> ? Batch : never;
+export type LoaderBatchType<T = Loader> =
+  T extends Loader<unknown, infer Batch, unknown> ? Batch : never;
 
 /** Typescript helper to extract options type from an array of loader types */
-export type LoaderArrayOptionsType<LoadersT extends Loader[] = Loader[]> =
-  LoadersT[number]['options'];
+export type LoaderArrayOptionsType<LoadersT extends Loader[] = Loader[]> = LoaderOptionsWithShape<
+  LoadersT[number]['options'],
+  LoaderShapeType<LoadersT[number]>
+>;
 /** Typescript helper to extract data type from a loader type */
 export type LoaderArrayReturnType<LoadersT extends Loader[] = Loader[]> =
   LoadersT[number]['dataType'];
@@ -317,7 +428,10 @@ export type LoaderArrayBatchType<LoadersT extends Loader[] = Loader[]> =
  */
 export async function parseFromContext<
   LoaderT extends Loader,
-  OptionsT extends LoaderOptions = LoaderOptionsType<LoaderT>
+  OptionsT extends StrictLoaderOptions = LoaderOptionsWithShape<
+    LoaderOptionsType<LoaderT>,
+    LoaderShapeType<LoaderT>
+  >
 >(
   data: ArrayBuffer,
   loader: LoaderT,
@@ -357,7 +471,7 @@ export async function parseFromContext(
  */
 export function parseSyncFromContext<
   LoaderT extends Loader,
-  OptionsT extends LoaderOptions = LoaderOptionsType<LoaderT>
+  OptionsT extends StrictLoaderOptions = LoaderOptionsType<LoaderT>
 >(
   data: ArrayBuffer,
   loader: LoaderT,
@@ -375,7 +489,7 @@ export function parseSyncFromContext<
  */
 export async function parseInBatchesFromContext<
   LoaderT extends Loader,
-  OptionsT extends LoaderOptions = LoaderOptionsType<LoaderT>
+  OptionsT extends StrictLoaderOptions = LoaderOptionsType<LoaderT>
 >(
   data: Iterable<ArrayBuffer> | AsyncIterable<ArrayBuffer> | Response,
   loader: LoaderT,

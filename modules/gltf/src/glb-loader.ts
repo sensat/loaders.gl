@@ -1,47 +1,40 @@
-import type {LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
+import type {Loader, StrictLoaderOptions} from '@loaders.gl/loader-utils';
 import type {GLB} from './lib/types/glb-types';
 import type {ParseGLBOptions} from './lib/parsers/parse-glb';
 import {VERSION} from './lib/utils/version';
-import {parseGLBSync} from './lib/parsers/parse-glb';
+import {GLBFormat} from './gltf-format';
 
 /** GLB loader options */
-export type GLBLoaderOptions = LoaderOptions & {
-  /** GLB Parser Options */
-  glb?: ParseGLBOptions;
-  /** GLB specific: byteOffset to start parsing from */
-  byteOffset?: number;
+export type GLBLoaderOptions = StrictLoaderOptions & {
+  glb?: {
+    /** GLB Parser Options */
+    glb?: ParseGLBOptions;
+    /** GLB specific: byteOffset to start parsing from */
+    byteOffset?: number;
+    strict?: boolean;
+  };
 };
 
-/**
- * GLB Loader -
- * GLB is the binary container format for GLTF
- */
+/** Preloads the parser-bearing GLB loader implementation. */
+async function preload() {
+  const {GLBLoaderWithParser} = await import('./glb-loader-with-parser');
+  return GLBLoaderWithParser;
+}
+
+/** Metadata-only GLB loader for the binary glTF container format. */
 export const GLBLoader = {
   dataType: null as unknown as GLB,
   batchType: null as never,
-  name: 'GLB',
-  id: 'glb',
-  module: 'gltf',
+  ...GLBFormat,
   version: VERSION,
-  extensions: ['glb'],
-  mimeTypes: ['model/gltf-binary'],
-  binary: true,
-  parse,
-  parseSync,
+  preload,
   options: {
     glb: {
       strict: false // Enables deprecated XVIZ support (illegal CHUNK formats)
     }
   }
-} as const satisfies LoaderWithParser<GLB, never, GLBLoaderOptions>;
-
-async function parse(arrayBuffer: ArrayBuffer, options?: GLBLoaderOptions): Promise<GLB> {
-  return parseSync(arrayBuffer, options);
-}
-
-function parseSync(arrayBuffer: ArrayBuffer, options?: GLBLoaderOptions): GLB {
-  const {byteOffset = 0} = options || {};
-  const glb: GLB = {} as GLB;
-  parseGLBSync(glb, arrayBuffer, byteOffset, options?.glb);
-  return glb;
-}
+} as const satisfies Loader<GLB, never, GLBLoaderOptions>;

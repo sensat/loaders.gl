@@ -2,16 +2,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import test from 'tape-promise/tape';
+import {expect, test} from 'vitest';
 
 import {encodeTextSync} from '@loaders.gl/core';
-import {WKTWriter} from '@loaders.gl/wkt';
+import {WKTLoader as MetadataWKTLoader, WKTWriter} from '@loaders.gl/wkt';
 
-test('WKTWriter', (t) => {
-  t.throws(
-    () => encodeTextSync({type: 'FeatureCollection'}, WKTWriter),
-    'does not accept featurecollections'
-  );
+test('WKTWriter', () => {
+  expect(() => encodeTextSync({type: 'FeatureCollection'}, WKTWriter)).toThrow();
 
   // const fixtures = [
   //   'LINESTRING (30 10, 10 30, 40 40)',
@@ -28,22 +25,58 @@ test('WKTWriter', (t) => {
   // ];
 
   // fixtures.forEach((fix) => t.equal(fix, encodeSync(parse(fix, WKTLoader), WKTWriter), fix));
+  const geojsonFeature = {
+    type: 'Feature',
+    properties: {},
+    geometry: {
+      type: 'Point',
+      coordinates: [42, 20]
+    }
+  };
 
-  t.equal(
+  expect(encodeTextSync(geojsonFeature.geometry, WKTWriter)).toBe('POINT (42 20)');
+  expect(
     encodeTextSync(
       {
-        type: 'Feature',
-        properties: {},
-        geometry: {
-          type: 'Point',
-          coordinates: [42, 20]
-        }
+        type: 'LineString',
+        coordinates: [
+          [0, 1],
+          [2, 3]
+        ]
       },
       WKTWriter
-    ),
-    'POINT (42 20)',
-    'point equal'
-  );
+    )
+  ).toBe('LINESTRING (0 1, 2 3)');
+  expect(
+    encodeTextSync(
+      {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [0, 0],
+            [1, 0],
+            [0, 1],
+            [0, 0]
+          ]
+        ]
+      },
+      WKTWriter
+    )
+  ).toBe('POLYGON ((0 0, 1 0, 0 1, 0 0))');
+  expect(
+    encodeTextSync({type: 'GeometryCollection', geometries: [geojsonFeature.geometry]}, WKTWriter)
+  ).toBe('GEOMETRYCOLLECTION (POINT (42 20))');
+});
 
-  t.end();
+test('WKT loader preloads the parser and writer supports binary output', async () => {
+  const parser = await MetadataWKTLoader.preload();
+  expect(parser.parseTextSync('POINT (4 5)')).toEqual({
+    type: 'Point',
+    coordinates: [4, 5]
+  });
+  const encoded = await WKTWriter.encode({type: 'Point', coordinates: [4, 5]});
+  expect(new TextDecoder().decode(encoded)).toBe('POINT (4 5)');
+  expect(new TextDecoder().decode(WKTWriter.encodeSync({type: 'Point', coordinates: [4, 5]}))).toBe(
+    'POINT (4 5)'
+  );
 });

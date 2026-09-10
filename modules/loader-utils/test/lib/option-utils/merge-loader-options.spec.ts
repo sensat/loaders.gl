@@ -1,12 +1,13 @@
-import test from 'tape-promise/tape';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
 
-import {mergeLoaderOptions} from '@loaders.gl/loader-utils';
+import {expect, test} from 'vitest';
+import {mergeOptions} from '@loaders.gl/loader-utils';
 import type {XMLLoaderOptions} from '@loaders.gl/xml';
-
 // NOTE: addAliases is not a public export, already used by test setup
 // import {_addAliases} from '@loaders.gl/loader-utils';
-
-test('mergeLoaderOptions', (t) => {
+test('mergeOptions', () => {
   const originalOptions: XMLLoaderOptions = {
     xml: {
       _fastXML: {
@@ -16,9 +17,8 @@ test('mergeLoaderOptions', (t) => {
       }
     }
   };
-
   // Set HTML parsing options
-  const mergedOptions = mergeLoaderOptions(originalOptions, {
+  const mergedOptions = mergeOptions(originalOptions, {
     xml: {
       _parser: 'fast-xml-parser',
       _fastXML: {
@@ -26,7 +26,6 @@ test('mergeLoaderOptions', (t) => {
       }
     }
   });
-
   const expectedOptions = {
     xml: {
       _parser: 'fast-xml-parser',
@@ -38,8 +37,5 @@ test('mergeLoaderOptions', (t) => {
       }
     }
   };
-
-  t.deepEqual(mergedOptions, expectedOptions, 'mergeLoaderOptions() returns correct value');
-
-  t.end();
+  expect(mergedOptions, 'mergeOptions() returns correct value').toEqual(expectedOptions);
 });

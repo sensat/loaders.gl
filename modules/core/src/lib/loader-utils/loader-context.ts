@@ -2,13 +2,15 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderOptions, LoaderContext} from '@loaders.gl/loader-utils';
+import type {Loader, LoaderContext, StrictLoaderOptions} from '@loaders.gl/loader-utils';
 import {getFetchFunction} from './get-fetch-function';
 import {extractQueryString, stripQueryString} from '../utils/url-utils';
 import {path} from '@loaders.gl/loader-utils';
+import {coreApi} from '../api/core-api';
 
 /** Properties for creating an updated context */
-type LoaderContextProps = Omit<LoaderContext, 'fetch'> & Partial<Pick<LoaderContext, 'fetch'>>;
+type LoaderContextProps = Omit<LoaderContext, 'fetch' | 'coreApi'> &
+  Partial<Pick<LoaderContext, 'fetch' | 'coreApi'>>;
 
 /**
  * "sub" loaders invoked by other loaders get a "context" injected on `this`
@@ -21,7 +23,7 @@ type LoaderContextProps = Omit<LoaderContext, 'fetch'> & Partial<Pick<LoaderCont
  */
 export function getLoaderContext(
   context: LoaderContextProps,
-  options: LoaderOptions,
+  options: StrictLoaderOptions,
   parentContext: LoaderContext | null
 ): LoaderContext {
   // For recursive calls, we already have a context
@@ -31,8 +33,9 @@ export function getLoaderContext(
   }
 
   const newContext: LoaderContext = {
+    ...context,
     fetch: getFetchFunction(options, context),
-    ...context
+    coreApi: context.coreApi || coreApi
   };
 
   // Parse URLs so that subloaders can easily generate correct strings

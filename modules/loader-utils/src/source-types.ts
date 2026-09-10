@@ -2,48 +2,67 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {DataSource, DataSourceProps} from './lib/sources/data-source';
+import type {Loader, LoaderOptions} from './loader-types';
+import type {CoreAPI, DataSource, DataSourceOptions} from './lib/sources/data-source';
 
 /**
- * A `Source` contains metadata and a factory method for creating instances of a specific `DataSource`.
- * It allows a list of `Source` objects to be passed to methods
+ * A `SourceLoader` is a top-level loader that constructs a runtime `DataSource`.
+ * It allows source-style loaders to participate in core loader selection and `load()`.
  * @example
- *  `createDataSource(... , [MVTSource, PMTilesSource, ...])
+ *  `createDataSource(... , [MVTSourceLoader, PMTilesSourceLoader, ...])
  */
-export interface Source<
-  DataSourceT extends DataSource = DataSource,
-  DataSourcePropsT extends DataSourceProps = any
-> {
-  /** Type of source created by this service */
-  source?: DataSourceT;
-  /** Type of props used when creating sources */
-  props?: DataSourcePropsT;
+export type SourceLoader<
+  DataSourceT extends DataSource<unknown, DataSourceOptions> = DataSource<
+    unknown,
+    DataSourceOptions
+  >,
+  LoaderOptionsT extends LoaderOptions & DataSourceOptions = LoaderOptions & DataSourceOptions
+> = Loader<DataSourceT, never, LoaderOptionsT> & {
+  /** Type of source created by this source loader */
+  dataSource?: DataSourceT;
+  /** Type of options used when creating sources */
+  options?: DataSourceT['optionsType'];
 
-  /** Name of the service */
-  name: string;
-  id: string;
-  /** Module containing the service */
-  module: string;
-  /** Version of the loaders.gl package containing this service. */
-  version: string;
-  /** URL extensions that this service uses */
-  extensions: string[];
-  /** MIME extensions that this service uses */
-  mimeTypes: string[];
-  /** Default options */
-  options: DataSourcePropsT;
-
-  /** Type string identifying this service, e.g. 'wms' */
+  /** Type string identifying this source loader, e.g. 'wms' */
   type: string;
   /** Can source be created from a URL */
   fromUrl: boolean;
   /** Can source be created from a Blob or File */
   fromBlob: boolean;
 
-  /** Check if a URL can support this service */
+  /** Default options for creating the runtime data source */
+  defaultOptions: Omit<
+    Required<{[K in keyof DataSourceT['options']]: Required<DataSourceT['options'][K]>}>,
+    'core'
+  >;
+
+  /** Check if a URL can support this source loader */
   testURL: (url: string) => boolean;
   /** Test data */
   testData?: (data: Blob) => boolean;
-  /** Create a source  */
-  createDataSource(data: string | Blob, props: DataSourcePropsT): DataSourceT;
+  /** Create a runtime data source  */
+  createDataSource(
+    data: string | Blob,
+    options: Readonly<DataSourceT['optionsType']>,
+    coreApi?: CoreAPI
+  ): DataSourceT;
+};
+
+export function isSourceLoader(loader?: unknown): loader is SourceLoader {
+  return Boolean(loader && typeof loader === 'object' && 'createDataSource' in loader);
 }
+
+/** Typescript helper to extract input data type from a source type */
+export type SourcePropsType<SourceT extends SourceLoader> = Required<SourceT['options']>;
+
+/** Typescript helper to extract the source options type from a source type */
+export type SourceDataSourceType<SourceT extends SourceLoader> = SourceT['dataSource'];
+
+/** Typescript helper to extract options type from an array of source types */
+export type SourceArrayOptionsType<SourcesT extends SourceLoader[] = SourceLoader[]> =
+  SourcesT[number]['options'] & DataSourceOptions;
+
+/** Typescript helper to extract data type from a source type */
+export type SourceArrayDataSourceType<SourcesT extends SourceLoader[] = SourceLoader[]> =
+  SourcesT[number]['dataSource'];
+/** Typescript helper to extract batch type from a source type */

@@ -3,6 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
+import {DDSTextureFormat} from './texture-format';
 import {VERSION} from './lib/utils/version';
 import {encodeImageURLToCompressedTextureURL} from './lib/encoders/encode-texture';
 
@@ -25,12 +26,14 @@ export type CompressedTextureWriterOptions = WriterOptions & {
  * DDS Texture Container Exporter
  */
 export const CompressedTextureWriter = {
+  ...DDSTextureFormat,
   name: 'DDS Texture Container',
   id: 'dds',
   module: 'textures',
   version: VERSION,
 
   extensions: ['dds'],
+  mimeTypes: ['image/vnd-ms.dds', 'image/x-dds', 'application/octet-stream'],
 
   options: {
     texture: {

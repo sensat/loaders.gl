@@ -1,3 +1,9 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
+import type {WKTCRSDefinition} from '@math.gl/crs';
+
 /* eslint-disable camelcase */
 export interface GeometryBitFlags {
   littleEndian: boolean;
@@ -6,7 +12,7 @@ export interface GeometryBitFlags {
   extendedGeometryType: boolean;
 }
 
-export type ProjectionMapping = {[srsId: number]: string};
+export type ProjectionMapping = {[srsId: number]: WKTCRSDefinition};
 export type DataColumnsMapping = {[columnName: string]: string | null};
 export type SQLiteTypes =
   | 'BOOLEAN'
@@ -66,7 +72,10 @@ export interface SpatialRefSysRow {
   /**
    * Well-known Text [A32] Representation of the Spatial Reference System
    */
-  definition: string;
+  definition: WKTCRSDefinition;
+
+  /** WKT2 definition supplied by the GeoPackage CRS WKT extension. */
+  definition_12_063?: WKTCRSDefinition | null;
 
   /**
    * Human readable description of this SRS
@@ -126,6 +135,26 @@ export interface ContentsRow {
    * Spatial Reference System ID: gpkg_spatial_ref_sys.srs_id; when data_type is features, SHALL also match gpkg_geometry_columns.srs_id; When data_type is tiles, SHALL also match gpkg_tile_matrix_set.srs_id
    */
   srs_id?: number;
+}
+
+export type GeoPackageBounds = {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+};
+
+export interface GeoPackageVectorTableInfo {
+  name: string;
+  identifier?: string;
+  description?: string;
+  lastChange: string;
+  srsId?: number;
+  geometryColumnName: string;
+  geometryTypeName: GeometryType;
+  z: 0 | 1 | 2;
+  m: 0 | 1 | 2;
+  bounds?: GeoPackageBounds;
 }
 
 // https://www.geopackage.org/spec121/#geometry_types_extension

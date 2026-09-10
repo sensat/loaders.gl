@@ -1,78 +1,88 @@
-# JSONWriter
+---
+title: JSONWriter
+description: Encode loaders.gl row, columnar, and Arrow tables as JSON text.
+hide_title: true
+page_style: designed
+---
 
-<p class="badges">
-  <img src="https://img.shields.io/badge/From-v4.0-blue.svg?style=flat-square" alt="From-v4.0" />
-</p>
+import {JsonDocsTabs} from '@site/src/components/docs/json-docs-tabs';
+import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
+import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
 
-Streaming writer for GeoJSON encoded files.
+<DocPageHeader
+  eyebrow="JSON module · writer API"
+  title="JSONWriter"
+  description="Encode loaders.gl tables as JSON text, including readable GeoJSON conversion for GeoArrow WKB columns when the output needs to cross into a JSON-oriented system."
+  tone="yellow"
+  meta={['From v4.0', 'Rows and tables', 'GeoArrow-aware']}
+  links={[
+    {label: 'JSON format', to: '/docs/modules/json/formats/json'},
+    {label: 'GeoJSONWriter', to: '/docs/modules/json/api-reference/geojson-writer'},
+    {label: 'JSON module', to: '/docs/modules/json'}
+  ]}
+/>
 
-| Loader         | Characteristic                                       |
-| -------------- | ---------------------------------------------------- |
-| File Extension | `.geojson`                                           |
-| Media Type     | `application/geo+json`                               |
-| File Type      | Text                                                 |
-| File Format    | JSON                                                 |
-| Data Format    | [Classic Table](/docs/specifications/category-table) |
-| Supported APIs | `encode`, `encodeSync`, `encodeÓInBatches`           |
+<JsonDocsTabs active="jsonwriter" />
+
+<DocOrientation
+  eyebrow="What it writes"
+  title="Leave a binary table as ordinary JSON when you need to."
+  description="JSONWriter accepts row, columnar, and Arrow-backed tables and serializes them as JSON rows. GeoArrow WKB columns can be decoded to readable GeoJSON geometry by default."
+  tone="yellow"
+  items={[
+    {label: 'Input', value: 'Row, columnar, or Arrow tables'},
+    {label: 'Output', value: 'JSON text or an ArrayBuffer'},
+    {label: 'Geometry', value: 'WKB to GeoJSON by default'},
+    {label: 'Control', value: 'Shape, wrapper, and GeoArrow options'}
+  ]}
+/>
+
+<ReferenceBoundary
+  title="JSONWriter reference"
+  description="The sections below document usage, table conversion, GeoArrow handling, and writer options."
+  tone="yellow"
+/>
+
+`JSONWriter` writes loaders.gl tables as JSON text.
 
 ## Usage
 
-For simple usage, you can encode a table into a JSON "file" atomically:
-
 ```typescript
-import {JSONWriter} from '@loaders.gl/json';
 import {encode} from '@loaders.gl/core';
+import type {Table} from '@loaders.gl/schema';
+import {JSONWriter} from '@loaders.gl/json';
 
-const data = await encode(url, JSONWriter, {json: options});
+declare const table: Table;
+
+const data = await encode(table, JSONWriter); // ArrayBuffer
+const text = JSONWriter.encodeTextSync(table, {json: options}); // string
 ```
 
-### Streaming and JSON paths
-
-For larger files, JSONWriter supports streaming JSON parsing, in which case it will yield "batches" of rows from one array.
+`JSONWriter` accepts loaders.gl row, columnar, and Arrow tables. Arrow table inputs are serialized as JSON row objects by default.
 
 ```typescript
-import {JSONWriter} from '@loaders.gl/json';
-import {encodeInBatches} from '@loaders.gl/core';
-
-const batches = await encodeInBatches('geojson.json', JSONWriter, {json: {jsonpaths: ['$.features']}});
-
-for await (const batch of batches) {
-  // batch.data will contain a number of rows
-  for (const feature of batch.data) {
-    switch (feature.geometry.type) {
-      case 'Polygon':
-      ...
-    }
-  }
-}
+const json = await encode(arrowTable, JSONWriter, {
+  json: {shape: 'arrow-table'}
+});
 ```
 
-To parse a stream of GeoJSON, the user can specify the `options.json.jsonpaths` to stream the `features` array.
+If an Arrow table has a `geoarrow.wkb` geometry column, `JSONWriter` decodes that column to GeoJSON geometry objects before serializing. This keeps JSON output readable while preserving the writer's normal array-of-rows shape.
 
-If no JSONPath is specified the loader will stream the first array it encounters in the JSON payload.
+```typescript
+const json = await encode(geoArrowTable, JSONWriter);
+// [{"name":"A","geometry":{"type":"Point","coordinates":[1,2]}}]
+```
+
+Set `json.geoarrow: 'none'` to serialize the raw WKB values instead.
 
 ## Data Format
 
-Encoded batches are array buffers or strings
+Encoded batches are array buffers or strings.
 
-## Options
+## JSONWriter Options
 
-Supports table category options such as `batchType` and `batchSize`.
-
-| Option           | From                                                                                  | Type       | Default | Description                                                                                                                           |
-| ---------------- | ------------------------------------------------------------------------------------- | ---------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `json.table`     | [![Website shields.io](https://img.shields.io/badge/v2.0-blue.svg?style=flat-square)] | `boolean`  | `false` | Parses non-streaming JSON as table, i.e. return the first embedded array in the JSON. Always `true` during batched/streaming parsing. |
-| `json.jsonpaths` | [![Website shields.io](https://img.shields.io/badge/v2.2-blue.svg?style=flat-square)] | `string[]` | `[]`    | A list of JSON paths (see below) indicating the array that can be streamed.                                                           |
-
-## JSONPaths
-
-A minimal subset of the JSONPath syntax is supported, to specify which array in a JSON object should be streamed as batchs.
-
-`$.component1.component2.component3`
-
-- No support for wildcards, brackets etc. Only paths starting with `$` (JSON root) are supported.
-- Regardless of the paths provided, only arrays will be streamed.
-
-## Attribution
-
-This loader is based on a fork of dscape's [`clarinet`](https://github.com/dscape/clarinet) under BSD 2-clause license.
+| Option          | Type                                            | Default              | Description                                                                                                                                      |
+| --------------- | ----------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `json.shape`    | `'object-row-table' \| 'array-row-table' \| 'arrow-table'` | `'object-row-table'` | Requested JSON row shape. `'arrow-table'` is accepted for Arrow table inputs and serializes rows as objects.                                      |
+| `json.geoarrow` | `'auto' \| 'none'`                              | `'auto'`             | Controls GeoArrow WKB decoding. `'auto'` decodes `geoarrow.wkb` columns to GeoJSON geometry objects. `'none'` serializes the raw values.          |
+| `json.wrapper`  | `(table: RowObject[] \| RowArray[]) => unknown` |                      | Wraps the encoded table rows in a custom JSON value.                                                                                             |

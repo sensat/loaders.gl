@@ -1,14 +1,9 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-// Forked from sax-ts & sax under ISC license
-
-import test from 'tape-promise/tape';
+// SPDX-License-Identifier: ISC
+import {test} from 'vitest';
 import {testSax} from '../utils/test-utils';
-
 // non-strict: no error
-test('SAXParser#attribute-no-space', (t) => {
-  testSax(t, {
+test('SAXParser#attribute-no-space', () => {
+  testSax({
     xml: '<root attr1="first"attr2="second"/>',
     expect: [
       ['opentagstart', {name: 'root', attributes: {}}],
@@ -29,9 +24,8 @@ test('SAXParser#attribute-no-space', (t) => {
       lowercase: true
     }
   });
-
   // strict: should give an error, but still parse
-  testSax(t, {
+  testSax({
     xml: '<root attr1="first"attr2="second"/>',
     expect: [
       ['opentagstart', {name: 'root', attributes: {}}],
@@ -52,9 +46,8 @@ test('SAXParser#attribute-no-space', (t) => {
       strict: true
     }
   });
-
   // strict: other cases should still pass
-  testSax(t, {
+  testSax({
     xml: '<root attr1="first" attr2="second"/>',
     expect: [
       ['opentagstart', {name: 'root', attributes: {}}],
@@ -74,9 +67,8 @@ test('SAXParser#attribute-no-space', (t) => {
       strict: true
     }
   });
-
   // strict: other cases should still pass
-  testSax(t, {
+  testSax({
     xml: '<root attr1="first"\nattr2="second"/>',
     expect: [
       ['opentagstart', {name: 'root', attributes: {}}],
@@ -96,9 +88,8 @@ test('SAXParser#attribute-no-space', (t) => {
       strict: true
     }
   });
-
   // strict: other cases should still pass
-  testSax(t, {
+  testSax({
     xml: '<root attr1="first"  attr2="second"/>',
     expect: [
       ['opentagstart', {name: 'root', attributes: {}}],
@@ -118,6 +109,4 @@ test('SAXParser#attribute-no-space', (t) => {
       strict: true
     }
   });
-
-  t.end();
 });

@@ -1,15 +1,11 @@
 // loaders.gl
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
-// Copyright 2022 Foursquare Labs, Inc.
 
-/* global TextDecoder */
-import test from 'tape-promise/tape';
-
-import {_GeoJSONWriter} from '@loaders.gl/json';
+import {expect, test} from 'vitest';
+import {GeoJSONWriter} from '@loaders.gl/json';
 import {encodeTableAsText, encodeTableInBatches} from '@loaders.gl/core';
-import {tableWithNullGeometryColumn} from '@loaders.gl/schema/test/shared-utils';
-
+import {tableWithNullGeometryColumn} from '@loaders.gl/schema-utils/test/shared-utils';
 const EXPECTED_GEOJSON = `\
 {
 "type": "FeatureCollection",
@@ -20,22 +16,18 @@ const EXPECTED_GEOJSON = `\
 {"type":"Feature","geometry":null,"properties":{"population":0,"growing":false,"city":"nulltown"}}
 ]
 }`;
-
-test('GeoJSONWriter#encode', async (t) => {
+test('GeoJSONWriter#encode', async () => {
   const table = tableWithNullGeometryColumn;
-  const encodedText = await encodeTableAsText(table, _GeoJSONWriter);
-  t.equal(encodedText, EXPECTED_GEOJSON, 'GeoJSONWriter encoded table correctly');
-  t.end();
+  const encodedText = await encodeTableAsText(table, GeoJSONWriter);
+  expect(encodedText, 'GeoJSONWriter encoded table correctly').toBe(EXPECTED_GEOJSON);
 });
-
-test('GeoJSONWriter#encodeTableInBatches', async (t) => {
+test('GeoJSONWriter#encodeTableInBatches', async () => {
   const textDecoder = new TextDecoder();
   const table = tableWithNullGeometryColumn;
-  const encodedBatches = encodeTableInBatches(table, _GeoJSONWriter);
+  const encodedBatches = encodeTableInBatches(table, GeoJSONWriter);
   let geojsonText = '';
   for await (const arrayBuffer of encodedBatches) {
     geojsonText += textDecoder.decode(arrayBuffer);
   }
-  t.equal(geojsonText, EXPECTED_GEOJSON, 'GeoJSONWriter encoded table correctly');
-  t.end();
+  expect(geojsonText, 'GeoJSONWriter encoded table correctly').toBe(EXPECTED_GEOJSON);
 });

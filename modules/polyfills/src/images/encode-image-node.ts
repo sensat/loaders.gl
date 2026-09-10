@@ -1,3 +1,7 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
 // Use stackgl modules for DOM-less reading and writing of images
 
 import savePixels from 'save-pixels';
@@ -29,9 +33,9 @@ export function encodeImageToStreamNode(
 export function encodeImageNode(image, options) {
   const imageStream = encodeImageToStreamNode(image, options);
 
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const buffers: any[] = [];
-    imageStream.on('data', (buffer) => buffers.push(buffer));
+    imageStream.on('data', buffer => buffers.push(buffer));
     // TODO - convert to arraybuffer?
     imageStream.on('end', () => {
       const buffer = Buffer.concat(buffers);

@@ -2,23 +2,26 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Source, ImageSource, ImageSourceProps} from '@loaders.gl/loader-utils';
-import type {WMSImageSourceProps} from '../../services/ogc/wms-service';
-import {WMSSource} from '../../services/ogc/wms-service';
-import {ArcGISImageServerSource} from '../../services/arcgis/arcgis-image-server';
+import type {
+  SourceArrayDataSourceType,
+  DataSourceOptions,
+  SourceLoader
+} from '@loaders.gl/loader-utils';
+import type {WMSSourceLoaderOptions} from '../../wms-source-loader';
+import {WMSSourceLoader} from '../../wms-source-loader';
 
-/** @deprecated */
-export type ImageServiceType = 'wms' | 'arcgis-image-server' | 'template';
+export type ImageSourceType = 'wms' | 'template';
+/** @deprecated Use `ImageSourceType`. */
+export type ImageServiceType = ImageSourceType;
 
-const SOURCES: Source[] = [WMSSource, ArcGISImageServerSource];
+const SOURCES = [WMSSourceLoader] as const;
 
 /**
  * * @deprecated Use createDataSource from @loaders.gl/core
  */
-type CreateImageSourceProps = ImageSourceProps &
-  WMSImageSourceProps & {
-    url: string;
-    type?: ImageServiceType | 'auto';
+type CreateImageSourceOptions = DataSourceOptions &
+  WMSSourceLoaderOptions & {
+    type?: ImageSourceType | 'auto';
   };
 
 /**
@@ -30,19 +33,25 @@ type CreateImageSourceProps = ImageSourceProps &
  *
  * @deprecated Use createDataSource from @loaders.gl/core
  */
-export function createImageSource(props: CreateImageSourceProps, sources = SOURCES): ImageSource {
-  const {type = 'auto'} = props;
-  const source: Source | null =
-    type === 'auto' ? guessSourceType(props.url, sources) : getSourceOfType(type, sources);
+export function createImageSource<SourceArrayT extends SourceLoader[]>(options: {
+  url: string;
+  type: string;
+  loadOptions: any;
+  options: Readonly<CreateImageSourceOptions>; // Readonly<SourceArrayOptionsType<SourceArrayT>>,
+  sources: Readonly<SourceLoader[]>;
+}): SourceArrayDataSourceType<SourceArrayT> {
+  const {type = 'auto', url, sources = SOURCES, loadOptions} = options;
+  const source: SourceArrayT[number] | null =
+    type === 'auto' ? guessSourceType(url, sources) : getSourceOfType(type, sources);
 
   if (!source) {
     throw new Error('Not a valid image source type');
   }
-  return source.createDataSource(props.url, props) as unknown as ImageSource;
+  return source.createDataSource(url, {core: {loadOptions}});
 }
 
 /** Guess service type from URL */
-function getSourceOfType(type: string, sources: Source[]): Source | null {
+function getSourceOfType(type: string, sources: Readonly<SourceLoader[]>): SourceLoader | null {
   // if (type === 'template') {
   //   return ImageSource;
   // }
@@ -57,7 +66,7 @@ function getSourceOfType(type: string, sources: Source[]): Source | null {
 }
 
 /** Guess source type from URL */
-function guessSourceType(url: string, sources: Source[]): Source | null {
+function guessSourceType(url: string, sources: Readonly<SourceLoader[]>): SourceLoader | null {
   for (const source of sources) {
     if (source.testURL && source.testURL(url)) {
       return source;

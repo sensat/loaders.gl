@@ -2,15 +2,23 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {
-  DataViewFile,
-  FileProviderInterface,
-  compareArrayBuffers,
-  concatenateArrayBuffers
-} from '@loaders.gl/loader-utils';
+import {compareArrayBuffers, concatenateArrayBuffers} from '@loaders.gl/loader-utils';
+import type {ReadableFile} from '@loaders.gl/loader-utils';
 import {parseEoCDRecord} from './end-of-central-directory';
 import {ZipSignature} from './search-from-the-end';
 import {createZip64Info, setFieldToNumber} from './zip64-info-generation';
+import {
+  parseZip64ExtraField,
+  ZIP64_UINT16_SENTINEL,
+  ZIP64_UINT32_SENTINEL,
+  type Zip64ExtraFieldDescription
+} from './zip64-extra-field';
+import {
+  DataViewReadableFile,
+  getReadableFileSize,
+  readDataView,
+  readRange
+} from './readable-file-utils';
 
 /**
  * zip central directory file header info
@@ -31,12 +39,14 @@ export type ZipCDFileHeader = {
   extraOffset: bigint;
   /** Relative offset of local file header */
   localHeaderOffset: bigint;
+  /** Number of the disk where the file starts */
+  startDisk: bigint;
 };
 
 /**
- * Data that might be in Zip64 notation inside extra data
+ * Data that might be in ZIP64 notation inside extra data
  */
-type Zip64Data = {
+type Zip64CentralDirectoryData = {
   /** Uncompressed size */
   uncompressedSize: bigint;
   /** Compressed size */
@@ -52,7 +62,7 @@ const CD_COMPRESSED_SIZE_OFFSET = 20;
 const CD_UNCOMPRESSED_SIZE_OFFSET = 24;
 const CD_FILE_NAME_LENGTH_OFFSET = 28;
 const CD_EXTRA_FIELD_LENGTH_OFFSET = 30;
-const CD_START_DISK_OFFSET = 32;
+const CD_START_DISK_OFFSET = 34;
 const CD_LOCAL_HEADER_OFFSET_OFFSET = 42;
 const CD_FILE_NAME_OFFSET = 46n;
 
@@ -61,19 +71,18 @@ export const signature: ZipSignature = new Uint8Array([0x50, 0x4b, 0x01, 0x02]);
 /**
  * Parses central directory file header of zip file
  * @param headerOffset - offset in the archive where header starts
- * @param buffer - buffer containing whole array
+ * @param file - readable file containing the archive
  * @returns Info from the header
  */
 export const parseZipCDFileHeader = async (
   headerOffset: bigint,
-  file: FileProviderInterface
+  file: ReadableFile
 ): Promise<ZipCDFileHeader | null> => {
-  if (headerOffset >= file.length) {
+  const fileLength = await getReadableFileSize(file);
+  if (headerOffset >= fileLength) {
     return null;
   }
-  const mainHeader = new DataView(
-    await file.slice(headerOffset, headerOffset + CD_FILE_NAME_OFFSET)
-  );
+  const mainHeader = await readDataView(file, headerOffset, headerOffset + CD_FILE_NAME_OFFSET);
 
   const magicBytes = mainHeader.buffer.slice(0, 4);
   if (!compareArrayBuffers(magicBytes, signature.buffer)) {
@@ -86,7 +95,8 @@ export const parseZipCDFileHeader = async (
   const startDisk = BigInt(mainHeader.getUint16(CD_START_DISK_OFFSET, true));
   const fileNameLength = mainHeader.getUint16(CD_FILE_NAME_LENGTH_OFFSET, true);
 
-  const additionalHeader = await file.slice(
+  const additionalHeader = await readRange(
+    file,
     headerOffset + CD_FILE_NAME_OFFSET,
     headerOffset + CD_FILE_NAME_OFFSET + BigInt(fileNameLength + extraFieldLength)
   );
@@ -103,18 +113,32 @@ export const parseZipCDFileHeader = async (
   );
   // looking for info that might be also be in zip64 extra field
 
-  const zip64data: Zip64Data = {
+  const zip64Data: Zip64CentralDirectoryData = {
     uncompressedSize,
     compressedSize,
     localHeaderOffset,
     startDisk
   };
 
-  const res = findZip64DataInExtra(zip64data, extraField);
+  const expectedZip64Fields: Zip64ExtraFieldDescription<keyof Zip64CentralDirectoryData>[] = [];
+  if (zip64Data.uncompressedSize === ZIP64_UINT32_SENTINEL) {
+    expectedZip64Fields.push({name: 'uncompressedSize', byteLength: 8});
+  }
+  if (zip64Data.compressedSize === ZIP64_UINT32_SENTINEL) {
+    expectedZip64Fields.push({name: 'compressedSize', byteLength: 8});
+  }
+  if (zip64Data.localHeaderOffset === ZIP64_UINT32_SENTINEL) {
+    expectedZip64Fields.push({name: 'localHeaderOffset', byteLength: 8});
+  }
+  if (zip64Data.startDisk === ZIP64_UINT16_SENTINEL) {
+    expectedZip64Fields.push({name: 'startDisk', byteLength: 4});
+  }
+
+  const zip64Values = parseZip64ExtraField(extraField, expectedZip64Fields);
 
   return {
-    ...zip64data,
-    ...res,
+    ...zip64Data,
+    ...zip64Values,
     extraFieldLength,
     fileNameLength,
     fileName,
@@ -124,14 +148,14 @@ export const parseZipCDFileHeader = async (
 
 /**
  * Create iterator over files of zip archive
- * @param fileProvider - file provider that provider random access to the file
+ * @param fileProvider - readable file that provides random access to the file
  */
 export async function* makeZipCDHeaderIterator(
-  fileProvider: FileProviderInterface
+  fileProvider: ReadableFile
 ): AsyncIterable<ZipCDFileHeader> {
   const {cdStartOffset, cdByteSize} = await parseEoCDRecord(fileProvider);
-  const centralDirectory = new DataViewFile(
-    new DataView(await fileProvider.slice(cdStartOffset, cdStartOffset + cdByteSize))
+  const centralDirectory = new DataViewReadableFile(
+    new DataView(await readRange(fileProvider, cdStartOffset, cdStartOffset + cdByteSize))
   );
   let cdHeader = await parseZipCDFileHeader(0n, centralDirectory);
   while (cdHeader) {
@@ -142,72 +166,6 @@ export async function* makeZipCDHeaderIterator(
     );
   }
 }
-/**
- * returns the number written in the provided bytes
- * @param bytes two bytes containing the number
- * @returns the number written in the provided bytes
- */
-const getUint16 = (...bytes: [number, number]) => {
-  return bytes[0] + bytes[1] * 16;
-};
-
-/**
- * reads all nesessary data from zip64 record in the extra data
- * @param zip64data values that might be in zip64 record
- * @param extraField full extra data
- * @returns data read from zip64
- */
-
-const findZip64DataInExtra = (zip64data: Zip64Data, extraField: DataView): Partial<Zip64Data> => {
-  const zip64dataList = findExpectedData(zip64data);
-
-  const zip64DataRes: Partial<Zip64Data> = {};
-  if (zip64dataList.length > 0) {
-    // total length of data in zip64 notation in bytes
-    const zip64chunkSize = zip64dataList.reduce((sum, curr) => sum + curr.length, 0);
-    // we're looking for the zip64 nontation header (0x0001)
-    // and a size field with a correct value next to it
-    const offsetInExtraData = new Uint8Array(extraField.buffer).findIndex(
-      (_val, i, arr) =>
-        getUint16(arr[i], arr[i + 1]) === 0x0001 &&
-        getUint16(arr[i + 2], arr[i + 3]) === zip64chunkSize
-    );
-    // then we read all the nesessary fields from the zip64 data
-    let bytesRead = 0;
-    for (const note of zip64dataList) {
-      const offset = bytesRead;
-      zip64DataRes[note.name] = extraField.getBigUint64(offsetInExtraData + 4 + offset, true);
-      bytesRead = offset + note.length;
-    }
-  }
-
-  return zip64DataRes;
-};
-
-/**
- * frind data that's expected to be in zip64
- * @param zip64data values that might be in zip64 record
- * @returns zip64 data description
- */
-
-const findExpectedData = (zip64data: Zip64Data): {length: number; name: string}[] => {
-  // We define fields that should be in zip64 data
-  const zip64dataList: {length: number; name: string}[] = [];
-  if (zip64data.uncompressedSize === BigInt(0xffffffff)) {
-    zip64dataList.push({name: 'uncompressedSize', length: 8});
-  }
-  if (zip64data.compressedSize === BigInt(0xffffffff)) {
-    zip64dataList.push({name: 'compressedSize', length: 8});
-  }
-  if (zip64data.localHeaderOffset === BigInt(0xffffffff)) {
-    zip64dataList.push({name: 'localHeaderOffset', length: 8});
-  }
-  if (zip64data.startDisk === BigInt(0xffffffff)) {
-    zip64dataList.push({name: 'startDisk', length: 4});
-  }
-
-  return zip64dataList;
-};
 
 /** info that can be placed into cd header */
 type GenerateCDOptions = {

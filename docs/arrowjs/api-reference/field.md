@@ -1,41 +1,110 @@
-# Field
+---
+title: Field
+description: Describe one named Arrow column with its type, nullability, and metadata.
+hide_title: true
+page_style: designed
+---
 
-> This documentation reflects Arrow JS v4.0. Needs to be updated for the new Arrow API in v9.0 +.
+import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
+import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
 
-The combination of a field name and data type, with optional metadata. Fields are used to describe the individual constituents of a nested DataType or a Schema.
+<DocPageHeader
+  eyebrow="Arrow JS API · schema component"
+  title="A Field gives one column a name and a contract."
+  description="Field pairs a column name with its DataType, nullability, and optional metadata. Schemas use ordered fields to describe the columns in tables, record batches, and nested structures."
+  tone="cyan"
+  meta={['Name and type', 'Nullability', 'Field metadata']}
+  links={[
+    {label: 'Schema', to: '/docs/arrowjs/api-reference/schema'},
+    {label: 'Data types', to: '/docs/arrowjs/api-reference/types'},
+    {label: 'Table', to: '/docs/arrowjs/api-reference/table'}
+  ]}
+/>
+
+<DocOrientation
+  eyebrow="The Field model"
+  title="Give every column a stable meaning."
+  description="Fields are the small schema units that let Arrow readers, builders, and writers agree on how to interpret a column before values are accessed."
+  tone="cyan"
+  items={[
+    {label: 'Name', value: 'The stable column identifier'},
+    {label: 'Type', value: 'The logical Arrow DataType'},
+    {label: 'Nullability', value: 'Whether null values are permitted'},
+    {label: 'Metadata', value: 'Optional string annotations for consumers'}
+  ]}
+/>
+
+<ReferenceBoundary
+  title="Field reference"
+  description="The sections below document members, constructors, Field.new, cloning, metadata, and type relationships."
+  tone="cyan"
+/>
+
+:::info
+This page is aligned to Apache Arrow JS v21.x (`apache-arrow`).
+:::
+
+A `Field` is a named column component with type and nullability metadata.
+
+## Usage
+
+```ts
+import {Field, Int32} from 'apache-arrow';
+
+const id = Field.new({name: 'id', type: new Int32(), nullable: false});
+const cloned = id.clone({nullable: true});
+```
 
 ## Members
 
-### name : String (read only)
+### `name: string`
 
-The name of this field.
+Field name.
 
-### type : Type (read only)
+### `type: DataType`
 
-The type of this field.
+Field data type.
 
-### nullable : Boolean (read only)
+### `nullable: boolean`
 
-Whether this field can contain `null` values, in addition to values of `Type` (this creates an extra null value map).
+Whether null values are permitted.
 
-### metadata : Object | null (read only)
+### `metadata: Map<string, string>`
 
-A field's metadata is represented by a map which holds arbitrary key-value pairs. Returns `null` if no metadata has been set.
+Optional field metadata.
 
-### typeId : ?
+### `typeId: Type`
 
-TBD?
+The underlying `DataType` identifier.
 
-### indices : ?
+### `readonly [Symbol.toStringTag]: string`
 
-TBD? Used if data type is a dictionary.
+Debug name shown by `Object.prototype.toString`.
+
+## Static methods
+
+### `Field.new<T extends DataType = any>(props: { name: string | number; type: T; nullable?: boolean; metadata?: Map<string, string> | null }): Field<T>`
+
+### `Field.new<T extends DataType = any>(name: string | number | Field<T>, type: T, nullable?: boolean, metadata?: Map<string, string> | null): Field<T>`
+
+Creates a field with explicit constructor arguments.
+
+## Constructor
+
+### `constructor(name: string, type: DataType, nullable = false, metadata?: Map<string, string> | null)`
+
+Creates a new immutable field descriptor.
 
 ## Methods
 
-### constructor(name : String, nullable?: Boolean, metadata?: Object)
+### `clone<T extends DataType = any>(props: { name?: string | number; type?: T; nullable?: boolean; metadata?: Map<string, string> | null }): Field<T>`
 
-Creates an instance of `Field` with parameters initialized as follows:
+Returns a copy with overridden metadata.
 
-- `name` - Name of the column
-- `nullable`=`false` - Whether a null-array is maintained.
-- `metadata`=`null` - Map of metadata
+### `clone<R extends DataType = any>(name?: string | number | Field<T>, type?: R, nullable?: boolean, metadata?: Map<string, string> | null): Field<R>`
+
+Returns a copy with overridden properties.
+
+### `toString(): string`
+
+Returns a concise string representation of the field.

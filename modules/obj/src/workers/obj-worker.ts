@@ -1,4 +1,8 @@
-import {createLoaderWorker} from '@loaders.gl/loader-utils';
-import {OBJLoader} from '../index';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
 
-createLoaderWorker(OBJLoader);
+import {createLoaderWorker} from '@loaders.gl/loader-utils';
+import {OBJLoaderWithParser} from '../obj-loader-with-parser';
+
+createLoaderWorker(OBJLoaderWithParser);

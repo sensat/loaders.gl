@@ -7,12 +7,13 @@ import './init-tests';
 // Utility modules
 import '@loaders.gl/polyfills/test';
 import '@loaders.gl/worker-utils/test';
-import '@loaders.gl/math/test';
+import '@loaders.gl/geoarrow/test';
 
 // Core
 import '@loaders.gl/loader-utils/test';
-import '@loaders.gl/core/test';
 import '@loaders.gl/schema/test';
+import '@loaders.gl/schema-utils/test';
+import '@loaders.gl/core/test';
 
 // Image Formats
 import '@loaders.gl/images/test';
@@ -29,6 +30,7 @@ import '@loaders.gl/draco/test';
 import '@loaders.gl/obj/test';
 import '@loaders.gl/pcd/test';
 import '@loaders.gl/ply/test';
+import '@loaders.gl/splats/test';
 import '@loaders.gl/terrain/test';
 
 // Scenegraph Formats
@@ -49,7 +51,9 @@ import '@loaders.gl/kml/test';
 import '@loaders.gl/shapefile/test';
 import '@loaders.gl/wkt/test';
 import '@loaders.gl/wms/test';
+import '@loaders.gl/stac/test';
 
+import '@loaders.gl/mlt/test';
 import '@loaders.gl/mvt/test';
 
 // Range request archive style formats
@@ -61,6 +65,9 @@ import '@loaders.gl/csv/test';
 import '@loaders.gl/json/test';
 import '@loaders.gl/excel/test';
 import '@loaders.gl/parquet/test';
+import '@loaders.gl/lance/test';
+import '@loaders.gl/orc/test';
+import '@loaders.gl/traces/test';
 
 // unstructured (JSON) formats
 // JSON listed in tabular loaders since it optionally supports that category

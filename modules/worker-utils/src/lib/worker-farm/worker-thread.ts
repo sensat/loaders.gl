@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
+import type {LoadWorker} from '../../types';
 import {NodeWorker, NodeWorkerType} from '../node/worker_threads';
 import {isBrowser} from '../env-utils/globals';
 import {assert} from '../env-utils/assert';
@@ -11,9 +12,16 @@ import {getTransferList} from '../worker-utils/get-transfer-list';
 const NOOP = () => {};
 
 export type WorkerThreadProps = {
+  /** Human-readable worker name. */
   name: string;
+  /** Inline worker source. */
   source?: string;
+  /** Worker script URL. */
   url?: string;
+  /** Lazily resolves the classic worker URL used as a fallback. */
+  getUrl?: () => string;
+  /** Creates a browser Worker directly. */
+  loadWorker?: LoadWorker;
 };
 
 /**
@@ -23,6 +31,10 @@ export default class WorkerThread {
   readonly name: string;
   readonly source: string | undefined;
   readonly url: string | undefined;
+  /** Lazily resolves the classic worker URL used as a fallback. */
+  readonly getUrl: (() => string) | undefined;
+  /** Creates a browser Worker directly. */
+  readonly loadWorker: LoadWorker | undefined;
   terminated: boolean = false;
   worker: Worker | NodeWorkerType;
   onMessage: (message: any) => void;
@@ -39,13 +51,15 @@ export default class WorkerThread {
   }
 
   constructor(props: WorkerThreadProps) {
-    const {name, source, url} = props;
-    assert(source || url); // Either source or url must be defined
+    const {name, source, url, getUrl, loadWorker} = props;
+    assert(source || url || getUrl || loadWorker);
     this.name = name;
     this.source = source;
     this.url = url;
+    this.getUrl = getUrl;
+    this.loadWorker = loadWorker;
     this.onMessage = NOOP;
-    this.onError = (error) => console.log(error); // eslint-disable-line
+    this.onError = error => console.log(error); // eslint-disable-line
 
     this.worker = isBrowser ? this._createBrowserWorker() : this._createNodeWorker();
   }
@@ -59,6 +73,20 @@ export default class WorkerThread {
     this.onError = NOOP;
     this.worker.terminate(); // eslint-disable-line @typescript-eslint/no-floating-promises
     this.terminated = true;
+  }
+
+  /** Keeps this worker from preventing Node.js process exit while idle. */
+  unref(): void {
+    if (!isBrowser && typeof (this.worker as NodeWorkerType).unref === 'function') {
+      (this.worker as NodeWorkerType).unref();
+    }
+  }
+
+  /** Keeps this worker alive while it is actively processing a job. */
+  ref(): void {
+    if (!isBrowser && typeof (this.worker as NodeWorkerType).ref === 'function') {
+      (this.worker as NodeWorkerType).ref();
+    }
   }
 
   get isRunning() {
@@ -87,7 +115,7 @@ export default class WorkerThread {
     // https://developer.mozilla.org/en-US/docs/Web/API/Worker#Event_handlers
     // https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent
     let message = 'Failed to load ';
-    message += `worker ${this.name} from ${this.url}. `;
+    message += `worker ${this.name} from ${this.url || 'built-in worker factory'}. `;
     if (event.message) {
       message += `${event.message} in `;
     }
@@ -103,10 +131,29 @@ export default class WorkerThread {
    * Creates a worker thread on the browser
    */
   _createBrowserWorker(): Worker {
-    this._loadableURL = getLoadableWorkerURL({source: this.source, url: this.url});
+    if (this.loadWorker) {
+      try {
+        const worker = this.loadWorker();
+        if (worker) {
+          return this._initializeBrowserWorker(worker);
+        }
+      } catch (error) {
+        if (!this.source && !this.url && !this.getUrl) {
+          throw error;
+        }
+      }
+    }
+
+    const url = this.url || this.getUrl?.();
+    this._loadableURL = getLoadableWorkerURL({source: this.source, url});
     const worker = new Worker(this._loadableURL, {name: this.name});
 
-    worker.onmessage = (event) => {
+    return this._initializeBrowserWorker(worker);
+  }
+
+  /** Attaches protocol handlers to a browser worker. */
+  _initializeBrowserWorker(worker: Worker): Worker {
+    worker.onmessage = event => {
       if (!event.data) {
         this.onError(new Error('No data received'));
       } else {
@@ -119,7 +166,7 @@ export default class WorkerThread {
       this.terminated = true;
     };
     // TODO - not clear when this would be called, for now just log in case it happens
-    worker.onmessageerror = (event) => console.error(event); // eslint-disable-line
+    worker.onmessageerror = event => console.error(event); // eslint-disable-line
 
     return worker;
   }
@@ -134,22 +181,24 @@ export default class WorkerThread {
       // Make sure relative URLs start with './'
       const absolute = this.url.includes(':/') || this.url.startsWith('/');
       const url = absolute ? this.url : `./${this.url}`;
+      const workerUrl = url.startsWith('file:') ? new URL(url) : url;
+      const type = this.url.endsWith('.ts') || this.url.endsWith('.mjs') ? 'module' : 'commonjs';
       // console.log('Starting work from', url);
-      worker = new NodeWorker(url, {eval: false});
+      // @ts-expect-error type is not known
+      worker = new NodeWorker(workerUrl, {eval: false, type});
     } else if (this.source) {
       worker = new NodeWorker(this.source, {eval: true});
     } else {
       throw new Error('no worker');
     }
-    worker.on('message', (data) => {
+    worker.on('message', data => {
       // console.error('message', data);
       this.onMessage(data);
     });
-    worker.on('error', (error) => {
-      // console.error('error', error);
-      this.onError(error);
+    worker.on('error', error => {
+      this.onError(error as Error);
     });
-    worker.on('exit', (code) => {
+    worker.on('exit', _code => {
       // console.error('exit', code);
     });
     return worker;

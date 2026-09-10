@@ -1,13 +1,8 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-// Forked from sax-ts & sax under ISC license
-
-import test from 'tape-promise/tape';
+// SPDX-License-Identifier: ISC
+import {test} from 'vitest';
 import {testSax} from '../utils/test-utils';
-
-test('SAXParser#duplicate-attribute', (t) => {
-  testSax(t, {
+test('SAXParser#duplicate-attribute', () => {
+  testSax({
     xml: '<span id="hello" id="there"></span>',
     expect: [
       [
@@ -32,6 +27,4 @@ test('SAXParser#duplicate-attribute', (t) => {
       strict: false
     }
   });
-
-  t.end();
 });

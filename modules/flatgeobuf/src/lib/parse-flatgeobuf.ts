@@ -2,203 +2,346 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {Proj4Projection} from '@math.gl/proj4';
-import {transformGeoJsonCoords} from '@loaders.gl/gis';
+import * as arrow from 'apache-arrow';
+import {Proj4Projection, type Proj4CRSDefinition} from '@math.gl/proj4';
+import type {ArrowTable, ArrowTableBatch, Feature, Field, Schema, Table} from '@loaders.gl/schema';
+import {
+  filterColumnarRowIndices,
+  makeTableScanBatch,
+  planTableQuery,
+  type ColumnarPredicate,
+  type TableQueryOptions
+} from '@loaders.gl/loader-utils';
+import {
+  convertGeojsonToBinaryFeatureCollection,
+  encodeWKBGeometryValue,
+  makeWKBGeometryField,
+  makeWKBGeometryDataFromArray,
+  setWKBGeometryColumnMetadata,
+  transformGeoJsonCoords,
+  convertFeaturesToGeoArrowTable,
+  type GeoParquetGeometryType
+} from '@loaders.gl/gis';
+import {WKBBuilder} from '@loaders.gl/gis';
+import {convertSchemaToArrow, queryArrowTable} from '@loaders.gl/schema-utils';
+import {
+  decodeFlatGeobufGeometry,
+  FlatGeobufColumnType,
+  FlatGeobufGeometryType,
+  getFlatGeobufGeometryBounds,
+  getFlatGeobufCRSIdentifier,
+  readFlatGeobufFeatures,
+  readFlatGeobufHeader,
+  writeFlatGeobufGeometryToWKB,
+  type FlatGeobufHeader
+} from './flatgeobuf-reader';
 
-import type {GeoJSONTable, Table, Schema} from '@loaders.gl/schema';
-
-import {fgbToBinaryGeometry} from './binary-geometries';
-import {getSchemaFromFGBHeader} from './get-schema-from-fgb-header';
-
-import * as fgb from '../flatgeobuf/3.27.2';
-import * as geojson from '../flatgeobuf/3.27.2/geojson';
-import * as generic from '../flatgeobuf/3.27.2/generic';
-import {parseProperties as parsePropertiesBinary} from '../flatgeobuf/3.27.2/generic/feature';
-
-const deserializeGeoJson = geojson.deserialize;
-const deserializeGeneric = generic.deserialize;
-// const parsePropertiesBinary = FlatgeobufFeature.parseProperties;
+const GEOMETRY_COLUMN_NAME = 'geometry';
 
 export type ParseFlatGeobufOptions = {
-  shape?: 'geojson-table' | 'columnar-table' | 'binary';
-  /** If supplied, only loads features within the bounding box */
+  shape?: 'geojson-table' | 'columnar-table' | 'binary-geometry' | 'arrow-table';
   boundingBox?: [[number, number], [number, number]];
-  /** Desired output CRS */
-  crs?: string;
-  /** Should geometries be reprojected to target CRS */
+  crs?: Proj4CRSDefinition;
   reproject?: boolean;
+  /** Preferred encoding for Arrow geometry output. */
+  geoarrow?: {encodingPreference?: import('@loaders.gl/schema').GeoArrowEncodingPreference};
 };
 
-/*
- * Parse FlatGeobuf arrayBuffer and return GeoJSON.
- *
- * @param arrayBuffer  A FlatGeobuf arrayBuffer
- * @return A GeoJSON geometry object
- */
-export function parseFlatGeobuf(arrayBuffer: ArrayBuffer, options: ParseFlatGeobufOptions): Table {
-  const shape = options.shape;
+/** Portable FlatGeobuf query options, with an indexed spatial envelope. */
+export type FlatGeobufQueryOptions<PredicateT extends ColumnarPredicate = ColumnarPredicate> =
+  TableQueryOptions<PredicateT> &
+    Readonly<{
+      /** Bounding box used to prune features before property decoding. */
+      boundingBox?: [[number, number], [number, number]];
+      /** Cancels parsing before or during feature materialization. */
+      signal?: AbortSignal;
+    }>;
 
-  switch (shape) {
-    case 'geojson-table': {
-      return parseFlatGeobufToGeoJSONTable(arrayBuffer, options);
-    }
-
-    case 'columnar-table': // binary + some JS arrays
-      const binary = parseFlatGeobufToBinary(arrayBuffer, options);
-      // @ts-expect-error
-      return {shape: 'columnar-table', data: binary};
-
-    case 'binary':
-      // @ts-expect-error
-      return parseFlatGeobufToBinary(arrayBuffer, options);
-
-    default:
-      throw new Error(shape);
-  }
-}
-
-function parseFlatGeobufToBinary(arrayBuffer: ArrayBuffer, options: ParseFlatGeobufOptions = {}) {
-  // TODO: reproject binary features
-  // const {reproject = false, _targetCrs = 'WGS84'} = (options && options.gis) || {};
-
-  const array = new Uint8Array(arrayBuffer);
-  // @ts-expect-error
-  return deserializeGeneric(array, fgbToBinaryGeometry);
-}
-
-function parseFlatGeobufToGeoJSONTable(
+/** Parses a FlatGeobuf buffer through the Arrow-native decode pipeline. */
+export function parseFlatGeobuf(
   arrayBuffer: ArrayBuffer,
   options: ParseFlatGeobufOptions
-): GeoJSONTable {
-  if (arrayBuffer.byteLength === 0) {
-    return {shape: 'geojson-table', type: 'FeatureCollection', features: []};
-  }
-
-  const {reproject = false, crs = 'WGS84'} = options;
-
-  const arr = new Uint8Array(arrayBuffer);
-
-  let fgbHeader: fgb.HeaderMeta | undefined;
-  let schema: Schema | undefined;
-
-  const rect = options.boundingBox && convertBoundingBox(options.boundingBox);
-
-  // @ts-expect-error this looks wrong
-  let {features} = deserializeGeoJson(arr, rect, (headerMeta) => {
-    fgbHeader = headerMeta;
-    schema = getSchemaFromFGBHeader(fgbHeader);
-  });
-
-  const fromCRS = fgbHeader?.crs?.wkt;
-  let projection;
-  if (reproject && fromCRS) {
-    // Constructing the projection may fail for some invalid WKT strings
-    try {
-      projection = new Proj4Projection({from: fromCRS, to: crs});
-    } catch (error) {
-      // no op
-    }
-  }
-
-  if (projection) {
-    features = transformGeoJsonCoords(features, (coords) => projection.project(coords));
-  }
-
-  return {shape: 'geojson-table', schema, type: 'FeatureCollection', features};
-}
-
-/*
- * Parse FlatGeobuf arrayBuffer and return GeoJSON.
- *
- * @param {ReadableStream} _ A FlatGeobuf arrayBuffer
- * @return  A GeoJSON geometry object iterator
- */
-// eslint-disable-next-line complexity
-export function parseFlatGeobufInBatches(stream, options: ParseFlatGeobufOptions) {
-  const shape = options.shape;
-  switch (shape) {
-    case 'binary':
-      return parseFlatGeobufInBatchesToBinary(stream, options);
+): Table | any {
+  const arrowTable = parseFlatGeobufToArrowTable(arrayBuffer, options);
+  switch (options.shape) {
+    case 'arrow-table':
+      return arrowTable;
     case 'geojson-table':
-      return parseFlatGeobufInBatchesToGeoJSON(stream, options);
+      return makeGeoJsonTable(arrayBuffer, options);
+    case 'binary-geometry':
+      return convertGeojsonToBinaryFeatureCollection(
+        makeGeoJsonTable(arrayBuffer, options).features
+      );
+    case 'columnar-table':
+      return {
+        shape: 'columnar-table',
+        schema: arrowTable.schema,
+        data: Object.fromEntries(
+          (arrowTable.schema?.fields || []).map(field => [
+            field.name,
+            arrowTable.data.getChild(field.name)?.toArray()
+          ])
+        )
+      } as Table;
     default:
-      throw new Error(shape);
+      throw new Error(`Unsupported FlatGeobuf output shape ${options.shape}`);
   }
 }
 
-function parseFlatGeobufInBatchesToBinary(stream, options: ParseFlatGeobufOptions) {
-  // TODO: reproject binary streaming features
-  // const {reproject = false, _targetCrs = 'WGS84'} = (options && options.gis) || {};
-
-  const rect = options.boundingBox && convertBoundingBox(options.boundingBox);
-
-  // @ts-expect-error
-  const iterator = deserializeGeneric(stream, binaryFromFeature, rect);
-  return iterator;
-}
-
-/**
- * @todo this does not return proper GeoJSONTable batches
- * @param stream
- * @param options
- */
-// eslint-disable-next-line complexity
-async function* parseFlatGeobufInBatchesToGeoJSON(stream, options: ParseFlatGeobufOptions) {
-  const {reproject = false, crs = 'WGS84'} = options || {};
-
-  let fgbHeader;
-  // let schema: Schema | undefined;
-  const iterator = deserializeGeoJson(stream, undefined, (headerMeta) => {
-    fgbHeader = headerMeta;
-    // schema = getSchemaFromFGBHeader(fgbHeader);
+/** Parses FlatGeobuf into compact GeoArrow WKB and Apache Arrow buffers. */
+export function parseFlatGeobufToArrowTable(
+  arrayBuffer: ArrayBuffer,
+  options: ParseFlatGeobufOptions = {}
+): ArrowTable {
+  const preference = options.geoarrow?.encodingPreference;
+  if (preference && preference !== 'geoarrow.wkb') {
+    return convertFeaturesToGeoArrowTable(makeGeoJsonTable(arrayBuffer, options).features, {
+      encodingPreference: preference
+    });
+  }
+  const header = readFlatGeobufHeader(arrayBuffer);
+  const schema = makeArrowSchema(header);
+  const projection = getProjection(header, options.reproject, options.crs || 'WGS84');
+  const features = [...readFlatGeobufFeatures(arrayBuffer, header)].filter(feature =>
+    matchesBoundingBox(arrayBuffer, feature.geometryOffset, header, options.boundingBox)
+  );
+  const geometryWriters = features.map(feature =>
+    feature.geometryOffset === undefined
+      ? null
+      : (builder: WKBBuilder) =>
+          writeFlatGeobufGeometryToWKB(builder, arrayBuffer, feature.geometryOffset, header)
+  );
+  const geometryArray = WKBBuilder.buildGeometryArray(geometryWriters, {
+    hasZ: header.hasZ,
+    transform: projection?.project
   });
-
-  let projection;
-  let firstRecord = true;
-  // @ts-expect-error this looks wrong
-  for await (const feature of iterator) {
-    if (firstRecord) {
-      const fromCRS = fgbHeader?.crs?.wkt;
-      if (reproject && fromCRS) {
-        projection = new Proj4Projection({from: fromCRS, to: crs});
-      }
-
-      firstRecord = false;
-    }
-
-    if (reproject && projection) {
-      // eslint-disable-next-line
-      yield transformGeoJsonCoords([feature], (coords) => projection.project(coords));
-    } else {
-      yield feature;
-    }
+  const arrowSchema = convertSchemaToArrow(schema);
+  const propertyBuilders = arrowSchema.fields
+    .slice(0, -1)
+    .map(field => arrow.makeBuilder({type: field.type, nullValues: [null]}));
+  for (const feature of features) {
+    for (let index = 0; index < header.columns.length; index++)
+      propertyBuilders[index].append(feature.properties[header.columns[index].name] ?? null);
   }
-}
-
-// HELPERS
-
-function convertBoundingBox(boundingBox: [[number, number], [number, number]]): fgb.Rect {
+  const propertyData = propertyBuilders.map(builder => {
+    const data = builder.flush();
+    builder.finish();
+    return data;
+  });
+  const geometryData = makeWKBGeometryDataFromArray(geometryArray);
+  const structData = new arrow.Data(
+    new arrow.Struct(arrowSchema.fields),
+    0,
+    features.length,
+    0,
+    undefined,
+    [...propertyData, geometryData]
+  );
   return {
-    minX: boundingBox[0][0],
-    minY: boundingBox[0][1],
-    maxX: boundingBox[1][0],
-    maxY: boundingBox[1][1]
+    shape: 'arrow-table',
+    schema,
+    data: new arrow.Table(arrowSchema, [new arrow.RecordBatch(arrowSchema, structData)])
   };
 }
 
-// TODO: reproject binary features
-function binaryFromFeature(feature: fgb.Feature, header: fgb.HeaderMeta) {
-  const geometry = feature.geometry();
+/** Executes a portable projection, residual predicate, and limit over FlatGeobuf features. */
+export function queryFlatGeobufArrowTable(
+  arrayBuffer: ArrayBuffer,
+  options: FlatGeobufQueryOptions = {}
+): ArrowTable {
+  throwIfAborted(options.signal);
+  const sourceTable = parseFlatGeobufToArrowTable(arrayBuffer, {
+    boundingBox: options.boundingBox
+  });
+  const sourceColumnNames = sourceTable.data.schema.fields.map(field => field.name);
+  const plan = planTableQuery(sourceColumnNames, options);
+  const scanStep = plan.find(step => step.kind === 'scan');
+  const projectStep = plan.find(step => step.kind === 'project');
+  if (!scanStep || scanStep.kind !== 'scan' || !projectStep || projectStep.kind !== 'project') {
+    throw new Error('FlatGeobuf query planner produced an invalid plan.');
+  }
+  if (!sourceTable.schema) throw new Error('FlatGeobuf query source is missing a schema.');
+  const predicateStep = plan.find(step => step.kind === 'filter');
+  const limitStep = plan.find(step => step.kind === 'limit');
+  return queryArrowTable(
+    sourceTable,
+    {
+      predicate: predicateStep?.kind === 'filter' ? predicateStep.predicate : undefined,
+      columns: projectStep.columns,
+      limit: limitStep?.kind === 'limit' ? limitStep.limit : undefined
+    },
+    (predicate, columns, rowCount) => filterColumnarRowIndices(predicate, columns, rowCount)
+  );
+}
 
-  // FlatGeobuf files can only hold a single geometry type per file, otherwise
-  // GeometryType is GeometryCollection
-  // I believe geometry.type() is null (0) except when the geometry type isn't
-  // known in the header?
-  const geometryType = header.geometryType || geometry?.type();
-  const parsedGeometry = fgbToBinaryGeometry(geometry, geometryType!);
-  // @ts-expect-error this looks wrong
-  parsedGeometry.properties = parsePropertiesBinary(feature, header.columns);
+/** Loads FlatGeobuf as small Arrow batches; each batch is a stable-schema table. */
+export async function* parseFlatGeobufInBatches(
+  stream: ReadableStream,
+  options: ParseFlatGeobufOptions
+): AsyncGenerator<ArrowTableBatch> {
+  const arrayBuffer = await new Response(stream).arrayBuffer();
+  const table = parseFlatGeobufToArrowTable(arrayBuffer, options);
+  yield makeTableScanBatch(table);
+}
 
-  // TODO: wrap binary data either in points, lines, or polygons key
-  return parsedGeometry;
+/** Creates the public Arrow schema from FlatGeobuf header metadata. */
+export function makeArrowSchema(header: FlatGeobufHeader | any): Schema {
+  const fields: Field[] = header.columns.map(column => ({
+    name: column.name,
+    type: getArrowType(column.type),
+    nullable: column.nullable,
+    metadata: {
+      title: column.title || '',
+      description: column.description || '',
+      width: String(column.width),
+      precision: String(column.precision),
+      scale: String(column.scale),
+      unique: String(column.unique),
+      primary_key: String(column.primaryKey)
+    }
+  }));
+  fields.push(makeWKBGeometryField(GEOMETRY_COLUMN_NAME));
+  const schema: Schema = {
+    fields,
+    metadata: {
+      title: header.title || '',
+      description: header.description || '',
+      crs: JSON.stringify(header.crs || {}),
+      metadata: header.metadata || '',
+      geometryType: String(header.geometryType),
+      indexNodeSize: String(header.indexNodeSize),
+      featureCount: String(header.featuresCount),
+      bounds: header.envelope?.join(',') || ''
+    }
+  };
+  setWKBGeometryColumnMetadata(schema.metadata!, {
+    geometryColumnName: GEOMETRY_COLUMN_NAME,
+    geometryTypes: [getGeometryType(header.geometryType, header.hasZ)]
+  });
+  return schema;
+}
+
+/** Encodes one legacy source-loader feature as a WKB Arrow object row. */
+export function makeArrowRow(feature: Feature, _header?: unknown): Record<string, unknown> {
+  return {
+    ...(feature.properties || {}),
+    [GEOMETRY_COLUMN_NAME]: encodeWKBGeometryValue(feature.geometry)
+  };
+}
+
+function makeGeoJsonTable(arrayBuffer: ArrayBuffer, options: ParseFlatGeobufOptions) {
+  const header = readFlatGeobufHeader(arrayBuffer);
+  let features: Feature[] = [];
+  for (const feature of readFlatGeobufFeatures(arrayBuffer, header)) {
+    if (!matchesBoundingBox(arrayBuffer, feature.geometryOffset, header, options.boundingBox))
+      continue;
+    features.push({
+      type: 'Feature',
+      properties: feature.properties,
+      geometry: decodeFlatGeobufGeometry(arrayBuffer, feature.geometryOffset, header)
+    });
+  }
+  const projection = getProjection(header, options.reproject, options.crs || 'WGS84');
+  if (projection)
+    features = transformGeoJsonCoords(features, coordinates => projection.project(coordinates));
+  return {
+    shape: 'geojson-table' as const,
+    schema: makePropertySchema(header),
+    type: 'FeatureCollection' as const,
+    features
+  };
+}
+
+function throwIfAborted(signal?: AbortSignal): void {
+  if (signal?.aborted) {
+    const error = new Error('Aborted');
+    error.name = 'AbortError';
+    throw error;
+  }
+}
+
+function getGeometryType(type: FlatGeobufGeometryType, hasZ: boolean): GeoParquetGeometryType {
+  const names: Record<FlatGeobufGeometryType, string> = {
+    0: 'Geometry',
+    1: 'Point',
+    2: 'LineString',
+    3: 'Polygon',
+    4: 'MultiPoint',
+    5: 'MultiLineString',
+    6: 'MultiPolygon',
+    7: 'GeometryCollection'
+  };
+  return `${names[type]}${hasZ ? ' Z' : ''}` as GeoParquetGeometryType;
+}
+function getArrowType(type: FlatGeobufColumnType): Field['type'] {
+  switch (type) {
+    case FlatGeobufColumnType.Byte:
+      return 'int8';
+    case FlatGeobufColumnType.UByte:
+      return 'uint8';
+    case FlatGeobufColumnType.Bool:
+      return 'bool';
+    case FlatGeobufColumnType.Short:
+      return 'int16';
+    case FlatGeobufColumnType.UShort:
+      return 'uint16';
+    case FlatGeobufColumnType.Int:
+      return 'int32';
+    case FlatGeobufColumnType.UInt:
+      return 'uint32';
+    case FlatGeobufColumnType.Long:
+      return 'int64';
+    case FlatGeobufColumnType.ULong:
+      return 'uint64';
+    case FlatGeobufColumnType.Float:
+      return 'float32';
+    case FlatGeobufColumnType.Double:
+      return 'float64';
+    case FlatGeobufColumnType.String:
+    case FlatGeobufColumnType.Json:
+      return 'utf8';
+    case FlatGeobufColumnType.DateTime:
+      return 'date-millisecond';
+    case FlatGeobufColumnType.Binary:
+      return 'binary';
+    default:
+      return 'null';
+  }
+}
+export function getProjection(
+  header: FlatGeobufHeader | any,
+  reproject = false,
+  crs: Proj4CRSDefinition = 'WGS84'
+): Proj4Projection | undefined {
+  if (!reproject) return undefined;
+  const sourceCrs = header.crs?.wkt || getFlatGeobufCRSIdentifier(header.crs);
+  if (!sourceCrs) {
+    throw new Error('FlatGeobuf reprojection requires a source CRS in the file header');
+  }
+  try {
+    return new Proj4Projection({from: sourceCrs, to: crs});
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`FlatGeobuf reprojection failed: ${message}`);
+  }
+}
+function matchesBoundingBox(
+  arrayBuffer: ArrayBuffer,
+  geometryOffset: number | undefined,
+  header: FlatGeobufHeader,
+  boundingBox?: [[number, number], [number, number]]
+): boolean {
+  if (!boundingBox) return true;
+  const bounds = getFlatGeobufGeometryBounds(arrayBuffer, geometryOffset, header);
+  return Boolean(
+    bounds &&
+      bounds[2] >= boundingBox[0][0] &&
+      bounds[0] <= boundingBox[1][0] &&
+      bounds[3] >= boundingBox[0][1] &&
+      bounds[1] <= boundingBox[1][1]
+  );
+}
+function makePropertySchema(header: FlatGeobufHeader): Schema {
+  const schema = makeArrowSchema(header);
+  return {...schema, fields: schema.fields.slice(0, -1)};
 }

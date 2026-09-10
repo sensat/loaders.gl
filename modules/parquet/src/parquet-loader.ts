@@ -2,165 +2,114 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {LoaderWithParser} from '@loaders.gl/loader-utils';
+import {BlobFile, concatenateArrayBuffersAsync} from '@loaders.gl/loader-utils';
 import type {
   ObjectRowTable,
   ObjectRowTableBatch,
-  GeoJSONTable,
-  GeoJSONTableBatch,
-  ColumnarTable,
-  ColumnarTableBatch
+  ArrowTable,
+  ArrowTableBatch
 } from '@loaders.gl/schema';
-import {BlobFile} from '@loaders.gl/loader-utils';
+import type {ReadableFile} from '@loaders.gl/loader-utils';
 
-import {parseParquetFile, parseParquetFileInBatches} from './lib/parsers/parse-parquet';
-import {parseGeoParquetFile, parseGeoParquetFileInBatches} from './lib/parsers/parse-geoparquet';
 import {
-  parseParquetFileInColumns,
-  parseParquetFileInColumnarBatches
-} from './lib/parsers/parse-parquet-to-columns';
+  convertArrowBatchToObjectRows,
+  convertArrowTableToObjectRows
+} from './lib/parsers/convert-parquet-tables';
+import {
+  parseParquetFileToArrow,
+  parseParquetFileToArrowInBatches
+} from './lib/parsers/parse-parquet-to-arrow';
+import {normalizeParquetOptions} from './lib/utils/normalize-parquet-options';
+import {
+  deserializeParquetWorkerResult,
+  serializeParquetWorkerResult
+} from './lib/parquet-worker-transport';
+import {ParquetLoader as ParquetLoaderMetadata} from './parquet-loader-types';
+import type {ParquetLoaderOptions} from './parquet-loader-options';
 
-// Note: The Buffer polyfill is quite fragile
-// For some reason, just exporting directly fails with some bundlers
-// export {Buffer} from './polyfills/buffer/install-buffer-polyfill';
-import {Buffer} from './polyfills/buffer/install-buffer-polyfill';
-export {Buffer};
+export type {ParquetLoaderOptions} from './parquet-loader-options';
 
-// __VERSION__ is injected by babel-plugin-version-inline
-// @ts-ignore TS2304: Cannot find name '__VERSION__'.
-const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
+const {preload: _ParquetLoaderPreload, ...ParquetLoaderMetadataWithoutPreload} =
+  ParquetLoaderMetadata;
 
-/** Options for the parquet loader */
-export type ParquetLoaderOptions = LoaderOptions & {
-  /** Options for the parquet loader */
-  parquet?: {
-    /** Format of returned parsed data */
-    shape?: 'object-row-table' | 'geojson-table';
-    /** Restrict which columns that are parsed from the table. Can save significant memory. */
-    columnList?: string[] | string[][];
-    /** If true, binary values are not converted to strings */
-    preserveBinary?: boolean;
-    /**  @deprecated not used? Set to true to indicate that this is a geoparquet file. */
-    geoparquet?: boolean;
-    /** @deprecated URL to override loaders.gl/core parser system */
-    url?: string;
-  };
-};
+/** WASM-backed Parquet table loader supporting object-row and Arrow table output. */
+export const ParquetLoaderWithParser = {
+  ...ParquetLoaderMetadataWithoutPreload,
+  parse(arrayBuffer: ArrayBuffer, options?: ParquetLoaderOptions) {
+    return parseParquetTable(new BlobFile(arrayBuffer), options);
+  },
+  parseFile(file, options?: ParquetLoaderOptions) {
+    return parseParquetTable(file, options);
+  },
+  parseFileInBatches(file, options?: ParquetLoaderOptions) {
+    return parseParquetTableInBatches(file, options);
+  },
+  async *parseInBatches(
+    asyncIterator:
+      | AsyncIterable<ArrayBufferLike | ArrayBufferView>
+      | Iterable<ArrayBufferLike | ArrayBufferView>,
+    options?: ParquetLoaderOptions,
+    _context?: unknown
+  ) {
+    const arrayBuffer = await concatenateArrayBuffersAsync(asyncIterator);
+    yield* parseParquetTableInBatches(new BlobFile(arrayBuffer), options);
+  },
+  serializeWorkerResult: serializeParquetWorkerResult,
+  deserializeWorkerResult: deserializeParquetWorkerResult
+} as const satisfies LoaderWithParser<
+  ObjectRowTable | ArrowTable,
+  ObjectRowTableBatch | ArrowTableBatch,
+  ParquetLoaderOptions
+>;
 
 /**
- * ParquetJS table loader
+ * Parses a Parquet file using the canonical WASM-backed table loader.
+ * @param file readable file abstraction
+ * @param options optional loader options
+ * @returns object-row or Arrow table output depending on `parquet.shape`
  */
-export const ParquetWorkerLoader = {
-  dataType: null as unknown as ObjectRowTable,
-  batchType: null as unknown as ObjectRowTableBatch,
+async function parseParquetTable(
+  file: BlobFile | ReadableFile,
+  options?: ParquetLoaderOptions
+): Promise<ObjectRowTable | ArrowTable> {
+  const parquetOptions = getParquetOptions(options);
 
-  name: 'Apache Parquet',
-  id: 'parquet',
-  module: 'parquet',
-  version: VERSION,
-  worker: false,
-  category: 'table',
-  extensions: ['parquet'],
-  mimeTypes: ['application/octet-stream'],
-  binary: true,
-  tests: ['PAR1', 'PARE'],
-  options: {
-    parquet: {
-      shape: 'object-row-table',
-      columnList: [],
-      geoparquet: true,
-      url: undefined,
-      preserveBinary: false
-    }
+  if (parquetOptions.parquet?.shape === 'arrow-table') {
+    return await parseParquetFileToArrow(file, parquetOptions.parquet);
   }
-} as const satisfies Loader<ObjectRowTable, ObjectRowTableBatch, ParquetLoaderOptions>;
 
-/** ParquetJS table loader */
-export const ParquetLoader = {
-  ...ParquetWorkerLoader,
+  const arrowTable = await parseParquetFileToArrow(file, parquetOptions.parquet);
+  return convertArrowTableToObjectRows(arrowTable);
+}
 
-  dataType: null as unknown as ObjectRowTable | GeoJSONTable,
-  batchType: null as unknown as ObjectRowTableBatch | GeoJSONTableBatch,
+/**
+ * Parses a Parquet file into streamed table batches using the canonical WASM-backed loader.
+ * @param file readable file abstraction
+ * @param options optional loader options
+ * @returns async iterable of object-row or Arrow batches
+ */
+async function* parseParquetTableInBatches(
+  file: BlobFile | ReadableFile,
+  options?: ParquetLoaderOptions
+): AsyncIterable<ObjectRowTableBatch | ArrowTableBatch> {
+  const parquetOptions = getParquetOptions(options);
 
-  parse: (arrayBuffer: ArrayBuffer, options?: ParquetLoaderOptions) =>
-    parseParquetFile(new BlobFile(arrayBuffer), options),
-
-  parseFile: parseParquetFile,
-  parseFileInBatches: parseParquetFileInBatches
-} as const satisfies LoaderWithParser<
-  ObjectRowTable | GeoJSONTable,
-  ObjectRowTableBatch | GeoJSONTableBatch,
-  ParquetLoaderOptions
->;
-
-// Defeat tree shaking
-// @ts-ignore
-ParquetLoader.Buffer = Buffer;
-
-export const GeoParquetWorkerLoader = {
-  dataType: null as unknown as GeoJSONTable,
-  batchType: null as unknown as GeoJSONTableBatch,
-
-  name: 'Apache Parquet',
-  id: 'parquet',
-  module: 'parquet',
-  version: VERSION,
-  worker: true,
-  category: 'table',
-  extensions: ['parquet'],
-  mimeTypes: ['application/octet-stream'],
-  binary: true,
-  tests: ['PAR1', 'PARE'],
-  options: {
-    parquet: {
-      shape: 'geojson-table',
-      columnList: [],
-      geoparquet: true,
-      url: undefined,
-      preserveBinary: false
-    }
+  if (parquetOptions.parquet?.shape === 'arrow-table') {
+    yield* parseParquetFileToArrowInBatches(file, parquetOptions.parquet);
+    return;
   }
-} as const satisfies Loader<GeoJSONTable, GeoJSONTableBatch, ParquetLoaderOptions>;
 
-/** ParquetJS table loader */
-export const GeoParquetLoader = {
-  ...GeoParquetWorkerLoader,
+  for await (const batch of parseParquetFileToArrowInBatches(file, parquetOptions.parquet)) {
+    yield convertArrowBatchToObjectRows(batch);
+  }
+}
 
-  parse(arrayBuffer: ArrayBuffer, options?: ParquetLoaderOptions) {
-    return parseGeoParquetFile(new BlobFile(arrayBuffer), options);
-  },
-  parseFile: parseGeoParquetFile,
-  parseFileInBatches: parseGeoParquetFileInBatches
-} as const satisfies LoaderWithParser<
-  ObjectRowTable | GeoJSONTable,
-  ObjectRowTableBatch | GeoJSONTableBatch,
-  ParquetLoaderOptions
->;
-
-/** @deprecated Test to see if we can improve perf of parquetjs loader */
-export const ParquetColumnarWorkerLoader = {
-  dataType: null as any as ColumnarTable,
-  batchType: null as any as ColumnarTableBatch,
-
-  name: 'Apache Parquet',
-  id: 'parquet',
-  module: 'parquet',
-  version: VERSION,
-  worker: true,
-  category: 'table',
-  extensions: ['parquet'],
-  mimeTypes: ['application/octet-stream'],
-  binary: true,
-  tests: ['PAR1', 'PARE'],
-  options: ParquetLoader.options
-} as const satisfies Loader<ColumnarTable, ColumnarTableBatch, ParquetLoaderOptions>;
-
-/** @deprecated Test to see if we can improve perf of parquetjs loader */
-export const ParquetColumnarLoader = {
-  ...ParquetColumnarWorkerLoader,
-  parse(arrayBuffer: ArrayBuffer, options?: ParquetLoaderOptions) {
-    return parseParquetFileInColumns(new BlobFile(arrayBuffer), options);
-  },
-  parseFile: parseParquetFileInColumns,
-  parseFileInBatches: parseParquetFileInColumnarBatches
-} as const satisfies LoaderWithParser<ColumnarTable, ColumnarTableBatch, ParquetLoaderOptions>;
+/**
+ * Normalizes caller options for the canonical WASM-backed Parquet loaders.
+ * @param options caller-supplied loader options
+ * @returns normalized loader options
+ */
+export function getParquetOptions(options?: ParquetLoaderOptions): ParquetLoaderOptions {
+  return normalizeParquetOptions(options, ParquetLoaderWithParser.options.parquet);
+}

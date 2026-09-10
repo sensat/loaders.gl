@@ -1,6 +1,64 @@
-# GeoJSONLoader
+---
+title: GeoJSONLoader
+description: Stream or decode GeoJSON features into familiar geometry and table shapes.
+hide_title: true
+page_style: designed
+---
+
+import {JsonDocsTabs} from '@site/src/components/docs/json-docs-tabs';
+import {GeoArrowFlowGraphic} from '@site/src/components/docs/geoarrow-flow-graphic';
+import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
+import {DocLiveExample} from '@site/src/components/docs/doc-live-example';
+import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
+import {ClientExample} from '@site/src/components';
+
+<DocPageHeader
+  eyebrow="GeoJSON loader"
+  title="GeoJSONLoader"
+  description="GeoJSONLoader preserves the familiar feature and geometry model while supporting binary geometry, Arrow tables, and incremental parsing for larger documents."
+  tone="cyan"
+  logos={[{alt: 'GeoJSON', src: '/images/format-logos/geojson-logo.svg'}]}
+  meta={['RFC 7946', 'Streaming parser', 'Arrow and binary output']}
+  links={[
+    {label: 'GeoJSON format', to: '/docs/modules/json/formats/geojson'},
+    {label: 'JSON module', to: '/docs/modules/json'}
+  ]}
+/>
+
+<DocLiveExample label="GeoJSONLoader map example" height="420px">
+  <ClientExample kind="geospatial" format="GeoJSON" />
+</DocLiveExample>
+
+<JsonDocsTabs active="geojsonloader" tryItHref="/examples/geospatial/geojson" />
+
+<GeoArrowFlowGraphic />
+
+<DocOrientation
+  eyebrow="One loader, several useful shapes"
+  title="Use objects for clarity and columns for throughput."
+  description="Choose the output that matches the next stage of the application. The source document stays GeoJSON; the returned representation can be convenient objects or typed binary columns."
+  tone="cyan"
+  items={[
+    {label: 'Features', value: 'GeoJSON table for mapping and inspection'},
+    {label: 'Binary', value: 'Compact geometry buffers'},
+    {label: 'Arrow', value: 'Typed columns with WKB geometry'},
+    {label: 'Batches', value: 'Incremental results for NDJSON and large inputs'}
+  ]}
+/>
+
+<p className="badges">
+  <img src="https://img.shields.io/badge/From-v1.0-blue.svg?style=flat-square" alt="From-v1.0" />
+</p>
 
 Streaming loader for GeoJSON encoded files.
+
+<ReferenceBoundary
+  title="GeoJSON usage and output shapes"
+  description="The sections below cover simple loading, alternate shapes, streaming, reprojection, and loader options."
+  tone="cyan"
+/>
+
+GeoJSON is a geospatial interchange format that uses JSON encoding. Use `GeoJSONLoader` for GeoJSON semantics such as features, geometries, feature collections, and GeoArrow WKB output; use `JSONLoader` for arbitrary JSON documents.
 
 | Loader         | Characteristic                                       |
 | -------------- | ---------------------------------------------------- |
@@ -15,23 +73,43 @@ Streaming loader for GeoJSON encoded files.
 
 ## Usage
 
-For simple usage, you can load and parse a JSON file atomically:
+For simple usage, load a GeoJSON `FeatureCollection` as a loaders.gl `GeoJSONTable`:
 
 ```typescript
 import {GeoJSONLoader} from '@loaders.gl/json';
 import {load} from '@loaders.gl/core';
 
-const data = await load(url, GeoJSONLoader, {json: options});
+const data = await load(url, GeoJSONLoader);
 ```
 
-For larger files, GeoJSONLoader supports streaming JSON parsing, in which case it will yield "batches" of rows from one array.
-To parse a stream of GeoJSON, the user can specify the `options.json.jsonpaths` to stream the `features` array.
+Use `geojson.shape` to request a different output shape.
+
+```typescript
+const binary = await load(url, GeoJSONLoader, {
+  geojson: {shape: 'binary-feature-collection'}
+});
+
+const arrowTable = await load(url, GeoJSONLoader, {
+  geojson: {shape: 'arrow-table'}
+});
+```
+
+`geojson.shape: 'arrow-table'` converts GeoJSON features to a GeoArrow-compatible Arrow table. Feature `properties` become regular columns and the geometry is written to a binary `geometry` column with `geoarrow.wkb` metadata by default. Set `geoarrow.encodingPreference` to `'optimized'` for native coordinate buffers or to `'geoarrow.geometry'` for a stable dense union. Use `json.geoarrowGeometryColumn` to choose a different geometry column name.
+
+```typescript
+const nativeTable = await load(url, GeoJSONLoader, {
+  geojson: {shape: 'arrow-table'},
+  geoarrow: {encodingPreference: 'optimized'}
+});
+```
+
+For larger files, GeoJSONLoader supports streaming JSON parsing, in which case it yields batches of rows from one array. By default, streamed GeoJSON reads `$.features`. You can override `options.json.jsonpaths` when the feature array is stored elsewhere.
 
 ```typescript
 import {GeoJSONLoader} from '@loaders.gl/json';
 import {loadInBatches} from '@loaders.gl/core';
 
-const batches = await loadInBatches('geojson.json', GeoJSONLoader, {json: {jsonpaths: ['$.features']}});
+const batches = await loadInBatches('geojson.json', GeoJSONLoader);
 
 for await (const batch of batches) {
   // batch.data will contain a number of rows
@@ -43,8 +121,6 @@ for await (const batch of batches) {
   }
 }
 ```
-
-If no JSONPath is specified the loader will stream the first array it encounters in the JSON payload.
 
 When batch parsing an embedded JSON array as a table, it is possible to get access to the containing object supplying the `{metadata: true}` option.
 
@@ -62,7 +138,7 @@ for await (const batch of batches) {
     case 'final-result': // contains all fields except the streamed array
       console.log(batch.container);
       break;
-    case 'data:
+    case 'data':
       // batch.data will contain a number of rows
       for (const feature of batch.data) {
         switch (feature.geometry.type) {
@@ -96,18 +172,20 @@ Supports table category options such as `batchType` and `batchSize`.
 
 | Option                 | From                                                                                  | Type       | Default                                                                                                                                          | Description                                                                                                                           |
 | ---------------------- | ------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `json.table`           | [![Website shields.io](https://img.shields.io/badge/v2.0-blue.svg?style=flat-square)] | `boolean`  | `false`                                                                                                                                          | Parses non-streaming JSON as table, i.e. return the first embedded array in the JSON. Always `true` during batched/streaming parsing. |
-| `json.jsonpaths`       | [![Website shields.io](https://img.shields.io/badge/v2.2-blue.svg?style=flat-square)] | `string[]` | `[]`                                                                                                                                             | A list of JSON paths (see below) indicating the array that can be streamed.                                                           |
+| `geojson.shape`        |                                                                                       | `string`   | `'geojson-table'`                                                                                                                                | Requested output shape. Supported values are `'geojson-table'`, `'binary-feature-collection'`, and `'arrow-table'`. |
+| `json.schema`          |                                                                                       | `Schema \| arrow.Schema` | `undefined`                                                                                                                             | Optional full output schema used when `geojson.shape` is `'arrow-table'`. The schema must include the geometry column. |
+| `json.arrowConversion` |                                                                                       | `object`   | `{onTypeMismatch: 'error', onMissingField: 'error', onExtraField: 'error', integerConversion: 'error', logRecoveries: true}`                                                  | Optional Arrow conversion policy for `geojson.shape: 'arrow-table'`. `onTypeMismatch: 'null'`, `onMissingField: 'null'`, and `integerConversion: 'null'` write `null` only for nullable fields. `onExtraField: 'drop'` omits fields that are not in the schema. `integerConversion: 'clamp-and-round'` applies lossy integer conversion, and `'warn'` does the same while logging. |
+| `json.arrowConversion.viewTypes` |                                                                                | `'never' \| 'prefer' \| 'require'` | `'never'`                                                                                                                        | Controls whether supported Arrow runtimes emit `BinaryView` and `Utf8View`, with fallback in `'prefer'` mode. |
+| `json.geoarrowGeometryColumn` |                                                                                 | `string`   | `'geometry'`                                                                                                                                     | Geometry column name used for GeoArrow WKB output. Requires `geojson.shape: 'arrow-table'`. |
+| `geoarrow.encodingPreference` |                                                                                 | `'geoarrow.wkb' \| 'geoarrow.geometry' \| 'optimized'` | `'geoarrow.wkb'` | Arrow geometry representation. WKB is compact and compatible; `geoarrow.geometry` is a stable dense union; `optimized` selects a concrete native encoding for homogeneous data and a dense union for mixed data. |
+| `json.jsonpaths`       | [![Website shields.io](https://img.shields.io/badge/v2.2-blue.svg?style=flat-square)] | `string[]` | `['$.features']`                                                                                                                                 | A list of JSON paths (see below) indicating the array that can be streamed.                                                           |
 | `metadata` (top level) | [![Website shields.io](https://img.shields.io/badge/v2.2-blue.svg?style=flat-square)] | `boolean`  | If `true`, yields an initial and final batch containing the partial and final result (i.e. the root object, excluding the array being streamed). |
 
 ## JSONPaths
 
-A minimal subset of the JSONPath syntax is supported, to specify which array in a JSON object should be streamed as batchs.
+The loader implements a focused subset of the [IETF JSONPath specification (RFC 9535)](https://www.rfc-editor.org/rfc/rfc9535). See the [JSONPath support table](../jsonpath.md) for the full list of supported and unsupported features.
 
-`$.component1.component2.component3`
-
-- No support for wildcards, brackets etc. Only paths starting with `$` (JSON root) are supported.
-- Regardless of the paths provided, only arrays will be streamed.
+JSONPaths are used only to identify which array should be streamed, so selectors such as `$.features[*]` and `$.features[:]` are normalized to `$.features`. Descendant operators, element indexes, filters, and unions are not supported. Regardless of the paths provided, only arrays will be streamed.
 
 ## Attribution
 

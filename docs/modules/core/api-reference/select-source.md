@@ -1,11 +1,50 @@
-# selectSource 🚧
+---
+title: selectSource
+description: Choose the best source loader from a supplied list using URLs, MIME types, and format signatures.
+hide_title: true
+page_style: designed
+---
 
-<p class="badges">
-  <img src="https://img.shields.io/badge/From-v4.3-blue.svg?style=flat-square" alt="From-v2.2" /> 
+import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
+import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
+
+<DocPageHeader
+  eyebrow="Core API / source selection"
+  title="Choose a source without hard-coding every URL."
+  description="selectSource() makes a best-effort choice from the source loaders an application provides. It combines URL hints, MIME types, and format signatures while keeping the candidate list under application control."
+  tone="cyan"
+  meta={['URL and MIME hints', 'Magic-byte detection', 'Explicit candidates']}
+  links={[
+    {label: 'Core module', to: '/docs/modules/core'},
+    {label: 'Using sources', to: '/docs/developer-guide/using-sources'},
+    {label: 'Source manager', to: '/docs/modules/loader-utils/api-reference/data-source-manager'}
+  ]}
+/>
+
+<DocOrientation
+  eyebrow="Source detection"
+  title="Automatic selection, explicit scope."
+  description="Selection is useful when a URL may point to several supported formats, but the application still decides which source loaders are allowed and whether failure should be reported."
+  tone="cyan"
+  items={[
+    {label: 'Candidates', value: 'Pass one source loader or a deliberately scoped list.'},
+    {label: 'Hints', value: 'Use extensions, MIME types, and initial bytes when available.'},
+    {label: 'Override', value: 'Force a type only when that source is in the candidate list.'},
+    {label: 'Failure', value: 'Return null with nothrow or raise a useful selection error.'}
+  ]}
+/>
+
+<ReferenceBoundary
+  title="selectSource reference"
+  description="The detailed reference covers synchronous and asynchronous selection, detection order, candidate lists, overrides, and failure behavior."
+  tone="cyan"
+/>
+
+<p className="badges">
+  <img src="https://img.shields.io/badge/From-v4.2-blue.svg?style=flat-square" alt="From v4.2" />
 </p>
 
-The `selectSource()` and `selectSourceSync()` functions will automatically select
-an appropriate source for a specific url or Blob. `selectSource()` is called by the
+The `selectSource()` function will make a "best effort" to select an appropriate source for a specific url or Blob. `selectSource()` is called internally by the
 `createDataSource()` and `createDataSourceSync()` functions, but can also be called directly from applications.
 
 Source selection heuristics are based on:
@@ -16,19 +55,23 @@ Source selection heuristics are based on:
 
 ## Usage
 
-Select a source from a list of provided sources:
+Select a source from a list of provided sources (best effort):
 
 ```typescript
 import {selectSourceSync} from '@loaders.gl/core';
-import {PMTilesSource} from '@loaders.gl/pmtiles';
-import {MVTSource} from '@loaders.gl/csv';
+import {PMTilesSourceLoader} from '@loaders.gl/pmtiles';
+import {MVTSourceLoader} from '@loaders.gl/csv';
 
-selectSourceSync('filename.pmtiles', [PMTilesSource, MVTSource]); // => PMTilesSource
+selectSourceSync('filename.pmtiles', [PMTilesSourceLoader, MVTSourceLoader]); // => PMTilesSourceLoader
 ```
 
 ## Functions
 
-### `selectSource(data: String | Blob, ..., sources?: Source[], options?): Promise<Source | null>`
+### selectSource()
+
+```ts
+selectSource(data: String | Blob, ..., sources?: Source[], options?): Promise<Source | null>`
+```
 
 Selects an appropriate source for a file from a list of candidate sources by examining the `data` parameter, looking at URL extension, mimeType ('Content-Type') and/or an initial data chunk.
 
@@ -53,22 +96,12 @@ Regarding the `sources` parameter:
 - a `null` source list will use the pre-registered list of sources.
 - A supplied list of sources will be searched for a matching source.
 
-### `selectSourceSync(data: Promise<String | Blob>, ..., sources?: Source[], options?: DataSourceOptions): Source | null`
+## Supported Data Formats
 
-## Supported Formats
+The acceptable types for `data` are inferred from the supplied loaders and may include:
 
-- strings / non-data urls:
-- strings / data urls: The mime type will be extracted from the data url prologue (if available)
-- fetch `Response` objects: `url` and `headers.get('Content-Type')` fields will be used.
+- strings / data urls
 - `File` and `Blob` objects:
-
-Peeking into batched input sources is not supported directly by `selectSource`:
-
-- `Response`: Avoids requesting initial data to make sure the response body is not marked as used.
-- `Stream`: It is not possible to non-destructively peek into a stream.
-- `Iterator/AsyncIterator`: it is not possible to peek into an iterator.
-
-Instead use helpers to get access to initialContents and pass it in separately.
 
 ## MIME types
 
@@ -77,4 +110,3 @@ If the standard MIME types for each format are not precise enough, sources.gl al
 ## Remarks
 
 - File extensions - An attempt will be made to extract a file extension by stripping away query parameters and base path before matching against known source extensions.
-- Stream autodetection - Currently not well supported.

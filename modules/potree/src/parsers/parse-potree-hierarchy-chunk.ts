@@ -1,8 +1,12 @@
+// SPDX-License-Identifier: BSD-2-Clause
+
 // This file is derived from the Cesium code base under BSD 2-clause license
 // See LICENSE.md and https://github.com/potree/potree/blob/develop/LICENSE
 
 // Potree Hierarchy Chunk file format
 // https://github.com/potree/potree/blob/develop/docs/potree-file-format.md#index-files
+
+import type {HierarchyItem} from '../types/potree-metadata';
 
 /*
 ### Hierarchy Chunk Files
@@ -66,6 +70,8 @@ export type POTreeTileHeader = {
 
 /** Hierarchical potree node structure */
 export type POTreeNode = {
+  id: string;
+  type: 'pointcloud';
   /** Index data */
   header: POTreeTileHeader;
   /** Human readable name */
@@ -82,6 +88,14 @@ export type POTreeNode = {
   children: POTreeNode[];
   /** All children including unavailable */
   childrenByIndex: POTreeNode[];
+  /** Is tile selected for rendering */
+  selected: boolean;
+  /** Points content data */
+  content?: unknown;
+  /** Is content loading */
+  isContentLoading?: boolean;
+  /** Viewport Ids */
+  viewportIds: unknown[];
 };
 
 /**
@@ -92,6 +106,68 @@ export type POTreeNode = {
 export function parsePotreeHierarchyChunk(arrayBuffer: ArrayBuffer): POTreeNode {
   const tileHeaders = parseBinaryChunk(arrayBuffer);
   return buildHierarchy(tileHeaders);
+}
+
+/**
+ * Builds a Potree hierarchy tree from older `cloud.js` inline hierarchy metadata.
+ * @param hierarchy - inline hierarchy items from Potree 1.4 style metadata
+ * @param options - hierarchy construction options
+ * @returns root node
+ */
+export function buildPotreeHierarchyFromMetadata(
+  hierarchy: HierarchyItem[],
+  options: {spacing?: number} = {}
+): POTreeNode {
+  const nodesByName = new Map<string, POTreeNode>();
+
+  for (const [potreeName, pointCount] of hierarchy) {
+    const name = getInternalNodeName(potreeName);
+    nodesByName.set(name, {
+      id: name,
+      type: 'pointcloud',
+      header: {
+        childCount: 0,
+        childMask: 0,
+        name: potreeName
+      },
+      name,
+      pointCount,
+      level: 0,
+      hasChildren: false,
+      spacing: 0,
+      children: [],
+      childrenByIndex: [],
+      selected: false,
+      viewportIds: []
+    });
+  }
+
+  if (!nodesByName.has('')) {
+    throw new Error('Inline Potree hierarchy is missing root node r');
+  }
+
+  for (const name of nodesByName.keys()) {
+    if (!name) {
+      continue;
+    }
+
+    const childIndex = Number(name[name.length - 1]);
+    const parentName = name.slice(0, -1);
+    const parentNode = nodesByName.get(parentName);
+    if (!parentNode) {
+      throw new Error(`Inline Potree hierarchy is missing parent node r${parentName}`);
+    }
+    parentNode.header.childMask |= 1 << childIndex;
+    parentNode.header.childCount++;
+  }
+
+  const flatNodes = Array.from(nodesByName.values()).sort((leftNode, rightNode) => {
+    return (
+      leftNode.name.length - rightNode.name.length || leftNode.name.localeCompare(rightNode.name)
+    );
+  });
+
+  return buildHierarchy(flatNodes, options);
 }
 
 /**
@@ -156,6 +232,13 @@ function decodeRow(dataView: DataView, byteOffset: number, tileHeader: POTreeNod
   return byteOffset;
 }
 
+/**
+ * Converts Potree public node ids (`r`, `r123`) to internal node names (``, `123`).
+ */
+function getInternalNodeName(potreeName: string): string {
+  return potreeName === 'r' ? '' : potreeName.replace(/^r/, '');
+}
+
 /** Resolves the binary rows into a hierarchy (tree structure) */
 function buildHierarchy(flatNodes: POTreeNode[], options: {spacing?: number} = {}): POTreeNode {
   const DEFAULT_OPTIONS = {spacing: 100}; // TODO assert instead of default?
@@ -170,7 +253,7 @@ function buildHierarchy(flatNodes: POTreeNode[], options: {spacing?: number} = {
     const index = parseInt(name.charAt(name.length - 1), 10);
     const parentName = name.substring(0, name.length - 1);
     const parentNode = nodes[parentName];
-    const level = name.length - 1;
+    const level = name.length;
     // assert(parentNode && level >= 0);
 
     node.level = level;
@@ -178,6 +261,8 @@ function buildHierarchy(flatNodes: POTreeNode[], options: {spacing?: number} = {
     node.children = [];
     node.childrenByIndex = new Array(8).fill(null);
     node.spacing = (options?.spacing || 0) / Math.pow(2, level);
+    node.type = 'pointcloud';
+    node.id = node.name;
     // tileHeader.boundingVolume = Utils.createChildAABB(parentNode.boundingBox, index);
 
     if (parentNode) {

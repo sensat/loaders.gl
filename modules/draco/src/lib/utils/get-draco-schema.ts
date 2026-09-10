@@ -1,4 +1,9 @@
-import {deduceMeshField, MeshAttribute, Schema, Field} from '@loaders.gl/schema';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
+import {MeshAttribute, Schema, Field} from '@loaders.gl/schema';
+import {deduceMeshField, makeMeshAttributeMetadata} from '@loaders.gl/schema-utils';
 import type {DracoAttribute, DracoLoaderData, DracoMetadataEntry} from '../draco-types';
 
 /** Extract an arrow-like schema from a Draco mesh */
@@ -42,7 +47,10 @@ function getArrowFieldFromAttribute(
   attribute: MeshAttribute,
   loaderData?: DracoAttribute
 ): Field {
-  const metadataMap = loaderData ? makeMetadata(loaderData.metadata) : undefined;
+  const metadataMap = {
+    ...makeMeshAttributeMetadata(attribute),
+    ...(loaderData ? makeMetadata(loaderData.metadata) : {})
+  };
   const field = deduceMeshField(attributeName, attribute, metadataMap);
   return field;
 }

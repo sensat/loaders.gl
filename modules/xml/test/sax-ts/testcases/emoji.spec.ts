@@ -1,14 +1,9 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-// Forked from sax-ts & sax under ISC license
-
-import test from 'tape-promise/tape';
+// SPDX-License-Identifier: ISC
+import {test} from 'vitest';
 import {testSax} from '../utils/test-utils';
-
 // split high-order numeric attributes into surrogate pairs
-test('SAXParser#emoji', (t) => {
-  testSax(t, {
+test('SAXParser#emoji', () => {
+  testSax({
     xml: '<a>&#x1f525;</a>',
     expect: [
       ['opentagstart', {name: 'A', attributes: {}}],
@@ -20,6 +15,4 @@ test('SAXParser#emoji', (t) => {
       strict: false
     }
   });
-
-  t.end();
 });

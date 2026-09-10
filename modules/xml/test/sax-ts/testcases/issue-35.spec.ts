@@ -1,14 +1,9 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-// Forked from sax-ts & sax under ISC license
-
-import test from 'tape-promise/tape';
+// SPDX-License-Identifier: ISC
+import {test} from 'vitest';
 import {testSax} from '../utils/test-utils';
-
 // https://github.com/isaacs/sax-js/issues/35
-test('SAXParser#issue-35', (t) => {
-  testSax(t, {
+test('SAXParser#issue-35', () => {
+  testSax({
     xml: '<xml>&#Xd;&#X0d;\n</xml>',
     expect: [
       ['opentagstart', {name: 'xml', attributes: {}}],
@@ -20,6 +15,4 @@ test('SAXParser#issue-35', (t) => {
       strict: true
     }
   });
-
-  t.end();
 });

@@ -2,13 +2,29 @@ import styled from 'styled-components';
 import {isMobile} from '../common';
 
 export const Banner = styled.section`
+  background: linear-gradient(135deg, #0c1a29 0%, #163b55 52%, #126f92 100%);
+  color: var(--ifm-color-white);
+  height: 460px;
+  isolation: isolate;
   position: relative;
-  height: 30rem;
-  background: var(--ifm-color-gray-400);
-  color: var(--ifm-color-gray-900);
   z-index: 0;
+
+  &::after {
+    background: linear-gradient(
+      90deg,
+      rgba(10, 20, 32, 0.92) 0%,
+      rgba(10, 20, 32, 0.58) 46%,
+      rgba(10, 20, 32, 0.2) 100%
+    );
+    content: '';
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: 1;
+  }
+
   ${isMobile} {
-    height: 80vh;
+    height: 480px;
   }
 `;
 
@@ -23,11 +39,18 @@ export const Container = styled.div`
 
 export const BannerContainer = styled(Container)`
   position: absolute;
-  bottom: 0;
+  bottom: 42px;
   height: auto;
+  max-width: 780px;
   padding-left: 4rem;
-  z-index: 0;
   pointer-events: none;
+  z-index: 2;
+
+  @media screen and (max-width: 640px) {
+    bottom: 28px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
 `;
 
 export const HeroExampleContainer = styled.div`
@@ -36,7 +59,7 @@ export const HeroExampleContainer = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: -1;
+  z-index: 0;
 `;
 
 export const Section = styled.section`
@@ -46,48 +69,74 @@ export const Section = styled.section`
 `;
 
 export const ProjectName = styled.h1`
-  font-size: 5em;
-  line-height: 1;
-  text-transform: uppercase;
-  text-shadow: 1px 1px 1px black, 0 0 1em white, 0 0 0.2em white;
-  letter-spacing: 4px;
+  color: var(--ifm-color-white);
+  font-size: clamp(3.8rem, 10vw, 8rem);
+  line-height: 0.85;
+  text-shadow: 0 12px 36px rgba(0, 0, 0, 0.22);
+  letter-spacing: -0.08em;
   font-weight: 700;
   margin: 0;
-  margin-bottom: 16px;
+  margin-bottom: 22px;
 `;
 
 export const TagLine = styled.p`
-  text-shadow: 1px 1px 2px black, 0 0 1em white, 0 0 0.2em lightblue;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1.1rem;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 510px;
+  text-shadow: none;
 `;
 
 export const GetStartedLink = styled.a`
-  pointer-events: all;
-  font-size: 12px;
-  line-height: 44px;
-  letter-spacing: 2px;
+  align-items: center;
+  background: var(--ifm-color-primary);
+  border: 1px solid var(--ifm-color-primary);
+  border-radius: 999px;
+  color: #ffffff;
+  display: inline-flex;
+  font-size: 13px;
   font-weight: bold;
-  margin: 24px 0;
-  padding: 0 4rem;
+  gap: 10px;
+  justify-content: center;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  margin: 24px 0 0;
+  min-height: 44px;
+  padding: 0 20px;
   pointer-events: all;
-  display: inline-block;
+  position: relative;
   text-decoration: none;
-  transition: background-color 250ms ease-in, color 250ms ease-in;
-  border: solid 2px var(--ifm-color-primary);
-  color: var(--ifm-color-gray-900);
-  border-image: linear-gradient(
-    to right,
-    var(--ifm-color-gray-700) 0%,
-    var(--ifm-color-gray-400) 100%
-  );
-  border-image-slice: 2;
+  text-shadow: none;
+  width: fit-content;
+  z-index: 1;
+  transition:
+    background-color 180ms ease-in,
+    border-color 180ms ease-in,
+    color 180ms ease-in,
+    transform 180ms ease-in;
+
+  && {
+    color: #ffffff;
+  }
+
   &:visited {
-    color: var(--ifm-color-gray-900);
+    color: #ffffff;
   }
   &:active {
-    color: var(--ifm-color-white);
+    color: #ffffff;
   }
   &:hover {
-    color: var(--ifm-color-white);
-    background-color: var(--ifm-color-primary);
+    color: #ffffff;
+    background-color: transparent;
+    border-color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transform: translateY(-2px);
+  }
+
+  > span {
+    color: #ffffff;
+    display: block;
+    position: relative;
   }
 `;

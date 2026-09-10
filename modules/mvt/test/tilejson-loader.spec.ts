@@ -2,43 +2,75 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import test from 'tape-promise/tape';
+import {expect, test} from 'vitest';
 import {validateLoader} from 'test/common/conformance';
 
 import {load} from '@loaders.gl/core';
+import {JSONLoader} from '@loaders.gl/json';
 import {TileJSONLoader} from '@loaders.gl/mvt';
+import {parseTileJSON} from '../src/lib/parse-tilejson';
 
 import {TILEJSONS} from './data/tilejson/tilejson';
 
 const TIPPECANOE_TILEJSON = '@loaders.gl/mvt/test/data/tilejson/tippecanoe.tilejson';
-// const TIPPECANOE_EXPECTED = '@loaders.gl/mvt/test/data/tilejson/tippecanoe.expected.json';
+const TIPPECANOE_EXPECTED = '@loaders.gl/mvt/test/data/tilejson/tippecanoe.expected.json';
 
-test('TileJSONLoader#loader conformance', (t) => {
-  validateLoader(t, TileJSONLoader, 'TileJSONLoader');
-  t.end();
+test('TileJSONLoader#loader conformance', () => {
+  validateLoader(TileJSONLoader, 'TileJSONLoader');
 });
 
-test('TileJSONLoader#load', async (t) => {
+test('TileJSONLoader#load', async () => {
   for (const tileJSON of TILEJSONS) {
     const metadata = await load(tileJSON.url, TileJSONLoader);
-    t.ok(metadata.layers);
+    expect(metadata.layers).toBeTruthy();
     // TODO - actually check results, add tilejsons with fields
     // t.deepEqual(metadata, parsedMetadata);
     // console.error(JSON.stringify(metadata, null, 2));
   }
-  t.end();
 });
 
-test('TileJSONLoader#tippecanoe', async (t) => {
-  // let metadata = await load(TIPPECANOE_TILEJSON, TileJSONLoader);
-  // const expected = await load(TIPPECANOE_EXPECTED, JSONLoader);
-  // t.deepEqual(metadata, expected, 'Tippecanoe TileJSON loaded correctly');
-
+test('TileJSONLoader#tippecanoe', async () => {
   let metadata = await load(TIPPECANOE_TILEJSON, TileJSONLoader);
-  t.equal(metadata.layers?.[0]?.fields?.[10]?.values?.length, 100, '100 unique values');
+  const expected = await load(TIPPECANOE_EXPECTED, JSONLoader);
+  expect(metadata).toEqual(expected);
+
+  const fields = metadata.layers?.[0]?.fields || [];
+  expect(fields.filter(field => field.name.includes('|'))).toEqual([]);
+  expect(metadata.layers?.[0]?.minzoom).toBe(0);
+  expect(metadata.layers?.[0]?.dominantGeometry).toBe('LineString');
+
+  const attributesField = fields.find(field => field.name === 'rwdb_rr_id');
+  expect(attributesField?.values?.length).toBe(100);
 
   metadata = await load(TIPPECANOE_TILEJSON, TileJSONLoader, {tilejson: {maxValues: 10}});
-  t.equal(metadata.layers?.[0]?.fields?.[10]?.values?.length, 10, 'maxValue clips unique values');
+  const limitedField = metadata.layers?.[0]?.fields?.find(field => field.name === 'rwdb_rr_id');
+  expect(limitedField?.values?.length).toBe(10);
+  expect(limitedField?.values).toEqual(attributesField?.values?.slice(0, 10));
+});
 
-  t.end();
+test('parseTileJSON#rejects non-object metadata', () => {
+  expect(parseTileJSON(null, {})).toBeNull();
+  expect(parseTileJSON([], {})).toBeNull();
+});
+
+test('parseTileJSON#reads nested metadata and tolerates indexed Tilestats attributes', () => {
+  const metadata = parseTileJSON(
+    {
+      json: JSON.stringify({tilestats: {layers: []}}),
+      vector_layers: [{id: 'indexed', fields: {}}],
+      tilestats: {
+        layers: [
+          {
+            layer: 'indexed',
+            geometry: 'Point',
+            attributes: [{attribute: 'population|0', type: 'number'}]
+          }
+        ]
+      }
+    },
+    {}
+  );
+
+  expect(metadata?.metaJson).toEqual({tilestats: {layers: []}});
+  expect(metadata?.layers?.[0]?.fields).toEqual([]);
 });

@@ -1,6 +1,6 @@
 {
   "name": "@loaders.gl/textures",
-  "version": "4.3.3",
+  "version": "5.0.0-alpha.5",
   "description": "Framework-independent loaders for compressed and super compressed (basis) textures ",
   "license": "MIT",
   "type": "module",
@@ -30,7 +30,42 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    }
+    },
+    "./texture-manifest-schema": {
+      "types": "./dist/texture-manifest-schema.d.ts",
+      "import": "./dist/texture-manifest-schema.js",
+      "require": "./dist/texture-manifest-schema.cjs"
+    },
+    "./unbundled": {
+      "types": "./dist/unbundled.d.ts",
+      "import": "./dist/unbundled.js"
+    },
+    "./bundled": {
+      "types": "./dist/bundled.d.ts",
+      "import": "./dist/bundled.js"
+    },
+    "./basis-worker.js": {
+      "import": "./dist/basis-worker.js"
+    },
+    "./basis-worker-node.js": {
+      "import": "./dist/basis-worker-node.js"
+    },
+    "./npy-worker.js": {
+      "import": "./dist/npy-worker.js"
+    },
+    "./compressed-texture-worker.js": {
+      "import": "./dist/compressed-texture-worker.js"
+    },
+    "./crunch-worker.js": {
+      "import": "./dist/crunch-worker.js"
+    },
+    "./ktx2-basis-writer-worker.js": {
+      "import": "./dist/ktx2-basis-writer-worker.js"
+    },
+    "./ktx2-basis-writer-worker-node.js": {
+      "import": "./dist/ktx2-basis-writer-worker-node.js"
+    },
+    "./texture-manifest.schema.json": "./dist/texture-manifest.schema.json"
   },
   "sideEffects": false,
   "files": [
@@ -40,7 +75,8 @@
     "README.md"
   ],
   "scripts": {
-    "pre-build": "npm run copy-libs && npm run build-bundle && npm run build-bundle-dev && npm run build-workers",
+    "pre-build": "npm run generate-json-schema && npm run copy-libs && npm run build-bundle && npm run build-bundle-dev && npm run build-workers",
+    "generate-json-schema": "node ../../scripts/generate-json-schema.mjs --schema ./dist/texture-manifest-schema.js --export CompositeImageManifestSchema --output ./dist/texture-manifest.schema.json --id https://unpkg.com/@loaders.gl/textures/texture-manifest.schema.json --title 'loaders.gl composite image texture manifest'",
     "copy-libs": "cp -rf ./src/libs ./dist/libs",
     "build-bundle": "ocular-bundle ./bundle.ts --output=dist/dist.min.js",
     "build-bundle-dev": "ocular-bundle ./bundle.ts --env=dev --output=dist/dist.dev.js",
@@ -54,16 +90,21 @@
     "build-crunch-worker": "esbuild src/workers/crunch-worker.ts --outfile=dist/crunch-worker.js --target=esnext --bundle --define:__VERSION__=\\\"$npm_package_version\\\""
   },
   "dependencies": {
-    "@loaders.gl/images": "4.3.3",
-    "@loaders.gl/loader-utils": "4.3.3",
-    "@loaders.gl/schema": "4.3.3",
-    "@loaders.gl/worker-utils": "4.3.3",
-    "@math.gl/types": "^4.1.0",
-    "ktx-parse": "^0.7.0",
-    "texture-compressor": "^1.0.2"
+    "@loaders.gl/images": "5.0.0-alpha.5",
+    "@loaders.gl/loader-utils": "5.0.0-alpha.5",
+    "@loaders.gl/schema": "5.0.0-alpha.5",
+    "@loaders.gl/worker-utils": "5.0.0-alpha.5",
+    "@math.gl/types": "5.0.0-alpha.5",
+    "zod": "^4.1.12"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "^4.3.0"
+    "@loaders.gl/core": "~5.0.0-alpha.0",
+    "texture-compressor": "^1.0.2"
   },
-  "gitHead": "3213679d79e6ff2814d48fd3337acfa446c74099"
+  "peerDependenciesMeta": {
+    "texture-compressor": {
+      "optional": true
+    }
+  },
+  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
 }

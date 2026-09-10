@@ -41,12 +41,42 @@ const DropDown = styled.select`
   margin-bottom: 6px;
 `;
 
+const LoadingIndicator = styled.div`
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  margin: 0 0 8px;
+`;
+
+const Spinner = styled.div`
+  animation: spin 0.8s linear infinite;
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  border-top-color: #121212;
+  height: 14px;
+  width: 14px;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
 export type Example = {
-  sourceType: 'mvt' | 'pmtiles' | 'table';
-  data: string;
-  attributions?: string[];
-  viewState?: Record<string, unknown>;
-  tileSize?: number[];
+  type:
+    | 'wms'
+    | 'wmts'
+    | 'arcgis-map-server'
+    | 'arcgis-image-server'
+    | 'arcgis-feature-server'
+    | 'wfs';
+  url: string;
+  description?: string;
+  layers?: string[];
+  viewState?: Record<string, number>;
+  layerProps?: Record<string, unknown>;
+  sourceOptions?: Record<string, unknown>;
 };
 
 export type ExamplePanelProps = React.PropsWithChildren<{
@@ -54,6 +84,7 @@ export type ExamplePanelProps = React.PropsWithChildren<{
   examples: Record<string, Record<string, Example>>;
   /** format of examples to show (filters out other formats if supplied) */
   format?: string;
+  loading?: boolean;
   initialCategoryName?: string | null;
   initialExampleName?: string | null;
   onExampleChange: OnExampleChange;
@@ -139,6 +170,12 @@ export const ExamplePanel: React.FC<ExamplePanelProps> = (props: ExamplePanelPro
           setState((state) => ({...state, categoryName, exampleName, example}));
         }}
       />
+      {props.loading ? (
+        <LoadingIndicator>
+          <Spinner />
+          <span>Loading…</span>
+        </LoadingIndicator>
+      ) : null}
       {props.children}
     </Container>
   );
@@ -183,10 +220,12 @@ const ExampleHeader: React.FC = ({categoryName, exampleName}) => {
     return null;
   }
 
+  const showCategoryName = !exampleName.includes(categoryName);
+
   return (
     <div>
       <h3>
-        {exampleName} <b>{categoryName}</b>{' '}
+        {exampleName} {showCategoryName ? <b>{categoryName}</b> : null}{' '}
       </h3>
     </div>
   );

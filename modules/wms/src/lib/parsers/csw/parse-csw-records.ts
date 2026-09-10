@@ -2,8 +2,11 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {XMLLoaderOptions, convertXMLFieldToArrayInPlace, XMLLoader} from '@loaders.gl/xml';
+import type {XMLLoaderOptions} from '@loaders.gl/xml';
+import type {CRSIdentifier} from '@math.gl/crs';
+import {convertXMLFieldToArrayInPlace} from '@loaders.gl/xml';
 import {parseExceptionReport} from './parse-exception-report';
+import {parseXMLTextSync} from '../xml/parse-xml-text';
 
 export type CSWRecords = {
   searchStatus: {
@@ -21,7 +24,7 @@ export type CSWRecords = {
     abstract: string;
     subject: string[];
     boundingBoxes: {
-      crs: string;
+      crs: CRSIdentifier;
       value: [number, number, number, number];
     }[];
     references: {
@@ -36,7 +39,7 @@ export type CSWRecords = {
  * @note Error handlings is fairly weak
  */
 export function parseCSWRecords(text: string, options?: XMLLoaderOptions): CSWRecords {
-  const parsedXML = XMLLoader.parseTextSync?.(text, {
+  const parsedXML = parseXMLTextSync(text, {
     ...options,
     xml: {
       ...options?.xml,

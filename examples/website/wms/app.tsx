@@ -2,23 +2,28 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {createRoot} from 'react-dom/client';
-// import {StaticMap} from 'react-map-gl';
 
 import DeckGL from '@deck.gl/react';
-import {MapView, MapController} from '@deck.gl/core';
-import {_WMSLayer as WMSLayer} from '@deck.gl/geo-layers';
+import {MapController} from '@deck.gl/core';
 
-import type {ImageSource, ImageSourceMetadata} from '@loaders.gl/loader-utils';
-import {createDataSource} from '@loaders.gl/core';
-import {_ArcGISImageServerSource, WMSSource} from '@loaders.gl/wms';
+import {SourceLayer} from '@loaders.gl/deck-layers';
+import {
+  WFSSourceLoader,
+  WMSSourceLoader,
+  WMTSSourceLoader
+} from '@loaders.gl/wms';
+import {
+  SERVICE_LOADERS
+} from '@loaders.gl/services';
 
 import {Map} from 'react-map-gl';
 import maplibregl from 'maplibre-gl';
 
 import {ExamplePanel, Example, MetadataViewer} from './components/example-panel';
 import {INITIAL_CATEGORY_NAME, INITIAL_EXAMPLE_NAME, EXAMPLES} from './examples';
+import {createDeckFullscreenWidget, createDeckStatsWidget} from '../shared/create-deck-stats-widget';
 
 export const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json';
 
@@ -49,61 +54,60 @@ type AppProps = {
   children?: React.Children;
 };
 
+const SOURCE_FACTORIES = [
+  WMSSourceLoader,
+  WFSSourceLoader,
+  WMTSSourceLoader,
+  ...SERVICE_LOADERS
+];
+
 /** Application state */
 type AppState = {
-  /** Currently active tile source */
-  imageSource: ImageSource;
-  /** Metadata loaded from active tile source */
+  /** Currently selected example. */
+  example: Example | null;
+  /** Metadata loaded from the active source. */
   metadata: string;
-  /**Current view state */
+  /** Current view state. */
   viewState: Record<string, number>;
   loading: boolean;
   error: string | null;
-  featureInfo: any;
-  example: Example;
 };
 
 export default function App(props: AppProps = {}) {
   const [state, setState] = useState<AppState>({
-    imageSource: null,
+    example: null,
     metadata: '',
     viewState: INITIAL_VIEW_STATE,
-    // TODO - handle errors
     loading: true,
-    error: null
+    error: null,
   });
 
-  const {imageSource, metadata} = state;
-  const wmsLayer = renderLayer(state.example);
+  const layers = renderLayer(state.example);
+  const widgets = useMemo(
+    () => [createDeckFullscreenWidget('wms-fullscreen'), createDeckStatsWidget('wms-stats')],
+    []
+  );
 
   return (
     <div style={{position: 'relative', height: '100%'}}>
       <DeckGL
-        layers={wmsLayer}
+        layers={layers}
         viewState={state.viewState}
+        widgets={widgets}
         onViewStateChange={onViewStateChange}
         onError={(error: Error) => setState((state) => ({...state, error: error.message}))}
+        getTooltip={getTooltip}
         controller={{type: MapController, maxPitch: 85}}
-        getTooltip={({object}) =>
-          state?.featureInfo && {
-            html: `<h2>Feature Info</h2><div>${state.featureInfo}</div>`,
-            style: {
-              color: '#EEE',
-              backgroundColor: '#000',
-              fontSize: '0.8em',
-              whiteSpace: 'pre-line'
-            }
-          }
-        }
       >
         <ExamplePanel
           examples={EXAMPLES}
+          format={props.format}
           initialCategoryName={INITIAL_CATEGORY_NAME}
           initialExampleName={INITIAL_EXAMPLE_NAME}
           onExampleChange={onExampleChange}
           loading={state.loading}
         >
-          <MetadataViewer metadata={metadata} />
+          <MetadataViewer metadata={state.metadata} />
           {state.error ? <div style={{color: 'red'}}>{state.error}</div> : ''}
           <LngLatZoomView viewState={state.viewState} />
         </ExamplePanel>
@@ -113,64 +117,134 @@ export default function App(props: AppProps = {}) {
   );
 
   function onViewStateChange({viewState}) {
-    setState((state) => ({...state, viewState}));
+    setState((state) => ({
+      ...state,
+      viewState
+    }));
+  }
+
+  function getTooltip({object}) {
+    if (!object || !object.properties) {
+      return null;
+    }
+
+    const entries = Object.entries(object.properties).filter(
+      ([, value]) => value !== null && value !== ''
+    );
+    if (!entries.length) {
+      return null;
+    }
+
+    return {
+      text: entries
+        .slice(0, 5)
+        .map(([key, value]) => `${formatLabel(key)}: ${String(value)}`)
+        .join('\n')
+    };
   }
 
   function onExampleChange({example}) {
     const {viewState} = example;
     const newViewState = {...state.viewState, ...viewState};
+    setState((state) => ({
+      ...state,
+      example,
+      viewState: newViewState,
+      metadata: 'Loading metadata...',
+      loading: true,
+      error: null
+    }));
 
-    const imageSource = createDataSource<ImageSource>(
-      example.url,
-      [WMSSource, _ArcGISImageServerSource],
-      {type: 'wms'}
-    );
-
-    setState((state) => ({...state, example, viewState: newViewState, imageSource}));
   }
 
-  function renderLayer(example: Example) {
+  function renderLayer(example: Example | null) {
     if (!example) {
       return null;
     }
 
-    // @ts-expect-error
-    const {url, type, layers, opacity = 1} = example;
+    const isVector =
+      example.type === 'arcgis-feature-server' ||
+      example.type === 'arcgis-vector-tile-server' ||
+      example.type === 'wfs';
+    const vectorLayerProps = isVector ? getVectorLayerProps(example.layerProps || {}) : {};
 
     return [
-      new WMSLayer({
-        data: url, // new WMSSource({url: service, wmsParameters: {transparent: true}}),
-        serviceType: type,
-        layers,
-
-        pickable: true,
-        opacity,
-
-        onImageLoadStart: () => setState((state) => ({...state, loading: true})),
-        onImageLoad: () => setState((state) => ({...state, loading: false})),
-
-        onMetadataLoadStart: () =>
-          setState((state) => ({...state, metadata: 'Loading metadata...'})),
-        onMetadataLoad: (metadata: ImageSourceMetadata) => {
-          globalThis.document.title = metadata.title || 'WMS';
-          setState((state) => ({...state, metadata: JSON.stringify(metadata, null, 2)}));
+      new SourceLayer({
+        id: `${example.type}-${example.url}`,
+        data: example.url,
+        loaders: SOURCE_FACTORIES,
+        sourceOptions: {
+          ...example.sourceOptions,
+          core: {...example.sourceOptions?.core, type: example.type}
         },
-
-        // @ts-expect-error
-        onClick: async ({bitmap, layer}) => {
-          if (this.state.featureInfo) {
-            setState((state) => ({...state, featureInfo: null}));
-          } else if (bitmap) {
-            const x = bitmap.pixel[0];
-            const y = bitmap.pixel[1];
-            const featureInfo = await layer.getFeatureInfoText(x, y);
-            console.log('Click in imagery layer', x, y, featureInfo);
-            setState((state) => ({...state, featureInfo}));
-          }
-        }
+        layers: example.layers || [],
+        pickable: true,
+        autoHighlight: true,
+        srs:
+          example.type === 'wms' || example.type === 'arcgis-image-server'
+            ? 'EPSG:4326'
+            : 'auto',
+        onLoadingStateChange: isLoading =>
+          setState((state) => ({...state, loading: isLoading})),
+        onMetadataLoad: (metadata) => {
+          const typedMetadata = metadata as {title?: string; name?: string};
+          globalThis.document.title = typedMetadata.title || typedMetadata.name || example.url;
+          setState((state) => ({
+            ...state,
+            metadata: JSON.stringify(metadata, null, 2),
+            error: null
+          }));
+        },
+        onSourceError: (error) =>
+          setState((state) => ({...state, loading: false, error: error.message})),
+        onImageLoadError: (_requestId: number, error: Error) =>
+          setState((state) => ({...state, loading: false, error: error.message})),
+        onError: (error: Error) =>
+          setState((state) => ({...state, loading: false, error: error.message})),
+        ...example.layerProps,
+        ...vectorLayerProps
       })
     ];
   }
+}
+
+function getVectorLayerProps(layerProps: Record<string, any>) {
+  return {
+    geoJsonLayerProps: {
+      pickable: true,
+      autoHighlight: true,
+      ...layerProps
+    },
+    geoArrowLayerProps: {
+      pointLayerProps: {
+        getRadius: layerProps.getPointRadius,
+        radiusScale: layerProps.pointRadiusScale,
+        radiusUnits: layerProps.pointRadiusUnits,
+        radiusMinPixels: layerProps.pointRadiusMinPixels,
+        radiusMaxPixels: layerProps.pointRadiusMaxPixels,
+        getFillColor: layerProps.getFillColor,
+        getLineColor: layerProps.getLineColor,
+        stroked: layerProps.stroked,
+        filled: layerProps.filled,
+        lineWidthMinPixels: layerProps.lineWidthMinPixels,
+        lineWidthMaxPixels: layerProps.lineWidthMaxPixels
+      },
+      pathLayerProps: {
+        getColor: layerProps.getLineColor,
+        getWidth: layerProps.getLineWidth,
+        widthMinPixels: layerProps.lineWidthMinPixels,
+        widthMaxPixels: layerProps.lineWidthMaxPixels
+      },
+      solidPolygonLayerProps: {
+        getFillColor: layerProps.getFillColor,
+        getLineColor: layerProps.getLineColor,
+        filled: layerProps.filled,
+        stroked: layerProps.stroked,
+        lineWidthMinPixels: layerProps.lineWidthMinPixels,
+        lineWidthMaxPixels: layerProps.lineWidthMaxPixels
+      }
+    }
+  };
 }
 
 function LngLatZoomView({viewState}) {
@@ -188,6 +262,12 @@ function LngLatZoomView({viewState}) {
 
 export function renderToDOM(container = document.body) {
   createRoot(container).render(<App />);
+}
+
+function formatLabel(value: string): string {
+  return value
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 /*
@@ -315,7 +395,7 @@ export default function App(props: AppProps = {}) {
 
 function createImageSource(example: Example) {
   const {url, format, layers, tileSize, tileFormat} = example;
-  return new WMSSource({
+  return new WMSSourceLoader({
     url,
     format,
     layers,

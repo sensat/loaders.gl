@@ -2,27 +2,33 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderWithParser} from '@loaders.gl/loader-utils';
+import type {Loader, StrictLoaderOptions} from '@loaders.gl/loader-utils';
+import {CompressedTextureFormat} from './texture-format';
 import {VERSION} from './lib/utils/version';
-import {parseCompressedTexture} from './lib/parsers/parse-compressed-texture';
-import {parseBasis} from './lib/parsers/parse-basis';
+import type {BasisLoaderOptions} from './basis-types';
 
 /** Options for the CompressedTextureLoader */
-export type CompressedTextureLoaderOptions = {
-  'compressed-texture'?: {
-    /** @deprecated Specify path to libraries */
-    libraryPath?: string;
-    /** Whether to use Basis decoding */
-    useBasis?: boolean;
-    /** Override the URL to the worker bundle (by default loads from unpkg.com) */
-    workerUrl?: string;
+export type CompressedTextureLoaderOptions = StrictLoaderOptions &
+  Pick<BasisLoaderOptions, 'basis'> & {
+    'compressed-texture'?: {
+      /** Whether to use Basis decoding */
+      useBasis?: boolean;
+      /** Override the URL to the worker bundle (by default loads from unpkg.com) */
+      workerUrl?: string;
+    };
   };
-};
 
-/**
- * Worker Loader for KTX, DDS, and PVR texture container formats
- */
+/** Preloads the parser-bearing compressed texture loader implementation. */
+async function preload() {
+  const {CompressedTextureLoaderWithParser} = await import(
+    './compressed-texture-loader-with-parser'
+  );
+  return CompressedTextureLoaderWithParser;
+}
+
+/** Metadata-only worker loader for KTX, DDS, and PVR texture container formats. */
 export const CompressedTextureWorkerLoader = {
+  ...CompressedTextureFormat,
   dataType: null as unknown as any,
   batchType: null as never,
 
@@ -31,6 +37,8 @@ export const CompressedTextureWorkerLoader = {
   module: 'textures',
   version: VERSION,
   worker: true,
+  encoding: 'image',
+  format: 'compressed-texture',
   extensions: [
     'ktx',
     'ktx2',
@@ -47,33 +55,18 @@ export const CompressedTextureWorkerLoader = {
   binary: true,
   options: {
     'compressed-texture': {
-      libraryPath: 'libs/',
       useBasis: false
+    },
+    basis: {
+      format: 'auto',
+      containerFormat: 'auto'
     }
-  }
+  },
+  preload
 } as const satisfies Loader<any, never, CompressedTextureLoaderOptions>;
 
-/**
- * Loader for KTX, DDS, and PVR texture container formats
- */
+/** Metadata-only loader for KTX, DDS, and PVR texture container formats. */
 export const CompressedTextureLoader = {
   ...CompressedTextureWorkerLoader,
-  parse: async (arrayBuffer: ArrayBuffer, options?: CompressedTextureLoaderOptions) => {
-    if (options?.['compressed-texture']?.useBasis) {
-      // @ts-expect-error TODO not allowed to modify inputs
-      options.basis = {
-        format: {
-          alpha: 'BC3',
-          noAlpha: 'BC1'
-        },
-        // @ts-expect-error TODO not allowed to modify inputs
-        ...options.basis,
-        containerFormat: 'ktx2',
-        module: 'encoder'
-      };
-      const result = await parseBasis(arrayBuffer, options);
-      return result[0];
-    }
-    return parseCompressedTexture(arrayBuffer);
-  }
-} as const satisfies LoaderWithParser<any, never, CompressedTextureLoaderOptions>;
+  preload
+} as const satisfies Loader<any, never, CompressedTextureLoaderOptions>;

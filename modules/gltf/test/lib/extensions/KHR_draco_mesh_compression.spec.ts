@@ -1,66 +1,73 @@
-/* eslint-disable max-len */
-/*
-import test from 'tape-promise/tape';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
 
-import {fetchFile} from '@loaders.gl/core';
-import {GLTFBuilder, GLTFParser} from '@loaders.gl/gltf';
-import {DracoWriter, DracoLoader} from '@loaders.gl/draco';
+import {expect, test} from 'vitest';
+import {decode} from '../../../src/lib/extensions/KHR_draco_mesh_compression';
+import type {GLTFWithBuffers} from '../../../src/lib/types/gltf-types';
 
-const POSITIONS_URL = '@loaders.gl/draco/test/data/raw-attribute-buffers/lidar-positions.bin';
-const COLORS_URL = '@loaders.gl/draco/test/data/raw-attribute-buffers/lidar-colors.bin';
-
-test('GLTFBuilder#addCompressedPointCloud', async t => {
-  let response = await fetchFile(POSITIONS_URL);
-  const POSITIONS = await response.arrayBuffer();
-
-  response = await fetchFile(COLORS_URL);
-  const COLORS = await response.arrayBuffer();
-
-  const attributes = {
-    POSITIONS: new Float32Array(POSITIONS),
-    COLORS: new Uint8ClampedArray(COLORS)
+test('KHR_draco_mesh_compression forwards unique attribute ids and exact compressed bytes', async () => {
+  const sourceBytes = new Uint8Array([90, 91, 92, 1, 2, 3, 93, 94]);
+  const gltf: GLTFWithBuffers = {
+    json: {
+      asset: {version: '2.0'},
+      extensionsUsed: ['KHR_draco_mesh_compression'],
+      extensionsRequired: ['KHR_draco_mesh_compression'],
+      buffers: [{byteLength: sourceBytes.byteLength}],
+      bufferViews: [{buffer: 0, byteOffset: 2, byteLength: 3}],
+      accessors: [{componentType: 5126, count: 1, type: 'VEC2'}],
+      meshes: [
+        {
+          primitives: [
+            {
+              attributes: {TEXCOORD_1: 0},
+              extensions: {
+                KHR_draco_mesh_compression: {
+                  bufferView: 0,
+                  attributes: {TEXCOORD_1: 7, _FEATURE_ID_0: 9}
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    buffers: [
+      {
+        arrayBuffer: sourceBytes.buffer,
+        byteOffset: 1,
+        byteLength: sourceBytes.byteLength - 1
+      }
+    ]
   };
-  t.comment(
-    `Encoding ${attributes.POSITIONS.length} positions, ${attributes.COLORS.length} colors...`
-  );
+  let parsedBytes: number[] = [];
+  let parsedExtraAttributes: Record<string, number> | undefined;
+  const context = {
+    _parse: async (data: ArrayBuffer, _loader: unknown, options: any) => {
+      parsedBytes = Array.from(new Uint8Array(data));
+      parsedExtraAttributes = options.draco.extraAttributes;
+      return {
+        loader: 'draco',
+        loaderData: {},
+        topology: 'triangle-list',
+        mode: 4,
+        attributes: {
+          TEXCOORD_1: {value: new Float32Array([0, 1]), size: 2},
+          _FEATURE_ID_0: {value: new Uint16Array([4]), size: 1}
+        },
+        schema: {fields: []}
+      };
+    }
+  };
 
-  const gltfBuilder = new GLTFBuilder({DracoWriter, DracoLoader});
-  t.equal(gltfBuilder.addCompressedPointCloud(attributes), 0, 'valid index for point cloud data');
+  await decode(gltf, {gltf: {decompressMeshes: true}}, context as any);
 
-  const arrayBuffer = gltfBuilder.encodeAsGLB();
-
-  const parser = new GLTFParser();
-  parser.parseSync(arrayBuffer, {DracoLoader, decompress: false});
-  // TODO - verify that requiredExtensions contain UBER_draco_point_cloud_compression
-  let dracoExtension = parser.getRequiredExtension('UBER_draco_point_cloud_compression');
-  t.ok(dracoExtension, 'toplevel extension has not been removed');
-  let mesh = parser.getMesh(0);
-  t.ok(mesh.primitives[0].extensions.UBER_draco_point_cloud_compression);
-  t.notEqual(
-    mesh.primitives[0].extensions.UBER_draco_point_cloud_compression.bufferView,
-    undefined
-  );
-
-  parser.parseSync(arrayBuffer, {DracoLoader, decompress: true});
-  mesh = parser.getMesh(0);
-  dracoExtension = parser.getRequiredExtension('UBER_draco_point_cloud_compression');
-  t.notOk(dracoExtension, 'toplevel extension has been removed');
-  t.equal(mesh.primitives[0].mode, 0, 'mesh mode ok');
-  t.notOk(
-    mesh.primitives[0].extensions.UBER_draco_point_cloud_compression,
-    'extension has been removed'
-  );
-  t.equal(
-    mesh.primitives[0].attributes.POSITION.value.length,
-    attributes.POSITIONS.length,
-    'position attribute was found'
-  );
-  t.equal(
-    mesh.primitives[0].attributes.COLOR_0.value.length,
-    attributes.COLORS.length,
-    'color attribute was found'
-  );
-
-  t.end();
+  expect(parsedBytes).toEqual([1, 2, 3]);
+  expect(parsedExtraAttributes).toEqual({TEXCOORD_1: 7, _FEATURE_ID_0: 9});
+  expect(gltf.json.meshes?.[0].primitives[0].attributes).toEqual({
+    TEXCOORD_1: expect.objectContaining({componentType: 5126, count: 1, type: 'VEC2'}),
+    _FEATURE_ID_0: expect.objectContaining({componentType: 5123, count: 1, type: 'SCALAR'})
+  });
+  expect(gltf.json.extensionsUsed).toEqual([]);
+  expect(gltf.json.extensionsRequired).toEqual([]);
 });
-*/

@@ -8,18 +8,20 @@ import {getTransferList} from '../worker-utils/get-transfer-list';
 import {parentPort} from '../node/worker_threads';
 
 type TransferListItem = any;
+type WorkerMessageEvent = MessageEvent<WorkerMessageData> | WorkerMessageData;
+type WorkerMessageListener = (type: WorkerMessageType, payload: WorkerMessagePayload) => any;
 
 /** Vile hack to defeat over-zealous bundlers from stripping out the require */
 async function getParentPort() {
   // const isNode = globalThis.process;
   // let parentPort;
   // try {
-  //   // prettier-ignore
+  //   // biome-ignore format: preserve intentional fixture layout
   //   eval('globalThis.parentPort = require(\'worker_threads\').parentPort'); // eslint-disable-line no-eval
   //   parentPort = globalThis.parentPort;
   // } catch {
   //   try {
-  //     // prettier-ignore
+  //     // biome-ignore format: preserve intentional fixture layout
   //     eval('globalThis.workerThreadsPromise = import(\'worker_threads\')'); // eslint-disable-line no-eval
   //     const workerThreads = await globalThis.workerThreadsPromise;
   //     parentPort = workerThreads.parentPort;
@@ -30,7 +32,7 @@ async function getParentPort() {
   return parentPort;
 }
 
-const onMessageWrapperMap = new Map();
+const onMessageWrapperMap = new Map<WorkerMessageListener, (message: WorkerMessageEvent) => void>();
 
 /**
  * Type safe wrapper for worker code
@@ -55,9 +57,9 @@ export default class WorkerBody {
       onMessage(type, payload);
     }
 
-    getParentPort().then((parentPort) => {
+    getParentPort().then(parentPort => {
       if (parentPort) {
-        parentPort.on('message', (message) => {
+        parentPort.on('message', message => {
           handleMessage(message);
         });
         // if (message == 'exit') { parentPort.unref(); }
@@ -70,40 +72,37 @@ export default class WorkerBody {
     });
   }
 
-  static async addEventListener(
-    onMessage: (type: WorkerMessageType, payload: WorkerMessagePayload) => any
-  ) {
+  static async addEventListener(onMessage: WorkerMessageListener) {
     let onMessageWrapper = onMessageWrapperMap.get(onMessage);
 
     if (!onMessageWrapper) {
-      onMessageWrapper = async (message: MessageEvent<any>) => {
-        if (!isKnownMessage(message)) {
+      onMessageWrapper = (message: WorkerMessageEvent) => {
+        const messageData = getWorkerMessageData(message);
+        if (!messageData) {
           return;
         }
-
-        const parentPort = await getParentPort();
-        // Confusingly in the browser, the message itself also has a 'type' field which is always set to 'message'
-        const {type, payload} = parentPort ? message : message.data;
-        onMessage(type, payload);
+        onMessage(messageData.type, messageData.payload);
       };
+      onMessageWrapperMap.set(onMessage, onMessageWrapper);
     }
 
     const parentPort = await getParentPort();
     if (parentPort) {
-      console.error('not implemented'); // eslint-disable-line
+      parentPort.on('message', onMessageWrapper);
     } else {
       globalThis.addEventListener('message', onMessageWrapper);
     }
   }
 
-  static async removeEventListener(
-    onMessage: (type: WorkerMessageType, payload: WorkerMessagePayload) => any
-  ) {
+  static async removeEventListener(onMessage: WorkerMessageListener) {
     const onMessageWrapper = onMessageWrapperMap.get(onMessage);
     onMessageWrapperMap.delete(onMessage);
+    if (!onMessageWrapper) {
+      return;
+    }
     const parentPort = await getParentPort();
     if (parentPort) {
-      console.error('not implemented'); // eslint-disable-line
+      parentPort.off('message', onMessageWrapper);
     } else {
       globalThis.removeEventListener('message', onMessageWrapper);
     }
@@ -133,12 +132,14 @@ export default class WorkerBody {
 }
 
 // Filter out noise messages sent to workers
-function isKnownMessage(message: MessageEvent<any>) {
-  const {type, data} = message;
-  return (
-    type === 'message' &&
-    data &&
-    typeof data.source === 'string' &&
-    data.source.startsWith('loaders.gl')
-  );
+function getWorkerMessageData(message: WorkerMessageEvent): WorkerMessageData | null {
+  if (!message || typeof message !== 'object') {
+    return null;
+  }
+  const messageData = 'data' in message && message.type === 'message' ? message.data : message;
+  return messageData &&
+    typeof messageData.source === 'string' &&
+    messageData.source.startsWith('loaders.gl')
+    ? messageData
+    : null;
 }

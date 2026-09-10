@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 /**
  * Header describing a NetDCF file
  * @param recordDimension: Number with the length of record dimension
@@ -53,8 +55,8 @@ export type NetCDFDimension = {
  */
 export type NetCDFVariable = {
   name: string;
-  dimensions: [];
-  attributes: [];
+  dimensions: number[];
+  attributes: NetCDFAttribute[];
   type: string;
   size: number;
   offset: number;

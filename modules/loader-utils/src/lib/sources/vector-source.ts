@@ -2,28 +2,29 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Schema, GeoJSONTable, BinaryFeatureCollection} from '@loaders.gl/schema';
-import type {DataSourceProps} from './data-source';
-import {DataSource} from './data-source';
+import type {
+  ArrowTable,
+  BinaryFeatureCollection,
+  GeoArrowEncodingPreference,
+  GeoJSONTable,
+  Schema
+} from '@loaders.gl/schema';
+import type {CRSIdentifier, SpatialReference} from '@math.gl/crs';
 
-export type VectorSourceProps = DataSourceProps;
+export type VectorSourceProps = {};
+
+/** Valid vector-source response tables. */
+export type VectorSourceData = GeoJSONTable | BinaryFeatureCollection | ArrowTable;
 
 /**
  * VectorSource - data sources that allow features to be queried by (geospatial) extents
  * @note
  * - If geospatial, bounding box is expected to be in web mercator coordinates
  */
-export abstract class VectorSource<
-  PropsT extends VectorSourceProps = VectorSourceProps
-> extends DataSource<PropsT> {
-  static type: string = 'template';
-  static testURL = (url: string): boolean => false;
-
-  abstract getSchema(): Promise<Schema>;
-  abstract getMetadata(options: {formatSpecificMetadata?: boolean}): Promise<VectorSourceMetadata>;
-  abstract getFeatures(
-    parameters: GetFeaturesParameters
-  ): Promise<GeoJSONTable | BinaryFeatureCollection>;
+export interface VectorSource {
+  getSchema(): Promise<Schema>;
+  getMetadata(options: {formatSpecificMetadata?: boolean}): Promise<VectorSourceMetadata>;
+  getFeatures(parameters: GetFeaturesParameters): Promise<VectorSourceData>;
 }
 
 // PARAMETER TYPES
@@ -54,7 +55,9 @@ export type VectorSourceLayer = {
   /** Human readable title of this layer */
   title?: string;
   /** Coordinate systems supported by this layer */
-  crs?: string[];
+  crs?: CRSIdentifier[];
+  /** Normalized source CRS discovery, including representation and unknown/default state. */
+  spatialReference?: SpatialReference;
   /** layer limits in unspecified CRS:84-like lng/lat, for quick access w/o CRS calculations. */
   boundingBox?: [min: [x: number, y: number], max: [x: number, y: number]];
   /** Sub layers of this layer */
@@ -68,7 +71,14 @@ export type GetFeaturesParameters = {
   /** bounding box on the map (only return features within this bbox) */
   boundingBox: [min: [x: number, y: number], max: [x: number, y: number]];
   /** crs for the returned features (not the bounding box) */
-  crs?: string;
-  /** @deprecated requested format for the return image */
-  format?: 'geojson' | 'binary';
+  crs?: CRSIdentifier;
+  /**
+   * Requested feature encoding for the returned table.
+   * `arrow` returns a loaders.gl `ArrowTable` with `shape: 'arrow-table'`.
+   */
+  format?: 'geojson' | 'binary' | 'arrow';
+  /** Preferred GeoArrow encoding when `format` is `arrow`. */
+  geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
+  /** Abort signal for canceling in-flight requests. */
+  signal?: AbortSignal;
 };

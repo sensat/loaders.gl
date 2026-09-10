@@ -1,80 +1,107 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+// Copyright (c) 2017 ironSource Ltd.
+// Forked from https://github.com/kbajalc/parquets under MIT license
+
 import {
-  TBufferedTransport,
-  TCompactProtocol,
-  TFramedTransport,
+  ColumnMetaData,
+  FileCryptoMetaData,
   FileMetaData,
   PageHeader
 } from '../parquet-thrift/index';
-
-class UFramedTransport extends TFramedTransport {
-  public readPos: number = 0;
-}
+import {Uint8ArrayCompactProtocol} from './uint8-array-compact-protocol';
+import {Uint8ArrayCompactProtocolWriter} from './uint8-array-compact-protocol-writer';
+import {Uint8ArrayTransport} from './uint8-array-transport';
 
 /**
  * Helper function that serializes a thrift object into a buffer
  */
-export function serializeThrift(obj: any): Buffer {
-  const output: Buffer[] = [];
-
-  const transport = new TBufferedTransport(undefined, (buf) => {
-    output.push(buf as unknown as Buffer);
-  });
-
-  const protocol = new TCompactProtocol(transport);
-  obj.write(protocol);
-  transport.flush();
-
-  return Buffer.concat(output);
+export function serializeThrift(obj: any): Uint8Array {
+  const protocol = new Uint8ArrayCompactProtocolWriter();
+  obj.write(protocol as any);
+  return protocol.getBytes();
 }
 
-export function decodeThrift(obj: any, buf: Buffer, offset?: number) {
+export function decodeThrift(obj: any, buf: Uint8Array, offset?: number) {
   if (!offset) {
     // tslint:disable-next-line:no-parameter-reassignment
     offset = 0;
   }
 
-  const transport = new UFramedTransport(buf);
+  const transport = new Uint8ArrayTransport(buf);
   transport.readPos = offset;
-  const protocol = new TCompactProtocol(transport);
+  const protocol = new Uint8ArrayCompactProtocol(transport);
   obj.read(protocol);
   return transport.readPos - offset;
 }
 
 /**
- * FIXME not ideal that this is linear
+ * Returns the generated TypeScript enum member for a Thrift value.
+ * @param thriftEnum generated numeric enum object
+ * @param value serialized enum value
+ * @returns enum member name
  */
-export function getThriftEnum(klass: any, value: number | string): string {
-  for (const k in klass) {
-    if (klass[k] === value) {
-      return k;
+export function getThriftEnum(thriftEnum: object, value: number | string): string {
+  const enumValues = thriftEnum as Record<string | number, number | string>;
+  if (typeof value === 'number') {
+    const enumName = enumValues[value];
+    if (typeof enumName === 'string') {
+      return enumName;
+    }
+  }
+
+  for (const enumName in enumValues) {
+    if (enumValues[enumName] === value) {
+      return enumName;
     }
   }
   throw new Error('Invalid ENUM value');
 }
 
-export function decodeFileMetadata(buf: Buffer, offset?: number) {
+export function decodeFileMetadata(buf: Uint8Array, offset?: number) {
   if (!offset) {
     // tslint:disable-next-line:no-parameter-reassignment
     offset = 0;
   }
 
-  const transport = new UFramedTransport(buf);
+  const transport = new Uint8ArrayTransport(buf);
   transport.readPos = offset;
-  const protocol = new TCompactProtocol(transport);
-  const metadata = FileMetaData.read(protocol);
+  const protocol = new Uint8ArrayCompactProtocol(transport);
+  const metadata = FileMetaData.read(protocol as any);
   return {length: transport.readPos - offset, metadata};
 }
 
-export function decodePageHeader(buf: Buffer, offset?: number) {
+/** Decodes the FileCryptoMetaData prefix used by encrypted-footer files. */
+export function decodeFileCryptoMetadata(buf: Uint8Array, offset?: number) {
+  if (!offset) offset = 0;
+  const transport = new Uint8ArrayTransport(buf);
+  transport.readPos = offset;
+  const protocol = new Uint8ArrayCompactProtocol(transport);
+  const metadata = FileCryptoMetaData.read(protocol as any);
+  return {length: transport.readPos - offset, metadata};
+}
+
+/** Decodes a serialized ColumnMetaData encryption module. */
+export function decodeColumnMetadata(buf: Uint8Array, offset?: number) {
+  if (!offset) offset = 0;
+  const transport = new Uint8ArrayTransport(buf);
+  transport.readPos = offset;
+  const protocol = new Uint8ArrayCompactProtocol(transport);
+  const metadata = ColumnMetaData.read(protocol as any);
+  return {length: transport.readPos - offset, metadata};
+}
+
+export function decodePageHeader(buf: Uint8Array, offset?: number) {
   if (!offset) {
     // tslint:disable-next-line:no-parameter-reassignment
     offset = 0;
   }
 
-  const transport = new UFramedTransport(buf);
+  const transport = new Uint8ArrayTransport(buf);
   transport.readPos = offset;
-  const protocol = new TCompactProtocol(transport);
-  const pageHeader = PageHeader.read(protocol);
+  const protocol = new Uint8ArrayCompactProtocol(transport);
+  const pageHeader = PageHeader.read(protocol as any);
   return {length: transport.readPos - offset, pageHeader};
 }
 
@@ -89,26 +116,31 @@ export function getBitWidth(val: number): number {
   return Math.ceil(Math.log2(val + 1));
 }
 
-// Supports MQTT path wildcards
-// + all immediate children
-// # all descendents
+/**
+ * Finds the selected field path that contains a Parquet leaf path.
+ * A selected parent includes all descendant leaves. MQTT-style `+` and `#` path wildcards are
+ * retained for internal callers (`+` matches one segment and `#` matches all remaining segments).
+ */
 export function fieldIndexOf(arr: string[][], elem: string[]): number {
-  for (let j = 0; j < arr.length; j++) {
-    if (arr[j].length > elem.length) {
-      continue; // eslint-disable-line no-continue
-    }
-    let m = true;
-    for (let i = 0; i < elem.length; i++) {
-      if (arr[j][i] === elem[i] || arr[j][i] === '+' || arr[j][i] === '#') {
-        continue; // eslint-disable-line no-continue
+  for (let fieldIndex = 0; fieldIndex < arr.length; fieldIndex++) {
+    const selectedPath = arr[fieldIndex];
+    let matches = true;
+    for (let pathIndex = 0; pathIndex < selectedPath.length; pathIndex++) {
+      const selectedSegment = selectedPath[pathIndex];
+      if (selectedSegment === '#') {
+        return fieldIndex;
       }
-      if (i >= arr[j].length && arr[j][arr[j].length - 1] === '#') {
-        continue; // eslint-disable-line no-continue
+      if (
+        pathIndex >= elem.length ||
+        (selectedSegment !== '+' && selectedSegment !== elem[pathIndex])
+      ) {
+        matches = false;
+        break;
       }
-      m = false;
-      break;
     }
-    if (m) return j;
+    if (matches) {
+      return fieldIndex;
+    }
   }
   return -1;
 }

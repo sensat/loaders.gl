@@ -1,7 +1,11 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
 // import type {} from '@loaders.gl/loader-utils';
 
 import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
-import {GeoJSONTable, BinaryGeometry} from '@loaders.gl/schema';
+import type {GeoJSONTable, BinaryGeometry} from '@loaders.gl/schema';
 import {encodeGeoArrowSync} from './lib/encoders/encode-geoarrow';
 
 // __VERSION__ is injected by babel-plugin-version-inline
@@ -18,6 +22,8 @@ export const GeoArrowWriter = {
   id: 'arrow',
   module: 'arrow',
   version: VERSION,
+  encoding: 'arrow',
+  format: 'geoarrow',
   extensions: ['arrow', 'feather'],
   mimeTypes: [
     'application/vnd.apache.arrow.file',

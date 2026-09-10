@@ -1,6 +1,46 @@
-# GIFBuilder 🚧
+---
+title: GIFBuilder
+description: Build animated GIFs from browser images, image URLs, video, or webcam frames.
+hide_title: true
+page_style: designed
+---
 
-<p class="badges">
+import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
+import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
+
+<DocPageHeader
+  eyebrow="Video API · experimental builder"
+  title="Turn a sequence of frames into a shareable GIF."
+  description="GIFBuilder collects browser images or media frames and produces a base64-encoded GIF. It is useful for small capture and preview workflows, but remains experimental and browser-only."
+  tone="violet"
+  meta={['From v2.2', 'Browser only', 'Experimental']}
+  links={[
+    {label: 'Video module', to: '/docs/modules/video'},
+    {label: 'ImageBitmapLoader', to: '/docs/modules/images/api-reference/image-bitmap-loader'},
+    {label: 'VideoLoader', to: '/docs/modules/video/api-reference/video-loader'}
+  ]}
+/>
+
+<DocOrientation
+  eyebrow="The capture path"
+  title="Collect frames first. Encode once at the edge."
+  description="GIFBuilder accepts decoded images, URLs, video, and webcam input depending on the selected source. The surrounding application still owns permission, timing, and lifecycle decisions."
+  tone="violet"
+  items={[
+    {label: 'Sources', value: 'Images, image URLs, video, or webcam frames'},
+    {label: 'Output', value: 'Base64-encoded GIF image data'},
+    {label: 'Runtime', value: 'Browser APIs only'},
+    {label: 'Status', value: 'Experimental; pin versions for production experiments'}
+  ]}
+/>
+
+<ReferenceBoundary
+  title="GIFBuilder reference"
+  description="The sections below document construction, frame input, text overlays, webcam capture, methods, and experimental limitations."
+  tone="violet"
+/>
+
+<p className="badges">
   <img src="https://img.shields.io/badge/From-v2.2-blue.svg?style=flat-square" alt="From-v2.2" /> 
 </p>
 
@@ -21,19 +61,13 @@ Build a GIF from images
 
 ```typescript
 import {load} from '@loaders.gl/core';
-import {ImageLoader} from '@loaders.gl/images';
+import {ImageBitmapLoader} from '@loaders.gl/images';
 import {GIFBuilder} from '@loaders.gl/video';
 
 const gifBuilder = new GIFBuilder({source: 'images', width: 400, height: 400});
-gifBuilder.add(
-  await load('http://i.imgur.com/2OO33vX.jpg', ImageLoader, {images: {type: 'image'}})
-);
-gifBuilder.add(
-  await load('http://i.imgur.com/qOwVaSN.png', ImageLoader, {images: {type: 'image'}})
-);
-gifBuilder.add(
-  await load('http://i.imgur.com/Vo5mFZJ.gif', ImageLoader, {images: {type: 'image'}})
-);
+gifBuilder.add(await load('http://i.imgur.com/2OO33vX.jpg', ImageBitmapLoader));
+gifBuilder.add(await load('http://i.imgur.com/qOwVaSN.png', ImageBitmapLoader));
+gifBuilder.add(await load('http://i.imgur.com/Vo5mFZJ.gif', ImageBitmapLoader));
 gifBuilder.build();
 ```
 
@@ -77,9 +111,9 @@ Creates a new `GIFBuilder` instance.
 
 `options` See the Options section below.
 
-### add(file: Image | string | object)
+### add(file: ImageBitmap | Image | string | object)
 
-- **images** -- `Image` objects can be added.(Note: `ImageBitmap` is not currently supported).
+- **images** -- `ImageBitmap` and `Image` objects can be added.
 
 Experimentally, tha following types can currently be added (may be removed in upcoming release)
 

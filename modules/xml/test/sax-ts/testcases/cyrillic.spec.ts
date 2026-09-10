@@ -1,13 +1,8 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-// Forked from sax-ts & sax under ISC license
-
-import test from 'tape-promise/tape';
+// SPDX-License-Identifier: ISC
+import {test} from 'vitest';
 import {testSax} from '../utils/test-utils';
-
-test('SAXParser#cyrillic', (t) => {
-  testSax(t, {
+test('SAXParser#cyrillic', () => {
+  testSax({
     xml: '<Р>тест</Р>',
     expect: [
       ['opentagstart', {name: 'Р', attributes: {}}],
@@ -16,6 +11,4 @@ test('SAXParser#cyrillic', (t) => {
       ['closetag', 'Р']
     ]
   });
-
-  t.end();
 });

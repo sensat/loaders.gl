@@ -1,6 +1,6 @@
 {
   "name": "@loaders.gl/json",
-  "version": "4.3.3",
+  "version": "5.0.0-alpha.5",
   "description": "Framework-independent loader for JSON and streaming JSON formats",
   "license": "MIT",
   "type": "module",
@@ -29,6 +29,25 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./unbundled": {
+      "types": "./dist/unbundled.d.ts",
+      "import": "./dist/unbundled.js"
+    },
+    "./bundled": {
+      "types": "./dist/bundled.d.ts",
+      "import": "./dist/bundled.js"
+    },
+    "./ndjson-source": {
+      "types": "./dist/ndjson-source.d.ts",
+      "import": "./dist/ndjson-source.js"
+    },
+    "./json-table-loader": {
+      "types": "./dist/json-table-loader-with-parser.d.ts",
+      "import": "./dist/json-table-loader-with-parser.js"
+    },
+    "./geojson-worker.js": {
+      "import": "./dist/geojson-worker.js"
     }
   },
   "sideEffects": false,
@@ -44,12 +63,14 @@
     "build-worker": "esbuild src/workers/geojson-worker.ts --bundle --outfile=dist/geojson-worker.js --define:__VERSION__=\\\"$npm_package_version\\\""
   },
   "dependencies": {
-    "@loaders.gl/gis": "4.3.3",
-    "@loaders.gl/loader-utils": "4.3.3",
-    "@loaders.gl/schema": "4.3.3"
+    "@loaders.gl/gis": "5.0.0-alpha.5",
+    "@loaders.gl/loader-utils": "5.0.0-alpha.5",
+    "@loaders.gl/schema": "5.0.0-alpha.5",
+    "@loaders.gl/schema-utils": "5.0.0-alpha.5",
+    "apache-arrow": ">= 17.0.0"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "^4.3.0"
+    "@loaders.gl/core": "~5.0.0-alpha.0"
   },
-  "gitHead": "3213679d79e6ff2814d48fd3337acfa446c74099"
+  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
 }

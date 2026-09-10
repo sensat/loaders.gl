@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {WorkerMessageType, WorkerMessagePayload} from '../../types';
-import {isMobile, isBrowser} from '../env-utils/globals';
+import type {LoadWorker, WorkerMessageType, WorkerMessagePayload} from '../../types';
+import {isMobile} from '../env-utils/globals';
 import WorkerThread from './worker-thread';
 import WorkerJob from './worker-job';
 
@@ -22,10 +22,22 @@ export type WorkerPoolProps = {
   name?: string;
   source?: string; // | Function;
   url?: string;
+  /** Lazily resolves a classic worker fallback URL. */
+  getUrl?: () => string;
+  /** Creates a browser Worker directly. */
+  loadWorker?: LoadWorker;
   maxConcurrency?: number;
   maxMobileConcurrency?: number;
   onDebug?: (options: OnDebugParameters) => any;
   reuseWorkers?: boolean;
+};
+
+/** Worker-pool target, including values used only to distinguish cached pools. */
+export type WorkerPoolTarget = WorkerPoolProps & {
+  /** Worker name used as the base pool identity. */
+  name: string;
+  /** Stable identity for a lazily resolved URL. */
+  urlKey?: string;
 };
 
 /** Private helper types */
@@ -46,6 +58,10 @@ export default class WorkerPool {
   name: string = 'unnamed';
   source?: string; // | Function;
   url?: string;
+  /** Lazily resolves a classic worker fallback URL. */
+  getUrl?: () => string;
+  /** Creates a browser Worker directly. */
+  loadWorker?: LoadWorker;
   maxConcurrency: number = 1;
   maxMobileConcurrency: number = 1;
   onDebug: (options: OnDebugParameters) => any = () => {};
@@ -69,6 +85,8 @@ export default class WorkerPool {
   constructor(props: WorkerPoolProps) {
     this.source = props.source;
     this.url = props.url;
+    this.getUrl = props.getUrl;
+    this.loadWorker = props.loadWorker;
     this.setProps(props);
   }
 
@@ -78,7 +96,7 @@ export default class WorkerPool {
    */
   destroy(): void {
     // Destroy idle workers, active Workers will be destroyed on completion
-    this.idleQueue.forEach((worker) => worker.destroy());
+    this.idleQueue.forEach(worker => worker.destroy());
     this.isDestroyed = true;
   }
 
@@ -108,7 +126,7 @@ export default class WorkerPool {
     onError: OnError = (job, error) => job.error(error)
   ): Promise<WorkerJob> {
     // Promise resolves when thread starts working on this job
-    const startPromise = new Promise<WorkerJob>((onStart) => {
+    const startPromise = new Promise<WorkerJob>(onStart => {
       // Promise resolves when thread completes or fails working on this job
       this.jobQueue.push({name, onMessage, onError, onStart});
       return this;
@@ -147,10 +165,11 @@ export default class WorkerPool {
 
       // Create a worker job to let the app access thread and manage job completion
       const job = new WorkerJob(queuedJob.name, workerThread);
+      workerThread.ref();
 
       // Set the worker thread's message handlers
-      workerThread.onMessage = (data) => queuedJob.onMessage(job, data.type, data.payload);
-      workerThread.onError = (error) => queuedJob.onError(job, error);
+      workerThread.onMessage = data => queuedJob.onMessage(job, data.type, data.payload);
+      workerThread.onError = error => queuedJob.onError(job, error);
 
       // Resolve the start promise so that the app can start sending messages to worker
       queuedJob.onStart(job);
@@ -158,9 +177,9 @@ export default class WorkerPool {
       // Wait for the app to signal that the job is complete, then return worker to queue
       try {
         await job.result;
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(`Worker exception: ${error}`);
+      } catch {
+        // The job result promise carries worker errors back to the caller; do not duplicate-log
+        // handled rejections here.
       } finally {
         this.returnWorkerToQueue(workerThread);
       }
@@ -177,9 +196,8 @@ export default class WorkerPool {
    */
   returnWorkerToQueue(worker: WorkerThread) {
     const shouldDestroyWorker =
-      // Workers on Node.js prevent the process from exiting.
-      // Until we figure out how to close them before exit, we always destroy them
-      !isBrowser ||
+      // Aborted jobs terminate their worker immediately.
+      worker.terminated ||
       // If the pool is destroyed, there is no reason to keep the worker around
       this.isDestroyed ||
       // If the app has disabled worker reuse, any completed workers should be destroyed
@@ -188,9 +206,12 @@ export default class WorkerPool {
       this.count > this._getMaxConcurrency();
 
     if (shouldDestroyWorker) {
-      worker.destroy();
+      if (!worker.terminated) {
+        worker.destroy();
+      }
       this.count--;
     } else {
+      worker.unref();
       this.idleQueue.push(worker);
     }
 
@@ -212,7 +233,13 @@ export default class WorkerPool {
     if (this.count < this._getMaxConcurrency()) {
       this.count++;
       const name = `${this.name.toLowerCase()} (#${this.count} of ${this.maxConcurrency})`;
-      return new WorkerThread({name, source: this.source, url: this.url});
+      return new WorkerThread({
+        name,
+        source: this.source,
+        url: this.url,
+        getUrl: this.getUrl,
+        loadWorker: this.loadWorker
+      });
     }
 
     // No worker available, have to wait

@@ -1,4 +1,8 @@
-import {createLoaderWorker} from '@loaders.gl/loader-utils';
-import {PCDLoader} from '../index';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
 
-createLoaderWorker(PCDLoader);
+import {createLoaderWorker} from '@loaders.gl/loader-utils';
+import {PCDLoaderWithParser} from '../pcd-loader-with-parser';
+
+createLoaderWorker(PCDLoaderWithParser);

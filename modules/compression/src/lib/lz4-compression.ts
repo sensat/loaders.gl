@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
+// Forked code
 // Copyright (c) 2012 Pierre Curto
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,7 +27,12 @@
 /* eslint-disable max-statements */
 
 // LZ4
-import {toArrayBuffer, registerJSModules, getJSModule} from '@loaders.gl/loader-utils';
+import {
+  toArrayBuffer,
+  registerJSModules,
+  getJSModule,
+  getJSModuleOrNull
+} from '@loaders.gl/loader-utils';
 import type {CompressionOptions} from './compression';
 import {Compression} from './compression';
 
@@ -35,6 +41,7 @@ const LZ4_MAGIC_NUMBER = 0x184d2204;
 
 /**
  * LZ4 compression / decompression
+ * @deprecated Import a direction-specific LZ4 compressor or decompressor.
  */
 export class LZ4Compression extends Compression {
   readonly name: string = 'lz4';
@@ -43,7 +50,7 @@ export class LZ4Compression extends Compression {
   readonly isSupported = true;
   readonly options: CompressionOptions;
 
-  constructor(options: CompressionOptions) {
+  constructor(options: CompressionOptions = {}) {
     super(options);
     this.options = options;
 
@@ -52,12 +59,21 @@ export class LZ4Compression extends Compression {
 
   async preload(modules: Record<string, any> = {}): Promise<void> {
     registerJSModules(modules);
+    if (!getJSModuleOrNull('lz4js')) {
+      const lz4 = await import('lz4js');
+      registerJSModules({lz4js: lz4.default || lz4});
+    }
   }
 
   compressSync(input: ArrayBuffer): ArrayBuffer {
     const lz4js = getJSModule('lz4js', this.name);
     const inputArray = new Uint8Array(input);
     return lz4js.compress(inputArray).buffer;
+  }
+
+  async compress(input: ArrayBuffer): Promise<ArrayBuffer> {
+    await this.preload();
+    return this.compressSync(input);
   }
 
   /**
@@ -67,12 +83,12 @@ export class LZ4Compression extends Compression {
    * If data provided without magic number we will parse it as block
    */
   decompressSync(data: ArrayBuffer, maxSize?: number): ArrayBuffer {
-    const lz4js = getJSModule('lz4js', this.name);
     try {
       const isMagicNumberExists = this.checkMagicNumber(data);
       const inputArray = new Uint8Array(data);
 
       if (isMagicNumberExists) {
+        const lz4js = getJSModule('lz4js', this.name);
         return lz4js.decompress(inputArray, maxSize).buffer;
       }
 
@@ -82,13 +98,72 @@ export class LZ4Compression extends Compression {
       }
 
       let uncompressed = new Uint8Array(maxSize);
+      const hadoopSize = this.decodeHadoopBlocks(inputArray, uncompressed);
+      if (hadoopSize !== null) {
+        return toArrayBuffer(
+          hadoopSize === uncompressed.byteLength
+            ? uncompressed
+            : uncompressed.subarray(0, hadoopSize)
+        );
+      }
       const uncompressedSize = this.decodeBlock(inputArray, uncompressed);
-      uncompressed = uncompressed.slice(0, uncompressedSize);
-
-      return toArrayBuffer(uncompressed);
+      if (uncompressedSize < 0 || uncompressedSize > maxSize) {
+        throw new Error(`Invalid LZ4 block at byte ${Math.abs(uncompressedSize)}`);
+      }
+      return toArrayBuffer(
+        uncompressedSize === uncompressed.byteLength
+          ? uncompressed
+          : uncompressed.subarray(0, uncompressedSize)
+      );
     } catch (error) {
       throw this.improveError(error);
     }
+  }
+
+  async decompress(data: ArrayBuffer, maxSize?: number): Promise<ArrayBuffer> {
+    const isMagicNumberExists = this.checkMagicNumber(data);
+    if (!isMagicNumberExists) {
+      return this.decompressSync(data, maxSize);
+    }
+    await this.preload();
+    return this.decompressSync(data, maxSize);
+  }
+
+  /**
+   * Decodes the legacy Hadoop LZ4 block stream used by older Parquet writers.
+   * Returns null when the input is not a valid Hadoop-framed stream.
+   */
+  decodeHadoopBlocks(data: Uint8Array, output: Uint8Array): number | null {
+    let inputOffset = 0;
+    let outputOffset = 0;
+
+    while (inputOffset < data.length) {
+      if (data.length - inputOffset < 8) {
+        return null;
+      }
+      const uncompressedByteLength = readUInt32BE(data, inputOffset);
+      const compressedByteLength = readUInt32BE(data, inputOffset + 4);
+      inputOffset += 8;
+      if (
+        uncompressedByteLength === 0 ||
+        compressedByteLength === 0 ||
+        inputOffset + compressedByteLength > data.length ||
+        outputOffset + uncompressedByteLength > output.length
+      ) {
+        return null;
+      }
+
+      const compressedBlock = data.subarray(inputOffset, inputOffset + compressedByteLength);
+      const outputBlock = output.subarray(outputOffset, outputOffset + uncompressedByteLength);
+      const decodedByteLength = this.decodeBlock(compressedBlock, outputBlock);
+      if (decodedByteLength !== uncompressedByteLength) {
+        return null;
+      }
+      inputOffset += compressedByteLength;
+      outputOffset += uncompressedByteLength;
+    }
+
+    return outputOffset;
   }
 
   /**
@@ -174,7 +249,20 @@ export class LZ4Compression extends Compression {
    * @param input
    */
   checkMagicNumber(data: ArrayBuffer): boolean {
-    const magic = new Uint32Array(data.slice(0, 4));
-    return magic[0] === LZ4_MAGIC_NUMBER;
+    if (data.byteLength < 4) return false;
+    const bytes = new Uint8Array(data, 0, 4);
+    const magic = (bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24)) >>> 0;
+    return magic === LZ4_MAGIC_NUMBER;
   }
+}
+
+/** Reads one unsigned big-endian 32-bit Hadoop block length. */
+function readUInt32BE(data: Uint8Array, offset: number): number {
+  return (
+    ((data[offset] << 24) |
+      (data[offset + 1] << 16) |
+      (data[offset + 2] << 8) |
+      data[offset + 3]) >>>
+    0
+  );
 }

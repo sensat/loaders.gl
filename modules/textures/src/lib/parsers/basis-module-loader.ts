@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import {registerJSModules, getJSModuleOrNull} from '@loaders.gl/loader-utils';
-import {loadLibrary} from '@loaders.gl/worker-utils';
+import {loadLibrary, LoadLibraryOptions} from '@loaders.gl/worker-utils';
 
 export const BASIS_EXTERNAL_LIBRARIES = {
   /** Basis transcoder, javascript wrapper part */
@@ -21,9 +21,9 @@ let loadBasisTranscoderPromise;
 /**
  * Loads wasm transcoder module
  * @param options
- * @returns {BasisFile} promise
+ * @returns initialized Basis transcoder module
  */
-export async function loadBasisTranscoderModule(options) {
+export async function loadBasisTranscoderModule(options: LoadLibraryOptions) {
   registerJSModules(options.modules);
   const basis = getJSModuleOrNull('basis');
   if (basis) {
@@ -37,9 +37,9 @@ export async function loadBasisTranscoderModule(options) {
 /**
  * Loads wasm transcoder module
  * @param options
- * @returns {BasisFile} promise
+ * @returns initialized Basis transcoder module
  */
-async function loadBasisTranscoder(options) {
+async function loadBasisTranscoder(options: LoadLibraryOptions) {
   let BASIS = null;
   let wasmBinary = null;
 
@@ -58,7 +58,7 @@ async function loadBasisTranscoder(options) {
  * Initialize wasm transcoder module
  * @param BasisModule - js part of the module
  * @param wasmBinary - wasm part of the module
- * @returns {BasisFile} promise
+ * @returns initialized Basis transcoder module
  */
 function initializeBasisTranscoderModule(BasisModule, wasmBinary) {
   const options: {wasmBinary?} = {};
@@ -67,12 +67,25 @@ function initializeBasisTranscoderModule(BasisModule, wasmBinary) {
     options.wasmBinary = wasmBinary;
   }
 
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     // if you try to return BasisModule the browser crashes!
-    BasisModule(options).then((module) => {
-      const {BasisFile, initializeBasis} = module;
+    BasisModule(options).then(module => {
+      const {
+        BasisFile,
+        KTX2File,
+        getBasisTexFormatBlockHeight,
+        getBasisTexFormatBlockWidth,
+        initializeBasis,
+        isFormatSupported
+      } = module;
       initializeBasis();
-      resolve({BasisFile});
+      resolve({
+        BasisFile,
+        KTX2File,
+        getBasisTexFormatBlockHeight,
+        getBasisTexFormatBlockWidth,
+        isFormatSupported
+      });
     });
   });
 }
@@ -82,9 +95,9 @@ let loadBasisEncoderPromise;
 /**
  * Loads wasm encoder module
  * @param options
- * @returns {BasisFile, KTX2File} promise
+ * @returns initialized Basis encoder module
  */
-export async function loadBasisEncoderModule(options) {
+export async function loadBasisEncoderModule(options: LoadLibraryOptions) {
   const modules = options.modules || {};
   if (modules.basisEncoder) {
     return modules.basisEncoder;
@@ -97,9 +110,9 @@ export async function loadBasisEncoderModule(options) {
 /**
  * Loads wasm encoder module
  * @param options
- * @returns {BasisFile, KTX2File} promise
+ * @returns initialized Basis encoder module
  */
-async function loadBasisEncoder(options) {
+async function loadBasisEncoder(options: LoadLibraryOptions) {
   let BASIS_ENCODER = null;
   let wasmBinary = null;
 
@@ -118,7 +131,7 @@ async function loadBasisEncoder(options) {
  * Initialize wasm transcoder module
  * @param BasisEncoderModule - js part of the module
  * @param wasmBinary - wasm part of the module
- * @returns {BasisFile, KTX2File} promise
+ * @returns initialized Basis encoder module
  */
 function initializeBasisEncoderModule(BasisEncoderModule, wasmBinary) {
   const options: {wasmBinary?} = {};
@@ -127,9 +140,9 @@ function initializeBasisEncoderModule(BasisEncoderModule, wasmBinary) {
     options.wasmBinary = wasmBinary;
   }
 
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     // if you try to return BasisModule the browser crashes!
-    BasisEncoderModule(options).then((module) => {
+    BasisEncoderModule(options).then(module => {
       const {BasisFile, KTX2File, initializeBasis, BasisEncoder} = module;
       initializeBasis();
       resolve({BasisFile, KTX2File, BasisEncoder});

@@ -2,9 +2,16 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
-import {Tables, GeoJSONTable} from '@loaders.gl/schema';
-import {parseGeoPackage, DEFAULT_SQLJS_CDN} from './lib/parse-geopackage';
+import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {
+  GeoArrowEncodingPreference,
+  Tables,
+  GeoJSONTable,
+  ArrowTable
+} from '@loaders.gl/schema';
+import type {Proj4CRSDefinition} from '@math.gl/proj4';
+import {DEFAULT_SQLJS_CDN} from './lib/parse-geopackage';
+import {GeoPackageFormat} from './geopackage-format';
 
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
@@ -12,44 +19,51 @@ import {parseGeoPackage, DEFAULT_SQLJS_CDN} from './lib/parse-geopackage';
 const VERSION = 'latest';
 
 export type GeoPackageLoaderOptions = LoaderOptions & {
+  /** Preferred encoding for Arrow geometry output. */
+  geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
   /** Options for the geopackage loader */
   geopackage?: {
     /** Shape of returned data */
-    shape?: 'geojson-table' | 'tables';
+    shape?: 'geojson-table' | 'arrow-table' | 'tables';
     /** Name of table to load (defaults to first table), unless shape==='tables' */
     table?: string;
     /** Use null in Node */
     sqlJsCDN?: string | null;
     /** Override the URL to the worker bundle (by default loads from unpkg.com) */
     workerUrl?: string;
+    /** Preferred encoding for Arrow geometry output. */
+    geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
   };
   gis?: {
     reproject?: boolean;
-    _targetCrs?: string;
+    _targetCrs?: Proj4CRSDefinition;
   };
 };
 
+/** Preloads the parser-bearing GeoPackage loader implementation. */
+async function preload() {
+  const {GeoPackageLoaderWithParser} = await import('./geopackage-loader-with-parser');
+  return GeoPackageLoaderWithParser;
+}
+
+/** Metadata-only loader for GeoPackage files. */
 export const GeoPackageLoader = {
-  dataType: null as unknown as GeoJSONTable | Tables<GeoJSONTable>,
+  ...GeoPackageFormat,
+
+  dataType: null as unknown as GeoJSONTable | Tables<GeoJSONTable> | ArrowTable,
   batchType: null as never,
 
-  id: 'geopackage',
-  name: 'GeoPackage',
-  module: 'geopackage',
   version: VERSION,
-  extensions: ['gpkg'],
-  mimeTypes: ['application/geopackage+sqlite3'],
-  category: 'geometry',
-  parse: parseGeoPackage,
   options: {
     geopackage: {
       sqlJsCDN: DEFAULT_SQLJS_CDN,
       shape: 'tables'
     },
     gis: {}
-  }
-} as const satisfies LoaderWithParser<
-  GeoJSONTable | Tables<GeoJSONTable>,
+  },
+  preload
+} as const satisfies Loader<
+  GeoJSONTable | Tables<GeoJSONTable> | ArrowTable,
   never,
   GeoPackageLoaderOptions
 >;

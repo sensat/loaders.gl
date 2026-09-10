@@ -1,8 +1,13 @@
-import type {ImageLoaderOptions} from '../../image-loader';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
 import {isSVG, getBlob} from './svg-utils';
 import {parseToImage} from './parse-to-image';
 
-const EMPTY_OBJECT = {};
+type ImageBitmapParseOptions = {
+  imagebitmap?: ImageBitmapOptions & Record<string, unknown>;
+};
 
 let imagebitmapOptionsSupported = true;
 
@@ -15,24 +20,44 @@ let imagebitmapOptionsSupported = true;
  */
 export async function parseToImageBitmap(
   arrayBuffer: ArrayBuffer,
-  options: ImageLoaderOptions,
+  options: ImageBitmapParseOptions,
   url?: string
 ): Promise<ImageBitmap> {
-  let blob;
+  let imageBitmapSource: Blob | HTMLImageElement;
 
   // Cannot parse SVG directly to ImageBitmap, parse to Image first
   if (isSVG(url)) {
     // Note: this only works on main thread
-    const image = await parseToImage(arrayBuffer, options, url);
-    blob = image;
+    imageBitmapSource = await parseToImage(arrayBuffer, options, url);
   } else {
     // Create blob from the array buffer
-    blob = getBlob(arrayBuffer, url);
+    imageBitmapSource = getBlob(arrayBuffer, url);
   }
 
-  const imagebitmapOptions = options && options.imagebitmap;
+  const imageBitmapOptions = (options && options.imagebitmap) as
+    | ImageBitmapOptions
+    | null
+    | undefined;
 
-  return await safeCreateImageBitmap(blob, imagebitmapOptions);
+  return await safeCreateImageBitmap(imageBitmapSource, imageBitmapOptions);
+}
+
+/**
+ * Asynchronously parses a Blob into an ImageBitmap without copying through an ArrayBuffer.
+ * @param blob Encoded image Blob
+ * @param options ImageBitmap parsing options
+ * @returns Decoded ImageBitmap
+ */
+export async function parseBlobToImageBitmap(
+  blob: Blob,
+  options: ImageBitmapParseOptions
+): Promise<ImageBitmap> {
+  const imageBitmapOptions = (options && options.imagebitmap) as
+    | ImageBitmapOptions
+    | null
+    | undefined;
+
+  return await safeCreateImageBitmap(blob, imageBitmapOptions);
 }
 
 /**
@@ -42,30 +67,36 @@ export async function parseToImageBitmap(
  * Avoid supplying if not provided or supported, remember if not supported
  */
 async function safeCreateImageBitmap(
-  blob: Blob,
-  imagebitmapOptions: ImageBitmapOptions | null = null
+  imageBitmapSource: Blob | HTMLImageElement,
+  imageBitmapOptions: ImageBitmapOptions | null = null
 ): Promise<ImageBitmap> {
-  if (isEmptyObject(imagebitmapOptions) || !imagebitmapOptionsSupported) {
-    imagebitmapOptions = null;
+  if (isEmptyObject(imageBitmapOptions) || !imagebitmapOptionsSupported) {
+    imageBitmapOptions = null;
   }
 
-  if (imagebitmapOptions) {
+  if (imageBitmapOptions) {
     try {
       // @ts-ignore Options
-      return await createImageBitmap(blob, imagebitmapOptions);
+      return await createImageBitmap(imageBitmapSource, imageBitmapOptions);
     } catch (error) {
       console.warn(error); // eslint-disable-line
       imagebitmapOptionsSupported = false;
     }
   }
 
-  return await createImageBitmap(blob);
+  return await createImageBitmap(imageBitmapSource);
 }
 
-function isEmptyObject(object) {
-  // @ts-ignore
-  for (const key in object || EMPTY_OBJECT) {
-    return false;
+function isEmptyObject(object: object | null | undefined) {
+  if (!object) {
+    return true;
   }
+
+  for (const key in object) {
+    if (Object.prototype.hasOwnProperty.call(object, key)) {
+      return false;
+    }
+  }
+
   return true;
 }

@@ -1,4 +1,8 @@
-import {createLoaderWorker} from '@loaders.gl/loader-utils';
-import {DracoLoader} from '../index';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
 
-createLoaderWorker(DracoLoader);
+import {createLoaderWorker} from '@loaders.gl/loader-utils';
+import {DracoLoaderWithParser} from '../draco-loader-with-parser';
+
+createLoaderWorker(DracoLoaderWithParser);

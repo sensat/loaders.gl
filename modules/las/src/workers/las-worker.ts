@@ -1,4 +1,8 @@
-import {createLoaderWorker} from '@loaders.gl/loader-utils';
-import {LASLoader} from '../index';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
 
-createLoaderWorker(LASLoader);
+import {createLoaderWorker} from '@loaders.gl/loader-utils';
+import {LASLoaderWithParser} from '../las-loader';
+
+createLoaderWorker(LASLoaderWithParser);

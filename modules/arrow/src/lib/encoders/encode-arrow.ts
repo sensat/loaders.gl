@@ -4,6 +4,17 @@
 
 import * as arrow from 'apache-arrow';
 import {AnyArrayType, VECTOR_TYPES} from '../types';
+import {ensureArrayBuffer} from '@loaders.gl/loader-utils';
+import {
+  registerArrowCompressionEncoderSync,
+  type ArrowIPCCompression
+} from '../parsers/arrow-compression';
+
+/** Options controlling the Arrow IPC container and embedded buffer compression. */
+export type EncodeArrowOptions = {
+  container?: 'stream' | 'file';
+  compression?: ArrowIPCCompression | null;
+};
 
 export type ColumnarTable = {
   name: string;
@@ -18,15 +29,30 @@ export type ColumnarTable = {
  * @param options - the writer options
  * @returns - encoded ArrayBuffer
  */
-export function encodeArrowSync(data: ColumnarTable): ArrayBuffer {
+export function encodeArrowSync(
+  data: ColumnarTable,
+  options: EncodeArrowOptions = {}
+): ArrayBuffer {
   const vectors: Record<string, arrow.Vector> = {};
   for (const arrayData of data) {
     const arrayVector = createVector(arrayData.array, arrayData.type);
     vectors[arrayData.name] = arrayVector;
   }
   const table = new arrow.Table(vectors);
-  const arrowBuffer = arrow.tableToIPC(table);
-  return arrowBuffer;
+  const container = options.container || 'stream';
+  const compressionType = options.compression
+    ? registerArrowCompressionEncoderSync(options.compression)
+    : null;
+  const tableToIPC = arrow.tableToIPC as unknown as (
+    table: arrow.Table,
+    container: 'stream' | 'file',
+    compressionType?: number | null
+  ) => Uint8Array;
+  const arrowBuffer =
+    compressionType === null
+      ? tableToIPC(table, container)
+      : tableToIPC(table, container, compressionType);
+  return ensureArrayBuffer(arrowBuffer);
 }
 
 /**

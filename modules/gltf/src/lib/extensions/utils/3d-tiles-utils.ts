@@ -1,3 +1,7 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
 /**
  * loaders.gl, MIT license
  *
@@ -12,8 +16,10 @@ import type {BigTypedArray, TypedArray} from '@loaders.gl/schema';
 import type {ImageType} from '@loaders.gl/images';
 
 import {GLTFScenegraph} from '../../api/gltf-scenegraph';
+import {GLTFIterator} from '../../api/gltf-iterator';
 import {getComponentTypeFromArray} from '../../gltf-utils/gltf-utils';
 import {getImageData} from '@loaders.gl/images';
+import {ensureArrayBuffer} from '@loaders.gl/loader-utils';
 
 function emod(n: number): number {
   return ((n % 1) + 1) % 1;
@@ -86,7 +92,7 @@ export function getArrayElementByteSize(attributeType, componentType): number {
  * @returns Array of values offsets. The number of offsets in the array is equal to `numberOfElements` plus one.
  */
 export function getOffsetsForProperty(
-  scenegraph: GLTFScenegraph,
+  scenegraph: GLTFScenegraph | GLTFIterator,
   bufferViewIndex: number,
   offsetType: 'UINT8' | 'UINT16' | 'UINT32' | 'UINT64' | string,
   numberOfElements: number
@@ -140,7 +146,7 @@ export function convertRawBufferToMetadataArray(
     buffer = bufferArray.slice(offset, offset + byteLength).buffer;
     offset = 0;
   }
-  return new ArrayType(buffer, offset, length);
+  return new ArrayType(ensureArrayBuffer(buffer), offset, length);
 }
 
 /**
@@ -151,7 +157,7 @@ export function convertRawBufferToMetadataArray(
  * @returns Array of data taken. Null if data can't be taken from the texture.
  */
 export function getPrimitiveTextureData(
-  scenegraph: GLTFScenegraph,
+  scenegraph: GLTFScenegraph | GLTFIterator,
   textureInfo: GLTFTextureInfoMetadata,
   primitive: GLTFMeshPrimitive
 ): number[] {
@@ -168,7 +174,7 @@ export function getPrimitiveTextureData(
     texture.texCoord is a number-suffix (like 1) for an attribute like "TEXCOORD_1" in meshes.primitives
     The value of "TEXCOORD_1" is an accessor that is used to get coordinates.
     These coordinates are being used to get data from the image.
-    
+
     Default for texture.texCoord is 0
     @see https://github.com/CesiumGS/glTF/blob/3d-tiles-next/specification/2.0/schema/textureInfo.schema.json
   */
@@ -212,7 +218,7 @@ export function getPrimitiveTextureData(
  * @param primitive - Primitive object.
  */
 export function primitivePropertyDataToAttributes(
-  scenegraph: GLTFScenegraph,
+  scenegraph: GLTFScenegraph | GLTFIterator,
   attributeName: string,
   propertyData: number[],
   featureTable: number[],
@@ -231,7 +237,7 @@ export function primitivePropertyDataToAttributes(
   */
   const featureIndices: number[] = [];
   for (const texelData of propertyData) {
-    let index = featureTable.findIndex((item) => item === texelData);
+    let index = featureTable.findIndex(item => item === texelData);
     if (index === -1) {
       index = featureTable.push(texelData) - 1;
     }
@@ -239,12 +245,17 @@ export function primitivePropertyDataToAttributes(
   }
   const typedArray = new Uint32Array(featureIndices);
   const bufferIndex =
-    scenegraph.gltf.buffers.push({
-      arrayBuffer: typedArray.buffer,
-      byteOffset: typedArray.byteOffset,
-      byteLength: typedArray.byteLength
-    }) - 1;
-  const bufferViewIndex = scenegraph.addBufferView(typedArray, bufferIndex, 0);
+    scenegraph instanceof GLTFIterator
+      ? scenegraph.addBuffer(typedArray)
+      : scenegraph.gltf.buffers.push({
+          arrayBuffer: typedArray.buffer,
+          byteOffset: typedArray.byteOffset,
+          byteLength: typedArray.byteLength
+        }) - 1;
+  const bufferViewIndex =
+    scenegraph instanceof GLTFIterator
+      ? scenegraph.addBufferView(bufferIndex, typedArray.byteLength)
+      : scenegraph.addBufferView(typedArray, bufferIndex, 0);
   const accessorIndex = scenegraph.addAccessor(bufferViewIndex, {
     size: 1,
     componentType: getComponentTypeFromArray(typedArray),
@@ -295,7 +306,7 @@ function getImageValueByCoordinates(
     According to the EXT_mesh_features extension specification:
       The channels array contains non-negative integer values corresponding to channels of the source texture that the feature ID consists of.
       Channels of an RGBA texture are numbered 0–3 respectively.
-    Function getImageValueByCoordinates is used to process both extensions. 
+    Function getImageValueByCoordinates is used to process both extensions.
     So, there should be possible to get the element of CHANNELS_MAP by either index (0, 1, 2, 3) or key (r, g, b, a).
     */
     const map = typeof c === 'number' ? Object.values(CHANNELS_MAP)[c] : CHANNELS_MAP[c];
@@ -405,14 +416,36 @@ export function getPropertyDataString(
   arrayOffsets: TypedArray | null,
   stringOffsets: TypedArray | null
 ): string[] | string[][] {
+  const textDecoder = new TextDecoder('utf8');
+
+  // Variable-length string array (arrayOffsets + stringOffsets)
+  // See: https://github.com/CesiumGS/3d-tiles/tree/main/specification/Metadata#strings
   if (arrayOffsets) {
-    // TODO: implement it as soon as we have the corresponding tileset
-    throw new Error('Not implemented - arrayOffsets for strings is specified');
+    if (!stringOffsets) {
+      throw new Error('stringOffsets is required for variable-length string arrays');
+    }
+
+    const result: string[][] = [];
+    for (let featureId = 0; featureId < numberOfElements; featureId++) {
+      const startStringIndex = arrayOffsets[featureId];
+      const endStringIndex = arrayOffsets[featureId + 1];
+      const strings: string[] = [];
+
+      for (let stringIndex = startStringIndex; stringIndex < endStringIndex; stringIndex++) {
+        const startByte = stringOffsets[stringIndex];
+        const endByte = stringOffsets[stringIndex + 1];
+        const stringData = valuesDataBytes.subarray(startByte, endByte);
+        strings.push(textDecoder.decode(stringData));
+      }
+
+      result.push(strings);
+    }
+    return result;
   }
 
+  // Simple strings (stringOffsets only)
   if (stringOffsets) {
     const stringsArray: string[] = [];
-    const textDecoder = new TextDecoder('utf8');
 
     let stringOffset = 0;
     for (let index = 0; index < numberOfElements; index++) {

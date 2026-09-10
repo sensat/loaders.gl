@@ -4,7 +4,6 @@
 
 import type {WorkerMessageType, WorkerMessagePayload} from '../../types';
 import WorkerThread from './worker-thread';
-import {assert} from '../env-utils/assert';
 
 /**
  * Represents one Job handled by a WorkerPool or WorkerFarm
@@ -44,7 +43,9 @@ export default class WorkerJob {
    * Call to resolve the `result` Promise with the supplied value
    */
   done(value: any): void {
-    assert(this.isRunning);
+    if (!this.isRunning) {
+      return;
+    }
     this.isRunning = false;
     this._resolve(value);
   }
@@ -52,9 +53,31 @@ export default class WorkerJob {
   /**
    * Call to reject the `result` Promise with the supplied error
    */
-  error(error: Error): void {
-    assert(this.isRunning);
+  error(error: unknown): void {
+    if (!this.isRunning) {
+      return;
+    }
     this.isRunning = false;
     this._reject(error);
   }
+
+  /**
+   * Terminates the worker executing this job and rejects its result.
+   * @param reason Abort reason supplied by the caller, or a cross-runtime `AbortError`.
+   */
+  abort(reason?: unknown): void {
+    if (!this.isRunning) {
+      return;
+    }
+    const error = reason ?? createAbortError(`Worker job "${this.name}" was aborted`);
+    this.workerThread.destroy();
+    this.error(error);
+  }
+}
+
+/** Creates an abort error without requiring the DOMException global. */
+function createAbortError(message: string): Error {
+  const error = new Error(message);
+  error.name = 'AbortError';
+  return error;
 }

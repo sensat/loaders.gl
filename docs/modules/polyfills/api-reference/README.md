@@ -1,4 +1,44 @@
-# Overview
+---
+title: Polyfills
+description: Add the small set of Node.js and browser-compatibility APIs needed by loaders.gl.
+hide_title: true
+page_style: designed
+---
+
+import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
+import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
+
+<DocPageHeader
+  eyebrow="Polyfills module"
+  title="Give Node.js the platform APIs loaders expect."
+  description="@loaders.gl/polyfills installs compatibility shims for file access, fetch, streams, crypto, images, and library loading when the runtime does not provide the browser-shaped API directly."
+  tone="blue"
+  meta={['Node.js support', 'Fetch and files', 'ImageBitmap and streams']}
+  links={[
+    {label: 'Polyfills module', to: '/docs/modules/polyfills/api-reference'},
+    {label: 'Preferred JavaScript APIs', to: '/docs/developer-guide/concepts/javascript-apis'},
+    {label: 'Image module', to: '/docs/modules/images'}
+  ]}
+/>
+
+<DocOrientation
+  eyebrow="The runtime boundary"
+  title="Import once, keep loader code portable."
+  description="The polyfills package is primarily for Node.js. In browsers it is designed to be a no-op, while under Node it fills the specific gaps needed by loaders.gl’s browser-compatible contracts."
+  tone="blue"
+  items={[
+    {label: 'Files', value: 'NodeFile, NodeFilesystem, ReadableFile, and WritableFile'},
+    {label: 'Network', value: 'fetch, Response, and Headers on older Node versions'},
+    {label: 'Media', value: 'ImageBitmap and image-data helpers'},
+    {label: 'Runtime', value: 'Crypto, streams, and dynamic library loading'}
+  ]}
+/>
+
+<ReferenceBoundary
+  title="Polyfill installation and limits"
+  description="The sections below cover installation, installed capabilities, image behavior, readable files, deprecated fetch support, and attribution."
+  tone="blue"
+/>
 
 The `@loaders.gl/polyfills` module installs support for Node.js. This module should be imported before you call any loaders.gl functionality under Node.js
 
@@ -30,7 +70,26 @@ The polyfills module installs the following capabilities.
 - Node Stream support
 - Node library loading
 - Image parsing and encoding under Node.js
-  |
+- A minimal global `ImageBitmap` polyfill plus a global `getImageBitmapData(image)` helper under Node.js
+
+## ImageBitmap Polyfill
+
+When `@loaders.gl/polyfills` is imported under Node.js, it installs:
+
+- `globalThis.ImageBitmap` as a lightweight wrapper around decoded image pixels
+- `globalThis.getImageBitmapData(image)` to unwrap that bitmap back to `{data, width, height}`
+
+This polyfill is intentionally limited:
+
+- it is designed to support [`ImageBitmapLoader`](/docs/modules/images/api-reference/image-bitmap-loader) and parsed-image helpers
+- it does not install `createImageBitmap()`
+- it does not attempt to emulate full browser canvas/image interoperability
+
+The Node image decoder support remains limited to the formats supported by the existing loaders.gl image polyfills.
+
+## ReadableFile utilities
+
+`@loaders.gl/loader-utils` exports `NodeFile` and `NodeFilesystem` wrappers that are installed by this polyfill package. They mirror the browser `HttpFile`/`BlobFile` implementations, exposing a consistent `ReadableFile` interface for local and remote assets without bundling Node built-ins directly into application code.
 
 ## Deprecated polyfills
 

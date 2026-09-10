@@ -1,8 +1,13 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
 // GLTF EXTENSION: EXT_structural_metadata
 // https://github.com/CesiumGS/glTF/blob/3d-tiles-next/extensions/2.0/Vendor/EXT_structural_metadata
 /* eslint-disable camelcase */
 import type {BigTypedArray, TypedArray} from '@loaders.gl/schema';
 import type {GLTF, GLTFTextureInfoMetadata, GLTFMeshPrimitive} from '../types/gltf-json-schema';
+import type {GLTFWithBuffers} from '../types/gltf-types';
 import type {
   GLTF_EXT_structural_metadata_Schema,
   GLTF_EXT_structural_metadata_ClassProperty,
@@ -19,6 +24,7 @@ import type {GLTFLoaderOptions} from '../../gltf-loader';
 import {GLTFWriterOptions} from '../../gltf-writer';
 
 import {GLTFScenegraph} from '../api/gltf-scenegraph';
+import {GLTFIterator} from '../api/gltf-iterator';
 import {
   convertRawBufferToMetadataArray,
   getPrimitiveTextureData,
@@ -30,13 +36,14 @@ import {
   parseFixedLengthArrayNumeric,
   getPropertyDataString
 } from './utils/3d-tiles-utils';
+import {ensureArrayBuffer} from '@loaders.gl/loader-utils';
 
 const EXT_STRUCTURAL_METADATA_NAME = 'EXT_structural_metadata';
 export const name = EXT_STRUCTURAL_METADATA_NAME;
 
-export async function decode(gltfData: {json: GLTF}, options: GLTFLoaderOptions): Promise<void> {
-  const scenegraph = new GLTFScenegraph(gltfData);
-  decodeExtStructuralMetadata(scenegraph, options);
+export async function decode(gltfData: GLTFWithBuffers, options: GLTFLoaderOptions): Promise<void> {
+  const iterator = new GLTFIterator(gltfData);
+  decodeExtStructuralMetadata(iterator, options);
 }
 
 export function encode(gltfData: {json: GLTF}, options: GLTFWriterOptions) {
@@ -108,13 +115,13 @@ const extensions = {
  * @param scenegraph - Instance of the class for structured access to GLTF data.
  * @param options - GLTFLoader options.
  */
-function decodeExtStructuralMetadata(scenegraph: GLTFScenegraph, options: GLTFLoaderOptions): void {
+function decodeExtStructuralMetadata(iterator: GLTFIterator, options: GLTFLoaderOptions): void {
   // Decoding metadata involves buffers processing.
   // So, if buffers have not been loaded, there is no reason to process metadata.
   if (!options.gltf?.loadBuffers) {
     return;
   }
-  const extension: GLTF_EXT_structural_metadata_GLTF | null = scenegraph.getExtension(
+  const extension: GLTF_EXT_structural_metadata_GLTF | undefined = iterator.getExtension(
     EXT_STRUCTURAL_METADATA_NAME
   );
   if (!extension) {
@@ -122,10 +129,10 @@ function decodeExtStructuralMetadata(scenegraph: GLTFScenegraph, options: GLTFLo
   }
 
   if (options.gltf?.loadImages) {
-    decodePropertyTextures(scenegraph, extension);
+    decodePropertyTextures(iterator, extension);
   }
 
-  decodePropertyTables(scenegraph, extension);
+  decodePropertyTables(iterator, extension);
 }
 
 /**
@@ -134,16 +141,16 @@ function decodeExtStructuralMetadata(scenegraph: GLTFScenegraph, options: GLTFLo
  * @param extension - Top-level extension.
  */
 function decodePropertyTextures(
-  scenegraph: GLTFScenegraph,
+  iterator: GLTFIterator,
   extension: GLTF_EXT_structural_metadata_GLTF
 ): void {
   const propertyTextures = extension.propertyTextures;
-  const json = scenegraph.gltf.json;
+  const json = iterator.data;
   if (propertyTextures && json.meshes) {
     // Iterate through all meshes/primitives.
     for (const mesh of json.meshes) {
       for (const primitive of mesh.primitives) {
-        processPrimitivePropertyTextures(scenegraph, propertyTextures, primitive, extension);
+        processPrimitivePropertyTextures(iterator, propertyTextures, primitive, extension);
       }
     }
   }
@@ -155,7 +162,7 @@ function decodePropertyTextures(
  * @param extension - Top-level extension.
  */
 function decodePropertyTables(
-  scenegraph: GLTFScenegraph,
+  iterator: GLTFIterator,
   extension: GLTF_EXT_structural_metadata_GLTF
 ): void {
   const schema = extension.schema;
@@ -168,7 +175,7 @@ function decodePropertyTables(
     for (const schemaName in schemaClasses) {
       const propertyTable = findPropertyTableByClass(propertyTables, schemaName);
       if (propertyTable) {
-        processPropertyTable(scenegraph, schema, propertyTable);
+        processPropertyTable(iterator, schema, propertyTable);
       }
     }
   }
@@ -200,7 +207,7 @@ function findPropertyTableByClass(
  * @param extension - Top-level extension.
  */
 function processPrimitivePropertyTextures(
-  scenegraph: GLTFScenegraph,
+  iterator: GLTFIterator,
   propertyTextures: GLTF_EXT_structural_metadata_PropertyTexture[],
   primitive: GLTFMeshPrimitive,
   extension: GLTF_EXT_structural_metadata_GLTF
@@ -218,7 +225,7 @@ function processPrimitivePropertyTextures(
 
   for (const primitivePropertyTextureIndex of primitivePropertyTextureIndices) {
     const propertyTexture = propertyTextures[primitivePropertyTextureIndex];
-    processPrimitivePropertyTexture(scenegraph, propertyTexture, primitive, extension);
+    processPrimitivePropertyTexture(iterator, propertyTexture, primitive, extension);
   }
 }
 
@@ -230,7 +237,7 @@ function processPrimitivePropertyTextures(
  * @param extension - Top-level extension.
  */
 function processPrimitivePropertyTexture(
-  scenegraph: GLTFScenegraph,
+  iterator: GLTFIterator,
   propertyTexture: GLTF_EXT_structural_metadata_PropertyTexture,
   primitive: GLTFMeshPrimitive,
   extension: GLTF_EXT_structural_metadata_GLTF
@@ -280,7 +287,7 @@ function processPrimitivePropertyTexture(
     const featureTextureTable: number[] = textureInfoTopLevel.data as number[];
 
     const propertyData: number[] | null = getPrimitiveTextureData(
-      scenegraph,
+      iterator,
       textureInfoTopLevel,
       primitive
     );
@@ -289,7 +296,7 @@ function processPrimitivePropertyTexture(
       continue;
     }
     primitivePropertyDataToAttributes(
-      scenegraph,
+      iterator,
       attributeName,
       propertyData,
       featureTextureTable,
@@ -308,7 +315,7 @@ function processPrimitivePropertyTexture(
  * @param propertyTable - propertyTable definition taken from the top-level extension.
  */
 function processPropertyTable(
-  scenegraph: GLTFScenegraph,
+  iterator: GLTFIterator,
   schema: GLTF_EXT_structural_metadata_Schema,
   propertyTable: GLTF_EXT_structural_metadata_PropertyTable
 ): void {
@@ -329,7 +336,7 @@ function processPropertyTable(
     if (propertyTableProperty) {
       // Getting all elements (`numberOfElements`) of the array in the `propertyTableProperty`
       const data = getPropertyDataFromBinarySource(
-        scenegraph,
+        iterator,
         schema,
         classProperty,
         numberOfElements,
@@ -350,7 +357,7 @@ function processPropertyTable(
  * @returns {string[] | number[] | string[][] | number[][]}
  */
 function getPropertyDataFromBinarySource(
-  scenegraph: GLTFScenegraph,
+  iterator: GLTFIterator,
   schema: GLTF_EXT_structural_metadata_Schema,
   classProperty: GLTF_EXT_structural_metadata_ClassProperty,
   numberOfElements: number,
@@ -358,18 +365,19 @@ function getPropertyDataFromBinarySource(
 ): string[] | BigTypedArray | string[][] | BigTypedArray[] {
   let data: string[] | BigTypedArray | string[][] | BigTypedArray[] = [];
   const valuesBufferView = propertyTableProperty.values;
-  const valuesDataBytes: Uint8Array = scenegraph.getTypedArrayForBufferView(valuesBufferView);
+  const valuesDataBytes: Uint8Array = iterator.getTypedArrayForBufferView(valuesBufferView);
 
   const arrayOffsets = getArrayOffsetsForProperty(
-    scenegraph,
+    iterator,
     classProperty,
     propertyTableProperty,
     numberOfElements
   );
   const stringOffsets = getStringOffsetsForProperty(
-    scenegraph,
+    iterator,
     propertyTableProperty,
-    numberOfElements
+    numberOfElements,
+    arrayOffsets
   );
 
   switch (classProperty.type) {
@@ -418,7 +426,7 @@ function getPropertyDataFromBinarySource(
  * @see https://github.com/CesiumGS/glTF/blob/2976f1183343a47a29e4059a70961371cd2fcee8/extensions/2.0/Vendor/EXT_structural_metadata/schema/propertyTable.property.schema.json#L21
  */
 function getArrayOffsetsForProperty(
-  scenegraph: GLTFScenegraph,
+  iterator: GLTFIterator,
   classProperty: GLTF_EXT_structural_metadata_ClassProperty,
   propertyTableProperty: GLTF_EXT_structural_metadata_PropertyTable_Property,
   numberOfElements: number
@@ -433,7 +441,7 @@ function getArrayOffsetsForProperty(
   ) {
     // Data are in a VARIABLE-length array
     return getOffsetsForProperty(
-      scenegraph,
+      iterator,
       propertyTableProperty.arrayOffsets,
       propertyTableProperty.arrayOffsetType || 'UINT32',
       numberOfElements
@@ -447,23 +455,25 @@ function getArrayOffsetsForProperty(
  * @param scenegraph - Instance of the class for structured access to GLTF data.
  * @param propertyTableProperty - propertyTable's property metadata.
  * @param numberOfElements - The number of elements in each property array that propertyTableProperty contains. It's a number of rows in the table.
+ * @param arrayOffsets - Offsets for variable-length arrays. The final offset is the total number of string elements.
  * @returns Typed array with offset values.
  * @see https://github.com/CesiumGS/glTF/blob/2976f1183343a47a29e4059a70961371cd2fcee8/extensions/2.0/Vendor/EXT_structural_metadata/schema/propertyTable.property.schema.json#L29C10-L29C23
  */
 function getStringOffsetsForProperty(
-  scenegraph: GLTFScenegraph,
+  iterator: GLTFIterator,
   propertyTableProperty: GLTF_EXT_structural_metadata_PropertyTable_Property,
-  numberOfElements: number
+  numberOfElements: number,
+  arrayOffsets: TypedArray | null
 ): TypedArray | null {
   if (
     typeof propertyTableProperty.stringOffsets !== 'undefined' // `stringOffsets` is an index of the buffer view containing offsets for strings.
   ) {
-    // Data are in a FIXED-length array
+    const numberOfStrings = arrayOffsets ? arrayOffsets[numberOfElements] : numberOfElements;
     return getOffsetsForProperty(
-      scenegraph,
+      iterator,
       propertyTableProperty.stringOffsets,
       propertyTableProperty.stringOffsetType || 'UINT32',
-      numberOfElements
+      numberOfStrings
     );
   }
   return null;
@@ -926,7 +936,7 @@ function createPropertyDataString(strings: string[]): {
 
 function createBufferView(typedArray: TypedArray, scenegraph: GLTFScenegraph): number {
   scenegraph.gltf.buffers.push({
-    arrayBuffer: typedArray.buffer,
+    arrayBuffer: ensureArrayBuffer(typedArray.buffer),
     byteOffset: typedArray.byteOffset,
     byteLength: typedArray.byteLength
   });

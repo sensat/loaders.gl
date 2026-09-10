@@ -1,3 +1,7 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
 // Image loading/saving for browser and Node.js
 import {ImageDataType} from '../../types';
 import {getImageSize} from '../category-api/parsed-image-api';
@@ -48,13 +52,13 @@ async function encodeImageInBrowser(image, options) {
   drawImageToCanvas(image, canvas);
 
   // The actual encoding is done asynchronously with `canvas.toBlob()`
-  const blob = await new Promise<Blob | null>((resolve) => {
+  const blob = await new Promise<Blob | null>(resolve => {
     // get it back as a Blob
     if (jpegQuality && qualityParamSupported) {
       try {
         canvas.toBlob(resolve, mimeType, jpegQuality);
         return;
-      } catch (error) {
+      } catch (_error) {
         qualityParamSupported = false;
       }
     }

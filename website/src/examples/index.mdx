@@ -1,8 +1,35 @@
-# Examples
+---
+title: "Examples"
+hide_title: true
+---
 
 import {ExamplesIndex} from '../components';
 
-*Notes: These examples use [deck.gl](https://deck.gl) to visualize loaded data and only cover a subset of the available loaders.
+*Notes: Some visual examples use [deck.gl](https://deck.gl) to render loaded data, and these examples only cover a subset of the available loaders.
 Check the [loader catalog](/docs/modules/arrow/api-reference/arrow-loader) to see if the format you need is available.*
 
-<ExamplesIndex getThumbnail={item => `/images/examples/${item.docId || item.label.toLowerCase()}.jpg`} />
+<ExamplesIndex
+  getLogo={item => {
+    const logos = {
+      'table/arrow': '/images/examples/table/apache-arrow-small.png',
+      'table/bson': '/images/examples/table/bson-logo.png',
+      'traces/chrome-trace': '/images/examples/traces/chrome.svg'
+    };
+
+    return logos[item.docId];
+  }}
+  getThumbnail={item => {
+    const thumbnails = {
+      'table/arrow': '/images/examples/table/arrow.jpg',
+      'table/bson': '/images/examples/table/bson.jpg',
+      'table/json': '/images/examples/table/json.svg',
+      'table/xml': '/images/examples/table/xml.svg',
+      'traces/chrome-trace': '/images/examples/traces/chrome-trace.jpg',
+      'geospatial/csv': '/images/examples/geospatial/csv.jpg',
+      'tiles/mlt': '/images/examples/tiles/mlt.jpg',
+      'pointclouds/gaussian-splats': '/images/examples/pointclouds/gaussian-splats.jpg'
+    };
+
+    return thumbnails[item.docId] || `/images/examples/${item.docId}.jpg`;
+  }}
+/>

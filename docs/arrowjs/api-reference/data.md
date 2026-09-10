@@ -1,89 +1,162 @@
-# Data
+---
+title: Data
+description: Understand the typed, chunk-level storage that backs an Apache Arrow Vector.
+hide_title: true
+page_style: designed
+---
 
-> This documentation reflects Arrow JS v4.0. Needs to be updated for the new Arrow API in v9.0 +.
+import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
+import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
+
+<DocPageHeader
+  eyebrow="Arrow JS API · storage"
+  title="Data is the chunk underneath a Vector."
+  description="Data holds the typed values, validity information, offsets, and child storage for one contiguous logical segment. Most applications use Vector and Table directly; this page is for custom readers, builders, and low-level inspection."
+  tone="violet"
+  meta={['Chunk-level storage', 'Buffers and offsets', 'Low-level API']}
+  links={[
+    {label: 'Vector', to: '/docs/arrowjs/api-reference/vector'},
+    {label: 'Builder', to: '/docs/arrowjs/api-reference/builder'},
+    {label: 'Arrow JS reference', to: '/docs/arrowjs/api-reference'}
+  ]}
+/>
+
+<DocOrientation
+  eyebrow="The Data model"
+  title="Keep physical buffers behind a logical column."
+  description="Data describes one chunk, including its type, length, offset, stride, validity, values, and nested children. Vector composes these chunks into the column interface used by tables and record batches."
+  tone="violet"
+  items={[
+    {label: 'Values', value: 'Primary typed data buffer'},
+    {label: 'Validity', value: 'Null bitmap and null count metadata'},
+    {label: 'Structure', value: 'Offsets, type ids, children, and dictionaries'},
+    {label: 'Consumer', value: 'Vector and nested Arrow data types'}
+  ]}
+/>
+
+<ReferenceBoundary
+  title="Data storage reference"
+  description="The sections below document members, buffer roles, slicing, validity, nested children, dictionaries, and low-level construction."
+  tone="violet"
+/>
+
+:::info
+This page is aligned to Apache Arrow JS v21.x (`apache-arrow`).
+:::
 
 Untyped storage backing for `Vector`.
 
-Can be thought of as array of `ArrayBuffer` instances.
+Think of `Data` as a chunk: typed arrays and metadata for one contiguous segment.
 
-Also contains slice offset (including null bitmaps).
+## Usage
 
-## Fields
+```ts
+import {makeData, Int32} from 'apache-arrow';
 
-readonly type: T;
+const data = makeData({
+  type: new Int32(),
+  data: new Int32Array([1, 2, 3]),
+  length: 3,
+  nullCount: 0
+});
+```
 
-readonly length: Number;
+```ts
+import {makeData, Int32} from 'apache-arrow';
 
-readonly offset: Number;
+const data = makeData({type: new Int32(), length: 2, nullCount: 0, data: new Int32Array([1, 2])});
+const copy = data.slice(0, 1);
+console.log(copy.length, copy.getValid(0));
+```
 
-readonly stride: Number;
+## Members
 
-readonly childData: Data[];
+### `type: T`
 
-readonly values: `Buffers<T>`[BufferType.DATA];
+The logical `DataType`.
 
-readonly typeIds: `Buffers<T>`[BufferType.TYPE];
+### `length: number`
 
-readonly nullBitmap: `Buffers<T>`[BufferType.VALIDITY];
+Number of logical elements.
 
-readonly valueOffsets: `Buffers<T>`[BufferType.OFFSET];
+### `offset: number`
 
-readonly ArrayType: any;
+Logical offset into the underlying buffers.
 
-readonly typeId: T['TType'];
+### `stride: number`
 
-readonly buffers: `Buffers<T>`;
+Elements per logical slot.
 
-readonly nullCount: Number;
+### `children: Data[]`
 
-## Static Methods
+Nested child data.
 
-Convenience methods for creating Data instances for each of the Arrow Vector types.
+### `dictionary?: Vector`
 
-### `Data.Null<T extends Null>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer) : Data
+Optional dictionary backing (for `Dictionary` type only).
 
-### `Data.Int<T extends Int>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, data: `DataBuffer<T>`) : Data
+### `values: TBuffer[BufferType.DATA]`
 
-### `Data.Dictionary<T extends Dictionary>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, data: `DataBuffer<T>`) : Data
+Primary values buffer.
 
-### `Data.Float<T extends Float>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, data: `DataBuffer<T>`) : Data
+### `typeIds: TBuffer[BufferType.TYPE]`
 
-### `Data.Bool<T extends Bool>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, data: `DataBuffer<T>`) : Data
+Dictionary/union type id buffer.
 
-### `Data.Decimal<T extends Decimal>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, data: `DataBuffer<T>`) : Data
+### `nullBitmap: TBuffer[BufferType.VALIDITY]`
 
-### `Data.Date<T extends Date_>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, data: `DataBuffer<T>`) : Data
+Validity bitmask.
 
-### `Data.Time<T extends Time>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, data: `DataBuffer<T>`) : Data
+### `valueOffsets: TBuffer[BufferType.OFFSET]`
 
-### `Data.Timestamp<T extends Timestamp>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, data: `DataBuffer<T>`) : Data
+Offset buffers for variable-width types.
 
-### `Data.Interval<T extends Interval>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, data: `DataBuffer<T>`) : Data
+### `ArrayType: T['ArrayType']`
 
-### `Data.FixedSizeBinary<T extends FixedSizeBinary>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, data: `DataBuffer<T>`) : Data
+Physical JS typed array constructor.
 
-### `Data.Binary<T extends Binary>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, valueOffsets: ValueOffsetsBuffer, data: Uint8Array) : Data
+### `typeId: T['TType']`
 
-### `Data.Utf8<T extends Utf8>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, valueOffsets: ValueOffsetsBuffer, data: Uint8Array) : Data
+Underlying type enum id.
 
-### `Data.List<T extends List>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, valueOffsets: ValueOffsetsBuffer, child: `Data<T['valueType']> | Vector<T['valueType']>`) : Data
+### `buffers: Buffers<T>`
 
-### `Data.FixedSizeList<T extends FixedSizeList>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, child: Data | Vector) : Data
+Named tuple view of data buffers.
 
-### `Data.Struct<T extends Struct>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, children: (Data | Vector)[]) : Data
+### `nullable: boolean`
 
-### `Data.Map<T extends Map_>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, children: `(Data | Vector)[])` : Data
+Whether the element type can represent null.
 
-### `Data.Union<T extends SparseUnion>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, typeIds: TypeIdsBuffer, children: `(Data | Vector)[])` : Data
+### `byteLength: number`
 
-### `Data.Union<T extends DenseUnion>`(type: T, offset: Number, length: Number, nullCount: Number, nullBitmap: NullBuffer, typeIds: TypeIdsBuffer, valueOffsets: ValueOffsetsBuffer, children: `(Data | Vector)[])` : Data
+Byte size across buffers.
 
-}
+### `nullCount: number`
+
+Computed number of null rows.
+
+## Factory usage
+
+`Data` objects are created via `makeData()` in the `apache-arrow` exports.
 
 ## Methods
 
-### constructor(type: T, offset: Number, length: Number, nullCount?: Number, buffers?: `Partial<Buffers<T>`> | `Data<T>`, childData?: (Data | Vector)[]);
+### `constructor(type: T, offset: number, length: number, nullCount?: number, buffers?: Partial<Buffers<T>> | Data<T>, children?: Data[], dictionary?: Vector)`
 
-### clone(type: DataType, offset?: Number, length?: Number, nullCount?: Number, buffers?: `Buffers<R>`, childData?: (Data | Vector)[]) : Data;
+Low-level constructor used for manual `Data` assembly and advanced integrations.
 
-### slice(offset: Number, length: Number) : Data
+### `getValid(index: number): boolean`
+
+Returns whether element is non-null.
+
+### `setValid(index: number, value: boolean): boolean`
+
+Set nullability state for one element.
+
+### `clone<R extends DataType = T>(type?: R, offset?: number, length?: number, nullCount?: number, buffers?: Buffers<R>, children?: Data[]): Data<R>`
+
+Clone and optionally override metadata.
+
+### `slice(offset: number, length: number): Data<T>`
+
+Create a sliced data instance.

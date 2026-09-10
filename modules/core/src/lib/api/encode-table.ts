@@ -6,10 +6,11 @@
 /* global TextEncoder, TextDecoder */
 import {
   concatenateArrayBuffers,
+  ensureArrayBuffer,
   WriterOptionsType,
   WriterWithEncoder
 } from '@loaders.gl/loader-utils';
-import {Table} from '@loaders.gl/schema';
+import type {Table} from '@loaders.gl/schema';
 
 export async function encodeTable<WriterT extends WriterWithEncoder = WriterWithEncoder>(
   data: Table,
@@ -22,7 +23,7 @@ export async function encodeTable<WriterT extends WriterWithEncoder = WriterWith
 
   if (writer.encodeText) {
     const text = await writer.encodeText(data, options);
-    return new TextEncoder().encode(text);
+    return ensureArrayBuffer(new TextEncoder().encode(text));
   }
 
   if (writer.encodeInBatches) {

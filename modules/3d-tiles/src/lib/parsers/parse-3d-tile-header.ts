@@ -3,52 +3,33 @@
 // Copyright vis.gl contributors
 
 import type {Tiles3DLoaderOptions} from '../../tiles-3d-loader';
-import type {LoaderOptions} from '@loaders.gl/loader-utils';
-import {path} from '@loaders.gl/loader-utils';
-import {Tile3DSubtreeLoader} from '../../tile-3d-subtree-loader';
-import {load} from '@loaders.gl/core';
-import {LOD_METRIC_TYPE, TILE_REFINEMENT, TILE_TYPE} from '@loaders.gl/tiles';
+import type {LoaderContext, StrictLoaderOptions} from '@loaders.gl/loader-utils';
+import {CachedUriResolver} from '@loaders.gl/loader-utils';
+import {
+  createImplicitSubtreeReference,
+  LOD_METRIC_TYPE,
+  materializeImplicitSubtree,
+  TILE_REFINEMENT,
+  TILE_TYPE
+} from '@loaders.gl/tiles';
+import type {ImplicitTilingDescriptor} from '@loaders.gl/tiles';
 import {
   ImplicitTilingExensionData,
   Subtree,
   Tile3DBoundingVolume,
-  Tiles3DTileContentJSON,
   Tiles3DTileJSON,
   Tiles3DTileJSONPostprocessed,
   Tiles3DTilesetJSON
 } from '../../types';
-import type {S2VolumeBox} from './helpers/parse-3d-implicit-tiles';
-import {parseImplicitTiles, replaceContentUrlTemplate} from './helpers/parse-3d-implicit-tiles';
 import type {S2VolumeInfo} from '../utils/obb/s2-corners-to-obb';
 import {convertS2BoundingVolumetoOBB} from '../utils/obb/s2-corners-to-obb';
 
-/** Options for recursive loading implicit subtrees */
-export type ImplicitOptions = {
-  /** Template of the full url of the content template */
-  contentUrlTemplate: string;
-  /** Template of the full url of the subtree  */
-  subtreesUriTemplate: string;
-  /** Implicit subdivision scheme */
-  subdivisionScheme: 'QUADTREE' | 'OCTREE' | string;
-  /** Levels per subtree */
-  subtreeLevels: number;
-  /** Maximum implicit level through all subtrees */
-  maximumLevel?: number;
-  /** 3DTiles refine method (add/replace) */
-  refine?: string;
-  /** Tileset base path */
-  basePath: string;
-  /** 3DTiles LOD metric type */
-  lodMetricType: LOD_METRIC_TYPE.GEOMETRIC_ERROR;
-  /** Root metric value of the root tile of the implicit subtrees */
-  rootLodMetricValue: number;
-  /** Bounding volume of the root tile of the implicit subtrees */
-  rootBoundingVolume: Tile3DBoundingVolume;
-  /** Function that detects TILE_TYPE by tile metadata and content URL */
-  getTileType: (tile: Tiles3DTileJSON, tileContentUrl?: string) => TILE_TYPE | string;
-  /** Function that converts string refine method to enum value */
-  getRefine: (refine?: string) => TILE_REFINEMENT | string | undefined;
-};
+/**
+ * Serializable options used to materialize implicit subtree resources on demand.
+ *
+ * @deprecated Prefer {@link ImplicitTilingDescriptor}; this alias remains for internal callers.
+ */
+export type ImplicitOptions = ImplicitTilingDescriptor;
 
 function getTileType(tile: Tiles3DTileJSON, tileContentUrl: string = ''): TILE_TYPE | string {
   if (!tileContentUrl) {
@@ -70,6 +51,46 @@ function getTileType(tile: Tiles3DTileJSON, tileContentUrl: string = ''): TILE_T
   }
 }
 
+/**
+ * Resolves one or more tile content references using the parse-scoped URI cache.
+ *
+ * @param content - Raw content metadata from the tile.
+ * @param resourceResolver - Resolver shared by the complete tileset parse.
+ * @returns Resolved content metadata and URLs in source order.
+ */
+function normalizeTileContents(
+  content: Tiles3DTileJSON['content'],
+  resourceResolver: CachedUriResolver,
+  schema?: Tiles3DTilesetJSON['schema']
+): {content?: Tiles3DTileJSONPostprocessed['content']; contentUrls: string[]} {
+  if (!content) {
+    return {content: undefined, contentUrls: []};
+  }
+
+  const contentEntries = Array.isArray(content) ? content : [content];
+  const normalizedContents = contentEntries.map(contentEntry => {
+    return {
+      ...contentEntry,
+      boundingVolume: normalizeS2BoundingVolume(
+        getMetadataBoundingVolume(contentEntry.metadata, 'CONTENT', schema) ||
+          contentEntry.boundingVolume
+      ),
+      uri: contentEntry.uri,
+      url: contentEntry.url
+    };
+  });
+
+  return {
+    content: Array.isArray(content) ? normalizedContents : normalizedContents[0],
+    contentUrls: normalizedContents
+      .map(contentEntry => {
+        const contentUri = contentEntry.uri || contentEntry.url;
+        return contentUri ? resourceResolver.resolve(contentUri) : undefined;
+      })
+      .filter((contentUrl): contentUrl is string => Boolean(contentUrl))
+  };
+}
+
 function getRefine(refine?: string): TILE_REFINEMENT | string | undefined {
   switch (refine) {
     case 'REPLACE':
@@ -83,43 +104,35 @@ function getRefine(refine?: string): TILE_REFINEMENT | string | undefined {
   }
 }
 
-function resolveUri(uri: string = '', basePath: string): string {
-  if (uri === '') {
-    // if there's no URI we don't want to make a request to just the basePath
-    // and the URI may not exist if we're dealing with a sparse implicit tileset
-    return '';
-  }
-
-  // url scheme per RFC3986
-  const urlSchemeRegex = /^[a-z][0-9a-z+.-]*:/i;
-
-  if (urlSchemeRegex.test(basePath)) {
-    const url = new URL(uri, `${basePath}/`);
-    return decodeURI(url.toString());
-  } else if (uri.startsWith('/')) {
-    return uri;
-  }
-
-  return path.resolve(basePath, uri);
-}
-
+/**
+ * Normalizes one explicit tile header into the runtime representation.
+ *
+ * @param tile - Source tile header, or `null` for an unavailable implicit tile.
+ * @param basePath - Directory used for relative resource resolution.
+ * @param resourceResolver - Parse-scoped resolver that caches the parsed base and repeated URIs.
+ * @returns Normalized runtime header, or `null` when no source tile is available.
+ */
 export function normalizeTileData(
   tile: Tiles3DTileJSON | null,
-  basePath: string
+  basePath: string,
+  resourceResolver: CachedUriResolver = new CachedUriResolver(basePath),
+  schema?: Tiles3DTilesetJSON['schema']
 ): Tiles3DTileJSONPostprocessed | null {
   if (!tile) {
     return null;
   }
-  let tileContentUrl: string | undefined;
-  if (tile.content) {
-    const contentUri = tile.content.uri || tile.content?.url;
-    if (typeof contentUri !== 'undefined') {
-      // sparse implicit tilesets may not define content for all nodes
-      tileContentUrl = resolveUri(contentUri, basePath);
-    }
-  }
+  const normalizedContents = normalizeTileContents(tile.content, resourceResolver, schema);
+  const tileContentUrl = normalizedContents.contentUrls[0];
+  const boundingVolume = normalizeS2BoundingVolume(
+    getMetadataBoundingVolume(tile.metadata, 'TILE', schema) || tile.boundingVolume
+  ) as Tile3DBoundingVolume;
+  const viewerRequestVolume = normalizeS2BoundingVolume(tile.viewerRequestVolume);
   const tilePostprocessed: Tiles3DTileJSONPostprocessed = {
     ...tile,
+    boundingVolume,
+    content: normalizedContents.content,
+    contentUrls: normalizedContents.contentUrls,
+    viewerRequestVolume,
     id: tileContentUrl,
     contentUrl: tileContentUrl,
     lodMetricType: LOD_METRIC_TYPE.GEOMETRIC_ERROR,
@@ -132,13 +145,99 @@ export function normalizeTileData(
   return tilePostprocessed;
 }
 
-// normalize tile headers
+/**
+ * Resolves a metadata-derived tile or content bounding volume from the declared class schema.
+ *
+ * Metadata property identifiers are application-defined; the semantic lives on the matching class
+ * property definition. Only already-materialized numeric arrays are handled here, while property
+ * table decoding remains the responsibility of the metadata consumer.
+ *
+ * @param metadata - Tile or content metadata entity.
+ * @param scope - Semantic scope, either `TILE` or `CONTENT`.
+ * @param schema - Inline tileset metadata schema, when available.
+ * @returns A source bounding volume, or `undefined` when no matching semantic is present.
+ */
+function getMetadataBoundingVolume(
+  metadata: Tiles3DTileJSON['metadata'] | undefined,
+  scope: 'TILE' | 'CONTENT',
+  schema?: Tiles3DTilesetJSON['schema']
+): Tile3DBoundingVolume | undefined {
+  const classDefinition = metadata?.class && schema?.classes?.[metadata.class];
+  const propertyDefinitions = (
+    classDefinition as {properties?: Record<string, {semantic?: string}>} | undefined
+  )?.properties;
+  for (const [propertyId, value] of Object.entries(metadata?.properties || {})) {
+    const semantic = propertyDefinitions?.[propertyId]?.semantic;
+    if (!semantic?.startsWith(`${scope}_BOUNDING_`) || !Array.isArray(value)) {
+      continue;
+    }
+    if (!value.every(component => typeof component === 'number')) {
+      continue;
+    }
+    if (semantic === `${scope}_BOUNDING_BOX` && value.length === 12) {
+      return {box: value};
+    }
+    if (semantic === `${scope}_BOUNDING_REGION` && value.length === 6) {
+      return {region: value};
+    }
+    if (semantic === `${scope}_BOUNDING_SPHERE` && value.length === 4) {
+      return {sphere: value};
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Converts an S2-only bounding volume into the oriented-box representation used by traversal.
+ *
+ * `3DTILES_bounding_volume_S2` may appear on explicit or implicit tile, content, and viewer-request
+ * volumes. Keeping the source extension metadata beside the derived box lets implicit subdivision
+ * retain its S2 token while ensuring every explicit volume reaches runtime with a supported
+ * `box`, `region`, or `sphere` shape.
+ *
+ * @param boundingVolume - Source bounding volume, if the owning property is present.
+ * @returns The original volume when it does not use S2, or a cloned volume with a derived box.
+ */
+function normalizeS2BoundingVolume(
+  boundingVolume?: Tile3DBoundingVolume
+): Tile3DBoundingVolume | undefined {
+  const extensions = boundingVolume?.extensions as
+    | Record<string, S2VolumeInfo | undefined>
+    | undefined;
+  const s2VolumeInfo = extensions?.['3DTILES_bounding_volume_S2'];
+  if (!boundingVolume || !s2VolumeInfo) {
+    return boundingVolume;
+  }
+
+  return {
+    ...boundingVolume,
+    box: convertS2BoundingVolumetoOBB(s2VolumeInfo),
+    s2VolumeInfo
+  } as Tile3DBoundingVolume & {box: number[]; s2VolumeInfo: S2VolumeInfo};
+}
+
+/**
+ * Normalizes the complete explicit header tree and creates lazy references for implicit roots.
+ *
+ * One {@link CachedUriResolver} is shared for the parse so repeated external resource references
+ * reuse their derived URL without retaining data after the tileset parse completes.
+ *
+ * @param tileset - Parsed source tileset JSON.
+ * @param basePath - Directory used for relative resource resolution.
+ * @param options - Loader options retained for API compatibility; no subtree request occurs here.
+ * @param context - Loader context retained for API compatibility; no subtree request occurs here.
+ * @returns Normalized root tile, or `null` when the source has no root.
+ */
 export async function normalizeTileHeaders(
   tileset: Tiles3DTilesetJSON,
   basePath: string,
-  options: LoaderOptions
+  options: StrictLoaderOptions,
+  context?: LoaderContext
 ): Promise<Tiles3DTileJSONPostprocessed | null> {
   let root: Tiles3DTileJSONPostprocessed | null = null;
+  // One parse-scoped resolver retains the parsed base URL and repeated derived resources without
+  // leaking URLs between unrelated tilesets.
+  const resourceResolver = new CachedUriResolver(basePath);
 
   const rootImplicitTilingExtension = getImplicitTilingExtensionData(tileset.root);
   if (rootImplicitTilingExtension && tileset.root) {
@@ -147,10 +246,12 @@ export async function normalizeTileHeaders(
       tileset,
       basePath,
       rootImplicitTilingExtension,
-      options
+      options,
+      context,
+      resourceResolver
     );
   } else {
-    root = normalizeTileData(tileset.root, basePath);
+    root = normalizeTileData(tileset.root, basePath, resourceResolver, tileset.schema);
   }
 
   const stack: any[] = [];
@@ -169,10 +270,17 @@ export async function normalizeTileHeaders(
           tileset,
           basePath,
           childImplicitTilingExtension,
-          options
+          options,
+          context,
+          resourceResolver
         );
       } else {
-        childHeaderPostprocessed = normalizeTileData(childHeader, basePath);
+        childHeaderPostprocessed = normalizeTileData(
+          childHeader,
+          basePath,
+          resourceResolver,
+          tileset.schema
+        );
       }
 
       if (childHeaderPostprocessed) {
@@ -187,105 +295,148 @@ export async function normalizeTileHeaders(
 }
 
 /**
- * Do normalisation of implicit tile headers
- * TODO Check if Tile3D class can be a return type here.
- * @param tileset
+ * Creates a contentless implicit root whose subtree will be loaded by visibility-driven traversal.
+ *
+ * @param tile - Source tile carrying the implicit-tiling declaration.
+ * @param tileset - Owning tileset JSON.
+ * @param basePath - Directory used for subtree and content resolution.
+ * @param implicitTilingExtension - Normalized implicit-tiling declaration.
+ * @param options - Loader options retained for API compatibility.
+ * @param context - Loader context retained for API compatibility.
+ * @param resourceResolver - Parse-scoped resolver shared with explicit header normalization.
+ * @returns Normalized implicit root, or `null` when unavailable.
  */
 export async function normalizeImplicitTileHeaders(
   tile: Tiles3DTileJSON,
   tileset: Tiles3DTilesetJSON,
   basePath: string,
   implicitTilingExtension: ImplicitTilingExensionData,
-  options: Tiles3DLoaderOptions
+  options: Tiles3DLoaderOptions,
+  context?: LoaderContext,
+  resourceResolver: CachedUriResolver = new CachedUriResolver(basePath)
 ): Promise<Tiles3DTileJSONPostprocessed | null> {
-  const {
-    subdivisionScheme,
-    maximumLevel,
-    availableLevels,
-    subtreeLevels,
-    subtrees: {uri: subtreesUriTemplate}
-  } = implicitTilingExtension;
-  const replacedUrlTemplate = replaceContentUrlTemplate(subtreesUriTemplate, 0, 0, 0, 0);
-  const subtreeUrl = resolveUri(replacedUrlTemplate, basePath);
-  const subtree = await load(subtreeUrl, Tile3DSubtreeLoader, options);
-  const tileContentUri = tile.content?.uri;
-  const contentUrlTemplate = tileContentUri ? resolveUri(tileContentUri, basePath) : '';
-  const refine = tileset?.root?.refine;
-  // @ts-ignore
-  const rootLodMetricValue = tile.geometricError;
-
-  // Replace tile.boundingVolume with the the bounding volume specified by the extensions['3DTILES_bounding_volume_S2']
-  const s2VolumeInfo: S2VolumeInfo = tile.boundingVolume.extensions?.['3DTILES_bounding_volume_S2'];
-  if (s2VolumeInfo) {
-    const box = convertS2BoundingVolumetoOBB(s2VolumeInfo);
-    const s2VolumeBox: S2VolumeBox = {box, s2VolumeInfo};
-    tile.boundingVolume = s2VolumeBox;
+  void options;
+  void context;
+  const normalizedTile: Tiles3DTileJSON = {
+    ...tile,
+    boundingVolume: normalizeS2BoundingVolume(
+      getMetadataBoundingVolume(tile.metadata, 'TILE', tileset.schema) || tile.boundingVolume
+    ) as Tile3DBoundingVolume,
+    content: tile.content,
+    viewerRequestVolume: normalizeS2BoundingVolume(tile.viewerRequestVolume)
+  };
+  const normalizedContents = normalizeTileContents(
+    normalizedTile.content,
+    resourceResolver,
+    tileset.schema
+  );
+  const maximumLevel = Number.isFinite(implicitTilingExtension.availableLevels)
+    ? implicitTilingExtension.availableLevels - 1
+    : implicitTilingExtension.maximumLevel;
+  if (!Number.isInteger(maximumLevel) || Number(maximumLevel) < 0) {
+    throw new Error('Implicit tiling requires availableLevels to include at least the root level');
+  }
+  if (
+    implicitTilingExtension.subdivisionScheme !== 'QUADTREE' &&
+    implicitTilingExtension.subdivisionScheme !== 'OCTREE'
+  ) {
+    throw new Error(
+      `Unsupported implicit subdivision scheme: ${implicitTilingExtension.subdivisionScheme}`
+    );
   }
 
-  const rootBoundingVolume = tile.boundingVolume;
-
-  const implicitOptions: ImplicitOptions = {
-    contentUrlTemplate,
-    subtreesUriTemplate,
-    subdivisionScheme,
-    subtreeLevels,
-    maximumLevel: Number.isFinite(availableLevels) ? availableLevels - 1 : maximumLevel,
-    refine,
-    basePath,
+  const contentEntries = Array.isArray(normalizedContents.content)
+    ? normalizedContents.content
+    : normalizedContents.content
+      ? [normalizedContents.content]
+      : [];
+  const contentUriTemplate = contentEntries[0]?.uri || contentEntries[0]?.url || '';
+  const descriptor: ImplicitTilingDescriptor = {
+    contentUrlTemplate: contentUriTemplate ? resourceResolver.resolve(contentUriTemplate) : '',
+    contentUrlTemplates: contentEntries.map(contentEntry => {
+      const contentUri = contentEntry?.uri || contentEntry?.url || '';
+      return contentUri ? resourceResolver.resolve(contentUri) : '';
+    }),
+    contentHeader: contentEntries[0]
+      ? {...contentEntries[0], uri: undefined, url: undefined}
+      : undefined,
+    contentHeaders: contentEntries.map(contentEntry => ({
+      ...contentEntry,
+      uri: undefined,
+      url: undefined
+    })),
+    subtreesUrlTemplate: resourceResolver.resolve(implicitTilingExtension.subtrees.uri),
+    subdivisionScheme: implicitTilingExtension.subdivisionScheme,
+    subtreeLevels: implicitTilingExtension.subtreeLevels,
+    maximumLevel: Number(maximumLevel),
+    refine: getRefine(normalizedTile.refine || tileset.root?.refine) || TILE_REFINEMENT.REPLACE,
     lodMetricType: LOD_METRIC_TYPE.GEOMETRIC_ERROR,
-    rootLodMetricValue,
-    rootBoundingVolume,
-    getTileType,
-    getRefine
+    rootLodMetricValue: normalizedTile.geometricError,
+    rootBoundingVolume: normalizedTile.boundingVolume
   };
+  const implicitSubtree = createImplicitSubtreeReference(descriptor, {
+    level: 0,
+    x: 0,
+    y: 0,
+    z: 0
+  });
 
-  return await normalizeImplicitTileData(tile, basePath, subtree, implicitOptions, options);
+  return {
+    ...normalizedTile,
+    id: `${implicitSubtree.subtreeUrl}#implicit=0/0/0/0`,
+    contentUrl: undefined,
+    lodMetricType: descriptor.lodMetricType,
+    lodMetricValue: descriptor.rootLodMetricValue,
+    transformMatrix: normalizedTile.transform,
+    type: TILE_TYPE.EMPTY,
+    refine: descriptor.refine,
+    children: [],
+    implicitSubtree,
+    content: normalizedContents.content,
+    contentUrls: normalizedContents.contentUrls
+  } as Tiles3DTileJSONPostprocessed;
 }
 
 /**
- * Do implicit data normalisation to create hierarchical tile structure
- * @param tile
- * @param rootSubtree
- * @param options
- * @returns
+ * Materializes one already-parsed subtree without loading child subtrees.
+ *
+ * @param tile - Source tile carrying root transform and extension metadata.
+ * @param basePath - Retained for API compatibility.
+ * @param rootSubtree - Parsed subtree availability data.
+ * @param implicitOptions - Serializable implicit hierarchy descriptor.
+ * @param loaderOptions - Retained for API compatibility.
+ * @param context - Retained for API compatibility.
+ * @returns Materialized root header.
  */
 export async function normalizeImplicitTileData(
   tile: Tiles3DTileJSON,
   basePath: string,
   rootSubtree: Subtree,
   implicitOptions: ImplicitOptions,
-  loaderOptions: Tiles3DLoaderOptions
+  loaderOptions: Tiles3DLoaderOptions,
+  context?: LoaderContext
 ): Promise<Tiles3DTileJSONPostprocessed | null> {
+  void basePath;
+  void loaderOptions;
+  void context;
   if (!tile) {
     return null;
   }
-
-  const {children, contentUrl} = await parseImplicitTiles({
-    subtree: rootSubtree,
-    implicitOptions,
-    loaderOptions
+  const reference = createImplicitSubtreeReference(implicitOptions, {
+    level: 0,
+    x: 0,
+    y: 0,
+    z: 0
   });
-
-  let tileContentUrl: string | undefined;
-  let tileContent: Tiles3DTileContentJSON | null = null;
-  if (contentUrl) {
-    tileContentUrl = contentUrl;
-    tileContent = {uri: contentUrl.replace(`${basePath}/`, '')};
-  }
-  const tilePostprocessed: Tiles3DTileJSONPostprocessed = {
+  const {root} = materializeImplicitSubtree(rootSubtree, reference);
+  return {
     ...tile,
-    id: tileContentUrl,
-    contentUrl: tileContentUrl,
-    lodMetricType: LOD_METRIC_TYPE.GEOMETRIC_ERROR,
-    lodMetricValue: tile.geometricError,
+    ...root,
+    transform: tile.transform,
     transformMatrix: tile.transform,
-    type: getTileType(tile, tileContentUrl),
-    refine: getRefine(tile.refine),
-    content: tileContent || tile.content,
-    children
-  };
-
-  return tilePostprocessed;
+    extensions: tile.extensions,
+    implicitTiling: tile.implicitTiling
+  } as Tiles3DTileJSONPostprocessed;
 }
 
 /**

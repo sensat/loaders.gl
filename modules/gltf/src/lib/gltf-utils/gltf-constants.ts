@@ -1,3 +1,7 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
 export const COMPONENTS = {
   SCALAR: 1,
   VEC2: 2,
@@ -13,8 +17,13 @@ export const BYTES = {
   5121: 1, // UNSIGNED_BYTE
   5122: 2, // SHORT
   5123: 2, // UNSIGNED_SHORT
+  5124: 4, // INT
   5125: 4, // UNSIGNED_INT
-  5126: 4 // FLOAT
+  5126: 4, // FLOAT
+  5130: 8, // DOUBLE
+  5131: 2, // HALF_FLOAT
+  5134: 8, // INT64
+  5135: 8 // UNSIGNED_INT64
 };
 
 // ENUM LOOKUP

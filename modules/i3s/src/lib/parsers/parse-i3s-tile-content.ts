@@ -1,11 +1,15 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
 import type {TypedArray} from '@loaders.gl/schema';
-import {load, parse} from '@loaders.gl/core';
 import {Vector3, Matrix4} from '@math.gl/core';
 import {Ellipsoid} from '@math.gl/geospatial';
-import {LoaderOptions, LoaderContext, parseFromContext} from '@loaders.gl/loader-utils';
-import {ImageLoader} from '@loaders.gl/images';
+import {StrictLoaderOptions, LoaderContext, parseFromContext} from '@loaders.gl/loader-utils';
+import {ImageBitmapLoader, getImageData} from '@loaders.gl/images';
 import {DracoLoader, DracoMesh} from '@loaders.gl/draco';
 import {BasisLoader, CompressedTextureLoader} from '@loaders.gl/textures';
+import {I3SSpatialTransformer} from '@loaders.gl/tiles';
 
 import {
   FeatureAttribute,
@@ -15,6 +19,7 @@ import {
   TileContentTexture,
   HeaderAttributeProperty,
   I3SMaterialDefinition,
+  I3SMaterialTexture,
   I3STileContent,
   I3STileOptions,
   I3STilesetOptions
@@ -26,6 +31,21 @@ import {I3SLoaderOptions} from '../../i3s-loader';
 
 const scratchVector = new Vector3([0, 0, 0]);
 
+function getRequiredContext(context: LoaderContext | undefined, operation: string): LoaderContext {
+  if (!context) {
+    throw new Error(
+      `parseI3STileContent requires LoaderContext to ${operation}. Nested I3S parsing must run through parseFromContext().`
+    );
+  }
+
+  return context;
+}
+
+/**
+ * Select the loader used to decode the texture payload for an I3S node.
+ * @param textureFormat - Texture format declared by the tileset.
+ * @returns The loaders.gl texture loader that can decode the format.
+ */
 function getLoaderForTextureFormat(textureFormat?: 'jpg' | 'png' | 'ktx-etc2' | 'dds' | 'ktx2') {
   switch (textureFormat) {
     case 'ktx-etc2':
@@ -36,17 +56,26 @@ function getLoaderForTextureFormat(textureFormat?: 'jpg' | 'png' | 'ktx-etc2' | 
     case 'jpg':
     case 'png':
     default:
-      return ImageLoader;
+      return ImageBitmapLoader;
   }
 }
 
 const I3S_ATTRIBUTE_TYPE = 'i3s-attribute-type';
 
+/**
+ * Parse a single I3S node payload, including optional texture data and geometry.
+ * @param arrayBuffer - Raw node binary payload.
+ * @param tileOptions - Tile-level urls, material metadata, and coordinate settings.
+ * @param tilesetOptions - Shared schema information from the parent tileset.
+ * @param options - Loader options propagated from the top-level load call.
+ * @param context - Loader context used for fetch and parser resolution.
+ * @returns Parsed tile content ready for deck.gl rendering.
+ */
 export async function parseI3STileContent(
   arrayBuffer: ArrayBuffer,
   tileOptions: I3STileOptions,
   tilesetOptions: I3STilesetOptions,
-  options?: LoaderOptions,
+  options?: StrictLoaderOptions,
   context?: LoaderContext
 ): Promise<I3STileContent> {
   const content: I3STileContent = {
@@ -55,59 +84,137 @@ export async function parseI3STileContent(
     featureIds: [],
     vertexCount: 0,
     modelMatrix: new Matrix4(),
-    coordinateSystem: 0,
+    coordinateSystem: 'meter-offsets',
     byteLength: 0,
-    texture: null
+    texture: null,
+    topology: tileOptions.layerType === 'Point' ? 'point-list' : 'triangle-list',
+    pointRenderer: tileOptions.pointRenderer,
+    pointSymbol: tileOptions.pointSymbol
   };
+  const requiredContext = context ? getRequiredContext(context, 'parse nested resources') : null;
 
-  if (tileOptions.textureUrl) {
-    // @ts-expect-error options is not properly typed
-    const url = getUrlWithToken(tileOptions.textureUrl, options?.i3s?.token);
-    const loader = getLoaderForTextureFormat(tileOptions.textureFormat);
-    const fetchFunc = context?.fetch || fetch;
-    const response = await fetchFunc(url); // options?.fetch
-    const arrayBuffer = await response.arrayBuffer();
+  const textureResources = tileOptions.textureUrls?.length
+    ? tileOptions.textureUrls
+    : tileOptions.textureUrl
+      ? [
+          {
+            textureSetDefinitionId: getMaterialTextureSetDefinitionId(
+              tileOptions.materialDefinition
+            ),
+            textureUrl: tileOptions.textureUrl,
+            textureFormat: tileOptions.textureFormat || 'jpg'
+          }
+        ]
+      : [];
+  const decodedTextures: Record<string, TileContentTexture> = {};
 
-    // @ts-expect-error options is not properly typed
-    if (options?.i3s.decodeTextures) {
-      // TODO - replace with switch
-      if (loader === ImageLoader) {
-        const options = {...tileOptions.textureLoaderOptions, image: {type: 'data'}};
-        try {
-          // Image constructor is not supported in worker thread.
-          // Do parsing image data on the main thread by using context to avoid worker issues.
-          const texture: any = await parseFromContext(arrayBuffer, [], options, context!);
-          content.texture = texture;
-        } catch (e) {
-          // context object is different between worker and node.js conversion script.
-          // To prevent error we parse data in ordinary way if it is not parsed by using context.
-          const texture: any = await parse(arrayBuffer, loader, options, context);
-          content.texture = texture;
-        }
-      } else if (loader === CompressedTextureLoader || loader === BasisLoader) {
-        let texture: any = await load(arrayBuffer, loader, tileOptions.textureLoaderOptions);
-        if (loader === BasisLoader) {
-          texture = texture[0];
-        }
-        content.texture = {
-          compressed: true,
-          mipmaps: false,
-          width: texture[0].width,
-          height: texture[0].height,
-          data: texture
-        };
+  for (const textureResource of textureResources) {
+    try {
+      const texture = await loadI3STexture(
+        textureResource.textureUrl,
+        textureResource.textureFormat,
+        tileOptions,
+        options,
+        requiredContext || context
+      );
+      if (texture) {
+        decodedTextures[textureResource.textureSetDefinitionId] = texture;
       }
-    } else {
-      content.texture = arrayBuffer;
+    } catch (error) {
+      console.warn(error);
     }
   }
 
-  content.material = makePbrMaterial(tileOptions.materialDefinition, content.texture);
+  const firstTexture = Object.values(decodedTextures)[0] || null;
+  content.texture = firstTexture;
+  if (Object.keys(decodedTextures).length > 0) {
+    content.textures = decodedTextures;
+  }
+
+  content.material = makePbrMaterial(tileOptions.materialDefinition, decodedTextures, firstTexture);
   if (content.material) {
     content.texture = null;
   }
 
-  return await parseI3SNodeGeometry(arrayBuffer, content, tileOptions, tilesetOptions, options);
+  return await parseI3SNodeGeometry(
+    arrayBuffer,
+    content,
+    tileOptions,
+    tilesetOptions,
+    options,
+    context
+  );
+}
+
+/**
+ * Fetch and optionally decode one I3S texture-set resource.
+ * @param textureUrl - texture resource URL
+ * @param textureFormat - I3S texture format
+ * @param tileOptions - texture decoder options
+ * @param options - top-level loader options
+ * @param context - loader context for nested parsing
+ * @returns decoded texture or raw bytes
+ */
+async function loadI3STexture(
+  textureUrl: string,
+  textureFormat: I3STileOptions['textureFormat'],
+  tileOptions: I3STileOptions,
+  options: StrictLoaderOptions | undefined,
+  context?: LoaderContext
+): Promise<TileContentTexture | null> {
+  // @ts-expect-error options is not properly typed
+  const url = getUrlWithToken(textureUrl, options?.i3s?.token);
+  const loader = getLoaderForTextureFormat(textureFormat);
+  const fetchFunc = context?.fetch || fetch;
+  const response = await fetchFunc(url);
+  if (!response.ok) {
+    throw new Error(`Failed to load I3S texture: ${response.status} ${response.statusText}`);
+  }
+
+  const textureArrayBuffer = await response.arrayBuffer();
+
+  if (!options?.i3s?.decodeTextures) {
+    return textureArrayBuffer;
+  }
+
+  const nestedContext = getRequiredContext(context, 'decode texture payloads');
+  if (loader === ImageBitmapLoader) {
+    const imageLoaderOptions = {...tileOptions.textureLoaderOptions};
+    try {
+      const parsedTexture: any = await parseFromContext(
+        textureArrayBuffer,
+        ImageBitmapLoader,
+        imageLoaderOptions,
+        nestedContext
+      );
+      return getImageData(parsedTexture);
+    } catch (_error) {
+      const parsedTexture: any = await parseFromContext(
+        textureArrayBuffer,
+        loader,
+        imageLoaderOptions,
+        nestedContext
+      );
+      return getImageData(parsedTexture);
+    }
+  }
+
+  let texture: any = await parseFromContext(
+    textureArrayBuffer,
+    loader,
+    tileOptions.textureLoaderOptions,
+    nestedContext
+  );
+  if (loader === BasisLoader) {
+    texture = texture[0];
+  }
+  return {
+    compressed: true,
+    mipmaps: false,
+    width: texture[0].width,
+    height: texture[0].height,
+    data: texture
+  };
 }
 
 /* eslint-disable max-statements */
@@ -116,7 +223,8 @@ async function parseI3SNodeGeometry(
   content: I3STileContent,
   tileOptions: I3STileOptions,
   tilesetOptions: I3STilesetOptions,
-  options?: I3SLoaderOptions
+  options?: I3SLoaderOptions,
+  context?: LoaderContext
 ): Promise<I3STileContent> {
   const contentByteLength = arrayBuffer.byteLength;
   let attributes: I3SMeshAttributes;
@@ -126,19 +234,23 @@ async function parseI3SNodeGeometry(
   let indices: TypedArray | undefined;
 
   if (tileOptions.isDracoGeometry) {
-    const decompressedGeometry: DracoMesh = await parse(arrayBuffer, DracoLoader, {
-      draco: {
-        attributeNameEntry: I3S_ATTRIBUTE_TYPE
-      }
-    });
-    // @ts-expect-error
-    vertexCount = decompressedGeometry.header.vertexCount;
+    const nestedContext = getRequiredContext(context, 'decode Draco geometry');
+    const decompressedGeometry: DracoMesh = (await parseFromContext(
+      arrayBuffer,
+      DracoLoader,
+      {
+        draco: {
+          attributeNameEntry: I3S_ATTRIBUTE_TYPE
+        }
+      },
+      nestedContext
+    )) as DracoMesh;
+    vertexCount = decompressedGeometry.header?.vertexCount ?? 0;
     indices = decompressedGeometry.indices?.value;
     const {
       POSITION,
       NORMAL,
       COLOR_0,
-      TEXCOORD_0,
       ['feature-index']: featureIndex,
       ['uv-region']: uvRegion
     } = decompressedGeometry.attributes;
@@ -147,10 +259,10 @@ async function parseI3SNodeGeometry(
       position: POSITION,
       normal: NORMAL,
       color: COLOR_0,
-      uv0: TEXCOORD_0,
       uvRegion,
       id: featureIndex
     };
+    copyDracoTextureCoordinates(attributes, decompressedGeometry.attributes);
 
     updateAttributesMetadata(attributes, decompressedGeometry);
 
@@ -158,16 +270,25 @@ async function parseI3SNodeGeometry(
 
     if (featureIds) {
       flattenFeatureIdsByFeatureIndices(attributes, featureIds);
+      content.drawRanges = decodeContiguousDrawRanges(
+        attributes.id.value,
+        indices,
+        content.topology
+      );
     }
   } else {
+    const defaultGeometrySchema = tilesetOptions.store.defaultGeometrySchema;
+    if (!defaultGeometrySchema) {
+      throw new Error('Uncompressed I3S geometry requires store.defaultGeometrySchema');
+    }
     const {
       vertexAttributes,
       ordering: attributesOrder,
       featureAttributes,
       featureAttributeOrder
-    } = tilesetOptions.store.defaultGeometrySchema;
+    } = defaultGeometrySchema;
     // First 8 bytes reserved for header (vertexCount and featureCount)
-    const headers = parseHeaders(arrayBuffer, tilesetOptions);
+    const headers = parseHeaders(arrayBuffer, defaultGeometrySchema);
     byteOffset = headers.byteOffset;
     vertexCount = headers.vertexCount;
     featureCount = headers.featureCount;
@@ -181,38 +302,73 @@ async function parseI3SNodeGeometry(
     );
 
     // Getting feature attributes such as featureIds and faceRange
-    const {attributes: normalizedFeatureAttributes} = normalizeAttributes(
-      arrayBuffer,
-      offset,
-      featureAttributes,
-      featureCount,
-      featureAttributeOrder
-    );
+    const {attributes: normalizedFeatureAttributes, byteOffset: featureByteOffset} =
+      normalizeAttributes(
+        arrayBuffer,
+        offset,
+        featureAttributes,
+        featureCount,
+        featureAttributeOrder
+      );
 
+    const meshSegmentation = extractMeshSegmentation(arrayBuffer, featureByteOffset);
+    if (meshSegmentation) {
+      content.meshSegmentation = meshSegmentation;
+    }
+
+    content.drawRanges = decodeFaceRangeDrawRanges(normalizedFeatureAttributes);
     flattenFeatureIdsByFaceRanges(normalizedFeatureAttributes);
     attributes = concatAttributes(normalizedVertexAttributes, normalizedFeatureAttributes);
   }
 
-  if (
+  const spatialReference = tilesetOptions.spatialReference;
+  if (spatialReference?.status === 'transformable' || spatialReference?.status === 'transformed') {
+    const spatialTransformer = new I3SSpatialTransformer(
+      spatialReference,
+      tilesetOptions.spatialOptions || options?.i3s?.spatial
+    );
+    const sourcePositions = offsetsToSourcePositions(
+      attributes.position.value,
+      attributes.position.metadata,
+      tileOptions.mbs
+    );
+    const transformed = await spatialTransformer.transformPositionsAsync(
+      sourcePositions,
+      tileOptions.mbs
+    );
+    attributes.position.value = transformed.positions;
+    if (attributes.normal?.value) {
+      attributes.normal.value = spatialTransformer.transformNormals(
+        attributes.normal.value,
+        transformed.sourcePositions,
+        tilesetOptions.store.normalReferenceFrame
+      );
+    }
+    content.modelMatrix = transformed.modelMatrix;
+    content.coordinateSystem = transformed.coordinateSystem;
+    content.origin = transformed.origin;
+    content.cartographicOrigin = transformed.cartographicOrigin;
+    content.spatialReference = spatialTransformer.spatialReference;
+  } else if (
     !options?.i3s?.coordinateSystem ||
     // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     options.i3s.coordinateSystem === COORDINATE_SYSTEM.METER_OFFSETS
   ) {
     const enuMatrix = parsePositions(attributes.position, tileOptions);
     content.modelMatrix = enuMatrix.invert();
-    content.coordinateSystem = COORDINATE_SYSTEM.METER_OFFSETS;
+    content.coordinateSystem = 'meter-offsets';
   } else {
     content.modelMatrix = getModelMatrix(attributes.position);
-    content.coordinateSystem = COORDINATE_SYSTEM.LNGLAT_OFFSETS;
+    content.coordinateSystem = 'lnglat-offsets';
   }
 
   content.attributes = {
     positions: attributes.position,
     normals: attributes.normal,
     colors: normalizeAttribute(attributes.color), // Normalize from UInt8
-    texCoords: attributes.uv0,
     uvRegions: normalizeAttribute(attributes.uvRegion || attributes.region) // Normalize from UInt16
   };
+  copyTextureCoordinatesToContent(content.attributes, attributes);
   content.indices = indices || null;
 
   if (attributes.id && attributes.id.value) {
@@ -230,6 +386,131 @@ async function parseI3SNodeGeometry(
   content.byteLength = contentByteLength;
 
   return content;
+}
+
+/**
+ * Preserve the optional legacy mesh-segmentation payload that follows the schema-defined attributes.
+ * Older I3S services append this payload to the geometry buffer without adding it to
+ * `defaultGeometrySchema`; retaining it keeps the bytes available to applications that understand
+ * the service-specific segmentation record.
+ * @param arrayBuffer - complete legacy geometry buffer
+ * @param byteOffset - first byte after schema-defined attributes
+ * @returns segmentation bytes, or undefined when the schema consumes the complete buffer
+ */
+function extractMeshSegmentation(
+  arrayBuffer: ArrayBuffer,
+  byteOffset: number
+): ArrayBuffer | undefined {
+  return byteOffset < arrayBuffer.byteLength ? arrayBuffer.slice(byteOffset) : undefined;
+}
+
+/**
+ * Copy every Draco TEXCOORD semantic into the I3S uv-set namespace.
+ * @param targetAttributes - normalized I3S attributes
+ * @param dracoAttributes - decoded Draco attributes
+ */
+function copyDracoTextureCoordinates(
+  targetAttributes: I3SMeshAttributes,
+  dracoAttributes: Record<string, I3SMeshAttribute>
+): void {
+  for (const [attributeName, attribute] of Object.entries(dracoAttributes)) {
+    const match = /^TEXCOORD_(\d+)$/.exec(attributeName);
+    if (match) {
+      targetAttributes[`uv${Number(match[1])}`] = attribute;
+    }
+  }
+}
+
+/**
+ * Expose every decoded I3S uv set using stable renderer-facing attribute names.
+ * @param contentAttributes - output attribute dictionary
+ * @param i3sAttributes - decoded I3S attributes
+ */
+function copyTextureCoordinatesToContent(
+  contentAttributes: I3SMeshAttributes,
+  i3sAttributes: I3SMeshAttributes
+): void {
+  for (const [attributeName, attribute] of Object.entries(i3sAttributes)) {
+    const match = /^uv(\d+)$/.exec(attributeName);
+    if (!match || !attribute) {
+      continue;
+    }
+    const setIndex = Number(match[1]);
+    contentAttributes[setIndex === 0 ? 'texCoords' : `texCoords${setIndex}`] = attribute;
+  }
+}
+
+/**
+ * Decode the legacy feature-id/face-range mesh segmentation into draw-call ranges.
+ * @param attributes - per-feature attributes from the geometry buffer
+ * @returns contiguous triangle draw ranges, or undefined when segmentation is absent
+ */
+function decodeFaceRangeDrawRanges(attributes: I3SMeshAttributes): I3STileContent['drawRanges'] {
+  const featureIds = attributes.id?.value;
+  const faceRanges = attributes.faceRange?.value;
+  if (!featureIds || !faceRanges) {
+    return undefined;
+  }
+
+  const drawRanges: NonNullable<I3STileContent['drawRanges']> = [];
+  const featureCount = Math.min(featureIds.length, Math.floor(faceRanges.length / 2));
+  for (let featureIndex = 0; featureIndex < featureCount; featureIndex++) {
+    const firstPrimitive = Number(faceRanges[featureIndex * 2]);
+    const lastPrimitive = Number(faceRanges[featureIndex * 2 + 1]);
+    if (lastPrimitive < firstPrimitive) {
+      continue;
+    }
+    const primitiveCount = lastPrimitive - firstPrimitive + 1;
+    drawRanges.push({
+      featureId: Number(featureIds[featureIndex]),
+      firstPrimitive,
+      primitiveCount,
+      firstVertex: firstPrimitive * 3,
+      vertexCount: primitiveCount * 3
+    });
+  }
+  return drawRanges.length ? drawRanges : undefined;
+}
+
+/**
+ * Build contiguous draw ranges from per-vertex feature IDs in a Draco resource.
+ * @param featureIds - decoded feature ID for each vertex
+ * @param indices - optional primitive index stream
+ * @param topology - output primitive topology
+ * @returns renderer draw ranges, or undefined when feature IDs are absent
+ */
+function decodeContiguousDrawRanges(
+  featureIds: ArrayLike<number>,
+  indices: TypedArray | undefined,
+  topology: I3STileContent['topology']
+): I3STileContent['drawRanges'] {
+  const primitiveSize = topology === 'point-list' ? 1 : 3;
+  const elementCount = indices?.length || featureIds.length;
+  const primitiveCount = Math.floor(elementCount / primitiveSize);
+  if (!primitiveCount) {
+    return undefined;
+  }
+
+  const drawRanges: NonNullable<I3STileContent['drawRanges']> = [];
+  for (let primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
+    const elementIndex = primitiveIndex * primitiveSize;
+    const vertexIndex = indices ? Number(indices[elementIndex]) : elementIndex;
+    const featureId = Number(featureIds[vertexIndex]);
+    const previousRange = drawRanges[drawRanges.length - 1];
+    if (previousRange?.featureId === featureId) {
+      previousRange.primitiveCount++;
+      previousRange.vertexCount += primitiveSize;
+    } else {
+      drawRanges.push({
+        featureId,
+        firstPrimitive: primitiveIndex,
+        primitiveCount: 1,
+        firstVertex: elementIndex,
+        vertexCount: primitiveSize
+      });
+    }
+  }
+  return drawRanges;
 }
 
 /**
@@ -284,12 +565,15 @@ function normalizeAttribute(attribute: I3SMeshAttribute): I3SMeshAttribute {
   return attribute;
 }
 
-function parseHeaders(arrayBuffer: ArrayBuffer, options: I3STilesetOptions) {
+function parseHeaders(
+  arrayBuffer: ArrayBuffer,
+  geometrySchema: NonNullable<I3STilesetOptions['store']['defaultGeometrySchema']>
+) {
   let byteOffset = 0;
   // First 8 bytes reserved for header (vertexCount and featurecount)
   let vertexCount = 0;
   let featureCount = 0;
-  for (const {property, type} of options.store.defaultGeometrySchema.header) {
+  for (const {property, type} of geometrySchema.header) {
     const TypedArrayTypeHeader = getConstructorForDataFormat(type);
     switch (property) {
       case HeaderAttributeProperty.vertexCount.toString():
@@ -379,13 +663,13 @@ function normalizeAttributes(
  *
  * @param buffer
  * @param elementsCount
- * @returns 64-bit array of values until precision is lost after Number.MAX_SAFE_INTEGER
+ * @returns Numeric values with exact representation through Number.MAX_SAFE_INTEGER
  */
-function parseUint64Values(
+export function parseUint64Values(
   buffer: ArrayBuffer,
   elementsCount: number,
   attributeSize: number
-): Uint32Array {
+): Float64Array {
   const values: number[] = [];
   const dataView = new DataView(buffer);
   let offset = 0;
@@ -401,7 +685,7 @@ function parseUint64Values(
     offset += attributeSize;
   }
 
-  return new Uint32Array(values);
+  return new Float64Array(values);
 }
 
 function parsePositions(attribute: I3SMeshAttribute, options: I3STileOptions): Matrix4 {
@@ -419,6 +703,30 @@ function parsePositions(attribute: I3SMeshAttribute, options: I3STileOptions): M
 }
 
 /**
+ * Reconstruct absolute source positions from I3S node-relative vertex values.
+ *
+ * @param vertices - Relative I3S positions.
+ * @param metadata - Draco scale metadata.
+ * @param sourceOrigin - Node MBS center in source CRS coordinates.
+ * @returns Absolute positions retained as Float64.
+ */
+function offsetsToSourcePositions(
+  vertices: ArrayLike<number>,
+  metadata: any = {},
+  sourceOrigin: ArrayLike<number>
+): Float64Array {
+  const positions = new Float64Array(vertices.length);
+  const scaleX = (metadata['i3s-scale_x'] && metadata['i3s-scale_x'].double) || 1;
+  const scaleY = (metadata['i3s-scale_y'] && metadata['i3s-scale_y'].double) || 1;
+  for (let index = 0; index < positions.length; index += 3) {
+    positions[index] = vertices[index] * scaleX + sourceOrigin[0];
+    positions[index + 1] = vertices[index + 1] * scaleY + sourceOrigin[1];
+    positions[index + 2] = vertices[index + 2] + sourceOrigin[2];
+  }
+  return positions;
+}
+
+/**
  * Converts position coordinates to absolute cartesian coordinates
  * @param vertices - "position" attribute data
  * @param metadata - When the geometry is DRACO compressed, contain position attribute's metadata
@@ -431,14 +739,7 @@ function offsetsToCartesians(
   metadata: any = {},
   cartographicOrigin: Vector3
 ): Float64Array {
-  const positions = new Float64Array(vertices.length);
-  const scaleX = (metadata['i3s-scale_x'] && metadata['i3s-scale_x'].double) || 1;
-  const scaleY = (metadata['i3s-scale_y'] && metadata['i3s-scale_y'].double) || 1;
-  for (let i = 0; i < positions.length; i += 3) {
-    positions[i] = vertices[i] * scaleX + cartographicOrigin.x;
-    positions[i + 1] = vertices[i + 1] * scaleY + cartographicOrigin.y;
-    positions[i + 2] = vertices[i + 2] + cartographicOrigin.z;
-  }
+  const positions = offsetsToSourcePositions(vertices, metadata, cartographicOrigin);
 
   for (let i = 0; i < positions.length; i += 3) {
     // @ts-ignore
@@ -467,19 +768,41 @@ function getModelMatrix(positions: I3SMeshAttribute): Matrix4 {
 }
 
 /**
- * Makes a glTF-compatible PBR material from an I3S material definition
+ * Make a glTF-compatible PBR material from an I3S material definition.
  * @param materialDefinition - i3s material definition
  *  https://github.com/Esri/i3s-spec/blob/master/docs/1.7/materialDefinitions.cmn.md
- * @param texture - texture image
- * @returns {object}
+ * @param texture - Decoded texture data when one was fetched successfully.
+ * @returns Material definition normalized for glTF-style rendering.
  */
-function makePbrMaterial(materialDefinition?: I3SMaterialDefinition, texture?: TileContentTexture) {
+function makePbrMaterial(
+  materialDefinition?: I3SMaterialDefinition,
+  textures: Record<string, TileContentTexture> = {},
+  texture?: TileContentTexture
+) {
   let pbrMaterial;
   if (materialDefinition) {
     pbrMaterial = {
       ...materialDefinition,
+      normalTexture: materialDefinition.normalTexture
+        ? {...materialDefinition.normalTexture}
+        : undefined,
+      occlusionTexture: materialDefinition.occlusionTexture
+        ? {...materialDefinition.occlusionTexture}
+        : undefined,
+      emissiveTexture: materialDefinition.emissiveTexture
+        ? {...materialDefinition.emissiveTexture}
+        : undefined,
       pbrMetallicRoughness: materialDefinition.pbrMetallicRoughness
-        ? {...materialDefinition.pbrMetallicRoughness}
+        ? {
+            ...materialDefinition.pbrMetallicRoughness,
+            baseColorTexture: materialDefinition.pbrMetallicRoughness.baseColorTexture
+              ? {...materialDefinition.pbrMetallicRoughness.baseColorTexture}
+              : undefined,
+            metallicRoughnessTexture: materialDefinition.pbrMetallicRoughness
+              .metallicRoughnessTexture
+              ? {...materialDefinition.pbrMetallicRoughness.metallicRoughnessTexture}
+              : undefined
+          }
         : {baseColorFactor: [255, 255, 255, 255]}
     };
   } else {
@@ -511,7 +834,9 @@ function makePbrMaterial(materialDefinition?: I3SMaterialDefinition, texture?: T
     );
   }
 
-  if (texture) {
+  if (Object.keys(textures).length > 0) {
+    setMaterialTextures(pbrMaterial, textures);
+  } else if (texture) {
     setMaterialTexture(pbrMaterial, texture);
   }
 
@@ -532,35 +857,112 @@ function convertColorFormat(colorFactor: number[]): number[] {
 }
 
 /**
- * Set texture in PBR material
- * @param {object} material - i3s material definition
+ * Attach a decoded texture to the first compatible material slot.
+ * @param material - i3s material definition
  * @param image - texture image
- * @returns
  */
 function setMaterialTexture(material, image: TileContentTexture): void {
-  const texture = {source: {image}};
   // I3SLoader now support loading only one texture. This elseif sequence will assign this texture to one of
   // properties defined in materialDefinition
   if (material.pbrMetallicRoughness && material.pbrMetallicRoughness.baseColorTexture) {
+    const materialTexture = material.pbrMetallicRoughness.baseColorTexture;
     material.pbrMetallicRoughness.baseColorTexture = {
-      ...material.pbrMetallicRoughness.baseColorTexture,
-      texture
+      ...materialTexture,
+      texture: makeTexture(image, materialTexture)
     };
   } else if (material.emissiveTexture) {
-    material.emissiveTexture = {...material.emissiveTexture, texture};
+    const materialTexture = material.emissiveTexture;
+    material.emissiveTexture = {...materialTexture, texture: makeTexture(image, materialTexture)};
   } else if (
     material.pbrMetallicRoughness &&
     material.pbrMetallicRoughness.metallicRoughnessTexture
   ) {
+    const materialTexture = material.pbrMetallicRoughness.metallicRoughnessTexture;
     material.pbrMetallicRoughness.metallicRoughnessTexture = {
-      ...material.pbrMetallicRoughness.metallicRoughnessTexture,
-      texture
+      ...materialTexture,
+      texture: makeTexture(image, materialTexture)
     };
   } else if (material.normalTexture) {
-    material.normalTexture = {...material.normalTexture, texture};
+    const materialTexture = material.normalTexture;
+    material.normalTexture = {...materialTexture, texture: makeTexture(image, materialTexture)};
   } else if (material.occlusionTexture) {
-    material.occlusionTexture = {...material.occlusionTexture, texture};
+    const materialTexture = material.occlusionTexture;
+    material.occlusionTexture = {
+      ...materialTexture,
+      texture: makeTexture(image, materialTexture)
+    };
   }
+}
+
+/**
+ * Attach each decoded texture-set resource to its matching PBR material slot.
+ * @param material - normalized I3S material definition
+ * @param textures - decoded textures keyed by texture-set definition id
+ */
+function setMaterialTextures(material, textures: Record<string, TileContentTexture>): void {
+  const textureSlots = [
+    material.pbrMetallicRoughness?.baseColorTexture,
+    material.pbrMetallicRoughness?.metallicRoughnessTexture,
+    material.normalTexture,
+    material.occlusionTexture,
+    material.emissiveTexture
+  ];
+  for (const textureSlot of textureSlots) {
+    if (!textureSlot) {
+      continue;
+    }
+    const texture = textures[textureSlot.textureSetDefinitionId];
+    if (texture) {
+      textureSlot.texture = makeTexture(texture, textureSlot);
+    }
+  }
+}
+
+/**
+ * Create a glTF-style texture object with renderer sampler constants.
+ * @param image - decoded or encoded texture payload
+ * @param materialTexture - I3S material texture metadata
+ * @returns texture source and optional sampler
+ */
+function makeTexture(image: TileContentTexture, materialTexture: I3SMaterialTexture) {
+  const wrapS = getSamplerWrap(materialTexture.wrapS);
+  const wrapT = getSamplerWrap(materialTexture.wrapT);
+  const sampler = wrapS || wrapT ? {wrapS: wrapS || 10497, wrapT: wrapT || 10497} : undefined;
+  return sampler ? {source: {image}, sampler} : {source: {image}};
+}
+
+/**
+ * Map an I3S wrap declaration to the equivalent WebGL/glTF sampler constant.
+ * @param wrap - I3S wrap declaration
+ * @returns CLAMP_TO_EDGE, REPEAT, or MIRRORED_REPEAT
+ */
+function getSamplerWrap(wrap?: 'none' | 'repeat' | 'mirror'): 33071 | 33648 | 10497 | undefined {
+  switch (wrap) {
+    case 'none':
+      return 33071;
+    case 'mirror':
+      return 33648;
+    case 'repeat':
+      return 10497;
+    default:
+      return undefined;
+  }
+}
+
+/**
+ * Get the texture-set definition id used by the legacy singleton texture URL.
+ * @param materialDefinition - optional material definition containing texture references
+ * @returns referenced texture-set definition id, or zero when no reference is available
+ */
+function getMaterialTextureSetDefinitionId(materialDefinition?: I3SMaterialDefinition): number {
+  return (
+    materialDefinition?.pbrMetallicRoughness?.baseColorTexture?.textureSetDefinitionId ??
+    materialDefinition?.pbrMetallicRoughness?.metallicRoughnessTexture?.textureSetDefinitionId ??
+    materialDefinition?.normalTexture?.textureSetDefinitionId ??
+    materialDefinition?.occlusionTexture?.textureSetDefinitionId ??
+    materialDefinition?.emissiveTexture?.textureSetDefinitionId ??
+    0
+  );
 }
 
 /**
@@ -578,7 +980,7 @@ function flattenFeatureIdsByFaceRanges(normalizedFeatureAttributes: I3SMeshAttri
   const featureIds = id.value;
   const range = faceRange.value;
   const featureIdsLength = range[range.length - 1] + 1;
-  const orderedFeatureIndices = new Uint32Array(featureIdsLength * 3);
+  const orderedFeatureIndices = new Float64Array(featureIdsLength * 3);
 
   let featureIndex = 0;
   let startIndex = 0;
@@ -610,7 +1012,9 @@ function flattenFeatureIdsByFeatureIndices(
   featureIds: Int32Array
 ): void {
   const featureIndices = attributes.id.value;
-  const result = new Float32Array(featureIndices.length);
+  // Feature IDs are object identifiers, not render coordinates. Float32 cannot represent
+  // every valid 32-bit ID (values above 2^24 are rounded), so retain them in a precise array.
+  const result = new Float64Array(featureIndices.length);
 
   for (let index = 0; index < featureIndices.length; index++) {
     result[index] = featureIds[featureIndices[index]];
