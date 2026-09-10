@@ -226,8 +226,9 @@ export class TilesetTraverser {
   selectTile(tile: Tile3D, frameState: FrameState): void {
     if (this.shouldSelectTile(tile)) {
       // The tile can be selected right away and does not require traverseAndSelect
+      this.touchTile(tile, frameState);
       tile._selectedFrame = frameState.frameNumber;
-      if (tile._replacedTileId) {
+      if (tile._replacedTileId !== undefined) {
         const groupId = `replace:${tile._replacedTileId}`;
         let selected = this.selectedTileGroups[groupId];
         if (!selected) {
@@ -253,15 +254,15 @@ export class TilesetTraverser {
 
     // A root tile need not have an ID. Its tileset URL remains stable and
     // prevents its descendants being selected alongside it.
-    if (tile.parent?.refine === TILE_REFINEMENT.REPLACE && !tile._replacedTileId) {
+    if (tile.parent?.refine === TILE_REFINEMENT.REPLACE && tile._replacedTileId === undefined) {
       tile._replacedTileId = tile.parent.id ?? tile.tileset.url;
     }
   }
 
   // cache tile
   touchTile(tile: Tile3D, frameState: FrameState): void {
-    tile.tileset._cache.touch(tile);
     if (tile._touchedFrame !== frameState.frameNumber) {
+      tile.tileset._cache.touch(tile);
       tile._displayPriority = tile._getDisplayPriority();
     }
     tile._touchedFrame = frameState.frameNumber;

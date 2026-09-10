@@ -33,7 +33,7 @@ export class GroupedTilesArray {
       const replacedIds = new Set(
         this.getTiles(candidate)
           .map((tile) => tile._replacedTileId)
-          .filter((id): id is string => Boolean(id))
+          .filter((id): id is string => id !== undefined)
       );
       const withoutReplacedTiles = this.removeTiles(this.array, replacedIds);
 

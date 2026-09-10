@@ -55,3 +55,18 @@ test('GroupedTilesArray#splice retains an ancestor when its replacement exceeds 
   );
   t.end();
 });
+
+test('GroupedTilesArray#splice recognizes an empty replacement root ID', (t) => {
+  const parent = makeTile('', 0);
+  const child = makeTile('child', 1, '');
+
+  const candidates = new GroupedTilesArray([parent, child]);
+  const selected = candidates.spliceHighestPriorityTilesOrGroups(1);
+
+  t.deepEqual(
+    selected.flatten().map((tile) => tile.id),
+    ['child'],
+    'the child replaces a parent whose ID is an empty string'
+  );
+  t.end();
+});
