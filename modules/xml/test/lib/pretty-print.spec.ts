@@ -4,10 +4,10 @@
 // Inspired by a sax-js example under ISC license
 
 import test from 'tape-promise/tape';
-import {SAXParser} from '@loaders.gl/xml';
-import {fetchFile} from '@loaders.gl/core';
+import {SAXParser} from '@sensat/loaders-gl-xml';
+import {fetchFile} from '@sensat/loaders-gl-core';
 
-const FORECASTS_URL = '@loaders.gl/xml/test/data/forecasts.xml';
+const FORECASTS_URL = '@sensat/loaders-gl-xml/test/data/forecasts.xml';
 
 test('XML#pretty-print', async (t) => {
   t.test('forecasts.xml', async (t) => {

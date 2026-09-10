@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import test from 'tape-promise/tape';
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 
 if (!isBrowser) {
   test('TextEncoder', (t) => {

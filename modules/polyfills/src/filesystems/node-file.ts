@@ -1,5 +1,5 @@
-import type {ReadableFile, WritableFile, Stat} from '@loaders.gl/loader-utils';
-import {resolvePath} from '@loaders.gl/loader-utils';
+import type {ReadableFile, WritableFile, Stat} from '@sensat/loaders-gl-loader-utils';
+import {resolvePath} from '@sensat/loaders-gl-loader-utils';
 import fs from 'fs';
 
 export class NodeFile implements ReadableFile, WritableFile {

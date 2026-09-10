@@ -27,7 +27,7 @@
 /* eslint-disable max-statements */
 
 // LZ4
-import {toArrayBuffer, registerJSModules, getJSModule} from '@loaders.gl/loader-utils';
+import {toArrayBuffer, registerJSModules, getJSModule} from '@sensat/loaders-gl-loader-utils';
 import type {CompressionOptions} from './compression';
 import {Compression} from './compression';
 

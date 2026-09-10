@@ -1,5 +1,5 @@
 
-import {fetchFile} from '@loaders.gl/core';
+import {fetchFile} from '@sensat/loaders-gl-core';
 
 export const GLTF_BASE_URL =
   'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/';

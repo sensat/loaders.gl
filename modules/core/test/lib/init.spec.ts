@@ -6,7 +6,7 @@
 // @ts-nocheck
 
 import test from 'tape-promise/tape';
-// import {isBrowser} from '@loaders.gl/core';
+// import {isBrowser} from '@sensat/loaders-gl-core';
 
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 // const version = typeof __VERSION__ !== 'undefined' ? __VERSION__ : '';

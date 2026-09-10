@@ -2,7 +2,7 @@
 
 ![logo](../images/draco-small.png)
 
-- _[`@loaders.gl/draco`](/docs/modules/draco)_ - loaders.gl implementation
+- _[`@sensat/loaders-gl-draco`](/docs/modules/draco)_ - loaders.gl implementation
 - _[Draco3D](https://google.github.io/draco/)_ - Open-source library for compressing and decompressing 3D geometric meshes and point clouds.
 
 ## Use cases

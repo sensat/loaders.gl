@@ -1,12 +1,12 @@
 import test from 'tape-promise/tape';
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 
 const {fetchNode} = globalThis.loaders || {};
 
 const GITHUB_MASTER = 'https://raw.githubusercontent.com/visgl/loaders.gl/master/modules/';
 const PLY_CUBE_ATT_URL = `${GITHUB_MASTER}ply/test/data/cube_att.ply`;
-const TEXT_URL = `@loaders.gl/polyfills/test/data/data.txt`;
-const TEXT_URL_GZIPPED = `@loaders.gl/polyfills/test/data/data.txt.gz`;
+const TEXT_URL = `@sensat/loaders-gl-polyfills/test/data/data.txt`;
+const TEXT_URL_GZIPPED = `@sensat/loaders-gl-polyfills/test/data/data.txt.gz`;
 
 test('polyfills#fetchNode() (NODE)', async (t) => {
   if (!isBrowser) {

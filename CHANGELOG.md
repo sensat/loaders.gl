@@ -1,5 +1,11 @@
 # CHANGELOG for loaders.gl
 
+## v4.4.6-sensat.0
+
+- Sensat fork release published as `@sensat/loaders-gl-<module>` packages through GitHub Packages; internal dependencies use the same version and scope.
+- Preserve grouped 3D Tiles `REPLACE` refinement selection so global tile limits retain complete replacement groups and avoid parent/child coverage conflicts.
+- Include the root-only view-distance scale and sparse implicit-tile empty-content URL safeguards.
+
 ## v4.4
 
 ### v4.4.6

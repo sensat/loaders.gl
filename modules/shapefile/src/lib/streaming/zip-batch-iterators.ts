@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {ObjectRowTableBatch, ArrayRowTableBatch} from '@loaders.gl/schema';
+import type {ObjectRowTableBatch, ArrayRowTableBatch} from '@sensat/loaders-gl-schema';
 
 type RowTableBatch = ObjectRowTableBatch | ArrayRowTableBatch;
 

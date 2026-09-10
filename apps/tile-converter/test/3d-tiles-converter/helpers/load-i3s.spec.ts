@@ -1,13 +1,13 @@
 import test from 'tape-promise/tape';
 
-// @ts-expect-error it required `@loaders.gl/i3s/src/lib/helpers/i3s-nodepages-tiles` but it fails because tries to get the dependency from
-// `@loaders.gl/i3s/src/src/lib/helpers/i3s-nodepages-tiles`
-import I3SNodePagesTiles from '@loaders.gl/i3s/lib/helpers/i3s-nodepages-tiles';
+// @ts-expect-error it required `@sensat/loaders-gl-i3s/src/lib/helpers/i3s-nodepages-tiles` but it fails because tries to get the dependency from
+// `@sensat/loaders-gl-i3s/src/src/lib/helpers/i3s-nodepages-tiles`
+import I3SNodePagesTiles from '@sensat/loaders-gl-i3s/lib/helpers/i3s-nodepages-tiles';
 import {
   TILESET_STUB,
   getI3sTileHeader,
   TEST_LAYER_URL
-} from '@loaders.gl/i3s/test/test-utils/load-utils';
+} from '@sensat/loaders-gl-i3s/test/test-utils/load-utils';
 import {loadI3SContent} from '../../../src/3d-tiles-converter/helpers/load-i3s';
 
 test('tile-converter(i3s)#loadNestedTileset', async (t) => {

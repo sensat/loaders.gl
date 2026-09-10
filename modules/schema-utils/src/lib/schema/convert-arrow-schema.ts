@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {DataType, Field, Schema, SchemaMetadata} from '@loaders.gl/schema';
+import type {DataType, Field, Schema, SchemaMetadata} from '@sensat/loaders-gl-schema';
 import * as arrow from 'apache-arrow';
 
 /** Convert Apache Arrow Schema (class instance) to a serialized Schema (plain data) */

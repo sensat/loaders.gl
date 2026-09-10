@@ -5,7 +5,7 @@
 import type {GLTF, GLTF_EXT_texture_webp} from '../types/gltf-json-schema';
 import type {GLTFLoaderOptions} from '../../gltf-loader';
 
-import {isImageFormatSupported} from '@loaders.gl/images';
+import {isImageFormatSupported} from '@sensat/loaders-gl-images';
 import {GLTFScenegraph} from '../api/gltf-scenegraph';
 
 const EXT_TEXTURE_WEBP = 'EXT_texture_webp';

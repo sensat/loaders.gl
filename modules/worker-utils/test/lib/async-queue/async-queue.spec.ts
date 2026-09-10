@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {AsyncQueue} from '@loaders.gl/worker-utils';
+import {AsyncQueue} from '@sensat/loaders-gl-worker-utils';
 
 test('AsyncQueue#push', async (t) => {
   t.plan(2);

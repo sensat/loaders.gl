@@ -18,9 +18,9 @@ Writes tabular data into comma-separated value and [delimiter-separated value](h
 ## Usage
 
 ```typescript
-import {encode} from '@loaders.gl/core';
-import {Table} from '@loaders.gl/schema';
-import {CSVLoader} from '@loaders.gl/csv';
+import {encode} from '@sensat/loaders-gl-core';
+import {Table} from '@sensat/loaders-gl-schema';
+import {CSVLoader} from '@sensat/loaders-gl-csv';
 
 const table: Table = ...;
 

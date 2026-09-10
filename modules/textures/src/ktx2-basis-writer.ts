@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
+import type {WriterWithEncoder, WriterOptions} from '@sensat/loaders-gl-loader-utils';
 import {VERSION} from './lib/utils/version';
-import type {ImageDataType} from '@loaders.gl/images';
+import type {ImageDataType} from '@sensat/loaders-gl-images';
 import {encodeKTX2BasisTexture} from './lib/encoders/encode-ktx2-basis-texture';
 
 /** @todo should be in basis sub-object */

@@ -1,7 +1,7 @@
 import test from 'tape-promise/tape';
 
-import {ImageLoader, isImageTypeSupported, getImageType, getImageData} from '@loaders.gl/images';
-import {isBrowser, load} from '@loaders.gl/core';
+import {ImageLoader, isImageTypeSupported, getImageType, getImageData} from '@sensat/loaders-gl-images';
+import {isBrowser, load} from '@sensat/loaders-gl-core';
 
 import {
   TEST_CASES,

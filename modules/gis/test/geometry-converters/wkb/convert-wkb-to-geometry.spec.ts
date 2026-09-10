@@ -3,12 +3,12 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {fetchFile} from '@loaders.gl/core';
-import {convertWKBToBinaryGeometry, convertWKBToBinaryGeometry, isWKB} from '@loaders.gl/gis';
-import {parseTestCases} from '@loaders.gl/gis/test/data/wkt/parse-test-cases';
+import {fetchFile} from '@sensat/loaders-gl-core';
+import {convertWKBToBinaryGeometry, convertWKBToBinaryGeometry, isWKB} from '@sensat/loaders-gl-gis';
+import {parseTestCases} from '@sensat/loaders-gl-gis/test/data/wkt/parse-test-cases';
 
-const WKB_2D_TEST_CASES = '@loaders.gl/gis/test/data/wkt/wkb-testdata2d.json';
-const WKB_Z_TEST_CASES = '@loaders.gl/gis/test/data/wkt/wkb-testdataZ.json';
+const WKB_2D_TEST_CASES = '@sensat/loaders-gl-gis/test/data/wkt/wkb-testdata2d.json';
+const WKB_Z_TEST_CASES = '@sensat/loaders-gl-gis/test/data/wkt/wkb-testdataZ.json';
 
 function normalizeTypedArrays(value: unknown): unknown {
   if (ArrayBuffer.isView(value) && !(value instanceof DataView)) {

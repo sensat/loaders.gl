@@ -1,7 +1,7 @@
-import {ImageLoader, isImageTypeSupported} from '@loaders.gl/images';
-import {fetchFile, parse} from '@loaders.gl/core';
+import {ImageLoader, isImageTypeSupported} from '@sensat/loaders-gl-images';
+import {fetchFile, parse} from '@sensat/loaders-gl-core';
 
-const TEST_URL = '@loaders.gl/images/test/data/tiles/colortile-256x256.png';
+const TEST_URL = '@sensat/loaders-gl-images/test/data/tiles/colortile-256x256.png';
 
 const OPTIONS: {type: 'imagebitmap' | 'image' | 'data'; decode?: boolean; worker?: boolean}[] = [
   {type: 'imagebitmap'},

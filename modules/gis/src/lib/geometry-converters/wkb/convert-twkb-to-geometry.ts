@@ -12,7 +12,7 @@ import type {
   MultiPoint,
   MultiLineString,
   MultiPolygon
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 import {BinaryReader} from '../../utils/binary-reader';
 import {WKBGeometryType} from './helpers/wkb-types';
 

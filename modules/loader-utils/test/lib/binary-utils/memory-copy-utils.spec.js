@@ -1,5 +1,5 @@
 import test from 'tape-promise/tape';
-import {padToNBytes, copyArrayBuffer, copyToArray} from '@loaders.gl/loader-utils';
+import {padToNBytes, copyArrayBuffer, copyToArray} from '@sensat/loaders-gl-loader-utils';
 
 test('padToNBytes', (t) => {
   t.ok(padToNBytes, 'padToNBytes defined');

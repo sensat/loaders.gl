@@ -11,16 +11,16 @@ Parses WKT-CRS ([Well-known text representation of coordinate reference systems]
 ## Installation
 
 ```bash
-npm install @loaders.gl/wkt
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-wkt
+npm install @sensat/loaders-gl-core
 ```
 
 # Usage
 
 ```typescript
 // you can skip this line if you loaded via <script>
-import {WKTCRSLoader} from '@loaders.gl/wkt';
-import {parse} from '@loaders.gl/core';
+import {WKTCRSLoader} from '@sensat/loaders-gl-wkt';
+import {parse} from '@sensat/loaders-gl-core';
 
 // a string of Well-Known Text CRS
 const wkt = `PROJCS["NAD27 / UTM zone 16N",GEOGCS["NAD27",DATUM["North_American_Datum_1927",SPHEROID["Clarke 1866",6378206.4,294.9786982139006,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6267"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4267"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-87],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","26716"]]`;

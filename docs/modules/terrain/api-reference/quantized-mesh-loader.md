@@ -23,8 +23,8 @@ mesh][quantized_mesh] format.
 ## Usage
 
 ```typescript
-import {QuantizedMeshLoader} from '@loaders.gl/terrain';
-import {load} from '@loaders.gl/core';
+import {QuantizedMeshLoader} from '@sensat/loaders-gl-terrain';
+import {load} from '@sensat/loaders-gl-core';
 
 const options = {
   'quantized-mesh': {

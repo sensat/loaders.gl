@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import type {LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {LoaderWithParser, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
 import {parsePotreeBin} from './parsers/parse-potree-bin';
 
 /**

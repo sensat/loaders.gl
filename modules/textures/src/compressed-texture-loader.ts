@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderWithParser, StrictLoaderOptions} from '@loaders.gl/loader-utils';
+import type {Loader, LoaderWithParser, StrictLoaderOptions} from '@sensat/loaders-gl-loader-utils';
 import {VERSION} from './lib/utils/version';
 import {parseCompressedTexture} from './lib/parsers/parse-compressed-texture';
 import {parseBasis} from './lib/parsers/parse-basis';

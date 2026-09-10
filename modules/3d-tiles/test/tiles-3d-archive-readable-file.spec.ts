@@ -2,7 +2,7 @@ import test from 'tape-promise/tape';
 import {parse3DTilesArchive} from '../src/3d-tiles-archive/3d-tiles-archive-parser';
 import {createReadableFileFromBuffer, loadArrayBufferFromFile} from 'test/utils/readable-files';
 
-const TEST_URL = '@loaders.gl/3d-tiles/test/data/test.3tz';
+const TEST_URL = '@sensat/loaders-gl-3d-tiles/test/data/test.3tz';
 
 test('parse3DTilesArchive#ReadableFile - file extraction', async (t) => {
   const arrayBuffer = await loadArrayBufferFromFile(TEST_URL);

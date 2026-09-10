@@ -1,4 +1,4 @@
-// Types from `@loaders.gl/schema`
+// Types from `@sensat/loaders-gl-schema`
 
 // Geo Metadata
 // import {default as GEOPARQUET_METADATA_SCHEMA} from './lib/geo/geoparquet-metadata-schema.json';

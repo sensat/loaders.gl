@@ -8,7 +8,7 @@ import {
   getGlobalLoaderOptions,
   normalizeLoaderOptions,
   setGlobalOptions
-} from '@loaders.gl/core/lib/loader-utils/option-utils';
+} from '@sensat/loaders-gl-core/lib/loader-utils/option-utils';
 
 test('coreOptions#deprecatedTopLevelMovesIntoCore', (t) => {
   const originalGlobalOptions = getGlobalLoaderOptions();

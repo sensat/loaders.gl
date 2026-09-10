@@ -1,11 +1,11 @@
-# @loaders.gl/gis
+# @sensat/loaders-gl-gis
 
 This module contains helper classes for the GIS category of loaders.
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/gis
+npm install @sensat/loaders-gl-gis
 ```
 
 ## Utility Functions

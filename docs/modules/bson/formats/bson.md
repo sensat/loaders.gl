@@ -2,7 +2,7 @@
 
 ![bson-logo](../../../images/logos/bson-logo.png)
 
-- _[`@loaders.gl/bson`](/docs/modules/bson) _
+- _[`@sensat/loaders-gl-bson`](/docs/modules/bson) _
 - _[BSON specification](https://bsonspec.org/)_
 - _[Wikipedia article](https://en.wikipedia.org/wiki/BSON)_
 

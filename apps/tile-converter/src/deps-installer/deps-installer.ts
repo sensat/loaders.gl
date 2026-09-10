@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import {load, fetchFile} from '@loaders.gl/core';
-import {ZipLoader} from '@loaders.gl/zip';
+import {load, fetchFile} from '@sensat/loaders-gl-core';
+import {ZipLoader} from '@sensat/loaders-gl-zip';
 import {writeFile} from '../lib/utils/file-utils';
 import {join, dirname} from 'path';
-import {ChildProcessProxy} from '@loaders.gl/worker-utils';
-import {DRACO_EXTERNAL_LIBRARIES, DRACO_EXTERNAL_LIBRARY_URLS} from '@loaders.gl/draco';
-import {BASIS_EXTERNAL_LIBRARIES} from '@loaders.gl/textures';
+import {ChildProcessProxy} from '@sensat/loaders-gl-worker-utils';
+import {DRACO_EXTERNAL_LIBRARIES, DRACO_EXTERNAL_LIBRARY_URLS} from '@sensat/loaders-gl-draco';
+import {BASIS_EXTERNAL_LIBRARIES} from '@sensat/loaders-gl-textures';
 
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';

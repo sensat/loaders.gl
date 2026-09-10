@@ -9,7 +9,7 @@ The `Tiles3DConverter` class converts an I3S layer. It converts between the OGC 
 ## Usage
 
 ```typescript
-import {Tiles3DConverter} from '@loaders.gl/tile-converter';
+import {Tiles3DConverter} from '@sensat/loaders-gl-tile-converter';
 
 const TILESET_URL =
   'https://tiles.arcgis.com/tiles/u0sSNqDXr7puKJrF/arcgis/rest/services/Frankfurt2017_v17/SceneServer/layers/0';

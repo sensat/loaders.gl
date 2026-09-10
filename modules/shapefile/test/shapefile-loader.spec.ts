@@ -10,8 +10,8 @@ import {
   loadInBatches,
   selectLoader,
   _BrowserFileSystem as BrowserFileSystem
-} from '@loaders.gl/core';
-import {ShapefileLoader, DBFLoader} from '@loaders.gl/shapefile';
+} from '@sensat/loaders-gl-core';
+import {ShapefileLoader, DBFLoader} from '@sensat/loaders-gl-shapefile';
 import {Proj4Projection} from '@math.gl/proj4';
 import {tapeEqualsEpsilon} from 'test/utils/tape-assertions';
 
@@ -19,7 +19,7 @@ setLoaderOptions({
   _workerType: 'test'
 });
 
-const SHAPEFILE_JS_DATA_FOLDER = '@loaders.gl/shapefile/test/data/shapefile-js';
+const SHAPEFILE_JS_DATA_FOLDER = '@sensat/loaders-gl-shapefile/test/data/shapefile-js';
 const SHAPEFILE_JS_TEST_FILES = {
   'boolean-property': null,
   'date-property': null,

@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {getFrameState} from '@loaders.gl/tiles';
+import {getFrameState} from '@sensat/loaders-gl-tiles';
 import {WebMercatorViewport, FirstPersonView} from '@deck.gl/core';
 import {equals, Vector3} from '@math.gl/core';
 import {Ellipsoid} from '@math.gl/geospatial';

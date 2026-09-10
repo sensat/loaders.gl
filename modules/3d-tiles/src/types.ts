@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import type {GLTFPostprocessed, FeatureTableJson} from '@loaders.gl/gltf';
+import type {GLTFPostprocessed, FeatureTableJson} from '@sensat/loaders-gl-gltf';
 export type {FeatureTableJson};
 
-import {LoaderWithParser} from '@loaders.gl/loader-utils';
+import {LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
 import {Matrix4, Vector3} from '@math.gl/core';
-import {TILESET_TYPE, LOD_METRIC_TYPE, TILE_TYPE, TILE_REFINEMENT} from '@loaders.gl/tiles';
+import {TILESET_TYPE, LOD_METRIC_TYPE, TILE_TYPE, TILE_REFINEMENT} from '@sensat/loaders-gl-tiles';
 
 export type B3DMContent = {
   batchTableJson?: FeatureTableJson;

@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {setLoaderOptions, getLoaderOptions} from '@loaders.gl/core';
+import {setLoaderOptions, getLoaderOptions} from '@sensat/loaders-gl-core';
 
 test('setLoaderOptions', (t) => {
   setLoaderOptions({});

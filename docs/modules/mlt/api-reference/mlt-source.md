@@ -16,8 +16,8 @@ The `MLTSource` dynamically loads MapLibre Tile (`.mlt`) data from URL based til
 ## Usage
 
 ```typescript
-import {createDataSource} from '@loaders.gl/core';
-import {MLTSource} from '@loaders.gl/mlt';
+import {createDataSource} from '@sensat/loaders-gl-core';
+import {MLTSource} from '@sensat/loaders-gl-mlt';
 
 const source = createDataSource('https://example.com/tiles', [MLTSource]);
 const features = await source.getTile({x: 0, y: 0, z: 0});

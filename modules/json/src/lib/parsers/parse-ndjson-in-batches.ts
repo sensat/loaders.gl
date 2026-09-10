@@ -2,15 +2,15 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {TableBatch} from '@loaders.gl/schema';
-import {TableBatchBuilder} from '@loaders.gl/schema-utils';
+import type {TableBatch} from '@sensat/loaders-gl-schema';
+import {TableBatchBuilder} from '@sensat/loaders-gl-schema-utils';
 import {
   LoaderOptions,
   makeLineIterator,
   makeNumberedLineIterator,
   makeTextDecoderIterator,
   toArrayBufferIterator
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
 
 export async function* parseNDJSONInBatches(
   binaryAsyncIterator:

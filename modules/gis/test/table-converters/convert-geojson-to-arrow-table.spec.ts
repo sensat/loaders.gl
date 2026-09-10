@@ -3,11 +3,11 @@
 // Copyright (c) vis.gl contributors
 
 import test, {Test} from 'tape-promise/tape';
-import {GEOARROW_TEST_CASES} from '@loaders.gl/arrow/test/data/geoarrow/test-cases';
+import {GEOARROW_TEST_CASES} from '@sensat/loaders-gl-arrow/test/data/geoarrow/test-cases';
 
-import {fetchFile, parse} from '@loaders.gl/core';
-import {FeatureCollection} from '@loaders.gl/schema';
-import {GeoArrowLoader} from '@loaders.gl/arrow';
+import {fetchFile, parse} from '@sensat/loaders-gl-core';
+import {FeatureCollection} from '@sensat/loaders-gl-schema';
+import {GeoArrowLoader} from '@sensat/loaders-gl-arrow';
 
 test('ArrowLoader#shape:geojson-table', async (t) => {
   for (const testCase of GEOARROW_TEST_CASES) {

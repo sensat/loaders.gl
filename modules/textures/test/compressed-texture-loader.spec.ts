@@ -4,18 +4,18 @@
 
 import test from 'tape-promise/tape';
 
-import {CompressedTextureLoader} from '@loaders.gl/textures';
-import {load, setLoaderOptions} from '@loaders.gl/core';
+import {CompressedTextureLoader} from '@sensat/loaders-gl-textures';
+import {load, setLoaderOptions} from '@sensat/loaders-gl-core';
 import {
   GL_COMPRESSED_RGB_ETC1_WEBGL,
   GL_COMPRESSED_RGB_S3TC_DXT1_EXT,
   GL_COMPRESSED_RGBA_S3TC_DXT5_EXT
 } from '../src/lib/gl-extensions';
 
-const KTX_URL = '@loaders.gl/textures/test/data/test_etc1s.ktx2';
-const KTX2_URL = '@loaders.gl/textures/test/data/kodim23.ktx2';
-const DDS_URL = '@loaders.gl/textures/test/data/shannon-dxt5.dds';
-const PVR_URL = '@loaders.gl/textures/test/data/shannon-etc1.pvr';
+const KTX_URL = '@sensat/loaders-gl-textures/test/data/test_etc1s.ktx2';
+const KTX2_URL = '@sensat/loaders-gl-textures/test/data/kodim23.ktx2';
+const DDS_URL = '@sensat/loaders-gl-textures/test/data/shannon-dxt5.dds';
+const PVR_URL = '@sensat/loaders-gl-textures/test/data/shannon-etc1.pvr';
 
 setLoaderOptions({
   _workerType: 'test'

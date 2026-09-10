@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {TextureFormat, TextureLevel} from '@loaders.gl/schema';
+import type {TextureFormat, TextureLevel} from '@sensat/loaders-gl-schema';
 import type {GLTextureFormat} from '../gl-types';
 import {
   getTextureFormatFromWebGLFormat,

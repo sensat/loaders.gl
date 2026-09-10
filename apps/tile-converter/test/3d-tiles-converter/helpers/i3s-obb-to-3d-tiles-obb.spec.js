@@ -1,9 +1,9 @@
 import test from 'tape-promise/tape';
-import {load} from '@loaders.gl/core';
+import {load} from '@sensat/loaders-gl-core';
 import {i3sObbTo3dTilesObb} from '../../../src/3d-tiles-converter/helpers/i3s-obb-to-3d-tiles-obb';
 import {PGMLoader} from '../../../src/pgm-loader';
 
-const PGM_FILE_PATH = '@loaders.gl/tile-converter/test/data/egm84-30.pgm';
+const PGM_FILE_PATH = '@sensat/loaders-gl-tile-converter/test/data/egm84-30.pgm';
 
 test('tile-converter(3d-tiles)#i3sObbTo3dTilesObb - converts I3S OBB to 3D-Tiles OBB', async (t) => {
   const geoidHeightModel = await load(PGM_FILE_PATH, PGMLoader);

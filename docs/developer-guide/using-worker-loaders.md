@@ -24,8 +24,8 @@ More details on advantages and complications with worker thread based loading th
 
 ## Processing Data on Workers
 
-The `processOnWorker` function in `@loaders.gl/worker-utils` is used with worker objects
-exported by modules like `@loaders.gl/compression` and `@loaders.gl/crypto` to move
+The `processOnWorker` function in `@sensat/loaders-gl-worker-utils` is used with worker objects
+exported by modules like `@sensat/loaders-gl-compression` and `@sensat/loaders-gl-crypto` to move
 processing intensive tasks to workers.
 
 ## Parsing data on Workers
@@ -37,8 +37,8 @@ It parses data on worker threads by default. To load two Draco encoded meshes
 _in parallel_ on worker threads, just use the `DracoLoader` as follows:
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {DracoLoader} from '@loaders.gl/draco';
+import {load} from '@sensat/loaders-gl-core';
+import {DracoLoader} from '@sensat/loaders-gl-draco';
 
 async function loadInParallel(url1, url2) {
   const [data1, data2] = await Promise.all([load(url1, DracoLoader), load(url2, DracoLoader)]);
@@ -92,7 +92,7 @@ This can be useful e.g. when building applications that cannot access CDNs or wh
  *
  * https://vitejs.dev/guide/assets.html#explicit-url-imports
  */
-import mvtLoaderUrl from '@loaders.gl/mvt/mvt-worker.js?url';
+import mvtLoaderUrl from '@sensat/loaders-gl-mvt/mvt-worker.js?url';
 ```
 
 ## Composite Loaders and Workers (Advanced)

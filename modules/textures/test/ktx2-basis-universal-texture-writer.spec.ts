@@ -3,13 +3,13 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {load, encode} from '@loaders.gl/core';
-import {ImageLoader} from '@loaders.gl/images';
-import {BasisLoader, KTX2BasisWriter, KTX2BasisWriterWorker} from '@loaders.gl/textures';
-import {isBrowser, processOnWorker, WorkerFarm} from '@loaders.gl/worker-utils';
+import {load, encode} from '@sensat/loaders-gl-core';
+import {ImageLoader} from '@sensat/loaders-gl-images';
+import {BasisLoader, KTX2BasisWriter, KTX2BasisWriterWorker} from '@sensat/loaders-gl-textures';
+import {isBrowser, processOnWorker, WorkerFarm} from '@sensat/loaders-gl-worker-utils';
 
-const shannonPNG = '@loaders.gl/textures/test/data/shannon.png';
-const shannonJPG = '@loaders.gl/textures/test/data/shannon.jpg';
+const shannonPNG = '@sensat/loaders-gl-textures/test/data/shannon.png';
+const shannonJPG = '@sensat/loaders-gl-textures/test/data/shannon.jpg';
 
 test('KTX2BasisUniversalTextureWriter#Should encode PNG', async (t) => {
   const image = await load(shannonPNG, ImageLoader, {image: {type: 'data'}});

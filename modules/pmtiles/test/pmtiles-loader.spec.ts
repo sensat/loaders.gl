@@ -3,10 +3,10 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {isBrowser, load} from '@loaders.gl/core';
+import {isBrowser, load} from '@sensat/loaders-gl-core';
 
 import {PMTILESETS_VECTOR} from './data/tilesets';
-import {_PMTilesLoader as PMTilesLoader} from '@loaders.gl/pmtiles';
+import {_PMTilesLoader as PMTilesLoader} from '@sensat/loaders-gl-pmtiles';
 
 test('PMTilesLoader#schemas', async (t) => {
   if (!isBrowser) {

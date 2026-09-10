@@ -3,15 +3,15 @@
 // Copyright vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {Tile3DBatchTable} from '@loaders.gl/3d-tiles';
-import {concatTypedArrays} from '@loaders.gl/math'; // '@math.gl/geometry';
+import {Tile3DBatchTable} from '@sensat/loaders-gl-3d-tiles';
+import {concatTypedArrays} from '@sensat/loaders-gl-math'; // '@math.gl/geometry';
 // import {loadTileset} from '../utils/load-utils';
 
 // const WITH_BATCH_TABLE_URL =
-//  '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedWithBatchTable/tileset.json';
+//  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedWithBatchTable/tileset.json';
 // const WITHOUT_BATCH_TABLE_URL =
-//   '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedWithoutBatchTable/tileset.json';
-// const NO_BATCH_IDS_URL = '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedNoBatchIds/tileset.json';
+//   '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedWithoutBatchTable/tileset.json';
+// const NO_BATCH_IDS_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedNoBatchIds/tileset.json';
 
 const MOCK_TILESET = {
   _statistics: {

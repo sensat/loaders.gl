@@ -222,7 +222,7 @@
     "items": [
       {
         "type": "category",
-        "label": "@loaders.gl/core",
+        "label": "@sensat/loaders-gl-core",
         "items": [
           "modules/core/README",
           "modules/core/api-reference/loader-options",
@@ -249,7 +249,7 @@
       },
       {
         "type": "category",
-        "label": "@loaders.gl/loader-utils",
+        "label": "@sensat/loaders-gl-loader-utils",
         "items": [
           "modules/loader-utils/README",
           "modules/loader-utils/api-reference/readable-file",
@@ -259,27 +259,27 @@
       },
       {
         "type": "category",
-        "label": "@loaders.gl/3d-tiles",
+        "label": "@sensat/loaders-gl-3d-tiles",
         "items": ["modules/3d-tiles/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/arrow",
+        "label": "@sensat/loaders-gl-arrow",
         "items": ["modules/arrow/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/bson",
+        "label": "@sensat/loaders-gl-bson",
         "items": ["modules/bson/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/csv",
+        "label": "@sensat/loaders-gl-csv",
         "items": ["modules/csv/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/compression",
+        "label": "@sensat/loaders-gl-compression",
         "items": [
           "modules/compression/README",
           "modules/compression/api-reference/compression",
@@ -295,7 +295,7 @@
       },
       {
         "type": "category",
-        "label": "@loaders.gl/crypto",
+        "label": "@sensat/loaders-gl-crypto",
         "items": [
           "modules/crypto/README",
           "modules/crypto/api-reference/hash",
@@ -307,17 +307,17 @@
       },
       {
         "type": "category",
-        "label": "@loaders.gl/draco",
+        "label": "@sensat/loaders-gl-draco",
         "items": ["modules/draco/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/geotiff",
+        "label": "@sensat/loaders-gl-geotiff",
         "items": ["modules/geotiff/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/gltf",
+        "label": "@sensat/loaders-gl-gltf",
         "items": [
           "modules/gltf/README",
           "modules/gltf/api-reference/gltf-scenegraph",
@@ -331,12 +331,12 @@
       },
       {
         "type": "category",
-        "label": "@loaders.gl/i3s",
+        "label": "@sensat/loaders-gl-i3s",
         "items": ["modules/i3s/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/images",
+        "label": "@sensat/loaders-gl-images",
         "items": [
           "modules/images/README",
           "modules/images/api-reference/parsed-image-api",
@@ -345,67 +345,67 @@
       },
       {
         "type": "category",
-        "label": "@loaders.gl/json",
+        "label": "@sensat/loaders-gl-json",
         "items": ["modules/json/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/kml",
+        "label": "@sensat/loaders-gl-kml",
         "items": ["modules/kml/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/las",
+        "label": "@sensat/loaders-gl-las",
         "items": ["modules/las/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/lerc",
+        "label": "@sensat/loaders-gl-lerc",
         "items": ["modules/lerc/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/mvt",
+        "label": "@sensat/loaders-gl-mvt",
         "items": ["modules/mvt/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/mlt",
+        "label": "@sensat/loaders-gl-mlt",
         "items": ["modules/mlt/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/obj",
+        "label": "@sensat/loaders-gl-obj",
         "items": ["modules/obj/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/parquet",
+        "label": "@sensat/loaders-gl-parquet",
         "items": ["modules/parquet/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/pcd",
+        "label": "@sensat/loaders-gl-pcd",
         "items": ["modules/pcd/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/ply",
+        "label": "@sensat/loaders-gl-ply",
         "items": ["modules/ply/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/pmtiles",
+        "label": "@sensat/loaders-gl-pmtiles",
         "items": ["modules/pmtiles/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/polyfills",
+        "label": "@sensat/loaders-gl-polyfills",
         "items": ["modules/polyfills/api-reference/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/shapefile",
+        "label": "@sensat/loaders-gl-shapefile",
         "items": [
           "modules/shapefile/README",
           "modules/shapefile/api-reference/shp-loader",
@@ -414,7 +414,7 @@
       },
       {
         "type": "category",
-        "label": "@loaders.gl/tiles",
+        "label": "@sensat/loaders-gl-tiles",
         "items": [
           "modules/tiles/README",
           "modules/tiles/api-reference/tileset-3d",
@@ -423,7 +423,7 @@
       },
       {
         "type": "category",
-        "label": "@loaders.gl/tile-converter",
+        "label": "@sensat/loaders-gl-tile-converter",
         "items": [
           "modules/tile-converter/README",
           "modules/tile-converter/api-reference/3d-tiles-converter",
@@ -434,7 +434,7 @@
       },
       {
         "type": "category",
-        "label": "@loaders.gl/textures",
+        "label": "@sensat/loaders-gl-textures",
         "items": [
           "modules/textures/README",
           "modules/textures/api-reference/radiance-hdr-loader",
@@ -451,22 +451,22 @@
       },
       {
         "type": "category",
-        "label": "@loaders.gl/video",
+        "label": "@sensat/loaders-gl-video",
         "items": ["modules/video/README", "modules/video/api-reference/gif-builder"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/wkt",
+        "label": "@sensat/loaders-gl-wkt",
         "items": ["modules/wkt/README"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/wms",
+        "label": "@sensat/loaders-gl-wms",
         "items": ["modules/wms/README", "modules/wms/api-reference/wms-capabilities-loader"]
       },
       {
         "type": "category",
-        "label": "@loaders.gl/xml",
+        "label": "@sensat/loaders-gl-xml",
         "items": [
           "modules/xml/README",
           "modules/xml/api-reference/xml-loader",
@@ -475,7 +475,7 @@
       },
       {
         "type": "category",
-        "label": "@loaders.gl/zip",
+        "label": "@sensat/loaders-gl-zip",
         "items": ["modules/zip/README"]
       }
     ]

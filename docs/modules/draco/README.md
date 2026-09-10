@@ -2,12 +2,12 @@
 
 ![logo](./images/draco-small.png)
 
-The `@loaders.gl/draco` module handles compressing and decompressing of 3D meshes and point clouds with [DRACO](https://github.com/google/draco).
+The `@sensat/loaders-gl-draco` module handles compressing and decompressing of 3D meshes and point clouds with [DRACO](https://github.com/google/draco).
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/core @loaders.gl/draco
+npm install @sensat/loaders-gl-core @sensat/loaders-gl-draco
 ```
 
 ## Loaders and Writers
@@ -30,7 +30,7 @@ Bundling the entire `draco3d` library:
 
 ```typescript
 import draco from 'draco3d';
-import {setLoaderOptions} from '@loaders.gl/core';
+import {setLoaderOptions} from '@sensat/loaders-gl-core';
 setLoaderOptions({
   modules: {
     draco3d
@@ -41,11 +41,11 @@ setLoaderOptions({
 Bundling only the WebAssembly decoder
 
 ```typescript
-import {setLoaderOptions} from '@loaders.gl/core';
+import {setLoaderOptions} from '@sensat/loaders-gl-core';
 setLoaderOptions({
   modules: {
-    'draco_wasm_wrapper.js': require('@loaders.gl/draco/libs/draco_wasm_wrapper.js'),
-    'draco_decoder.wasm': require('@loaders.gl/draco/libs/draco_decoder.wasm') // NOTE: importing `wasm` requires bundler config
+    'draco_wasm_wrapper.js': require('@sensat/loaders-gl-draco/libs/draco_wasm_wrapper.js'),
+    'draco_decoder.wasm': require('@sensat/loaders-gl-draco/libs/draco_decoder.wasm') // NOTE: importing `wasm` requires bundler config
   }
 });
 ```

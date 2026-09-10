@@ -18,8 +18,8 @@ Note: applications that want to parse GLB-formatted glTF files would normally us
 ## Usage
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {GLBLoader} from '@loaders.gl/gltf';
+import {load} from '@sensat/loaders-gl-core';
+import {GLBLoader} from '@sensat/loaders-gl-gltf';
 const gltf = await load(url, GLBLoader);
 ```
 

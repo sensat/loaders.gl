@@ -2,7 +2,7 @@
 
 ![ogc-logo](../../../images/logos/ogc-logo-60.png)
 
-- _[`@loaders.gl/geotiff`](/docs/modules/geotiff)_
+- _[`@sensat/loaders-gl-geotiff`](/docs/modules/geotiff)_
 - _[OGC Standard](https://www.ogc.org/standard/geotiff/)_
 
 ## GeoTIFF Metadata

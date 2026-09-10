@@ -6,37 +6,37 @@
 // See LICENSE.md and https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md
 
 import test from 'tape-promise/tape';
-import {parse, encodeSync} from '@loaders.gl/core';
-import {Tiles3DLoader, Tile3DWriter, TILE3D_TYPE} from '@loaders.gl/3d-tiles';
+import {parse, encodeSync} from '@sensat/loaders-gl-core';
+import {Tiles3DLoader, Tile3DWriter, TILE3D_TYPE} from '@sensat/loaders-gl-3d-tiles';
 import {loadRootTileFromTileset} from '../utils/load-utils';
 
 const GLTF_EXTERNAL_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Instanced/InstancedGltfExternal/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedGltfExternal/tileset.json';
 const WITH_BATCH_TABLE_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Instanced/InstancedWithBatchTable/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedWithBatchTable/tileset.json';
 const WITH_BATCH_TABLE_BINARY_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Instanced/InstancedWithBatchTableBinary/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedWithBatchTableBinary/tileset.json';
 const WITHOUT_BATCH_TABLE_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Instanced/InstancedWithoutBatchTable/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedWithoutBatchTable/tileset.json';
 const ORIENTATION_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Instanced/InstancedOrientation/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedOrientation/tileset.json';
 // TODO - looks like original source code mixes up 16/32 in the name here?
 const OCT16P_ORIENTATION_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Instanced/InstancedOct32POrientation/tileset.json';
-const SCALE_URL = '@loaders.gl/3d-tiles/test/data/CesiumJS/Instanced/InstancedScale/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedOct32POrientation/tileset.json';
+const SCALE_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedScale/tileset.json';
 const SCALE_NON_UNIFORM_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Instanced/InstancedScaleNonUniform/tileset.json';
-const RTC_URL = '@loaders.gl/3d-tiles/test/data/CesiumJS/Instanced/InstancedRTC/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedScaleNonUniform/tileset.json';
+const RTC_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedRTC/tileset.json';
 const QUANTIZED_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Instanced/InstancedQuantized/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedQuantized/tileset.json';
 const QUANTIZED_OCT32_PORIENTATION_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Instanced/InstancedQuantizedOct32POrientation/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedQuantizedOct32POrientation/tileset.json';
 const WITH_TRANSFORM_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Instanced/InstancedWithTransform/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedWithTransform/tileset.json';
 const WITH_BATCH_IDS_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Instanced/InstancedWithBatchIds/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedWithBatchIds/tileset.json';
 const TEXTURED_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Instanced/InstancedTextured/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Instanced/InstancedTextured/tileset.json';
 
 const NO_GLTF = {
   '3d-tiles': {

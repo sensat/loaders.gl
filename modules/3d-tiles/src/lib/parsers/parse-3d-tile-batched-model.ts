@@ -5,7 +5,7 @@
 // This file is derived from the Cesium code base under Apache 2 license
 // See LICENSE.md and https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md
 
-import {GL} from '@loaders.gl/math'; // math.gl/geometry;
+import {GL} from '@sensat/loaders-gl-math'; // math.gl/geometry;
 import Tile3DFeatureTable from '../classes/tile-3d-feature-table';
 // import Tile3DBatchTable from '../classes/tile-3d-batch-table';
 
@@ -14,7 +14,7 @@ import {parse3DTileTablesHeaderSync, parse3DTileTablesSync} from './helpers/pars
 import {parse3DTileGLTFViewSync, extractGLTF, GLTF_FORMAT} from './helpers/parse-3d-tile-gltf-view';
 import {Tiles3DTileContent} from '../../types';
 import {Tiles3DLoaderOptions} from '../../tiles-3d-loader';
-import {LoaderContext} from '@loaders.gl/loader-utils';
+import {LoaderContext} from '@sensat/loaders-gl-loader-utils';
 
 export async function parseBatchedModel3DTile(
   tile: Tiles3DTileContent,

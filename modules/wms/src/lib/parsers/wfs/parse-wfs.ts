@@ -1,6 +1,6 @@
 // loaders.gl, MIT license
 
-import {XMLLoader} from '@loaders.gl/xml';
+import {XMLLoader} from '@sensat/loaders-gl-xml';
 
 export type WFSCapabilities = {};
 

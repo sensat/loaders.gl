@@ -1,7 +1,7 @@
 // loaders.gl
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
-import type {TypedArray} from '@loaders.gl/schema';
+import type {TypedArray} from '@sensat/loaders-gl-schema';
 
 // TODO: remove copy; import from typed-array-utils
 // modules/math/src/geometry/typed-arrays/typed-array-utils.js

@@ -2,20 +2,20 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-// import type {BinaryFeatureCollection} from '@loaders.gl/schema';
+// import type {BinaryFeatureCollection} from '@sensat/loaders-gl-schema';
 import test from 'tape-promise/tape';
-import {MVTLoader, MVTLoaderOptions} from '@loaders.gl/mvt';
-import {setLoaderOptions, fetchFile, parse, parseSync} from '@loaders.gl/core';
-import {geojsonToBinary, binaryToGeojson} from '@loaders.gl/gis';
+import {MVTLoader, MVTLoaderOptions} from '@sensat/loaders-gl-mvt';
+import {setLoaderOptions, fetchFile, parse, parseSync} from '@sensat/loaders-gl-core';
+import {geojsonToBinary, binaryToGeojson} from '@sensat/loaders-gl-gis';
 
-const MVT_POINTS_DATA_URL = '@loaders.gl/mvt/test/data/mvt/points_4-2-6.mvt';
-const MVT_LINES_DATA_URL = '@loaders.gl/mvt/test/data/mvt/lines_2-2-1.mvt';
-const MVT_POLYGONS_DATA_URL = '@loaders.gl/mvt/test/data/mvt/polygons_10-133-325.mvt';
+const MVT_POINTS_DATA_URL = '@sensat/loaders-gl-mvt/test/data/mvt/points_4-2-6.mvt';
+const MVT_LINES_DATA_URL = '@sensat/loaders-gl-mvt/test/data/mvt/lines_2-2-1.mvt';
+const MVT_POLYGONS_DATA_URL = '@sensat/loaders-gl-mvt/test/data/mvt/polygons_10-133-325.mvt';
 const MVT_POLYGON_ZERO_SIZE_HOLE_DATA_URL =
-  '@loaders.gl/mvt/test/data/mvt/polygon_with_zero_size_hole.mvt';
+  '@sensat/loaders-gl-mvt/test/data/mvt/polygon_with_zero_size_hole.mvt';
 const MVT_MULTIPLE_LAYERS_DATA_URL =
-  '@loaders.gl/mvt/test/data/mvt/lines_10-501-386_multiplelayers.mvt';
-const WITH_FEATURE_ID = '@loaders.gl/mvt/test/data/mvt/with_feature_id.mvt';
+  '@sensat/loaders-gl-mvt/test/data/mvt/lines_10-501-386_multiplelayers.mvt';
+const WITH_FEATURE_ID = '@sensat/loaders-gl-mvt/test/data/mvt/with_feature_id.mvt';
 
 // Geometry Array Results
 

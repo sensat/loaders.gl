@@ -1,21 +1,21 @@
 import test from 'tape-promise/tape';
-import {fetchFile, isBrowser, parse} from '@loaders.gl/core';
+import {fetchFile, isBrowser, parse} from '@sensat/loaders-gl-core';
 // @ts-expect-error
-import I3SNodePagesTiles from '@loaders.gl/i3s/lib/helpers/i3s-nodepages-tiles';
-import {TEST_LAYER_URL, TILESET_STUB} from '@loaders.gl/i3s/test/test-utils/load-utils';
+import I3SNodePagesTiles from '@sensat/loaders-gl-i3s/lib/helpers/i3s-nodepages-tiles';
+import {TEST_LAYER_URL, TILESET_STUB} from '@sensat/loaders-gl-i3s/test/test-utils/load-utils';
 
-import {I3SContentLoader} from '@loaders.gl/i3s';
+import {I3SContentLoader} from '@sensat/loaders-gl-i3s';
 
 const I3S_TILE_CONTENT =
-  '@loaders.gl/i3s/test/data/SanFrancisco_3DObjects_1_7/SceneServer/layers/0/nodes/1/geometries/0';
+  '@sensat/loaders-gl-i3s/test/data/SanFrancisco_3DObjects_1_7/SceneServer/layers/0/nodes/1/geometries/0';
 const NEW_YORK_TILE_CONTENT =
-  '@loaders.gl/i3s/test/data/Buildings_NewYork_17/SceneServer/layers/0/nodes/2465/geometries/1';
+  '@sensat/loaders-gl-i3s/test/data/Buildings_NewYork_17/SceneServer/layers/0/nodes/2465/geometries/1';
 const NEW_YORK_CONTENT_LOADER_OPTIONS =
-  '@loaders.gl/i3s/test/data/Buildings_NewYork_17/i3s-content-loader-options.json';
+  '@sensat/loaders-gl-i3s/test/data/Buildings_NewYork_17/i3s-content-loader-options.json';
 const MONTREAL_TILE_CONTENT =
-  '@loaders.gl/i3s/test/data/Montreal_3DObjects_subset_1_v17_ktx2/SceneServer/layers/0/nodes/1/geometries/1';
+  '@sensat/loaders-gl-i3s/test/data/Montreal_3DObjects_subset_1_v17_ktx2/SceneServer/layers/0/nodes/1/geometries/1';
 const MONTREAL_CONTENT_LOADER_OPTIONS =
-  '@loaders.gl/i3s/test/data/Montreal_3DObjects_subset_1_v17_ktx2/i3s-content-loader-options.json';
+  '@sensat/loaders-gl-i3s/test/data/Montreal_3DObjects_subset_1_v17_ktx2/i3s-content-loader-options.json';
 
 test('ParseI3sTileContent#should parse tile content', async (t) => {
   const tileset = TILESET_STUB();

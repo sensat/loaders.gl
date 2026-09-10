@@ -1,7 +1,7 @@
-// import type {} from '@loaders.gl/loader-utils';
+// import type {} from '@sensat/loaders-gl-loader-utils';
 
-import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
-import type {GeoJSONTable, BinaryGeometry} from '@loaders.gl/schema';
+import type {WriterWithEncoder, WriterOptions} from '@sensat/loaders-gl-loader-utils';
+import type {GeoJSONTable, BinaryGeometry} from '@sensat/loaders-gl-schema';
 import {encodeGeoArrowSync} from './lib/encoders/encode-geoarrow';
 
 // __VERSION__ is injected by babel-plugin-version-inline

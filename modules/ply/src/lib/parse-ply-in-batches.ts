@@ -30,7 +30,7 @@ import {
   makeTextDecoderIterator,
   forEach,
   toArrayBufferIterator
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
 import normalizePLY from './normalize-ply';
 import {PLYMesh, PLYHeader, PLYElement, PLYProperty, PLYAttributes} from './ply-types';
 

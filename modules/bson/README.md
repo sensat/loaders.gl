@@ -1,4 +1,4 @@
-# @loaders.gl/bson
+# @sensat/loaders-gl-bson
 
 This module contains a table loader for the BSON format.
 

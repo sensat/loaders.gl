@@ -4,12 +4,12 @@ import {
   NodeFilesystem,
   NodeFile,
   toArrayBuffer
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
 import {ZipEoCDRecord, generateEoCD, parseEoCDRecord, updateEoCD} from './end-of-central-directory';
-import {CRC32Hash} from '@loaders.gl/crypto';
+import {CRC32Hash} from '@sensat/loaders-gl-crypto';
 import {generateLocalHeader} from './local-file-header';
 import {generateCDHeader} from './cd-file-header';
-import {fetchFile} from '@loaders.gl/core';
+import {fetchFile} from '@sensat/loaders-gl-core';
 import {readRange} from './readable-file-utils';
 
 /**

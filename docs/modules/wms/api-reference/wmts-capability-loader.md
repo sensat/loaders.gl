@@ -26,8 +26,8 @@ the [OGC](https://www.opengeospatial.org/) [WMTS](https://www.ogc.org/standards/
 ## Usage
 
 ```typescript
-import {WMTSCapabilitiesLoader} from '@loaders.gl/wms';
-import {load} from '@loaders.gl/core';
+import {WMTSCapabilitiesLoader} from '@sensat/loaders-gl-wms';
+import {load} from '@sensat/loaders-gl-core';
 
 // Form a WMTS request
 const url = `${WMTS_SERVICE_URL}?REQUEST=GetCapabilities`;

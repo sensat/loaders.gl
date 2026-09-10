@@ -5,7 +5,7 @@
 // Forked from https://github.com/kbajalc/parquets under MIT license
 
 /* eslint-disable camelcase */
-import {BSONLoader, BSONWriter} from '@loaders.gl/bson';
+import {BSONLoader, BSONWriter} from '@sensat/loaders-gl-bson';
 import {OriginalType, ParquetField, ParquetType, PrimitiveType} from './declare';
 
 export interface ParquetTypeKit {

@@ -4,7 +4,7 @@
 
 /* eslint-disable camelcase */
 
-import type {Schema, Field, DataType} from '@loaders.gl/schema';
+import type {Schema, Field, DataType} from '@sensat/loaders-gl-schema';
 import * as fgb from '../flatgeobuf/3.27.2';
 
 /**

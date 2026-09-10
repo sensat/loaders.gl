@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Geometry} from '@loaders.gl/schema';
+import type {Geometry} from '@sensat/loaders-gl-schema';
 import {convertBinaryGeometryToGeometry} from '../convert-binary-geometry-to-geojson';
 import {convertWKBToBinaryGeometry} from './convert-wkb-to-binary-geometry';
 

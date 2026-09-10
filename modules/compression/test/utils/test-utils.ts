@@ -4,7 +4,7 @@
 
 // Helper functions
 
-import {concatenateArrayBuffers} from '@loaders.gl/loader-utils';
+import {concatenateArrayBuffers} from '@sensat/loaders-gl-loader-utils';
 import RandomNumberGenerator from './random-number-generator';
 
 const SIZE = 100 * 1000;

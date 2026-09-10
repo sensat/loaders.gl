@@ -1,4 +1,4 @@
-# @loaders.gl/video
+# @sensat/loaders-gl-video
 
 [loaders.gl](https://loaders.gl/docs) is a collection of framework-independent 3D and geospatial parsers and encoders.
 

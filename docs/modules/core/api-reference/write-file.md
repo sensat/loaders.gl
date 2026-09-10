@@ -5,8 +5,8 @@ A file save utilities that (attempts to) work consistently across browser and no
 ## Usage
 
 ```typescript
-import {writeFile} from '@loaders.gl/core';
-import {DracoWriter} from '@loaders.gl/draco';
+import {writeFile} from '@sensat/loaders-gl-core';
+import {DracoWriter} from '@sensat/loaders-gl-draco';
 
 await writeFile(url, DracoWriter);
 ```

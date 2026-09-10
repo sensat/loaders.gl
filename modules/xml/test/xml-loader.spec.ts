@@ -5,10 +5,10 @@
 import test from 'tape-promise/tape';
 // import {validateLoader} from 'test/common/conformance';
 
-import {XMLLoader} from '@loaders.gl/xml';
-import {load} from '@loaders.gl/core';
+import {XMLLoader} from '@sensat/loaders-gl-xml';
+import {load} from '@sensat/loaders-gl-core';
 
-const FORECASTS_URL = '@loaders.gl/xml/test/data/forecasts.xml';
+const FORECASTS_URL = '@sensat/loaders-gl-xml/test/data/forecasts.xml';
 
 test('XMLLoader#forecasts.xml', async (t) => {
   const json = await load(FORECASTS_URL, XMLLoader);

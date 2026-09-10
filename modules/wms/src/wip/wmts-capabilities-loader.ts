@@ -1,7 +1,7 @@
 // loaders.gl, MIT license
 
-import type {LoaderWithParser} from '@loaders.gl/loader-utils';
-import type {XMLLoaderOptions} from '@loaders.gl/xml';
+import type {LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
+import type {XMLLoaderOptions} from '@sensat/loaders-gl-xml';
 // import type {WMTSCapabilities} from './lib/wmts/parse-wmts-capabilities';
 import {parseWMTSCapabilities, WMTSCapabilities} from './lib/wmts/parse-wmts-capabilities';
 

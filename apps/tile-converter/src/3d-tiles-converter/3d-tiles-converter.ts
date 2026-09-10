@@ -4,14 +4,14 @@ import type {
   NodeReference,
   I3STilesetHeader,
   I3STileAttributes
-} from '@loaders.gl/i3s';
-import type {Tile3DBoundingVolume, Tiles3DTileJSON} from '@loaders.gl/3d-tiles';
+} from '@sensat/loaders-gl-i3s';
+import type {Tile3DBoundingVolume, Tiles3DTileJSON} from '@sensat/loaders-gl-3d-tiles';
 
 import {join} from 'path';
 import process from 'process';
 import transform from 'json-map-transform';
-import {load, isBrowser} from '@loaders.gl/core';
-import {I3SLoader, I3SAttributeLoader, COORDINATE_SYSTEM} from '@loaders.gl/i3s';
+import {load, isBrowser} from '@sensat/loaders-gl-core';
+import {I3SLoader, I3SAttributeLoader, COORDINATE_SYSTEM} from '@sensat/loaders-gl-i3s';
 import {Geoid} from '@math.gl/geoid';
 
 import {PGMLoader} from '../pgm-loader';
@@ -21,15 +21,15 @@ import {writeFile, removeDir} from '../lib/utils/file-utils';
 import {calculateDatasetSize, timeConverter} from '../lib/utils/statistic-utils';
 import {TILESET as tilesetTemplate} from './json-templates/tileset';
 import {createObbFromMbs} from '../i3s-converter/helpers/coordinate-converter';
-import {WorkerFarm} from '@loaders.gl/worker-utils';
+import {WorkerFarm} from '@sensat/loaders-gl-worker-utils';
 import {BROWSER_ERROR_MESSAGE} from '../constants';
 import {
   Tiles3DContentConverter,
   type I3SAttributesData
 } from './helpers/3d-tiles-content-converter';
-import {I3STileHeader} from '@loaders.gl/i3s/src/types';
+import {I3STileHeader} from '@sensat/loaders-gl-i3s/src/types';
 import {getNodeCount, loadFromArchive, loadI3SContent, openSLPK} from './helpers/load-i3s';
-import {I3SLoaderOptions} from '@loaders.gl/i3s/src/i3s-loader';
+import {I3SLoaderOptions} from '@sensat/loaders-gl-i3s/src/i3s-loader';
 import {ZipFileSystem} from '../../../zip/src';
 import {ConversionDump, ConversionDumpOptions} from '../lib/utils/conversion-dump';
 import {Progress} from '../i3s-converter/helpers/progress';
@@ -247,7 +247,7 @@ export default class Tiles3DConverter {
 
   /**
    * Convert particular I3S Node
-   * @param parentSourceNode the parent node tile object (@loaders.gl/tiles/Tile3D)
+   * @param parentSourceNode the parent node tile object (@sensat/loaders-gl-tiles/Tile3D)
    * @param parentNode object in resulting tileset
    * @param level a current level of a tree depth
    * @param childNodeInfo child node to convert
@@ -336,7 +336,7 @@ export default class Tiles3DConverter {
 
   /**
    * The recursive function of traversal of a nodes tree
-   * @param parentSourceNode the parent node tile object (@loaders.gl/tiles/Tile3D)
+   * @param parentSourceNode the parent node tile object (@sensat/loaders-gl-tiles/Tile3D)
    * @param parentNode object in resulting tileset
    * @param level a current level of a tree depth
    */
@@ -355,7 +355,7 @@ export default class Tiles3DConverter {
 
   /**
    * Load a child node having information from the node header
-   * @param parentNode a parent node tile object (@loaders.gl/tiles/Tile3D)
+   * @param parentNode a parent node tile object (@sensat/loaders-gl-tiles/Tile3D)
    * @param childNodeInfo child information from 3DNodeIndexDocument
    *   (https://github.com/Esri/i3s-spec/blob/master/docs/1.7/nodeReference.cmn.md)
    */

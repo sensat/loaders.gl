@@ -1,15 +1,16 @@
 {
-  "name": "@loaders.gl/wms",
-  "version": "4.4.6",
+  "name": "@sensat/loaders-gl-wms",
+  "version": "4.4.6-sensat.0",
   "description": "Framework-independent loaders for the WMS (Web Map Service) standard",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/visgl/loaders.gl"
+    "url": "https://github.com/sensat/loaders.gl"
   },
   "keywords": [
     "WMS",
@@ -50,15 +51,14 @@
     "path": false
   },
   "dependencies": {
-    "@loaders.gl/images": "4.4.6",
-    "@loaders.gl/loader-utils": "4.4.6",
-    "@loaders.gl/schema": "4.4.6",
-    "@loaders.gl/xml": "4.4.6",
+    "@sensat/loaders-gl-images": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-loader-utils": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-schema": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-xml": "4.4.6-sensat.0",
     "@turf/rewind": "^5.1.5",
     "deep-strict-equal": "^0.2.0"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "~4.4.0"
-  },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+    "@sensat/loaders-gl-core": "4.4.6-sensat.0"
+  }
 }

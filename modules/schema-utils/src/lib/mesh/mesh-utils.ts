@@ -1,6 +1,6 @@
 // Mesh category utilities
 // TODO - move to mesh category module, or to math.gl/geometry module
-import {MeshAttributes} from '@loaders.gl/schema';
+import {MeshAttributes} from '@sensat/loaders-gl-schema';
 import {TypedArray} from '../../types/types';
 
 type TypedArrays = {[key: string]: TypedArray};

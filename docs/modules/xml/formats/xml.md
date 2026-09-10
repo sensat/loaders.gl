@@ -1,6 +1,6 @@
 # XML
 
-- _[`@loaders.gl/xml`](/docs/modules/xml)_
+- _[`@sensat/loaders-gl-xml`](/docs/modules/xml)_
 - _[Wikipedia article](https://en.wikipedia.org/wiki/XML)_
 
 XML (eXtensible Markup Language) is a markup language and file format for storing, transmitting, and reconstructing arbitrary data.

@@ -17,8 +17,8 @@ A loader for texture cube arrays described by a JSON manifest.
 ## Usage
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {TextureCubeArrayLoader} from '@loaders.gl/textures';
+import {load} from '@sensat/loaders-gl-core';
+import {TextureCubeArrayLoader} from '@sensat/loaders-gl-textures';
 
 const imageCubeArray = await load(
   'environment.image-texture-cube-array.json',

@@ -7,7 +7,7 @@ A function that tracks a fetch response object and calls `onProgress` callbacks.
 ## Usage
 
 ```typescript
-import {_fetchProgress} from '@loaders.gl/core';
+import {_fetchProgress} from '@sensat/loaders-gl-core';
 
 function onProgress(percent, {loadedBytes, totalBytes}) {
   console.log(`${percent}% ${Math.round(loadedBytes/1000)} of ${Math.round(totalBytes/1000)} Kbytes`);

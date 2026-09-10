@@ -3,15 +3,15 @@
 ## Usage
 
 ```typescript
-import '@loaders.gl/polyfills'; // only needed if using under Node
-import {loadImage} from `@loaders.gl/images`;
+import '@sensat/loaders-gl-polyfills'; // only needed if using under Node
+import {loadImage} from `@sensat/loaders-gl-images`;
 
 const image = await loadImage(url);
 ```
 
 ```typescript
-import '@loaders.gl/polyfills'; // only needed if using under Node
-import {loadImage} from `@loaders.gl/images`;
+import '@sensat/loaders-gl-polyfills'; // only needed if using under Node
+import {loadImage} from `@sensat/loaders-gl-images`;
 
 const URL = ...;
 

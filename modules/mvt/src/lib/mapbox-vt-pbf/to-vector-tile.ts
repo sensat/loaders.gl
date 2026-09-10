@@ -8,8 +8,8 @@ import Pbf from 'pbf';
 import type {MVTTile} from '../mvt-pbf/mvt-types';
 import {writeMVT} from '../mvt-pbf/write-mvt-to-pbf';
 import GeoJSONWrapper from './geojson-wrapper';
-import type {GeoJSON, FeatureCollection, Geometry} from '@loaders.gl/schema';
-import {copyToArrayBuffer} from '@loaders.gl/loader-utils';
+import type {GeoJSON, FeatureCollection, Geometry} from '@sensat/loaders-gl-schema';
+import {copyToArrayBuffer} from '@sensat/loaders-gl-loader-utils';
 
 export type FromGeojsonOptions = {
   layerName?: string;

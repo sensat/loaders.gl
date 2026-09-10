@@ -7,7 +7,7 @@ import type {
   BinaryPointGeometry,
   BinaryLineGeometry,
   BinaryPolygonGeometry
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 import {concatTypedArrays} from '../utils/concat-typed-arrays';
 
 export function concatenateBinaryPointGeometries(

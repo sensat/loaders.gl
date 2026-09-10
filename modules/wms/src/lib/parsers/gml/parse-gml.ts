@@ -21,9 +21,9 @@ import type {
   // Polygon,
   // MultiPolygon,
   // GeometryCollection
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 
-import {XMLLoader} from '@loaders.gl/xml';
+import {XMLLoader} from '@sensat/loaders-gl-xml';
 import {deepStrictEqual} from './deep-strict-equal';
 import rewind from '@turf/rewind';
 

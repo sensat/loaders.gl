@@ -6,7 +6,7 @@ import test from 'tape-promise/tape';
 import type {Subtree} from '../../../src/types';
 import type {ImplicitOptions} from '../../../src/lib/parsers/parse-3d-tile-header';
 import {parseImplicitTiles} from '../../../src/lib/parsers/helpers/parse-3d-implicit-tiles';
-import {LOD_METRIC_TYPE, TILE_REFINEMENT, TILE_TYPE} from '@loaders.gl/tiles';
+import {LOD_METRIC_TYPE, TILE_REFINEMENT, TILE_TYPE} from '@sensat/loaders-gl-tiles';
 
 test('parseImplicitTiles#supports a single available level', async (t) => {
   const subtree: Subtree = {

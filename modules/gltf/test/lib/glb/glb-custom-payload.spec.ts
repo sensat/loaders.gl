@@ -3,8 +3,8 @@
 import test from 'tape-promise/tape';
 import {toLowPrecision} from 'test/test-utils';
 
-import {GLTFBuilder, GLTFParser} from '@loaders.gl/gltf';
-import {toBuffer} from '@loaders.gl/core';
+import {GLTFBuilder, GLTFParser} from '@sensat/loaders-gl-gltf';
+import {toBuffer} from '@sensat/loaders-gl-core';
 
 import CUSTOM_PAYLOAD from './custom-payload.json';
 

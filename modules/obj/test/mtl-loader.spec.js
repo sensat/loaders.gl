@@ -2,10 +2,10 @@
 import test from 'tape-promise/tape';
 import {validateLoader} from 'test/common/conformance';
 
-import {MTLLoader} from '@loaders.gl/obj';
-import {load} from '@loaders.gl/core';
+import {MTLLoader} from '@sensat/loaders-gl-obj';
+import {load} from '@sensat/loaders-gl-core';
 
-const MTL_URL = '@loaders.gl/obj/test/data/windmill.mtl';
+const MTL_URL = '@sensat/loaders-gl-obj/test/data/windmill.mtl';
 
 test('MTLLoader#loader objects', (t) => {
   validateLoader(t, MTLLoader, 'MTLLoader');

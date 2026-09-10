@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {TextureLevel} from '@loaders.gl/schema';
-import {log} from '@loaders.gl/loader-utils';
+import type {TextureLevel} from '@sensat/loaders-gl-schema';
+import {log} from '@sensat/loaders-gl-loader-utils';
 import {read} from 'ktx-parse';
 import {extractMipmapImages} from '../utils/extract-mipmap-images';
 import {mapVkFormatToTextureFormat} from '../utils/ktx-format-helper';

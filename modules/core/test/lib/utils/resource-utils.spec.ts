@@ -3,12 +3,12 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 import {
   getResourceUrl,
   getResourceMIMEType,
   getResourceContentLength
-} from '@loaders.gl/core/lib/utils/resource-utils';
+} from '@sensat/loaders-gl-core/lib/utils/resource-utils';
 
 const DATA_URL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAGUExURf///wAAAFXC034AAAAMSURBVAjXY3BgaAAAAUQAwetZAwkAAAAASUVORK5CYII=';

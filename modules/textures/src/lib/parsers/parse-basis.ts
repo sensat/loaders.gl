@@ -4,8 +4,8 @@
 
 /* eslint-disable camelcase */
 /* eslint-disable indent */
-import type {TextureFormat, TextureLevel} from '@loaders.gl/schema';
-import {extractLoadLibraryOptions} from '@loaders.gl/worker-utils';
+import type {TextureFormat, TextureLevel} from '@sensat/loaders-gl-schema';
+import {extractLoadLibraryOptions} from '@sensat/loaders-gl-worker-utils';
 import {loadBasisEncoderModule, loadBasisTranscoderModule} from './basis-module-loader';
 import type {GLTextureFormat} from '../gl-types';
 import {

@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
-import type {ParseWKTCRSOptions, WKTCRS} from '@loaders.gl/gis';
-import {parseWKTCRS} from '@loaders.gl/gis';
+import type {LoaderWithParser, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
+import type {ParseWKTCRSOptions, WKTCRS} from '@sensat/loaders-gl-gis';
+import {parseWKTCRS} from '@sensat/loaders-gl-gis';
 import {VERSION} from './lib/version';
 
 export type WKTCRSLoaderOptions = LoaderOptions & {

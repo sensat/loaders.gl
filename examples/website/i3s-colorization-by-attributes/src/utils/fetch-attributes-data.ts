@@ -1,5 +1,5 @@
-import {fetchFile} from '@loaders.gl/core';
-import {StatsInfo} from '@loaders.gl/i3s';
+import {fetchFile} from '@sensat/loaders-gl-core';
+import {StatsInfo} from '@sensat/loaders-gl-i3s';
 
 function resolveUrl(statisticUrl: string, tilesetUrl: string): string {
   const statUrl = new URL(statisticUrl, `${tilesetUrl}/`);

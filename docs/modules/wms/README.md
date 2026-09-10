@@ -8,7 +8,7 @@
 
 # OGC Web Services
 
-The `@loaders.gl/wms` module provides support for a subset of the OGC Web Services which are a set of XML-based web mapping standards.
+The `@sensat/loaders-gl-wms` module provides support for a subset of the OGC Web Services which are a set of XML-based web mapping standards.
 
 > The Open Geospatial Consortium (OGC) has produced a large set of related XML-based standards for web mapping. Some of these standards are not supported by loaders.gl, but are still mentioned here to provide context for the provided functionality (and minimize confusion as the standards have similar names and functionalities):
 
@@ -42,13 +42,13 @@ Support for the GML format is provided as
 ## Installation
 
 ```bash
-npm install @loaders.gl/wms
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-wms
+npm install @sensat/loaders-gl-core
 ```
 
 ## Attributions
 
-`@loaders.gl/wms` relies heavily on `@loaders.gl/xml` to parse the XML heavy OGC standards.
+`@sensat/loaders-gl-wms` relies heavily on `@sensat/loaders-gl-xml` to parse the XML heavy OGC standards.
 
 Some test cases are forked from open layers, see license in test directory,
 however no openlayers code is included in the published module, in order to

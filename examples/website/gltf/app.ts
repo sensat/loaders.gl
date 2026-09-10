@@ -3,8 +3,8 @@
 // Copyright (c) vis.gl contributors
 
 /* eslint-disable camelcase */
-import {load} from '@loaders.gl/core';
-import {GLTFLoader} from '@loaders.gl/gltf';
+import {load} from '@sensat/loaders-gl-core';
+import {GLTFLoader} from '@sensat/loaders-gl-gltf';
 import {GL} from '@luma.gl/constants';
 import {AnimationLoop, setParameters, clear, log, luma} from '@luma.gl/core';
 import {GLTFEnvironment} from '@luma.gl/gltf';

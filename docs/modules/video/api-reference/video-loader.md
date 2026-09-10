@@ -19,9 +19,9 @@ A basic Video element loader. Only works in the browser.
 ## Usage
 
 ```typescript
-import '@loaders.gl/polyfills'; // only needed if using under Node
-import {VideoLoader} from '@loaders.gl/video';
-import {load} from '@loaders.gl/core';
+import '@sensat/loaders-gl-polyfills'; // only needed if using under Node
+import {VideoLoader} from '@sensat/loaders-gl-video';
+import {load} from '@sensat/loaders-gl-core';
 
 const image = await load(url, VideoLoader, options);
 ```

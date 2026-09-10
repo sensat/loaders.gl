@@ -12,7 +12,7 @@ import {
   SnappyCompression,
   BrotliCompression,
   CompressionWorker
-} from '@loaders.gl/compression';
+} from '@sensat/loaders-gl-compression';
 import {getData} from './utils/test-utils';
 
 // import brotli from 'brotli'; - brotli has problems with decompress in browsers

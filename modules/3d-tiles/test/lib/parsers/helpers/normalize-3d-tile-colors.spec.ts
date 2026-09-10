@@ -4,9 +4,9 @@
 
 /* eslint-disable max-len */
 import test from 'tape-promise/tape';
-import {GL} from '@loaders.gl/math';
+import {GL} from '@sensat/loaders-gl-math';
 import {normalize3DTileColorAttribute} from '../../../../src/lib/parsers/helpers/normalize-3d-tile-colors';
-import {Tiles3DTileContent} from '@loaders.gl/3d-tiles';
+import {Tiles3DTileContent} from '@sensat/loaders-gl-3d-tiles';
 
 const TEST_CASES: {tile: Tiles3DTileContent; colors; batchTable; expected; message: string}[] = [
   {

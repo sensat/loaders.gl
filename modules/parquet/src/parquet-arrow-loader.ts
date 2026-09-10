@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {ArrowTable, ArrowTableBatch} from '@loaders.gl/schema';
-import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
-import {ReadableFile, BlobFile} from '@loaders.gl/loader-utils';
+import type {ArrowTable, ArrowTableBatch} from '@sensat/loaders-gl-schema';
+import type {Loader, LoaderWithParser, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
+import {ReadableFile, BlobFile} from '@sensat/loaders-gl-loader-utils';
 
 import {
   parseParquetFileToArrow,

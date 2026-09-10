@@ -1,4 +1,4 @@
-# @loaders.gl/excel
+# @sensat/loaders-gl-excel
 
 This module contains a table loader for the JSON and line delimited JSON formats.
 

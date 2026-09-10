@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {shortenUrlForDisplay} from '@loaders.gl/core/lib/utils/url-utils';
+import {shortenUrlForDisplay} from '@sensat/loaders-gl-core/lib/utils/url-utils';
 
 test('shortenUrlForDisplay', async (t) => {
   const longUrl =

@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import '@loaders.gl/polyfills';
+import '@sensat/loaders-gl-polyfills';
 
 import {Bench} from '@probe.gl/bench';
-import {_addAliases} from '@loaders.gl/loader-utils';
+import {_addAliases} from '@sensat/loaders-gl-loader-utils';
 import ALIASES from '../aliases';
 import {addModuleBenchmarksToSuite} from './modules';
 

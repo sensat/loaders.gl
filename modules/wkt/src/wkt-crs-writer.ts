@@ -6,9 +6,9 @@ import {
   type WriterWithEncoder,
   type WriterOptions,
   ensureArrayBuffer
-} from '@loaders.gl/loader-utils';
-import type {WKTCRS, EncodeWKTCRSOptions} from '@loaders.gl/gis';
-import {encodeWKTCRS} from '@loaders.gl/gis';
+} from '@sensat/loaders-gl-loader-utils';
+import type {WKTCRS, EncodeWKTCRSOptions} from '@sensat/loaders-gl-gis';
+import {encodeWKTCRS} from '@sensat/loaders-gl-gis';
 import {VERSION} from './lib/version';
 
 export type WKTCRSWriterOptions = WriterOptions & {

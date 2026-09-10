@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {XMLLoader} from '@loaders.gl/xml';
+import {XMLLoader} from '@sensat/loaders-gl-xml';
 
 /** WMS Feature info - response to a WMS `GetFeatureInfo` request */
 export type WMSFeatureInfo = {

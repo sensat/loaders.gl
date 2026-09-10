@@ -1,8 +1,8 @@
-import type {LoaderWithParser, StrictLoaderOptions} from '@loaders.gl/loader-utils';
-import type {DracoLoaderOptions} from '@loaders.gl/draco';
+import type {LoaderWithParser, StrictLoaderOptions} from '@sensat/loaders-gl-loader-utils';
+import type {DracoLoaderOptions} from '@sensat/loaders-gl-draco';
 import {VERSION} from './lib/utils/version';
-import type {ImageLoaderOptions} from '@loaders.gl/images';
-import type {BasisLoaderOptions, TextureLoaderOptions} from '@loaders.gl/textures';
+import type {ImageLoaderOptions} from '@sensat/loaders-gl-images';
+import type {BasisLoaderOptions, TextureLoaderOptions} from '@sensat/loaders-gl-textures';
 import type {ParseGLTFOptions} from './lib/parsers/parse-gltf';
 import type {GLTFWithBuffers} from './lib/types/gltf-types';
 import type {GLBLoaderOptions} from './glb-loader';

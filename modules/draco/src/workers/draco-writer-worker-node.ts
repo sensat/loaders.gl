@@ -1,6 +1,6 @@
 // Polyfills increases the bundle size significantly. Use it for NodeJS worker only
-import '@loaders.gl/polyfills';
-import {WorkerBody, WorkerMessagePayload} from '@loaders.gl/worker-utils';
+import '@sensat/loaders-gl-polyfills';
+import {WorkerBody, WorkerMessagePayload} from '@sensat/loaders-gl-worker-utils';
 import {DracoWriter} from '../draco-writer';
 
 (async () => {

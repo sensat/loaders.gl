@@ -1,7 +1,7 @@
 // GLTF EXTENSION: EXT_structural_metadata
 // https://github.com/CesiumGS/glTF/blob/3d-tiles-next/extensions/2.0/Vendor/EXT_structural_metadata
 /* eslint-disable camelcase */
-import type {BigTypedArray, TypedArray} from '@loaders.gl/schema';
+import type {BigTypedArray, TypedArray} from '@sensat/loaders-gl-schema';
 import type {GLTF, GLTFTextureInfoMetadata, GLTFMeshPrimitive} from '../types/gltf-json-schema';
 import type {
   GLTF_EXT_structural_metadata_Schema,
@@ -30,7 +30,7 @@ import {
   parseFixedLengthArrayNumeric,
   getPropertyDataString
 } from './utils/3d-tiles-utils';
-import {ensureArrayBuffer} from '@loaders.gl/loader-utils';
+import {ensureArrayBuffer} from '@sensat/loaders-gl-loader-utils';
 
 const EXT_STRUCTURAL_METADATA_NAME = 'EXT_structural_metadata';
 export const name = EXT_STRUCTURAL_METADATA_NAME;

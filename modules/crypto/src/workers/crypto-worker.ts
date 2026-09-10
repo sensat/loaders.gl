@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {createWorker} from '@loaders.gl/worker-utils';
+import {createWorker} from '@sensat/loaders-gl-worker-utils';
 import {CRC32Hash} from '../lib/crc32-hash';
 import {CRC32CHash} from '../lib/crc32c-hash';
 import {MD5Hash} from '../lib/md5-hash';

@@ -6,9 +6,9 @@ a valid GeoJSON Geometry, Feature or array of Features.
 ## Usage
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {JSONLoader} from '@loaders.gl/json';
-import {geojsonToBinary, binaryToGeojson} from '@loaders.gl/gis';
+import {load} from '@sensat/loaders-gl-core';
+import {JSONLoader} from '@sensat/loaders-gl-json';
+import {geojsonToBinary, binaryToGeojson} from '@sensat/loaders-gl-gis';
 
 const geoJSONfeatures = await load('data.geojson', JSONLoader);
 const binaryFeatures = geojsonToBinary(geoJSONfeatures);

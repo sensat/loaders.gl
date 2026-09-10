@@ -7,12 +7,12 @@ import React, {useState, useEffect} from 'react';
 import {createRoot} from 'react-dom/client';
 
 // loaders.gl sources and loaders
-import type {VectorTileSource, ImageTileSource} from '@loaders.gl/loader-utils';
-import {createDataSource} from '@loaders.gl/core';
-import {PMTilesSource} from '@loaders.gl/pmtiles';
-import {MVTSource, TableTileSource} from '@loaders.gl/mvt';
-import {MLTSource} from '@loaders.gl/mlt';
-import {_GeoJSONLoader as GeoJSONLoader} from '@loaders.gl/json';
+import type {VectorTileSource, ImageTileSource} from '@sensat/loaders-gl-loader-utils';
+import {createDataSource} from '@sensat/loaders-gl-core';
+import {PMTilesSource} from '@sensat/loaders-gl-pmtiles';
+import {MVTSource, TableTileSource} from '@sensat/loaders-gl-mvt';
+import {MLTSource} from '@sensat/loaders-gl-mlt';
+import {_GeoJSONLoader as GeoJSONLoader} from '@sensat/loaders-gl-json';
 
 // D\deck.gl + layers
 import DeckGL from '@deck.gl/react';

@@ -1,6 +1,6 @@
 // TODO testing external dataset can be flaky. We need to find a way to test I3S locally
 import test from 'tape-promise/tape';
-import {isBrowser, setLoaderOptions} from '@loaders.gl/core';
+import {isBrowser, setLoaderOptions} from '@sensat/loaders-gl-core';
 // @ts-expect-error promises
 import {readdir} from 'fs/promises';
 import {default as Tiles3DConverter} from '../../src/3d-tiles-converter/3d-tiles-converter';
@@ -10,7 +10,7 @@ import {cleanUpPath} from '../utils/file-utils';
 const TILESET_URL =
   'https://tiles.arcgis.com/tiles/z2tnIkrLQ2BRzr6P/arcgis/rest/services/SanFrancisco_3DObjects_1_7/SceneServer/layers/0';
 const SLPK_URL = './modules/i3s/test/data/DA12_subset.slpk';
-const PGM_FILE_PATH = '@loaders.gl/tile-converter/test/data/egm84-30.pgm';
+const PGM_FILE_PATH = '@sensat/loaders-gl-tile-converter/test/data/egm84-30.pgm';
 
 setLoaderOptions({
   _worker: 'test'

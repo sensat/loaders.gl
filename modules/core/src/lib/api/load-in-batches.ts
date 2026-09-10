@@ -10,7 +10,7 @@ import type {
   BatchableDataType,
   LoaderBatchType,
   LoaderOptionsType
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
 import {isLoaderObject} from '../loader-utils/normalize-loader';
 import {getFetchFunction} from '../loader-utils/get-fetch-function';
 

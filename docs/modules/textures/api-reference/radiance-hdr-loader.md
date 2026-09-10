@@ -19,8 +19,8 @@ See also: [`Radiance HDR`](/docs/modules/textures/formats/hdr)
 ## Usage
 
 ```typescript
-import {RadianceHDRLoader} from '@loaders.gl/textures';
-import {load} from '@loaders.gl/core';
+import {RadianceHDRLoader} from '@sensat/loaders-gl-textures';
+import {load} from '@sensat/loaders-gl-core';
 
 const texture = await load(url, RadianceHDRLoader);
 const level = texture.data[0];

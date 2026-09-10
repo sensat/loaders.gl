@@ -2,7 +2,7 @@
 
 ![ogc-logo](../../../images/logos/ogc-logo-60.png)
 
-- _[`@loaders.gl/wms`](/docs/modules/wms)_
+- _[`@sensat/loaders-gl-wms`](/docs/modules/wms)_
 - _[Wikipedia article)][csw]_
 
 CSW (Catalogue Service for the Web, sometimes written Catalogue Service - Web), is an OGC standard for exposing a catalogue of geospatial records in XML on the Internet (over HTTP). The catalogue is made up of records that describe geospatial data (e.g. KML), geospatial services (e.g. WMS), and related resources.

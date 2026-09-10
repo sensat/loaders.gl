@@ -5,10 +5,10 @@
 import test from 'tape-promise/tape';
 import {validateLoader} from 'test/common/conformance';
 
-import {NPYLoader, NPYWorkerLoader} from '@loaders.gl/textures';
-import {setLoaderOptions, load} from '@loaders.gl/core';
+import {NPYLoader, NPYWorkerLoader} from '@sensat/loaders-gl-textures';
+import {setLoaderOptions, load} from '@sensat/loaders-gl-core';
 
-const NPY_UINT8_URL = '@loaders.gl/textures/test/data/uint8.npy';
+const NPY_UINT8_URL = '@sensat/loaders-gl-textures/test/data/uint8.npy';
 
 setLoaderOptions({
   _workerType: 'test'

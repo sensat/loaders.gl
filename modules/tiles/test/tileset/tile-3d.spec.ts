@@ -4,7 +4,7 @@
 // @ts-ignore
 import test from 'tape-promise/tape';
 import {Matrix4} from '@math.gl/core';
-import {Tile3D} from '@loaders.gl/tiles';
+import {Tile3D} from '@sensat/loaders-gl-tiles';
 // @ts-ignore
 import {LOD_METRIC_TYPE} from '../../src';
 

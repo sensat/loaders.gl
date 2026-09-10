@@ -7,7 +7,7 @@ import {
   parseMIMEType,
   parseMIMETypeFromURL,
   compareMIMETypes
-} from '@loaders.gl/core/lib/utils/mime-type-utils';
+} from '@sensat/loaders-gl-core/lib/utils/mime-type-utils';
 
 const DATA_URL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAGUExURf///wAAAFXC034AAAAMSURBVAjXY3BgaAAAAUQAwetZAwkAAAAASUVORK5CYII=';

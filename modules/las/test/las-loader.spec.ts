@@ -10,12 +10,12 @@ import {
   validateTableCategoryData
 } from 'test/common/conformance';
 
-import {LASLoader, LASWorkerLoader} from '@loaders.gl/las';
-import {setLoaderOptions, fetchFile, parse, load} from '@loaders.gl/core';
-// import {ArrowLoader} from '@loaders.gl/arrow';
+import {LASLoader, LASWorkerLoader} from '@sensat/loaders-gl-las';
+import {setLoaderOptions, fetchFile, parse, load} from '@sensat/loaders-gl-core';
+// import {ArrowLoader} from '@sensat/loaders-gl-arrow';
 
-const LAS_BINARY_URL = '@loaders.gl/las/test/data/indoor.laz';
-const LAS_EXTRABYTES_BINARY_URL = '@loaders.gl/las/test/data/extrabytes.laz';
+const LAS_BINARY_URL = '@sensat/loaders-gl-las/test/data/indoor.laz';
+const LAS_EXTRABYTES_BINARY_URL = '@sensat/loaders-gl-las/test/data/extrabytes.laz';
 
 setLoaderOptions({
   _workerType: 'test'

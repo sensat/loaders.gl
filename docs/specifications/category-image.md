@@ -10,16 +10,16 @@ The image loader category documents a common data format, options, conventions a
 | [`CompressedTextureLoader`](/docs/modules/textures/api-reference/compressed-texture-loader) | Parses compressed textures to image data mipmap array |
 | [`BasisLoader`](/docs/modules/textures/api-reference/basis-loader)                          | Transpiles into supported compressed texture format   |
 
-Core image category support is provided by the `@loaders.gl/images` module:
+Core image category support is provided by the `@sensat/loaders-gl-images` module:
 
 ## Usage
 
-Individual loaders for specific image formats can be imported for `@loaders.gl/images`:
+Individual loaders for specific image formats can be imported for `@sensat/loaders-gl-images`:
 
 ```typescript
-import '@loaders.gl/polyfills'; // Only required if loading images under Node.js
-import {ImageLoader} from '@loaders.gl/images';
-import {registerLoaders, load} from '@loaders.gl/core';
+import '@sensat/loaders-gl-polyfills'; // Only required if loading images under Node.js
+import {ImageLoader} from '@sensat/loaders-gl-images';
+import {registerLoaders, load} from '@sensat/loaders-gl-core';
 registerLoaders(ImageLoader);
 const image = await load('image.jpeg');
 ```
@@ -27,9 +27,9 @@ const image = await load('image.jpeg');
 However since each image loader is quite small (in terms of code size and bundle size impact), most applications will just install all image loaders in one go:
 
 ```typescript
-import '@loaders.gl/polyfills'; // Only required if loading images under Node.js
-import {ImageLoaders} from '@loaders.gl/images';
-import {registerLoader, load} from '@loaders.gl/core';
+import '@sensat/loaders-gl-polyfills'; // Only required if loading images under Node.js
+import {ImageLoaders} from '@sensat/loaders-gl-images';
+import {registerLoader, load} from '@sensat/loaders-gl-core';
 registerLoaders(ImageLoader);
 const image = await load('image.jpeg');
 ```

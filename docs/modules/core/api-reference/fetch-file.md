@@ -39,7 +39,7 @@ The `fetchFile()` function supports fetching data from the local file system und
 to the built-in `fetch` function. Other URLs will be interpreted as local files.
 
 :::caution
-loaders.gl v4.0+ applications no longer need to install the `@loaders.gl/polyfills`
+loaders.gl v4.0+ applications no longer need to install the `@sensat/loaders-gl-polyfills`
 module to get `fetch` support under Node.js v18+.
 :::
 
@@ -60,7 +60,7 @@ to test data file to be specified in terms of which loaders.gl module they are l
 Use the `fetchFile` function as follows:
 
 ```typescript
-import {fetchFile} from '@loaders.gl/core';
+import {fetchFile} from '@sensat/loaders-gl-core';
 
 const response = await fetchFile(url);
 // or supply any standard `RequestInit` options expected by `fetch`
@@ -78,8 +78,8 @@ const arrayBuffer = await response.arrayBuffer();
 The `Response` object from `fetchFile` is usually passed to `parse` as follows:
 
 ```typescript
-import {fetchFile, parse} from '@loaders.gl/core';
-import {OBJLoader} from '@loaders.gl/obj';
+import {fetchFile, parse} from '@sensat/loaders-gl-core';
+import {OBJLoader} from '@sensat/loaders-gl-obj';
 
 const data = await parse(fetchFile(url), OBJLoader);
 ```
@@ -87,8 +87,8 @@ const data = await parse(fetchFile(url), OBJLoader);
 Note that if you don't need the extra features in `fetchFile`, you can just use the browsers built-in `fetch` method.
 
 ```typescript
-import {parse} from '@loaders.gl/core';
-import {OBJLoader} from '@loaders.gl/obj';
+import {parse} from '@sensat/loaders-gl-core';
+import {OBJLoader} from '@sensat/loaders-gl-obj';
 
 const data = await parse(fetch(url), OBJLoader);
 ```

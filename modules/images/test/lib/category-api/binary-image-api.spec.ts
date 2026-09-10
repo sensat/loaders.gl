@@ -2,9 +2,9 @@
 // Copyright (c) 2016-17 Karl Cheng, MIT license
 
 import test from 'tape-promise/tape';
-import {fetchFile} from '@loaders.gl/core';
+import {fetchFile} from '@sensat/loaders-gl-core';
 
-import {getBinaryImageMetadata} from '@loaders.gl/images';
+import {getBinaryImageMetadata} from '@sensat/loaders-gl-images';
 
 const readFile = (url: string): Promise<ArrayBuffer> =>
   fetchFile(url).then((response) => response.arrayBuffer());
@@ -16,19 +16,19 @@ export async function loadImages() {
   imagesPromise =
     imagesPromise ||
     Promise.all([
-      readFile('@loaders.gl/images/test/data/img1-preview.png').then(
+      readFile('@sensat/loaders-gl-images/test/data/img1-preview.png').then(
         (data) => (imageMap['image/png'] = data)
       ),
-      readFile('@loaders.gl/images/test/data/img1-preview.jpeg').then(
+      readFile('@sensat/loaders-gl-images/test/data/img1-preview.jpeg').then(
         (data) => (imageMap['image/jpeg'] = data)
       ),
-      readFile('@loaders.gl/images/test/data/img1-preview.gif').then(
+      readFile('@sensat/loaders-gl-images/test/data/img1-preview.gif').then(
         (data) => (imageMap['image/gif'] = data)
       ),
-      readFile('@loaders.gl/images/test/data/img1-preview.bmp').then(
+      readFile('@sensat/loaders-gl-images/test/data/img1-preview.bmp').then(
         (data) => (imageMap['image/bmp'] = data)
       ),
-      readFile('@loaders.gl/images/test/data/avif/hato.profile0.8bpc.yuv420.avif').then(
+      readFile('@sensat/loaders-gl-images/test/data/avif/hato.profile0.8bpc.yuv420.avif').then(
         (data) => (imageMap['image/avif'] = data)
       )
     ]);

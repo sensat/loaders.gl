@@ -1,4 +1,4 @@
-import {loadI3STile} from '@loaders.gl/i3s/test/test-utils/load-utils';
+import {loadI3STile} from '@sensat/loaders-gl-i3s/test/test-utils/load-utils';
 
 export default async function i3sLoaderBench(suite) {
   suite.group('i3sLoader');

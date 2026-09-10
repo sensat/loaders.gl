@@ -15,8 +15,8 @@ The `OBJLoader` parses the OBJ half of the classic Wavefront OBJ/MTL format.
 ## Usage
 
 ```typescript
-import {OBJLoader} from '@loaders.gl/obj';
-import {load} from '@loaders.gl/core';
+import {OBJLoader} from '@sensat/loaders-gl-obj';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, OBJLoader, options);
 ```

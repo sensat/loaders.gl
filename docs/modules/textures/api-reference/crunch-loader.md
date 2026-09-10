@@ -17,8 +17,8 @@ Loader for compressed textures in the Crunch file format
 ## Usage
 
 ```typescript
-import {CrunchWorkerLoader} from '@loaders.gl/textures';
-import {load} from '@loaders.gl/core';
+import {CrunchWorkerLoader} from '@sensat/loaders-gl-textures';
+import {load} from '@sensat/loaders-gl-core';
 
 const mipLevels = await load(url, CrunchWorkerLoader);
 for (const level of mipLevels) {

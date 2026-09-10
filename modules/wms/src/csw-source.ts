@@ -4,8 +4,8 @@
 
 /* eslint-disable camelcase */
 
-import type {Source, DataSourceOptions} from '@loaders.gl/loader-utils';
-import {DataSource} from '@loaders.gl/loader-utils';
+import type {Source, DataSourceOptions} from '@sensat/loaders-gl-loader-utils';
+import {DataSource} from '@sensat/loaders-gl-loader-utils';
 
 import type {CSWCapabilities} from './csw-capabilities-loader';
 import {CSWCapabilitiesLoader} from './csw-capabilities-loader';

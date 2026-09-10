@@ -1,6 +1,6 @@
 # Mapbox Vector Tile
 
-- _[`@loaders.gl/mvt`](/docs/modules/mvt)_
+- _[`@sensat/loaders-gl-mvt`](/docs/modules/mvt)_
 - _[Mapbox Vector Tile Specification](https://github.com/mapbox/vector-tile-spec)_
 
 A specification for encoding tiled vector data.

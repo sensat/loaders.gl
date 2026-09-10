@@ -6,15 +6,15 @@
 import test from 'tape-promise/tape';
 import {validateLoader, validateMeshCategoryData} from 'test/common/conformance';
 
-import {TerrainLoader, TerrainWorkerLoader} from '@loaders.gl/terrain';
-import {setLoaderOptions, load, registerLoaders} from '@loaders.gl/core';
+import {TerrainLoader, TerrainWorkerLoader} from '@sensat/loaders-gl-terrain';
+import {setLoaderOptions, load, registerLoaders} from '@sensat/loaders-gl-core';
 
 // Should be possible to remove this
-import {ImageLoader} from '@loaders.gl/images';
+import {ImageLoader} from '@sensat/loaders-gl-images';
 registerLoaders([ImageLoader]);
 
-const MAPBOX_TERRAIN_PNG_URL = '@loaders.gl/terrain/test/data/mapbox.png';
-const TERRARIUM_TERRAIN_PNG_URL = '@loaders.gl/terrain/test/data/terrarium.png';
+const MAPBOX_TERRAIN_PNG_URL = '@sensat/loaders-gl-terrain/test/data/mapbox.png';
+const TERRARIUM_TERRAIN_PNG_URL = '@sensat/loaders-gl-terrain/test/data/terrarium.png';
 
 setLoaderOptions({
   _workerType: 'test'

@@ -1,5 +1,5 @@
 /*
-import {fetchFile} from '@loaders.gl/core';
+import {fetchFile} from '@sensat/loaders-gl-core';
 
 import {Source as PMTilesSource, RangeResponse} from 'pmtiles';
 

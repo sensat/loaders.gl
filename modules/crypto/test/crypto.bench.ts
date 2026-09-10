@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {CRC32Hash, CRC32CHash, MD5Hash, SHA256Hash, CryptoHash} from '@loaders.gl/crypto';
+import {CRC32Hash, CRC32CHash, MD5Hash, SHA256Hash, CryptoHash} from '@sensat/loaders-gl-crypto';
 import {getBinaryData} from './test-utils/test-utils';
 import CryptoJS from 'crypto-js';
 

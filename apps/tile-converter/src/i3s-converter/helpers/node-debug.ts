@@ -1,4 +1,4 @@
-import type {Mbs, Node3DIndexDocument, Obb} from '@loaders.gl/i3s';
+import type {Mbs, Node3DIndexDocument, Obb} from '@sensat/loaders-gl-i3s';
 import {OrientedBoundingBox, BoundingSphere} from '@math.gl/culling';
 import {Vector3} from '@math.gl/core';
 import {Ellipsoid} from '@math.gl/geospatial';

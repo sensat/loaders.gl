@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
-import type {ArrowTable} from '@loaders.gl/schema';
+import type {WriterWithEncoder, WriterOptions} from '@sensat/loaders-gl-loader-utils';
+import type {ArrowTable} from '@sensat/loaders-gl-schema';
 import {encodeArrowToParquet} from './lib/encoders/encode-arrow-to-parquet';
 import {ParquetFormat} from './parquet-format';
 

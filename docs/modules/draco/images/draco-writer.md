@@ -15,8 +15,8 @@ The `DracoWriter` encodes a mesh or point cloud (maps of attributes) using [Drac
 ## Usage
 
 ```typescript
-import {DracoWriter} from '@loaders.gl/draco';
-import {encode} from '@loaders.gl/core';
+import {DracoWriter} from '@sensat/loaders-gl-draco';
+import {encode} from '@sensat/loaders-gl-core';
 
 const mesh = {
   attributes: {

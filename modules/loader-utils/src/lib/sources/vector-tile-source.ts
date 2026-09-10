@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Schema, Feature, BinaryFeatureCollection} from '@loaders.gl/schema';
+import type {Schema, Feature, BinaryFeatureCollection} from '@sensat/loaders-gl-schema';
 import {TileSource, TileSourceProps, GetTileParameters} from './tile-source';
 import type {GetTileDataParameters} from './tile-source';
 

@@ -2,7 +2,7 @@
 
 ![ogc-logo](../../../images/logos/ogc-logo-60.png)
 
-- _[`@loaders.gl/wms`](/docs/modules/wms)_
+- _[`@sensat/loaders-gl-wms`](/docs/modules/wms)_
 - _[Wikipedia article](https://en.wikipedia.org/wiki/Web_Map_Tile_Service)_
 
 WmTS (Web Map Tile Service) is a standardized protocol for serving pre-rendered or run-time computed georeferenced **map tiles** over the Internet.

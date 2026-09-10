@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {FileSystem, isBrowser, BlobFile, NodeFile} from '@loaders.gl/loader-utils';
-import type {ReadableFile} from '@loaders.gl/loader-utils';
+import {FileSystem, isBrowser, BlobFile, NodeFile} from '@sensat/loaders-gl-loader-utils';
+import type {ReadableFile} from '@sensat/loaders-gl-loader-utils';
 import {ZipCDFileHeader, makeZipCDHeaderIterator} from '../parse-zip/cd-file-header';
 import {parseZipLocalFileHeader} from '../parse-zip/local-file-header';
-import {DeflateCompression} from '@loaders.gl/compression';
+import {DeflateCompression} from '@sensat/loaders-gl-compression';
 import {IndexedArchive} from './IndexedArchive';
 import {readRange} from '../parse-zip/readable-file-utils';
 

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {Loader} from '@loaders.gl/loader-utils';
+import {Loader} from '@sensat/loaders-gl-loader-utils';
 import {normalizeLoader} from '../loader-utils/normalize-loader';
 import {getGlobalLoaderState} from '../loader-utils/option-utils';
 

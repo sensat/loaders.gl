@@ -17,7 +17,7 @@ import {getAccessorArrayTypeAndLength} from '../gltf-utils/gltf-utils';
 import {BYTES, COMPONENTS} from '../gltf-utils/gltf-constants';
 import {} from '../types/gltf-json-schema';
 import {GLTFScenegraph} from '../api/gltf-scenegraph';
-import {ensureArrayBuffer} from '@loaders.gl/loader-utils';
+import {ensureArrayBuffer} from '@sensat/loaders-gl-loader-utils';
 
 /** Extension name */
 const KHR_TEXTURE_TRANSFORM = 'KHR_texture_transform';

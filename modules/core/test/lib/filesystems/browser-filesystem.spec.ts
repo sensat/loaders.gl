@@ -3,13 +3,13 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {fetchFile, isBrowser, _BrowserFileSystem as BrowserFileSystem} from '@loaders.gl/core';
+import {fetchFile, isBrowser, _BrowserFileSystem as BrowserFileSystem} from '@sensat/loaders-gl-core';
 
 export const IMAGE_URLS = [
-  '@loaders.gl/images/test/data/img1-preview.png',
-  '@loaders.gl/images/test/data/img1-preview.jpeg',
-  '@loaders.gl/images/test/data/img1-preview.gif',
-  '@loaders.gl/images/test/data/img1-preview.bmp'
+  '@sensat/loaders-gl-images/test/data/img1-preview.png',
+  '@sensat/loaders-gl-images/test/data/img1-preview.jpeg',
+  '@sensat/loaders-gl-images/test/data/img1-preview.gif',
+  '@sensat/loaders-gl-images/test/data/img1-preview.bmp'
 ];
 
 test('BrowserFileSystem#fetch', async (t) => {

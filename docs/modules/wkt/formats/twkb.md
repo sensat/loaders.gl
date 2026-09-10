@@ -1,6 +1,6 @@
 # TWKB
 
-- _[`@loaders.gl/wkt`](/docs/modules/wkt)_
+- _[`@sensat/loaders-gl-wkt`](/docs/modules/wkt)_
 - _[TWKB specification](https://github.com/TWKB/Specification/blob/master/twkb.md)_
 
 TWKB is a format for serializing vector geometry data into a binary byte buffer, similar to [WKB](./wkb) but with an emphasis on minimizing size of the buffer.

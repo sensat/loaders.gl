@@ -1,6 +1,6 @@
 # Basis Universal
 
-- _[`@loaders.gl/textures`](/docs/modules/textures)_ - loaders.gl implementation
+- _[`@sensat/loaders-gl-textures`](/docs/modules/textures)_ - loaders.gl implementation
 - _[`BasisLoader`](/docs/modules/textures/api-reference/basis-loader)_ - decodes Basis Universal textures
 
 Basis Universal is a supercompressed texture format designed to be transcoded efficiently into GPU-native compressed texture formats at load time.

@@ -16,10 +16,10 @@ The `tile-converter` is a command line utility (CLI) for two-way batch conversio
 
 The tile-converter is published as an npm module and as a [docker image](#docker-image).
 
-Installing `@loaders.gl/tile-converter` from npm makes the `tile-converter` command line tool available.
+Installing `@sensat/loaders-gl-tile-converter` from npm makes the `tile-converter` command line tool available.
 
 ```bash
-npm i @loaders.gl/tile-converter
+npm i @sensat/loaders-gl-tile-converter
 ```
 
 ## Usage

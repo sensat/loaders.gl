@@ -7,7 +7,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import DeckGL from '@deck.gl/react';
 
 import {Tile3DLayer} from '@deck.gl/geo-layers';
-import {COORDINATE_SYSTEM, I3SLoader} from '@loaders.gl/i3s';
+import {COORDINATE_SYSTEM, I3SLoader} from '@sensat/loaders-gl-i3s';
 
 const INITIAL_VIEW_STATE = {
   transitionDuration: 0,

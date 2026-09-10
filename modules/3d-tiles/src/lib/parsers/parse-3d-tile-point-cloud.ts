@@ -5,9 +5,9 @@
 // This file is derived from the Cesium code base under Apache 2 license
 // See LICENSE.md and https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md
 
-import {DracoLoader} from '@loaders.gl/draco';
-import {LoaderContext, parseFromContext} from '@loaders.gl/loader-utils';
-import {GL} from '@loaders.gl/math';
+import {DracoLoader} from '@sensat/loaders-gl-draco';
+import {LoaderContext, parseFromContext} from '@sensat/loaders-gl-loader-utils';
+import {GL} from '@sensat/loaders-gl-math';
 import {Vector3} from '@math.gl/core';
 
 import Tile3DFeatureTable from '../classes/tile-3d-feature-table';

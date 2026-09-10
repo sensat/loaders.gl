@@ -1,6 +1,6 @@
 # Crunch
 
-- _[`@loaders.gl/textures`](/docs/modules/textures)_ - loaders.gl implementation
+- _[`@sensat/loaders-gl-textures`](/docs/modules/textures)_ - loaders.gl implementation
 - _[`CrunchWorkerLoader`](/docs/modules/textures/api-reference/crunch-loader)_ - reads Crunch `.crn` textures
 
 Crunch is a lossy texture compression format designed to reduce distribution size for GPU texture assets, especially BC / DXT-style texture data.

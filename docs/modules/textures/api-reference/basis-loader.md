@@ -17,8 +17,8 @@ A loader for Basis Universal "supercompressed" GPU textures. Extracts supercompr
 ## Usage
 
 ```typescript
-import {BasisLoader} from '@loaders.gl/textures';
-import {load} from '@loaders.gl/core';
+import {BasisLoader} from '@sensat/loaders-gl-textures';
+import {load} from '@sensat/loaders-gl-core';
 
 const miplevels = await load(url, BasisLoader, options);
 for (const imageLevels of miplevels) {
@@ -58,10 +58,10 @@ The modules are forked in the loaders.gl repo story: `modules/textures/src/libs`
 
 The libraries are loaded during runtime from URLs:
 
-- https://unpkg.com/@loaders.gl/textures@{VERSION}/dist/libs/basis_transcoder.wasm
-- https://unpkg.com/@loaders.gl/textures@{VERSION}/dist/libs/basis_transcoder.js
-- https://unpkg.com/@loaders.gl/textures@${VERSION}/dist/libs/basis_encoder.wasm
-- https://unpkg.com/@loaders.gl/textures@${VERSION}/dist/libs/basis_encoder.js
+- https://unpkg.com/@sensat/loaders-gl-textures@{VERSION}/dist/libs/basis_transcoder.wasm
+- https://unpkg.com/@sensat/loaders-gl-textures@{VERSION}/dist/libs/basis_transcoder.js
+- https://unpkg.com/@sensat/loaders-gl-textures@${VERSION}/dist/libs/basis_encoder.wasm
+- https://unpkg.com/@sensat/loaders-gl-textures@${VERSION}/dist/libs/basis_encoder.js
 
 ## Compressed Texture Formats
 

@@ -4,8 +4,8 @@
 
 // Minimal support to load tilsets from the Cesium ION services
 
-import {fetchFile} from '@loaders.gl/core';
-import {assert} from '@loaders.gl/loader-utils';
+import {fetchFile} from '@sensat/loaders-gl-core';
+import {assert} from '@sensat/loaders-gl-loader-utils';
 
 const CESIUM_ION_URL = 'https://api.cesium.com/v1/assets';
 

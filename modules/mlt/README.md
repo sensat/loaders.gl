@@ -1,19 +1,19 @@
-# @loaders.gl/mlt
+# @sensat/loaders-gl-mlt
 
 Loader for the [MapLibre Tile (MLT)](https://maplibre.org/maplibre-tile-spec/) format, a next-generation vector tile format designed as a successor to Mapbox Vector Tiles (MVT).
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/mlt
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-mlt
+npm install @sensat/loaders-gl-core
 ```
 
 ## Usage
 
 ```typescript
-import {MLTLoader} from '@loaders.gl/mlt';
-import {parse} from '@loaders.gl/core';
+import {MLTLoader} from '@sensat/loaders-gl-mlt';
+import {parse} from '@sensat/loaders-gl-core';
 
 const response = await fetch('https://example.com/tiles/0/0/0.mlt');
 const arrayBuffer = await response.arrayBuffer();

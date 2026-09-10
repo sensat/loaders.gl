@@ -17,10 +17,10 @@ License: MIT
 
 /* eslint-disable quotes */
 import test from 'tape-promise/tape';
-import Papa from '@loaders.gl/csv/papaparse/papaparse';
+import Papa from '@sensat/loaders-gl-csv/papaparse/papaparse';
 
-// import {isBrowser, load} from '@loaders.gl/core';
-// import {parseAsIterator, parseAsAsyncIterator} from '@loaders.gl/core';
+// import {isBrowser, load} from '@sensat/loaders-gl-core';
+// import {parseAsIterator, parseAsAsyncIterator} from '@sensat/loaders-gl-core';
 
 // Tests for Papa.unparse() function (JSON to CSV)
 var UNPARSE_TESTS = [

@@ -5,7 +5,7 @@
 // Forked from https://github.com/kbajalc/parquets under MIT license
 
 /* eslint-disable camelcase */
-import {stream} from '@loaders.gl/loader-utils';
+import {stream} from '@sensat/loaders-gl-loader-utils';
 import {ParquetCodecOptions, PARQUET_CODECS} from '../codecs/index';
 import * as Compression from '../compression';
 import {

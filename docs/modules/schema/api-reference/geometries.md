@@ -11,7 +11,7 @@ loaders.gl defines a Binary Geometry Format.
 
 The format is designed to work directly with the binary support in deck.gl layers.
 
-This format is currently described in more detail in the `@loaders.gl/gis` module documentation.
+This format is currently described in more detail in the `@sensat/loaders-gl-gis` module documentation.
 
 ##
 

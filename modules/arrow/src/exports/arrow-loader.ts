@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
-import type {ArrowTable} from '@loaders.gl/schema';
+import type {Loader, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
+import type {ArrowTable} from '@sensat/loaders-gl-schema';
 
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.

@@ -3,9 +3,9 @@
 // Copyright (c) vis.gl contributors
 
 import {Proj4Projection} from '@math.gl/proj4';
-import {transformGeoJsonCoords} from '@loaders.gl/gis';
+import {transformGeoJsonCoords} from '@sensat/loaders-gl-gis';
 
-import type {GeoJSONTable, Table, Schema} from '@loaders.gl/schema';
+import type {GeoJSONTable, Table, Schema} from '@sensat/loaders-gl-schema';
 
 import {fgbToBinaryGeometry} from './binary-geometries';
 import {getSchemaFromFGBHeader} from './get-schema-from-fgb-header';

@@ -1,12 +1,12 @@
 # Overview
 
-The `@loaders.gl/images` module contains loader and writers for images that follow loaders.gl conventions and work under both node and browser.
+The `@sensat/loaders-gl-images` module contains loader and writers for images that follow loaders.gl conventions and work under both node and browser.
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/images
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-images
+npm install @sensat/loaders-gl-core
 ```
 
 ## API

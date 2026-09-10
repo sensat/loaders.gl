@@ -18,17 +18,17 @@ A glTF file contains a hierarchical scenegraph description that can be used to i
 ## Usage
 
 ```
-import {load} from '@loaders.gl/core';
-import {GLTFLoader} from '@loaders.gl/gltf';
+import {load} from '@sensat/loaders-gl-core';
+import {GLTFLoader} from '@sensat/loaders-gl-gltf';
 const gltf = await load(url, GLTFLoader);
 ```
 
 To decompress Draco-compressed meshes:
 
 ```
-import {load} from '@loaders.gl/core';
-import {GLTFLoader} from '@loaders.gl/gltf';
-import {DracoLoader} from '@loaders.gl/draco';
+import {load} from '@sensat/loaders-gl-core';
+import {GLTFLoader} from '@sensat/loaders-gl-gltf';
+import {DracoLoader} from '@sensat/loaders-gl-draco';
 const gltf = load(url, GLTFLoader, {DracoLoader, decompress: true});
 ```
 
@@ -66,7 +66,7 @@ support for KHR does not replace EXT because glTF capability negotiation uses th
 name and existing assets continue to declare EXT.
 
 Meshopt decoding is available during asynchronous parsing when `gltf.loadBuffers` and
-`gltf.decompressMeshes` are both enabled. The maintained decoder ships with `@loaders.gl/gltf`, so
+`gltf.decompressMeshes` are both enabled. The maintained decoder ships with `@sensat/loaders-gl-gltf`, so
 there is no decoder option or application-level initialization step. Successful decoding writes
 the uncompressed bytes into the buffer range described by the parent buffer view and removes the
 processed extension declarations. The compressed source buffer remains in the returned data.

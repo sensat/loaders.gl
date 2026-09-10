@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {load} from '@loaders.gl/core';
-import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
+import {load} from '@sensat/loaders-gl-core';
+import {Tiles3DLoader} from '@sensat/loaders-gl-3d-tiles';
 
 export async function loadPointTile(url) {
   const content = await load(url, Tiles3DLoader);

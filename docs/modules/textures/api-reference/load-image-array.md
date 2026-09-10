@@ -10,8 +10,8 @@ A function that loads an array of images. Primarily intended for loading:
 Loading an array of images
 
 ```typescript
-import '@loaders.gl/polyfills'; // only needed for Node.js support
-import {loadImageArray} from `@loaders.gl/images`;
+import '@sensat/loaders-gl-polyfills'; // only needed for Node.js support
+import {loadImageArray} from `@sensat/loaders-gl-images`;
 
 const images = await loadImageArray(count, ({index}) => `filename-${index}`);
 
@@ -21,8 +21,8 @@ for (const image of images) {
 ```
 
 ```typescript
-import '@loaders.gl/polyfills'; // only needed for Node.js support
-import {loadImageArray} from `@loaders.gl/images`;
+import '@sensat/loaders-gl-polyfills'; // only needed for Node.js support
+import {loadImageArray} from `@sensat/loaders-gl-images`;
 
 const images = await loadImageArray(count,  ({index}) => `filename-${index}`, {
   mipLevels: 'auto'

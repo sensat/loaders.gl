@@ -17,8 +17,8 @@ Note: Currently supports `ascii`, `binary` and compressed binary files.
 ## Usage
 
 ```typescript
-import {PCDLoader} from '@loaders.gl/pcd';
-import {load} from '@loaders.gl/core';
+import {PCDLoader} from '@sensat/loaders-gl-pcd';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, PCDLoader, options);
 ```

@@ -10,8 +10,8 @@ import DeckGL from '@deck.gl/react';
 import {MapController, COORDINATE_SYSTEM} from '@deck.gl/core';
 import {ScenegraphLayer} from '@deck.gl/mesh-layers';
 
-import {GLTFLoader} from '@loaders.gl/gltf';
-import {registerLoaders} from '@loaders.gl/core';
+import {GLTFLoader} from '@sensat/loaders-gl-gltf';
+import {registerLoaders} from '@sensat/loaders-gl-core';
 
 import loadIBLEnvironment from './environment';
 

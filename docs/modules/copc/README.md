@@ -11,7 +11,7 @@ The `@loaders.gl/copc` module provides support for the [COPC](/docs/modules/copc
 ## Installation
 
 ```bash
-npm install @loaders.gl/core @loaders.gl/copc
+npm install @sensat/loaders-gl-core @loaders.gl/copc
 ```
 
 ## APIs

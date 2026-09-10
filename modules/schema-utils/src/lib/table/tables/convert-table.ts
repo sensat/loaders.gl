@@ -8,7 +8,7 @@ import type {
   ObjectRowTable,
   ColumnarTable,
   ArrowTable
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 import {
   getTableCell,
   getTableLength,
@@ -112,7 +112,7 @@ export function convertToObjectRowTable(table: Table): ObjectRowTable {
 
 /**
  * Convert a table to apache arrow format
- * @note this depends on the `@loaders.gl/arrow module being imported
+ * @note this depends on the `@sensat/loaders-gl-arrow module being imported
  */
 export function convertToArrowTable(table: Table): ArrowTable {
   const arrowTable = convertTableToArrow(table);

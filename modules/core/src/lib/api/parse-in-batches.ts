@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Batch} from '@loaders.gl/schema';
-import {isTable, makeBatchFromTable} from '@loaders.gl/schema-utils';
+import type {Batch} from '@sensat/loaders-gl-schema';
+import {isTable, makeBatchFromTable} from '@sensat/loaders-gl-schema-utils';
 import type {
   Loader,
   LoaderWithParser,
@@ -16,8 +16,8 @@ import type {
   LoaderArrayOptionsType,
   LoaderArrayBatchType,
   TransformBatches
-} from '@loaders.gl/loader-utils';
-import {concatenateArrayBuffersAsync} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
+import {concatenateArrayBuffersAsync} from '@sensat/loaders-gl-loader-utils';
 import {isLoaderObject} from '../loader-utils/normalize-loader';
 import {normalizeOptions} from '../loader-utils/option-utils';
 import {getLoaderContext} from '../loader-utils/loader-context';

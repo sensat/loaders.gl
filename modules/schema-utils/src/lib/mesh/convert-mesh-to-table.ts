@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Mesh, ArrowTable, ColumnarTable} from '@loaders.gl/schema';
+import type {Mesh, ArrowTable, ColumnarTable} from '@sensat/loaders-gl-schema';
 import * as arrow from 'apache-arrow';
 import {getFixedSizeListData} from '../arrow-utils/arrow-fixed-size-list-utils';
 import {deserializeArrowSchema} from '../schema/convert-arrow-schema';

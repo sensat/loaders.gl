@@ -1,8 +1,8 @@
 // @ts-nocheck
 import test from 'tape-promise/tape';
-import {isBrowser} from '@loaders.gl/loader-utils';
-import VectorTile from '@loaders.gl/mvt/lib/mapbox-vector-tile-js/vector-tile';
-import {fromGeojsonVt, fromVectorTileJs} from '@loaders.gl/mvt/lib/mapbox-vt-pbf/to-vector-tile';
+import {isBrowser} from '@sensat/loaders-gl-loader-utils';
+import VectorTile from '@sensat/loaders-gl-mvt/lib/mapbox-vector-tile-js/vector-tile';
+import {fromGeojsonVt, fromVectorTileJs} from '@sensat/loaders-gl-mvt/lib/mapbox-vt-pbf/to-vector-tile';
 import Pbf from 'pbf';
 import geojsonVt from 'geojson-vt';
 import geojsonFixtures from '@mapbox/geojson-fixtures';

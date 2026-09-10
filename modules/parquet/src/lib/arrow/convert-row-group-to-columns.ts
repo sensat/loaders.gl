@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {Schema} from '@loaders.gl/schema';
-import {ParquetRowGroup} from '@loaders.gl/parquet/parquetjs/schema/declare';
+import {Schema} from '@sensat/loaders-gl-schema';
+import {ParquetRowGroup} from '@sensat/loaders-gl-parquet/parquetjs/schema/declare';
 
 export function convertParquetRowGroupToColumns(
   schema: Schema,

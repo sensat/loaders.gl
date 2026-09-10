@@ -1,6 +1,6 @@
 # Overview
 
-The `@loaders.gl/terrain` module reconstructs mesh surfaces from either height
+The `@sensat/loaders-gl-terrain` module reconstructs mesh surfaces from either height
 map images--e.g. [Mapzen Terrain Tiles][mapzen_terrain_tiles]--which encode
 elevation into R,G,B values or the [quantized mesh][quantized_mesh] format.
 
@@ -10,8 +10,8 @@ elevation into R,G,B values or the [quantized mesh][quantized_mesh] format.
 ## Installation
 
 ```bash
-npm install @loaders.gl/terrain
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-terrain
+npm install @sensat/loaders-gl-core
 ```
 
 ## Attribution

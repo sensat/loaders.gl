@@ -1,4 +1,4 @@
-import {_ClarinetParser} from '@loaders.gl/json';
+import {_ClarinetParser} from '@sensat/loaders-gl-json';
 
 const loadJSON = async (relativePath) => {
   const url = new URL(relativePath, import.meta.url);

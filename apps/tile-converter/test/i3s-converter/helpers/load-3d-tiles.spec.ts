@@ -1,14 +1,14 @@
 import test from 'tape-promise/tape';
-import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
-import {load} from '@loaders.gl/core';
+import {Tiles3DLoader} from '@sensat/loaders-gl-3d-tiles';
+import {load} from '@sensat/loaders-gl-core';
 import {
   loadNestedTileset,
   loadTile3DContent
 } from '../../../src/i3s-converter/helpers/load-3d-tiles';
 
-const TILESET_URL = '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedColors/tileset.json';
+const TILESET_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedColors/tileset.json';
 const NESTED_TILESET_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Tilesets/TilesetOfTilesets/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Tilesets/TilesetOfTilesets/tileset.json';
 
 test('tile-converter(i3s)#loadNestedTileset', async (t) => {
   const simpleTileset = await load(TILESET_URL, Tiles3DLoader, {});

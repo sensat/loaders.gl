@@ -23,23 +23,23 @@ Loader and writer for the [Well-known text][wkt] format for representation of ge
 ## Installation
 
 ```bash
-npm install @loaders.gl/wkt
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-wkt
+npm install @sensat/loaders-gl-core
 ```
 
 ## Usage
 
 ```typescript
-import {WKTLoader} from '@loaders.gl/wkt';
-import {parseSync} from '@loaders.gl/core';
+import {WKTLoader} from '@sensat/loaders-gl-wkt';
+import {parseSync} from '@sensat/loaders-gl-core';
 
 const data = parseSync('LINESTRING (30 10, 10 30, 40 40)', WKTLoader);
 // => {type: 'LineString', coordinates: [[30, 10], [10, 30], [40, 40]]}
 ```
 
 ```typescript
-import {WKTLoader} from '@loaders.gl/wkt';
-import {load} from '@loaders.gl/core';
+import {WKTLoader} from '@sensat/loaders-gl-wkt';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, WKTLoader);
 ```

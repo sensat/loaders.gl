@@ -1,4 +1,4 @@
-# @loaders.gl/textures
+# @sensat/loaders-gl-textures
 
 [loaders.gl](https://loaders.gl/docs) is a collection of framework-independent 3D and geospatial parsers and encoders.
 
@@ -22,8 +22,8 @@ Each returned `TextureLevel` now exposes:
 - `data`: a typed array containing the mip level payload. Compressed textures expose byte data, while `RadianceHDRLoader` exposes `Float32Array`.
 
 ```ts
-import {load} from '@loaders.gl/core';
-import {BasisLoader} from '@loaders.gl/textures';
+import {load} from '@sensat/loaders-gl-core';
+import {BasisLoader} from '@sensat/loaders-gl-textures';
 
 const images = await load('texture.ktx2', BasisLoader);
 
@@ -37,8 +37,8 @@ Use `format` when you need the WebGL enum for legacy APIs. Use `textureFormat` w
 When `basis.format` is set to `'auto'`, you can override the default capability detection by passing a list of supported texture formats:
 
 ```ts
-import {load} from '@loaders.gl/core';
-import {BasisLoader} from '@loaders.gl/textures';
+import {load} from '@sensat/loaders-gl-core';
+import {BasisLoader} from '@sensat/loaders-gl-textures';
 
 const images = await load('texture.basis', BasisLoader, {
   basis: {
@@ -65,8 +65,8 @@ Member assets are parsed with `ImageLoader` by default, and additional loaders p
 These loaders return schema `Texture` objects rather than raw image trees.
 
 ```ts
-import {load} from '@loaders.gl/core';
-import {BasisLoader, CompressedTextureLoader, TextureCubeLoader} from '@loaders.gl/textures';
+import {load} from '@sensat/loaders-gl-core';
+import {BasisLoader, CompressedTextureLoader, TextureCubeLoader} from '@sensat/loaders-gl-textures';
 
 const imageCube = await load('environment.image-texture-cube.json', [
   TextureCubeLoader,

@@ -2,12 +2,12 @@
 import test from 'tape-promise/tape';
 import {validateLoader} from 'test/common/conformance';
 
-import {DracoArrowLoader} from '@loaders.gl/draco';
-import {setLoaderOptions, load} from '@loaders.gl/core';
+import {DracoArrowLoader} from '@sensat/loaders-gl-draco';
+import {setLoaderOptions, load} from '@sensat/loaders-gl-core';
 import draco3d from 'draco3d';
 
-const BUNNY_DRC_URL = '@loaders.gl/draco/test/data/bunny.drc';
-const CESIUM_TILE_URL = '@loaders.gl/draco/test/data/cesium-tile.drc';
+const BUNNY_DRC_URL = '@sensat/loaders-gl-draco/test/data/bunny.drc';
+const CESIUM_TILE_URL = '@sensat/loaders-gl-draco/test/data/cesium-tile.drc';
 
 setLoaderOptions({
   _workerType: 'test'

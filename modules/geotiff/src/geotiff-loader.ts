@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {TypedArray, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {TypedArray, LoaderWithParser, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
 import {fromArrayBuffer} from 'geotiff';
 
 // __VERSION__ is injected by babel-plugin-version-inline

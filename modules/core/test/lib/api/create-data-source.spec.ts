@@ -5,10 +5,10 @@
 import test from 'tape-promise/tape';
 
 // loaders.gl sources and loaders
-import {createDataSource, DataSource} from '@loaders.gl/core';
-import {PMTilesSource} from '@loaders.gl/pmtiles';
-import {MVTSource, TableTileSource} from '@loaders.gl/mvt';
-import {_GeoJSONLoader as GeoJSONLoader} from '@loaders.gl/json';
+import {createDataSource, DataSource} from '@sensat/loaders-gl-core';
+import {PMTilesSource} from '@sensat/loaders-gl-pmtiles';
+import {MVTSource, TableTileSource} from '@sensat/loaders-gl-mvt';
+import {_GeoJSONLoader as GeoJSONLoader} from '@sensat/loaders-gl-json';
 
 test('createDataSource', async (t) => {
   const dataSource = createDataSource(url, [PMTilesSource, TableTileSource, MVTSource], {

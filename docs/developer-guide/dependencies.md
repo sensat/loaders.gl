@@ -35,7 +35,7 @@ Example: bundling the full `draco3d` package:
 
 ```typescript
 import draco3d from 'draco3d';
-import {setLoaderOptions} from '@loaders.gl/core';
+import {setLoaderOptions} from '@sensat/loaders-gl-core';
 
 setLoaderOptions({
   modules: {
@@ -53,7 +53,7 @@ Use this when you want loaders.gl to keep loading a runtime dynamically, but fro
 Example: overriding the Draco decoder assets:
 
 ```typescript
-import {setLoaderOptions} from '@loaders.gl/core';
+import {setLoaderOptions} from '@sensat/loaders-gl-core';
 
 setLoaderOptions({
   modules: {
@@ -73,8 +73,8 @@ Bundled module injection:
 
 ```typescript
 import draco3d from 'draco3d';
-import {load} from '@loaders.gl/core';
-import {DracoLoader} from '@loaders.gl/draco';
+import {load} from '@sensat/loaders-gl-core';
+import {DracoLoader} from '@sensat/loaders-gl-draco';
 
 const mesh = await load(url, DracoLoader, {
   modules: {

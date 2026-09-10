@@ -18,8 +18,8 @@ import type {
   GLTFBufferView
 } from '../types/gltf-json-schema';
 
-import {getBinaryImageMetadata} from '@loaders.gl/images';
-import {padToNBytes, copyToArray} from '@loaders.gl/loader-utils';
+import {getBinaryImageMetadata} from '@sensat/loaders-gl-images';
+import {padToNBytes, copyToArray} from '@sensat/loaders-gl-loader-utils';
 import {assert} from '../utils/assert';
 import {getAccessorTypeFromSize, getComponentTypeFromArray} from '../gltf-utils/gltf-utils';
 

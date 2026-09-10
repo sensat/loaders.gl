@@ -1,6 +1,6 @@
 import test from 'tape-promise/tape';
-import {BinaryFeatureCollection, Feature} from '@loaders.gl/schema';
-import {transformBinaryCoords, transformGeoJsonCoords} from '@loaders.gl/gis';
+import {BinaryFeatureCollection, Feature} from '@sensat/loaders-gl-schema';
+import {transformBinaryCoords, transformGeoJsonCoords} from '@sensat/loaders-gl-gis';
 import {Proj4Projection} from '@math.gl/proj4';
 
 test('gis#reproject GeoJSON', (t) => {

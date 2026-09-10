@@ -1,4 +1,4 @@
-import type {BuildingSceneSublayer} from '@loaders.gl/i3s';
+import type {BuildingSceneSublayer} from '@sensat/loaders-gl-i3s';
 
 export interface Sublayer extends BuildingSceneSublayer {
   expanded: boolean;

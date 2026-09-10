@@ -39,8 +39,8 @@ import type {
 
 import {assert} from '../utils/assert';
 import {getAccessorArrayTypeAndLength} from '../gltf-utils/gltf-utils';
-import {copyToArrayBuffer} from '@loaders.gl/loader-utils';
-import type {BigTypedArray, BigTypedArrayConstructor} from '@loaders.gl/loader-utils';
+import {copyToArrayBuffer} from '@sensat/loaders-gl-loader-utils';
+import type {BigTypedArray, BigTypedArrayConstructor} from '@sensat/loaders-gl-loader-utils';
 
 // This is a post processor for loaded glTF files
 // The goal is to make the loaded data easier to use in WebGL applications

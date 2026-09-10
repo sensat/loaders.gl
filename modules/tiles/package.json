@@ -1,15 +1,16 @@
 {
-  "name": "@loaders.gl/tiles",
-  "version": "4.4.6",
+  "name": "@sensat/loaders-gl-tiles",
+  "version": "4.4.6-sensat.0",
   "description": "Common components for different tiles loaders.",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/visgl/loaders.gl"
+    "url": "https://github.com/sensat/loaders.gl"
   },
   "keywords": [
     "webgl",
@@ -42,19 +43,18 @@
     "build-bundle-dev": "ocular-bundle ./bundle.ts --env=dev --output=dist/dist.dev.js"
   },
   "dependencies": {
-    "@loaders.gl/loader-utils": "4.4.6",
-    "@loaders.gl/math": "4.4.6",
     "@math.gl/core": "^4.1.0",
     "@math.gl/culling": "^4.1.0",
     "@math.gl/geospatial": "^4.1.0",
     "@math.gl/web-mercator": "^4.1.0",
-    "@probe.gl/stats": "^4.1.1"
+    "@probe.gl/stats": "^4.1.1",
+    "@sensat/loaders-gl-loader-utils": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-math": "4.4.6-sensat.0"
   },
   "devDependencies": {
     "@deck.gl/core": "^9.0.33"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "~4.4.0"
-  },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+    "@sensat/loaders-gl-core": "4.4.6-sensat.0"
+  }
 }

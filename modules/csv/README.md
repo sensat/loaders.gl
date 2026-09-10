@@ -1,4 +1,4 @@
-# @loaders.gl/csv
+# @sensat/loaders-gl-csv
 
 This module contains a table loader for the CSV and DSV formats.
 

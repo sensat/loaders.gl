@@ -1,7 +1,7 @@
-import type {WriterOptions, WriterWithEncoder} from '@loaders.gl/loader-utils';
+import type {WriterOptions, WriterWithEncoder} from '@sensat/loaders-gl-loader-utils';
 import {VERSION} from './lib/utils/version';
 import {encodeGLTFSync} from './lib/encoders/encode-gltf';
-import {GLTFWithBuffers} from '@loaders.gl/gltf';
+import {GLTFWithBuffers} from '@sensat/loaders-gl-gltf';
 import {encodeExtensions} from './lib/api/gltf-extensions';
 
 export type GLTFWriterOptions = WriterOptions & {

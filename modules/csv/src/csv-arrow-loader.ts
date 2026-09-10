@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
-import type {ArrowTable, ArrowTableBatch} from '@loaders.gl/schema';
-import {convertTable, convertBatches} from '@loaders.gl/schema-utils';
+import type {LoaderWithParser, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
+import type {ArrowTable, ArrowTableBatch} from '@sensat/loaders-gl-schema';
+import {convertTable, convertBatches} from '@sensat/loaders-gl-schema-utils';
 
 import type {CSVLoaderOptions} from './csv-loader';
 import {CSVLoader} from './csv-loader';

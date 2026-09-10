@@ -21,8 +21,8 @@ The `GPXLoader` parses [GPX files][gpx_wikipedia] into GeoJSON. From Wikipedia:
 ## Usage
 
 ```typescript
-import {GPXLoader} from '@loaders.gl/kml';
-import {load} from '@loaders.gl/core';
+import {GPXLoader} from '@sensat/loaders-gl-kml';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, GPXLoader, options);
 ```
@@ -35,4 +35,4 @@ const data = await load(url, GPXLoader, options);
 
 ## Limitations
 
-- In Node.JS, applications must import `@loaders.gl/polyfills` for the `DOMParser` polyfill.
+- In Node.JS, applications must import `@sensat/loaders-gl-polyfills` for the `DOMParser` polyfill.

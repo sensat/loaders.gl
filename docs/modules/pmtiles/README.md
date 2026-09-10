@@ -1,4 +1,4 @@
-# @loaders.gl/pmtiles
+# @sensat/loaders-gl-pmtiles
 
 Support for loading tiled data from [PMTiles](/docs/modules/pmtiles/formats/pmtiles) archives.
 

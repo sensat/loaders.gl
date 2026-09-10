@@ -12,7 +12,7 @@ import type {
   draco_GeometryAttribute_Type
 } from '../draco3d/draco3d-types';
 
-import type {TypedArray} from '@loaders.gl/schema';
+import type {TypedArray} from '@sensat/loaders-gl-schema';
 import type {DracoMesh} from './draco-types';
 
 export type DracoBuildOptions = {

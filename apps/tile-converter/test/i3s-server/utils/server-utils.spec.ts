@@ -1,5 +1,5 @@
 import test from 'tape-promise/tape';
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 import {formErrorHandler, normalizePort} from '../../../src/i3s-server/utils/server-utils';
 
 test('tile-converter(i3s-server)#normalizePort', async (t) => {

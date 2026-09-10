@@ -4,7 +4,7 @@
 // Forked from https://github.com/mapbox/geojson-vt under compatible ISC license
 
 import test from 'tape-promise/tape';
-import {simplifyPath} from '@loaders.gl/mvt/lib/vector-tiler/features/simplify-path';
+import {simplifyPath} from '@sensat/loaders-gl-mvt/lib/vector-tiler/features/simplify-path';
 
 /* eslint comma-spacing:0, no-shadow: 0*/
 

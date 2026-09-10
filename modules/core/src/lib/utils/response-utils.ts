@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {isResponse} from '@loaders.gl/loader-utils';
+import {isResponse} from '@sensat/loaders-gl-loader-utils';
 import {FetchError} from '../fetch/fetch-error';
 import {getResourceContentLength, getResourceUrl, getResourceMIMEType} from './resource-utils';
 import {shortenUrlForDisplay} from './url-utils';

@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import type {LoaderOptions, LoaderWithParser} from '@loaders.gl/loader-utils';
-import {DataViewReadableFile} from '@loaders.gl/zip';
+import type {LoaderOptions, LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
+import {DataViewReadableFile} from '@sensat/loaders-gl-zip';
 import {parseSLPKArchive} from './lib/parsers/parse-slpk/parse-slpk';
 
 // __VERSION__ is injected by babel-plugin-version-inline

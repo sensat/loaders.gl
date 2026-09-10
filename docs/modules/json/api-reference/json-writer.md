@@ -20,8 +20,8 @@ Streaming writer for GeoJSON encoded files.
 For simple usage, you can encode a table into a JSON "file" atomically:
 
 ```typescript
-import {JSONWriter} from '@loaders.gl/json';
-import {encode} from '@loaders.gl/core';
+import {JSONWriter} from '@sensat/loaders-gl-json';
+import {encode} from '@sensat/loaders-gl-core';
 
 const data = await encode(url, JSONWriter, {json: options});
 ```
@@ -31,8 +31,8 @@ const data = await encode(url, JSONWriter, {json: options});
 For larger files, JSONWriter supports streaming JSON parsing, in which case it will yield "batches" of rows from one array.
 
 ```typescript
-import {JSONWriter} from '@loaders.gl/json';
-import {encodeInBatches} from '@loaders.gl/core';
+import {JSONWriter} from '@sensat/loaders-gl-json';
+import {encodeInBatches} from '@sensat/loaders-gl-core';
 
 const batches = await encodeInBatches('geojson.json', JSONWriter, {json: {jsonpaths: ['$.features']}});
 

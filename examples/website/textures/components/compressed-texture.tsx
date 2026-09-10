@@ -5,14 +5,14 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import {load, registerLoaders, selectLoader, fetchFile, LoaderOptions} from '@loaders.gl/core';
+import {load, registerLoaders, selectLoader, fetchFile, LoaderOptions} from '@sensat/loaders-gl-core';
 import {
   BasisLoader,
   CompressedTextureLoader,
   CrunchWorkerLoader,
   GL_EXTENSIONS_CONSTANTS
-} from '@loaders.gl/textures';
-import {ImageLoader, ImageType} from '@loaders.gl/images';
+} from '@sensat/loaders-gl-textures';
+import {ImageLoader, ImageType} from '@sensat/loaders-gl-images';
 
 import {Device, Texture} from '@luma.gl/core';
 import {Model} from '@luma.gl/engine';

@@ -16,9 +16,9 @@ The `TerrainLoader` reconstructs mesh surfaces from height map images, e.g. [Map
 ## Usage
 
 ```typescript
-import {ImageLoader} from '@loaders.gl/images';
-import {TerrainLoader} from '@loaders.gl/terrain';
-import {load, registerLoaders} from '@loaders.gl/core';
+import {ImageLoader} from '@sensat/loaders-gl-images';
+import {TerrainLoader} from '@sensat/loaders-gl-terrain';
+import {load, registerLoaders} from '@sensat/loaders-gl-core';
 
 registerLoaders(ImageLoader);
 

@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {WriterWithEncoder} from '@loaders.gl/loader-utils';
-import {Table, TableBatch} from '@loaders.gl/schema';
+import type {WriterWithEncoder} from '@sensat/loaders-gl-loader-utils';
+import {Table, TableBatch} from '@sensat/loaders-gl-schema';
 import {ParquetFormat} from './parquet-format';
 
 // __VERSION__ is injected by babel-plugin-version-inline

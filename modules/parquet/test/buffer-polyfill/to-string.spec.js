@@ -4,7 +4,7 @@
 // This file is forked from https://github.com/feross/buffer under MIT license
 
 import test from 'tape-promise/tape';
-import {BufferPolyfill} from '@loaders.gl/parquet';
+import {BufferPolyfill} from '@sensat/loaders-gl-parquet';
 
 test('utf8 buffer to base64', function (t) {
   t.equal(new BufferPolyfill('Ձאab', 'utf8').toString('base64'), '1YHXkGFi');

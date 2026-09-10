@@ -10,10 +10,10 @@ import {
   TriangulationWorker,
   hardClone,
   ParseGeoArrowInput
-} from '@loaders.gl/arrow';
-import {fetchFile} from '@loaders.gl/core';
-import {processOnWorker, isBrowser, WorkerFarm} from '@loaders.gl/worker-utils';
-import {GEOARROW_POINT_FILE} from '@loaders.gl/arrow/test/data/geoarrow/test-cases';
+} from '@sensat/loaders-gl-arrow';
+import {fetchFile} from '@sensat/loaders-gl-core';
+import {processOnWorker, isBrowser, WorkerFarm} from '@sensat/loaders-gl-worker-utils';
+import {GEOARROW_POINT_FILE} from '@sensat/loaders-gl-arrow/test/data/geoarrow/test-cases';
 
 // WORKER TESTS
 test('TriangulationWorker#plumbing', async (t) => {

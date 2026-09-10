@@ -5,13 +5,13 @@
 import test from 'tape-promise/tape';
 import {validateLoader} from 'test/common/conformance';
 
-import {load} from '@loaders.gl/core';
-import {TileJSONLoader} from '@loaders.gl/mvt';
+import {load} from '@sensat/loaders-gl-core';
+import {TileJSONLoader} from '@sensat/loaders-gl-mvt';
 
 import {TILEJSONS} from './data/tilejson/tilejson';
 
-const TIPPECANOE_TILEJSON = '@loaders.gl/mvt/test/data/tilejson/tippecanoe.tilejson';
-// const TIPPECANOE_EXPECTED = '@loaders.gl/mvt/test/data/tilejson/tippecanoe.expected.json';
+const TIPPECANOE_TILEJSON = '@sensat/loaders-gl-mvt/test/data/tilejson/tippecanoe.tilejson';
+// const TIPPECANOE_EXPECTED = '@sensat/loaders-gl-mvt/test/data/tilejson/tippecanoe.expected.json';
 
 test('TileJSONLoader#loader conformance', (t) => {
   validateLoader(t, TileJSONLoader, 'TileJSONLoader');

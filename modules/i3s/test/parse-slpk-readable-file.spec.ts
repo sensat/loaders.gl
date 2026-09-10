@@ -2,7 +2,7 @@ import test from 'tape-promise/tape';
 import {parseSLPKArchive} from '../src/lib/parsers/parse-slpk/parse-slpk';
 import {createReadableFileFromBuffer, loadArrayBufferFromFile} from 'test/utils/readable-files';
 
-const SLPK_URL = '@loaders.gl/i3s/test/data/DA12_subset.slpk';
+const SLPK_URL = '@sensat/loaders-gl-i3s/test/data/DA12_subset.slpk';
 
 test('parseSLPKArchive#ReadableFile - raw paths', async (t) => {
   const arrayBuffer = await loadArrayBufferFromFile(SLPK_URL);

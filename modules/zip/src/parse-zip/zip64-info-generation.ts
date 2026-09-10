@@ -1,4 +1,4 @@
-import {concatenateArrayBuffers} from '@loaders.gl/loader-utils';
+import {concatenateArrayBuffers} from '@sensat/loaders-gl-loader-utils';
 
 export const signature = new Uint8Array([0x01, 0x00]);
 

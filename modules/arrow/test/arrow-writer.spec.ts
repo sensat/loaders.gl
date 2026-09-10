@@ -5,8 +5,8 @@
 import test from 'tape-promise/tape';
 import {validateWriter} from 'test/common/conformance';
 
-import {parseSync, encodeSync} from '@loaders.gl/core';
-import {ArrowLoader, ArrowWriter} from '@loaders.gl/arrow';
+import {parseSync, encodeSync} from '@sensat/loaders-gl-core';
+import {ArrowLoader, ArrowWriter} from '@sensat/loaders-gl-arrow';
 
 test('ArrowWriter#writer conformance', (t) => {
   validateWriter(t, ArrowWriter, 'ArrowWriter');

@@ -16,7 +16,7 @@ loaders.gl standardizes on the `fetch()` API. The result of a `fetch` operation 
 
 :::info
 The `fetch()` API emerged in browsers, but is now also supported natively on Node, starting with Node.js v18.
-For older Node.js versions, `@loaders.gl/polyfills` installs polyfills of `fetch`, `Response` and `Headers` classes.
+For older Node.js versions, `@sensat/loaders-gl-polyfills` installs polyfills of `fetch`, `Response` and `Headers` classes.
 :::
 
 ## Local file access
@@ -35,7 +35,7 @@ The preferred way to provide random-access data to loaders.gl is through `Readab
 - `NodeFile` provides safe, tree-shakeable access to local files under Node.js without importing `fs` in application code.
 - `DataViewReadableFile` adapts in-memory buffers (such as data returned by `fetch`) to the same interface.
 
-`ReadableFile` classes replace the deprecated `FileProvider` utilities; new code should use the `ReadableFile` wrappers exported from `@loaders.gl/loader-utils` (and `DataViewReadableFile` from `@loaders.gl/zip`) to keep loader interactions consistent across platforms.
+`ReadableFile` classes replace the deprecated `FileProvider` utilities; new code should use the `ReadableFile` wrappers exported from `@sensat/loaders-gl-loader-utils` (and `DataViewReadableFile` from `@sensat/loaders-gl-zip`) to keep loader interactions consistent across platforms.
 
 ## Saving data
 

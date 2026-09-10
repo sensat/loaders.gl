@@ -9,8 +9,8 @@
 import test from 'tape-promise/tape';
 // import {validateLoader} from 'test/common/conformance';
 
-import {CSWRecordsLoader} from '@loaders.gl/wms';
-import {parse} from '@loaders.gl/core';
+import {CSWRecordsLoader} from '@sensat/loaders-gl-wms';
+import {parse} from '@sensat/loaders-gl-core';
 
 // const CSW_REQUEST_2_0_2 =
 // '<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="CSW" version="2.0.2" resultType="results" startPosition="10" maxRecords="20">' +

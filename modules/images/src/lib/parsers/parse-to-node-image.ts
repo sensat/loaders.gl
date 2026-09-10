@@ -1,6 +1,6 @@
 import type {ImageLoaderOptions} from '../../image-loader';
 import type {ImageDataType} from '../../types';
-import {assert} from '@loaders.gl/loader-utils';
+import {assert} from '@sensat/loaders-gl-loader-utils';
 import {getBinaryImageMetadata} from '../category-api/binary-image-api';
 
 // Note: These types should be consistent with loaders.gl/polyfills
@@ -25,7 +25,7 @@ export async function parseToNodeImage(
 
   // @ts-ignore
   const parseImageNode: ParseImageNode = globalThis.loaders?.parseImageNode;
-  assert(parseImageNode); // '@loaders.gl/polyfills not installed'
+  assert(parseImageNode); // '@sensat/loaders-gl-polyfills not installed'
 
   // @ts-expect-error TODO should we throw error in this case?
   return await parseImageNode(arrayBuffer, mimeType);

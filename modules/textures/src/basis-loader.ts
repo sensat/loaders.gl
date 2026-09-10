@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderOptions, LoaderWithParser} from '@loaders.gl/loader-utils';
-import type {TextureFormat, TextureLevel} from '@loaders.gl/schema';
+import type {Loader, LoaderOptions, LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
+import type {TextureFormat, TextureLevel} from '@sensat/loaders-gl-schema';
 import {VERSION} from './lib/utils/version';
 import {parseBasis} from './lib/parsers/parse-basis';
 import type {BasisFormat} from './lib/parsers/parse-basis';

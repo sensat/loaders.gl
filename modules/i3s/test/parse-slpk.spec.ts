@@ -1,8 +1,8 @@
 import test from 'tape-promise/tape';
-import {load} from '@loaders.gl/core';
+import {load} from '@sensat/loaders-gl-core';
 import {SLPKLoader} from '../src';
 
-const SLPKUrl = '@loaders.gl/i3s/test/data/DA12_subset.slpk';
+const SLPKUrl = '@sensat/loaders-gl-i3s/test/data/DA12_subset.slpk';
 
 test('SLPKLoader#slpk load', async (t) => {
   const uncompressedFile = await load(SLPKUrl, SLPKLoader, {slpk: {path: 'nodepages/0.json'}});

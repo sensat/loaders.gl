@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {extractLoadLibraryOptions, getLibraryUrl, isBrowser} from '@loaders.gl/worker-utils';
+import {extractLoadLibraryOptions, getLibraryUrl, isBrowser} from '@sensat/loaders-gl-worker-utils';
 import {VERSION} from '../../../src/lib/env-utils/version';
 
 const DRACO_DECODER_URL =

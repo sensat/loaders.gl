@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import {Tiles3DTileContent} from '@loaders.gl/3d-tiles';
+import {Tiles3DTileContent} from '@sensat/loaders-gl-3d-tiles';
 import {GLTFPrimitiveModeString, PreprocessData} from '../types';
 import {
   EXT_STRUCTURAL_METADATA,
@@ -8,8 +8,8 @@ import {
   GLTF_EXT_feature_metadata_GLTF,
   GLTF_EXT_structural_metadata_GLTF,
   EXT_FEATURE_METADATA
-} from '@loaders.gl/gltf';
-import {parse} from '@loaders.gl/core';
+} from '@sensat/loaders-gl-gltf';
+import {parse} from '@sensat/loaders-gl-core';
 
 /**
  * glTF primitive modes

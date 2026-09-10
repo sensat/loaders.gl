@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
-import {Tables, GeoJSONTable} from '@loaders.gl/schema';
+import type {LoaderWithParser, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
+import {Tables, GeoJSONTable} from '@sensat/loaders-gl-schema';
 import {parseGeoPackage, DEFAULT_SQLJS_CDN} from './lib/parse-geopackage';
 import {GeoPackageFormat} from './geopackage-format';
 

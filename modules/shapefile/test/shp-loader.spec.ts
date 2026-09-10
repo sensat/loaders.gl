@@ -3,12 +3,12 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {setLoaderOptions, load, fetchFile} from '@loaders.gl/core';
-import {geojsonToBinary} from '@loaders.gl/gis';
-import {SHPLoader} from '@loaders.gl/shapefile';
+import {setLoaderOptions, load, fetchFile} from '@sensat/loaders-gl-core';
+import {geojsonToBinary} from '@sensat/loaders-gl-gis';
+import {SHPLoader} from '@sensat/loaders-gl-shapefile';
 
-const SHAPEFILE_POLYGON_PATH = '@loaders.gl/shapefile/test/data/shapefile-js/polygons.shp';
-const SHAPEFILE_JS_DATA_FOLDER = '@loaders.gl/shapefile/test/data/shapefile-js';
+const SHAPEFILE_POLYGON_PATH = '@sensat/loaders-gl-shapefile/test/data/shapefile-js/polygons.shp';
+const SHAPEFILE_JS_DATA_FOLDER = '@sensat/loaders-gl-shapefile/test/data/shapefile-js';
 const SHAPEFILE_JS_POINT_TEST_FILES = ['points', 'multipoints'];
 const SHAPEFILE_JS_POLYLINE_TEST_FILES = ['polylines'];
 const SHAPEFILE_JS_POLYGON_TEST_FILES = ['polygons', 'multipolygon_with_holes'];

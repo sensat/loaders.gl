@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
-import type {ObjectRowTable} from '@loaders.gl/schema';
+import type {Loader, LoaderWithParser, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
+import type {ObjectRowTable} from '@sensat/loaders-gl-schema';
 import {parseExcel} from './lib/parse-excel';
 import {ExcelFormat} from './excel-format';
 

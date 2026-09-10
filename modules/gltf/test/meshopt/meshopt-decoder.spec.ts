@@ -6,7 +6,7 @@ import {
   meshoptDecodeIndexSequence,
   meshoptDecodeGltfBuffer
   // @ts-expect-error
-} from '@loaders.gl/gltf/meshopt/meshopt-decoder';
+} from '@sensat/loaders-gl-gltf/meshopt/meshopt-decoder';
 
 test('meshopt#isMeshoptSupported', async (t) => {
   t.ok(isMeshoptSupported(), 'meshopt is supported');

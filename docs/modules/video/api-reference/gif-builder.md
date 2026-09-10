@@ -20,9 +20,9 @@ The `GIFBuilder` class creates a base64 encoded GIF image from either:
 Build a GIF from images
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {ImageLoader} from '@loaders.gl/images';
-import {GIFBuilder} from '@loaders.gl/video';
+import {load} from '@sensat/loaders-gl-core';
+import {ImageLoader} from '@sensat/loaders-gl-images';
+import {GIFBuilder} from '@sensat/loaders-gl-video';
 
 const gifBuilder = new GIFBuilder({source: 'images', width: 400, height: 400});
 gifBuilder.add(
@@ -40,7 +40,7 @@ gifBuilder.build();
 Build a GIF from image URLs (Experimental)
 
 ```typescript
-import {GIFBuilder} from '@loaders.gl/video';
+import {GIFBuilder} from '@sensat/loaders-gl-video';
 
 const gifBuilder = new GIFBuilder({source: 'images', width: 400, height: 400});
 gifBuilder.add('http://i.imgur.com/2OO33vX.jpg');
@@ -52,7 +52,7 @@ gifBuilder.build();
 Build a GIF from image URLs, with frame-specific Text (Experimental)
 
 ```typescript
-import {GIFBuilder} from '@loaders.gl/video';
+import {GIFBuilder} from '@sensat/loaders-gl-video';
 
 const gifBuilder = new GIFBuilder({source: 'images', width: 400, height: 400});
 gifBuilder.add({src: 'http://i.imgur.com/2OO33vX.jpg', text: 'First image text'});
@@ -64,7 +64,7 @@ gifBuilder.build();
 Build a GIF from the webcam (Experimental)
 
 ```typescript
-import {GIFBuilder} from '@loaders.gl/video';
+import {GIFBuilder} from '@sensat/loaders-gl-video';
 const gifBuilder = new GIFBuilder({source: webcam, width: 400, height: 400});
 gifBuilder.build();
 ```

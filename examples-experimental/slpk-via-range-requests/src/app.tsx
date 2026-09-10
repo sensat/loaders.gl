@@ -8,11 +8,11 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import DeckGL from '@deck.gl/react';
 import {MapController, FlyToInterpolator, MapViewState} from '@deck.gl/core/typed';
 
-import {COORDINATE_SYSTEM, I3SLoader, parseSLPKArchive} from '@loaders.gl/i3s';
-import {Tileset3D} from '@loaders.gl/tiles';
+import {COORDINATE_SYSTEM, I3SLoader, parseSLPKArchive} from '@sensat/loaders-gl-i3s';
+import {Tileset3D} from '@sensat/loaders-gl-tiles';
 import {ControlPanel} from './components/control-panel';
-import {ZipFileSystem} from '@loaders.gl/zip';
-import {LoaderWithParser, HttpFile, FileProvider} from '@loaders.gl/loader-utils';
+import {ZipFileSystem} from '@sensat/loaders-gl-zip';
+import {LoaderWithParser, HttpFile, FileProvider} from '@sensat/loaders-gl-loader-utils';
 import CustomTile3DLayer from './custom-tile-3d-layer';
 
 export const TRANSITION_DURAITON = 4000;

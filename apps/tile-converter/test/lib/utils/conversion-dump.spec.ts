@@ -8,7 +8,7 @@ import {join} from 'path';
 import {isFileExists, openJson} from '../../../src/lib/utils/file-utils';
 import {DUMP_FILE_SUFFIX} from '../../../src/constants';
 import {cleanUpPath} from '../../utils/file-utils';
-import {I3SMaterialDefinition, Mbs} from '@loaders.gl/i3s';
+import {I3SMaterialDefinition, Mbs} from '@sensat/loaders-gl-i3s';
 
 const testDumpMetadata = {
   boundingVolumes: {

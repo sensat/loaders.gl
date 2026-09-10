@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Source} from '@loaders.gl/loader-utils';
+import type {Source} from '@sensat/loaders-gl-loader-utils';
 
 /** Guess service type from URL */
 export function selectSource(

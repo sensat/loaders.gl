@@ -3,7 +3,7 @@
 // Copyright vis.gl contributors
 
 // This dependency is too big, application must provide it
-import {Hash} from '@loaders.gl/crypto';
+import {Hash} from '@sensat/loaders-gl-crypto';
 import * as crypto from 'crypto'; // Node.js builtin
 
 type CryptoHashOptions = {

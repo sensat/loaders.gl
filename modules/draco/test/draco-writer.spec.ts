@@ -1,11 +1,11 @@
 import test from 'tape-promise/tape';
 import {validateWriter, validateMeshCategoryData} from 'test/common/conformance';
 
-import {DracoLoader, DracoWriterOptions, DracoWriter, DracoWriterWorker} from '@loaders.gl/draco';
-import {encode, fetchFile, parse} from '@loaders.gl/core';
-// import {getMeshSize} from '@loaders.gl/schema-utils';
+import {DracoLoader, DracoWriterOptions, DracoWriter, DracoWriterWorker} from '@sensat/loaders-gl-draco';
+import {encode, fetchFile, parse} from '@sensat/loaders-gl-core';
+// import {getMeshSize} from '@sensat/loaders-gl-schema-utils';
 import draco3d from 'draco3d';
-import {isBrowser, processOnWorker, WorkerFarm} from '@loaders.gl/worker-utils';
+import {isBrowser, processOnWorker, WorkerFarm} from '@sensat/loaders-gl-worker-utils';
 import {cloneTypeArray} from './test-utils/copyTypedArray';
 
 export type TestCase = {
@@ -38,7 +38,7 @@ const TEST_CASES: TestCase[] = [
   }
 ];
 
-const BUNNY_DRC_URL = '@loaders.gl/draco/test/data/bunny.drc';
+const BUNNY_DRC_URL = '@sensat/loaders-gl-draco/test/data/bunny.drc';
 
 async function loadBunny() {
   const response = await fetchFile(BUNNY_DRC_URL);

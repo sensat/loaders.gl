@@ -3,8 +3,8 @@
 // Copyright (c) vis.gl contributors
 
 // loaders.gl
-import {Schema} from '@loaders.gl/schema';
-import {unpackGeoMetadata, unpackJSONStringMetadata} from '@loaders.gl/geoarrow';
+import {Schema} from '@sensat/loaders-gl-schema';
+import {unpackGeoMetadata, unpackJSONStringMetadata} from '@sensat/loaders-gl-geoarrow';
 import {ParquetReader} from '../../parquetjs/parser/parquet-reader';
 import {convertParquetSchema} from '../arrow/convert-schema-from-parquet';
 

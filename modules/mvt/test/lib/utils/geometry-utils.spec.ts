@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-// import type {BinaryFeatureCollection} from '@loaders.gl/schema';
+// import type {BinaryFeatureCollection} from '@sensat/loaders-gl-schema';
 import test from 'tape-promise/tape';
-import {classifyRingsFlat} from '@loaders.gl/mvt/lib/utils/geometry-utils';
+import {classifyRingsFlat} from '@sensat/loaders-gl-mvt/lib/utils/geometry-utils';
 
 const loadJSON = async (relativePath: string) => {
   const url = new URL(relativePath, import.meta.url);

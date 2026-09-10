@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import type {ReadableFile} from '@loaders.gl/loader-utils';
+import type {ReadableFile} from '@sensat/loaders-gl-loader-utils';
 import {
   CD_HEADER_SIGNATURE,
   makeHashTableFromZipHeaders,
@@ -11,7 +11,7 @@ import {
   parseZipLocalFileHeader,
   searchFromTheEnd,
   readRange
-} from '@loaders.gl/zip';
+} from '@sensat/loaders-gl-zip';
 import {Tiles3DArchive} from './3d-tiles-archive-archive';
 
 /**

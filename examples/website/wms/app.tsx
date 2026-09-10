@@ -10,9 +10,9 @@ import DeckGL from '@deck.gl/react';
 import {MapView, MapController} from '@deck.gl/core';
 import {_WMSLayer as WMSLayer} from '@deck.gl/geo-layers';
 
-import type {ImageSource, ImageSourceMetadata} from '@loaders.gl/loader-utils';
-import {createDataSource} from '@loaders.gl/core';
-import {_ArcGISImageServerSource, WMSSource} from '@loaders.gl/wms';
+import type {ImageSource, ImageSourceMetadata} from '@sensat/loaders-gl-loader-utils';
+import {createDataSource} from '@sensat/loaders-gl-core';
+import {_ArcGISImageServerSource, WMSSource} from '@sensat/loaders-gl-wms';
 
 import {Map} from 'react-map-gl';
 import maplibregl from 'maplibre-gl';

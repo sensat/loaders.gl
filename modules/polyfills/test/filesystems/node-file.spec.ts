@@ -1,6 +1,6 @@
 import test from 'tape-promise/tape';
-import {isBrowser} from '@loaders.gl/core';
-import {NodeFile} from '@loaders.gl/loader-utils';
+import {isBrowser} from '@sensat/loaders-gl-core';
+import {NodeFile} from '@sensat/loaders-gl-loader-utils';
 
 const SLPK_URL = 'modules/i3s/test/data/DA12_subset.slpk';
 const TEST_OFFSET = 100n;

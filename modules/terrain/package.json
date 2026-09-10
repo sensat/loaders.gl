@@ -1,15 +1,16 @@
 {
-  "name": "@loaders.gl/terrain",
-  "version": "4.4.6",
+  "name": "@sensat/loaders-gl-terrain",
+  "version": "4.4.6-sensat.0",
   "description": "Framework-independent loader for terrain raster formats",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/visgl/loaders.gl"
+    "url": "https://github.com/sensat/loaders.gl"
   },
   "keywords": [
     "webgl",
@@ -49,13 +50,12 @@
     "build-worker2": "esbuild src/workers/quantized-mesh-worker.ts --bundle --outfile=dist/quantized-mesh-worker.js --define:__VERSION__=\\\"$npm_package_version\\\""
   },
   "dependencies": {
-    "@loaders.gl/images": "4.4.6",
-    "@loaders.gl/loader-utils": "4.4.6",
-    "@loaders.gl/schema": "4.4.6",
-    "@mapbox/martini": "^0.2.0"
+    "@mapbox/martini": "^0.2.0",
+    "@sensat/loaders-gl-images": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-loader-utils": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-schema": "4.4.6-sensat.0"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "~4.4.0"
-  },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+    "@sensat/loaders-gl-core": "4.4.6-sensat.0"
+  }
 }

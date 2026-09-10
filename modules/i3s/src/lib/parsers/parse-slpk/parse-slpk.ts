@@ -1,4 +1,4 @@
-import type {ReadableFile} from '@loaders.gl/loader-utils';
+import type {ReadableFile} from '@sensat/loaders-gl-loader-utils';
 import {
   parseZipCDFileHeader,
   CD_HEADER_SIGNATURE,
@@ -7,7 +7,7 @@ import {
   parseHashTable,
   makeHashTableFromZipHeaders,
   readRange
-} from '@loaders.gl/zip';
+} from '@sensat/loaders-gl-zip';
 import {SLPKArchive} from './slpk-archieve';
 
 /**

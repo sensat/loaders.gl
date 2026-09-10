@@ -39,7 +39,7 @@ const config = {
     target: ['chrome110', 'firefox110', 'safari15'],
     format: 'umd',
     globals: {
-      '@loaders.gl/*': 'globalThis.loaders'
+      '@sensat/loaders-gl-*': 'globalThis.loaders'
     }
   },
 

@@ -1,6 +1,6 @@
 import test from 'tape-promise/tape';
 import {default as NodePages} from '../../../src/i3s-converter/helpers/node-pages';
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 import I3SConverter from '../../../src/i3s-converter/i3s-converter';
 import WriteQueue from '../../../src/lib/utils/write-queue';
 import {ConversionDump} from '../../../src/lib/utils/conversion-dump';
@@ -13,7 +13,7 @@ const getConverter = ({instantNodeWriting} = {instantNodeWriting: false}) => {
   return converter;
 };
 
-/** @type {import('@loaders.gl/i3s').NodeInPage} */
+/** @type {import('@sensat/loaders-gl-i3s').NodeInPage} */
 const newNodeStub = {
   index: 0,
   lodThreshold: 123.123,
@@ -185,7 +185,7 @@ test('tile-converter(i3s)#NodePages', async (t) => {
   t.test(
     'tile-converter(i3s)#NodePages - Update material method should set "material" object in the "mesh" with node index and material id',
     async (st) => {
-      /** @type {import('@loaders.gl/i3s').NodeInPage} */
+      /** @type {import('@sensat/loaders-gl-i3s').NodeInPage} */
       const newNodeWithMesh = {
         ...newNodeStub,
         mesh: {

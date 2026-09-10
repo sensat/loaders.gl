@@ -25,8 +25,8 @@ which [Parquet format features](/docs/modules/parquet/formats/parquet) are suppo
 Load a Parquet file as a table.
 
 ```typescript
-import {ParquetLoader} from '@loaders.gl/parquet';
-import {load} from '@loaders.gl/core';
+import {ParquetLoader} from '@sensat/loaders-gl-parquet';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, ParquetLoader, {parquet: options});
 ```
@@ -34,8 +34,8 @@ const data = await load(url, ParquetLoader, {parquet: options});
 The ParquetLoader supports streaming parsing, in which case it will yield "batches" of rows.
 
 ```typescript
-import {ParquetLoader} from '@loaders.gl/parquet';
-import {loadInBatches} from '@loaders.gl/core';
+import {ParquetLoader} from '@sensat/loaders-gl-parquet';
+import {loadInBatches} from '@sensat/loaders-gl-core';
 
 const batches = await loadInBatches('geo.parquet', ParquetLoader, {parquet: options}});
 
@@ -56,8 +56,8 @@ Some compressions are big and need to be imported explicitly by the application
 and passed to the `ParquetLoader`
 
 ```typescript
-import {ParquetLoader} from '@loaders.gl/parquet';
-import {load} from '@loaders.gl/core';
+import {ParquetLoader} from '@sensat/loaders-gl-parquet';
+import {load} from '@sensat/loaders-gl-core';
 
 import {ZstdCodec} from 'zstd-codec';
 import lz4js from 'lz4js';

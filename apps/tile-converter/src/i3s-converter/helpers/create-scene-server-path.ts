@@ -1,4 +1,4 @@
-import type {SceneLayer3D} from '@loaders.gl/i3s';
+import type {SceneLayer3D} from '@sensat/loaders-gl-i3s';
 import {v4 as uuidv4} from 'uuid';
 import transform from 'json-map-transform';
 import {join} from 'path';

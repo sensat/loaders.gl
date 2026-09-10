@@ -4,11 +4,11 @@
 // Copyright 2022 Foursquare Labs, Inc.
 
 import test from 'tape-promise/tape';
-import {CSVWriterOptions, CSVWriter} from '@loaders.gl/csv';
-import {encodeTableAsText} from '@loaders.gl/core';
+import {CSVWriterOptions, CSVWriter} from '@sensat/loaders-gl-csv';
+import {encodeTableAsText} from '@sensat/loaders-gl-core';
 
-import {Table} from '@loaders.gl/schema';
-import {makeTestTable, tableWithGeometryColumn} from '@loaders.gl/schema-utils/test/shared-utils';
+import {Table} from '@sensat/loaders-gl-schema';
+import {makeTestTable, tableWithGeometryColumn} from '@sensat/loaders-gl-schema-utils/test/shared-utils';
 
 type TestCase = {
   name: string;

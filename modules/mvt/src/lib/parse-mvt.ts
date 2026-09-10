@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import type {FlatFeature, Feature, GeoJSONTable, BinaryFeatureCollection} from '@loaders.gl/schema';
-import {flatGeojsonToBinary, GeojsonGeometryInfo} from '@loaders.gl/gis';
-import {log} from '@loaders.gl/loader-utils';
+import type {FlatFeature, Feature, GeoJSONTable, BinaryFeatureCollection} from '@sensat/loaders-gl-schema';
+import {flatGeojsonToBinary, GeojsonGeometryInfo} from '@sensat/loaders-gl-gis';
+import {log} from '@sensat/loaders-gl-loader-utils';
 import Protobuf from 'pbf';
 
 import {VectorTile} from './vector-tile/vector-tile';

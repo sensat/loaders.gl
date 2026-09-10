@@ -23,8 +23,8 @@ Note: Most applications will want to use the `ShapefileLoader` instead of this l
 The `DBFLoader` parses feature attributes from the Shapefile format.
 
 ```typescript
-import {DBFLoader} from '@loaders.gl/shapefile';
-import {load} from '@loaders.gl/core';
+import {DBFLoader} from '@sensat/loaders-gl-shapefile';
+import {load} from '@sensat/loaders-gl-core';
 
 const options = {
   dbf: {

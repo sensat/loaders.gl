@@ -4,7 +4,7 @@
 
 ## Formats
 
-The `@loaders.gl/wkt` module handles the following formats:
+The `@sensat/loaders-gl-wkt` module handles the following formats:
 
 | Format                                                                                       | Description                               |
 | -------------------------------------------------------------------------------------------- | ----------------------------------------- |

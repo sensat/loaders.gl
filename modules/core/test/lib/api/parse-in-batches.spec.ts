@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {parseInBatches} from '@loaders.gl/core';
+import {parseInBatches} from '@sensat/loaders-gl-core';
 
 const NoOpLoader = {
   name: 'JSON',

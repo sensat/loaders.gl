@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-import type {TypedArray, MeshAttribute, MeshGeometry} from '@loaders.gl/schema';
+import type {TypedArray, MeshAttribute, MeshGeometry} from '@sensat/loaders-gl-schema';
 
 // Draco types (input)
 import type {
@@ -25,7 +25,7 @@ import type {
   DracoOctahedronTransform
 } from './draco-types';
 
-import {getMeshBoundingBox} from '@loaders.gl/schema-utils';
+import {getMeshBoundingBox} from '@sensat/loaders-gl-schema-utils';
 import {getDracoSchema} from './utils/get-draco-schema';
 
 /** Options to control draco parsing */

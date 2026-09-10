@@ -1,10 +1,10 @@
 import test from 'tape-promise/tape';
 
-import {mergeOptions} from '@loaders.gl/loader-utils';
-import type {XMLLoaderOptions} from '@loaders.gl/xml';
+import {mergeOptions} from '@sensat/loaders-gl-loader-utils';
+import type {XMLLoaderOptions} from '@sensat/loaders-gl-xml';
 
 // NOTE: addAliases is not a public export, already used by test setup
-// import {_addAliases} from '@loaders.gl/loader-utils';
+// import {_addAliases} from '@sensat/loaders-gl-loader-utils';
 
 test('mergeOptions', (t) => {
   const originalOptions: XMLLoaderOptions = {

@@ -5,20 +5,20 @@
 import test from 'tape-promise/tape';
 import {validateLoader} from 'test/common/conformance';
 
-import {load, loadInBatches, isAsyncIterable} from '@loaders.gl/core';
+import {load, loadInBatches, isAsyncIterable} from '@sensat/loaders-gl-core';
 import {CSVLoader} from '../src/csv-loader';
-import {getTableLength} from '@loaders.gl/schema-utils';
+import {getTableLength} from '@sensat/loaders-gl-schema-utils';
 
 // Small CSV Sample Files
-const CSV_SAMPLE_URL = '@loaders.gl/csv/test/data/sample.csv';
-const CSV_SAMPLE_VERY_LONG_URL = '@loaders.gl/csv/test/data/sample-very-long.csv';
-const CSV_SAMPLE_URL_DUPLICATE_COLS = '@loaders.gl/csv/test/data/sample-duplicate-cols.csv';
-const CSV_SAMPLE_URL_EMPTY_LINES = '@loaders.gl/csv/test/data/sample-empty-line.csv';
-const CSV_STATES_URL = '@loaders.gl/csv/test/data/states.csv';
-const CSV_INCIDENTS_URL_QUOTES = '@loaders.gl/csv/test/data/sf_incidents-small.csv';
-const CSV_NO_HEADER_URL = '@loaders.gl/csv/test/data/numbers-100-no-header.csv';
+const CSV_SAMPLE_URL = '@sensat/loaders-gl-csv/test/data/sample.csv';
+const CSV_SAMPLE_VERY_LONG_URL = '@sensat/loaders-gl-csv/test/data/sample-very-long.csv';
+const CSV_SAMPLE_URL_DUPLICATE_COLS = '@sensat/loaders-gl-csv/test/data/sample-duplicate-cols.csv';
+const CSV_SAMPLE_URL_EMPTY_LINES = '@sensat/loaders-gl-csv/test/data/sample-empty-line.csv';
+const CSV_STATES_URL = '@sensat/loaders-gl-csv/test/data/states.csv';
+const CSV_INCIDENTS_URL_QUOTES = '@sensat/loaders-gl-csv/test/data/sf_incidents-small.csv';
+const CSV_NO_HEADER_URL = '@sensat/loaders-gl-csv/test/data/numbers-100-no-header.csv';
 
-const TSV_BRAZIL = '@loaders.gl/csv/test/data/tsv/brazil.tsv';
+const TSV_BRAZIL = '@sensat/loaders-gl-csv/test/data/tsv/brazil.tsv';
 
 test('CSVLoader#loader conformance', (t) => {
   validateLoader(t, CSVLoader, 'CSVLoader');

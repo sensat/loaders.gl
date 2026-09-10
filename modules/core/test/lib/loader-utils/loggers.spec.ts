@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {NullLog, ConsoleLog} from '@loaders.gl/core/lib/loader-utils/loggers';
+import {NullLog, ConsoleLog} from '@sensat/loaders-gl-core/lib/loader-utils/loggers';
 
 test('NullLog#methods', (t) => {
   const log = new NullLog();

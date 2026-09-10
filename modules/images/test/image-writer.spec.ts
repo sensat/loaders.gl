@@ -1,6 +1,6 @@
 import test from 'tape-promise/tape';
-import {encode, parse} from '@loaders.gl/core';
-import {ImageWriter, ImageLoader, getBinaryImageMetadata} from '@loaders.gl/images';
+import {encode, parse} from '@sensat/loaders-gl-core';
+import {ImageWriter, ImageLoader, getBinaryImageMetadata} from '@sensat/loaders-gl-images';
 
 const IMAGE = {
   width: 2,

@@ -31,7 +31,7 @@ export type WriterOptions = {
 };
 
 /**
- * A writer definition that can be used with `@loaders.gl/core` functions
+ * A writer definition that can be used with `@sensat/loaders-gl-core` functions
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type Writer<DataT = unknown, BatchT = unknown, WriterOptionsT = WriterOptions> = Format & {
@@ -66,7 +66,7 @@ export type Writer<DataT = unknown, BatchT = unknown, WriterOptionsT = WriterOpt
 };
 
 /**
- * A writer definition that can be used with `@loaders.gl/core` functions
+ * A writer definition that can be used with `@sensat/loaders-gl-core` functions
  */
 export type WriterWithEncoder<
   DataT = unknown,

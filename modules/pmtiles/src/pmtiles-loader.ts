@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {LoaderWithParser, LoaderOptions, ReadableFile} from '@loaders.gl/loader-utils';
-import {BlobFile} from '@loaders.gl/loader-utils';
+import type {LoaderWithParser, LoaderOptions, ReadableFile} from '@sensat/loaders-gl-loader-utils';
+import {BlobFile} from '@sensat/loaders-gl-loader-utils';
 import {VERSION} from './lib/version';
 
 import {VectorSourceInfo, ImageSourceInfo} from './source-info';

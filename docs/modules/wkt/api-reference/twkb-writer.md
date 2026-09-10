@@ -21,15 +21,15 @@ Writer for the [Tiny Well-known binary][twkb] format for representation of geome
 ## Installation
 
 ```bash
-npm install @loaders.gl/wkt
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-wkt
+npm install @sensat/loaders-gl-core
 ```
 
 ## Usage
 
 ```typescript
-import {TWKBWriter} from '@loaders.gl/wkt';
-import {encodeSync} from '@loaders.gl/core';
+import {TWKBWriter} from '@sensat/loaders-gl-wkt';
+import {encodeSync} from '@sensat/loaders-gl-core';
 
 const geometry = {
   type: 'Polygon',

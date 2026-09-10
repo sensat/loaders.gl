@@ -2,15 +2,15 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Schema, Field, DataType} from '@loaders.gl/schema';
+import type {Schema, Field, DataType} from '@sensat/loaders-gl-schema';
 import type {
   Source,
   DataSourceOptions,
   TileSource,
   GetTileParameters,
   GetTileDataParameters
-} from '@loaders.gl/loader-utils';
-import {DataSource} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
+import {DataSource} from '@sensat/loaders-gl-loader-utils';
 
 import {Copc, Hierarchy, Dimension, Getter} from 'copc';
 

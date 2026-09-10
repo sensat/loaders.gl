@@ -1,7 +1,7 @@
-import {fetchFile, parse} from '@loaders.gl/core';
-import {CSVLoader} from '@loaders.gl/csv';
+import {fetchFile, parse} from '@sensat/loaders-gl-core';
+import {CSVLoader} from '@sensat/loaders-gl-csv';
 
-const SAMPLE_CSV_URL = '@loaders.gl/csv/test/data/sample-very-long.csv';
+const SAMPLE_CSV_URL = '@sensat/loaders-gl-csv/test/data/sample-very-long.csv';
 
 // Comparison loader based on D3
 import {csvParseRows} from 'd3-dsv';

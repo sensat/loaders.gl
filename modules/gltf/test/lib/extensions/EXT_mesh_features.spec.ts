@@ -2,7 +2,7 @@
 import test from 'tape-promise/tape';
 
 import {decodeExtensions, encodeExtensions} from '../../../src/lib/api/gltf-extensions';
-import {GLTFScenegraph, createExtMeshFeatures, type GLTF} from '@loaders.gl/gltf';
+import {GLTFScenegraph, createExtMeshFeatures, type GLTF} from '@sensat/loaders-gl-gltf';
 
 const binaryBufferData = [
   0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 1, 33, 223, 70, 43, 39,

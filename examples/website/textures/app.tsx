@@ -152,7 +152,7 @@ function Description() {
         <code>Texture2D</code> class.
       </p>
       <p>
-        The <code>@loaders.gl/textures</code> &nbsp; module provides loaders for compressed textures
+        The <code>@sensat/loaders-gl-textures</code> &nbsp; module provides loaders for compressed textures
         stored in <b>KTX</b>, <b>DDS</b> and <b>PVR</b> container files, plus <b>CRN</b> (Crunch),
         and <b>Basis</b> supercompressed textures.
       </p>

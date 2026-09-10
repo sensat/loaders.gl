@@ -1,9 +1,9 @@
 /* eslint-disable */
 /*
 import test from 'tape-promise/tape';
-import {GLBParser, GLBBuilder} from '@loaders.gl/gltf';
+import {GLBParser, GLBBuilder} from '@sensat/loaders-gl-gltf';
 
-import TEST_JSON from '@loaders.gl/gltf/test/data/glb/test-data.json';
+import TEST_JSON from '@sensat/loaders-gl-gltf/test/data/glb/test-data.json';
 
 const TEST_CASES = {
   flat: {

@@ -27,9 +27,9 @@ GeoPackage loader
 To load all tables in a geopackage file as GeoJSON:
 
 ```typescript
-import {GeoPackageLoader, GeoPackageLoaderOptions} from '@loaders.gl/geopackage';
-import {load} from '@loaders.gl/core';
-import {Tables, ObjectRowTable, Feature} from '@loaders.gl/schema';
+import {GeoPackageLoader, GeoPackageLoaderOptions} from '@sensat/loaders-gl-geopackage';
+import {load} from '@sensat/loaders-gl-core';
+import {Tables, ObjectRowTable, Feature} from '@sensat/loaders-gl-schema';
 
 const optionsAsTable: GeoPackageLoaderOptions = {
   geopackage: {
@@ -72,7 +72,7 @@ The `GeoPackageLoader` currently loads all features from all vector tables.
 
 - If `options.gis.format` is `'geojson'`:
 
-  Returns `Record<string, Feature[]>`, an object mapping from table name to an array of GeoJSON features. The `Feature` type is defined in `@loaders.gl/schema`.
+  Returns `Record<string, Feature[]>`, an object mapping from table name to an array of GeoJSON features. The `Feature` type is defined in `@sensat/loaders-gl-schema`.
 
 ## Remarks
 

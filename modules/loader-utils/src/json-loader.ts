@@ -1,5 +1,5 @@
 import type {LoaderWithParser, LoaderOptions} from './loader-types';
-import type {Table, TableBatch} from '@loaders.gl/schema';
+import type {Table, TableBatch} from '@sensat/loaders-gl-schema';
 
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
@@ -9,7 +9,7 @@ export type JSONLoaderOptions = LoaderOptions;
 
 /**
  * A JSON Micro loader (minimal bundle size)
- * Alternative to `@loaders.gl/json`
+ * Alternative to `@sensat/loaders-gl-json`
  */
 export const JSONLoader = {
   dataType: null as unknown as Table,

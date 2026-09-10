@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {_BinaryChunkReader as BinaryChunkReader} from '@loaders.gl/shapefile';
+import {_BinaryChunkReader as BinaryChunkReader} from '@sensat/loaders-gl-shapefile';
 
 const buf1 = new Uint8Array([1, 2, 3]).buffer;
 const buf2 = new Uint8Array([4, 5, 6]).buffer;

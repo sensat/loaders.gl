@@ -5,11 +5,11 @@
 import test from 'tape-promise/tape';
 import {validateLoader} from 'test/common/conformance';
 
-import {fetchFile, load} from '@loaders.gl/core';
-import {KMLLoader} from '@loaders.gl/kml';
+import {fetchFile, load} from '@sensat/loaders-gl-core';
+import {KMLLoader} from '@sensat/loaders-gl-kml';
 
-const KML_URL = '@loaders.gl/kml/test/data/kml/KML_Samples.kml';
-const KML_LINESTRING_URL = '@loaders.gl/kml/test/data/kml/linestring';
+const KML_URL = '@sensat/loaders-gl-kml/test/data/kml/KML_Samples.kml';
+const KML_LINESTRING_URL = '@sensat/loaders-gl-kml/test/data/kml/linestring';
 
 const INVALID_KML = `\
 <?xml version="1.0" encoding="UTF-8"?>

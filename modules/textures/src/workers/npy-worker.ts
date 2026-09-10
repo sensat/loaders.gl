@@ -3,6 +3,6 @@
 // Copyright (c) vis.gl contributors
 
 import {NPYLoader} from '../npy-loader';
-import {createLoaderWorker} from '@loaders.gl/loader-utils';
+import {createLoaderWorker} from '@sensat/loaders-gl-loader-utils';
 
 createLoaderWorker(NPYLoader);

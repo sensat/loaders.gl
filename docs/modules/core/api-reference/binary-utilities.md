@@ -5,7 +5,7 @@ loaders.gl provides a set of functions to simplify working with binary data. The
 ## Usage
 
 ```typescript
-import {toArrayBuffer} from '@loaders.gl/core';
+import {toArrayBuffer} from '@sensat/loaders-gl-core';
 ```
 
 ## Functions

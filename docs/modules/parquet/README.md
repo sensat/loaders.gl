@@ -1,4 +1,4 @@
-# @loaders.gl/parquet 🚧
+# @sensat/loaders-gl-parquet 🚧
 
 <p class="badges">
   <img src="https://img.shields.io/badge/From-v3.1-blue.svg?style=flat-square" alt="From-v3.1" />
@@ -15,4 +15,4 @@ Experimental loader and writer for the Apache Parquet format.
 
 # License
 
-`@loaders.gl/parquet` module is based on Apache 2.0 licensed code.
+`@sensat/loaders-gl-parquet` module is based on Apache 2.0 licensed code.

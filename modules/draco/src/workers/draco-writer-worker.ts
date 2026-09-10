@@ -1,4 +1,4 @@
-import {WorkerBody, WorkerMessagePayload} from '@loaders.gl/worker-utils';
+import {WorkerBody, WorkerMessagePayload} from '@sensat/loaders-gl-worker-utils';
 import {DracoWriter} from '../draco-writer';
 
 (async () => {

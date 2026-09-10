@@ -17,8 +17,8 @@ A loader for image-based composite textures described by a JSON manifest.
 ## Usage
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {TextureLoader} from '@loaders.gl/textures';
+import {load} from '@sensat/loaders-gl-core';
+import {TextureLoader} from '@sensat/loaders-gl-textures';
 
 const image = await load('texture.image-texture.json', TextureLoader);
 ```
@@ -26,8 +26,8 @@ const image = await load('texture.image-texture.json', TextureLoader);
 Member images are parsed with `ImageLoader` by default. If you call `load()` with a loader array, those additional loaders are also available for manifest members:
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {TextureLoader, CompressedTextureLoader, BasisLoader} from '@loaders.gl/textures';
+import {load} from '@sensat/loaders-gl-core';
+import {TextureLoader, CompressedTextureLoader, BasisLoader} from '@sensat/loaders-gl-textures';
 
 const texture = await load('texture.image-texture.json', [
   TextureLoader,

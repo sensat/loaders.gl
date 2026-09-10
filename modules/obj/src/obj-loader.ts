@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderOptions, LoaderWithParser} from '@loaders.gl/loader-utils';
-import type {Mesh} from '@loaders.gl/schema';
+import type {Loader, LoaderOptions, LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
+import type {Mesh} from '@sensat/loaders-gl-schema';
 import {OBJFormat} from './obj-format';
 import {parseOBJ} from './lib/parse-obj';
 

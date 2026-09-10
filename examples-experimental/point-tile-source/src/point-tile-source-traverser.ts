@@ -1,4 +1,4 @@
-import {type POTreeNode} from "@loaders.gl/potree";
+import {type POTreeNode} from "@sensat/loaders-gl-potree";
 
 export class PointTileSourceTraverser {
     root?: POTreeNode;

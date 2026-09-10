@@ -1,4 +1,4 @@
-import type {LoaderOptions, LoaderWithParser} from '@loaders.gl/loader-utils';
+import type {LoaderOptions, LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
 import type {ArcGISWebSceneData} from './types';
 
 import {parseWebscene} from './lib/parsers/parse-arcgis-webscene';

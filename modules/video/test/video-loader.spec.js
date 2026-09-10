@@ -1,7 +1,7 @@
 import test from 'tape-promise/tape';
 
-import {VideoLoader} from '@loaders.gl/video';
-import {isBrowser} from '@loaders.gl/core';
+import {VideoLoader} from '@sensat/loaders-gl-video';
+import {isBrowser} from '@sensat/loaders-gl-core';
 
 test('video loaders#imports', (t) => {
   t.ok(VideoLoader, 'ImageLoader defined');

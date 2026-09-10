@@ -1,7 +1,7 @@
 // Forked from @Gozala's https://github.com/Gozala/web-blob under MIT license
 import test from 'tape-promise/tape';
 
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 
 if (!isBrowser) {
   test('test basic', async (t) => {

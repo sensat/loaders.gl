@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {parseFromContext} from '@loaders.gl/loader-utils';
+import {parseFromContext} from '@sensat/loaders-gl-loader-utils';
 import {
   isBrowser,
   load,
@@ -11,10 +11,10 @@ import {
   registerLoaders,
   resolvePath,
   NullWorkerLoader
-} from '@loaders.gl/core';
-import {JSONLoader} from '@loaders.gl/json';
+} from '@sensat/loaders-gl-core';
+import {JSONLoader} from '@sensat/loaders-gl-json';
 
-const JSON_URL = '@loaders.gl/core/test/data/files/basic.json';
+const JSON_URL = '@sensat/loaders-gl-core/test/data/files/basic.json';
 
 const JSON_DATA = [{col1: 22, col2: 'abc'}];
 

@@ -7,9 +7,9 @@ import type {
   GeoJSONTableBatch,
   ArrowTable,
   ArrowTableBatch
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 import {parseArrowSync, parseArrowInBatches} from './parse-arrow';
-import {convertGeoArrowToTable} from '@loaders.gl/gis';
+import {convertGeoArrowToTable} from '@sensat/loaders-gl-gis';
 
 // Parses arrow to a columnar table
 export function parseGeoArrowSync(

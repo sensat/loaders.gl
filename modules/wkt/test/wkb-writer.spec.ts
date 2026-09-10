@@ -3,14 +3,14 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {fetchFile, encodeSync} from '@loaders.gl/core';
-import {WKBWriter} from '@loaders.gl/wkt';
-import {parseTestCases} from '@loaders.gl/gis/test/data/wkt/parse-test-cases';
+import {fetchFile, encodeSync} from '@sensat/loaders-gl-core';
+import {WKBWriter} from '@sensat/loaders-gl-wkt';
+import {parseTestCases} from '@sensat/loaders-gl-gis/test/data/wkt/parse-test-cases';
 
-const WKB_2D_TEST_CASES = '@loaders.gl/gis/test/data/wkt/wkb-testdata2d.json';
-const WKB_2D_NAN_TEST_CASES = '@loaders.gl/gis/test/data/wkt/wkb-testdata2d-nan.json';
-const WKB_Z_TEST_CASES = '@loaders.gl/gis/test/data/wkt/wkb-testdataZ.json';
-const WKB_Z_NAN_TEST_CASES = '@loaders.gl/gis/test/data/wkt/wkb-testdataZ-nan.json';
+const WKB_2D_TEST_CASES = '@sensat/loaders-gl-gis/test/data/wkt/wkb-testdata2d.json';
+const WKB_2D_NAN_TEST_CASES = '@sensat/loaders-gl-gis/test/data/wkt/wkb-testdata2d-nan.json';
+const WKB_Z_TEST_CASES = '@sensat/loaders-gl-gis/test/data/wkt/wkb-testdataZ.json';
+const WKB_Z_NAN_TEST_CASES = '@sensat/loaders-gl-gis/test/data/wkt/wkb-testdataZ-nan.json';
 
 test('WKBWriter#2D', async (t) => {
   const response = await fetchFile(WKB_2D_TEST_CASES);

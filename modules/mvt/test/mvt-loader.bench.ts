@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {MVTLoader} from '@loaders.gl/mvt';
-import {fetchFile, parse} from '@loaders.gl/core';
-import {geojsonToBinary} from '@loaders.gl/gis';
+import {MVTLoader} from '@sensat/loaders-gl-mvt';
+import {fetchFile, parse} from '@sensat/loaders-gl-core';
+import {geojsonToBinary} from '@sensat/loaders-gl-gis';
 
 // Define MVT files to run bench tests over
 const testfiles = {
@@ -16,7 +16,7 @@ const testfiles = {
   // See `data/fetch_data.py`
 };
 
-const DATA_PATH = '@loaders.gl/mvt/test/data/mvt';
+const DATA_PATH = '@sensat/loaders-gl-mvt/test/data/mvt';
 
 // Benchmark to compare old method of parsing binary
 // format via an intermediate geojson step with the

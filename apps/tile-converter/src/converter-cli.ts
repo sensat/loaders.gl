@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
-import '@loaders.gl/polyfills';
+import '@sensat/loaders-gl-polyfills';
 import {join} from 'path';
 import inquirer from 'inquirer';
-import {I3SConverter, Tiles3DConverter} from '@loaders.gl/tile-converter';
+import {I3SConverter, Tiles3DConverter} from '@sensat/loaders-gl-tile-converter';
 import {DepsInstaller} from './deps-installer/deps-installer';
 import {
   getBooleanValue,
@@ -11,8 +11,8 @@ import {
   getURLValue,
   validateOptionsWithEqual
 } from './lib/utils/cli-utils';
-import {addOneFile, composeHashFile, makeZipCDHeaderIterator} from '@loaders.gl/zip';
-import {NodeFile} from '@loaders.gl/loader-utils';
+import {addOneFile, composeHashFile, makeZipCDHeaderIterator} from '@sensat/loaders-gl-zip';
+import {NodeFile} from '@sensat/loaders-gl-loader-utils';
 // @ts-ignore
 import {copyFile} from 'node:fs/promises';
 

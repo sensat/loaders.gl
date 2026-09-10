@@ -3,9 +3,9 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import type {Feature} from '@loaders.gl/schema';
+import type {Feature} from '@sensat/loaders-gl-schema';
 
-import {MLTLoader, MLTSource} from '@loaders.gl/mlt';
+import {MLTLoader, MLTSource} from '@sensat/loaders-gl-mlt';
 import {getURLFromTemplate, isURLTemplate} from '../src/mlt-source';
 
 test('MLTSource#testURL', (t) => {

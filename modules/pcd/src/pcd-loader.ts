@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderOptions, LoaderWithParser} from '@loaders.gl/loader-utils';
+import type {Loader, LoaderOptions, LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
 import type {PCDMesh} from './lib/pcd-types';
 import {parsePCD} from './lib/parse-pcd';
 import {PCDFormat} from './pcd-format';

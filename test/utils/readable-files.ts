@@ -1,6 +1,6 @@
-import {fetchFile, isBrowser} from '@loaders.gl/core';
-import {BlobFile, NodeFile, ReadableFile} from '@loaders.gl/loader-utils';
-import {DataViewReadableFile} from '@loaders.gl/zip';
+import {fetchFile, isBrowser} from '@sensat/loaders-gl-core';
+import {BlobFile, NodeFile, ReadableFile} from '@sensat/loaders-gl-loader-utils';
+import {DataViewReadableFile} from '@sensat/loaders-gl-zip';
 
 export async function loadArrayBufferFromFile(path: string): Promise<ArrayBuffer> {
   const response = await fetchFile(path);

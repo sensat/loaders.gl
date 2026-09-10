@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {Schema, GeoJSONTable} from '@loaders.gl/schema';
+import {Schema, GeoJSONTable} from '@sensat/loaders-gl-schema';
 import type {
   DataSourceOptions,
   VectorSourceMetadata,
   GetFeaturesParameters
-} from '@loaders.gl/loader-utils';
-import {Source, DataSource, VectorSource} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
+import {Source, DataSource, VectorSource} from '@sensat/loaders-gl-loader-utils';
 
 import {FlatGeobufLoader} from './flatgeobuf-loader';
 import {FlatGeobufFormat} from './flatgeobuf-format';

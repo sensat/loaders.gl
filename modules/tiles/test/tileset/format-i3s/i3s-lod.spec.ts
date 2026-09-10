@@ -1,7 +1,7 @@
 import test from 'tape-promise/tape';
 import {WebMercatorViewport} from '@deck.gl/core';
-import {getI3sTileHeader} from '@loaders.gl/i3s/test/test-utils/load-utils';
-import {getFrameState, Tile3D, Tileset3D, getLodStatus} from '@loaders.gl/tiles';
+import {getI3sTileHeader} from '@sensat/loaders-gl-i3s/test/test-utils/load-utils';
+import {getFrameState, Tile3D, Tileset3D, getLodStatus} from '@sensat/loaders-gl-tiles';
 import {
   getBigLodMetricTileHeader,
   getNextAfterRootTileHeader,

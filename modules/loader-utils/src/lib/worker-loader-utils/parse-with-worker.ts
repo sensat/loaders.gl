@@ -5,7 +5,7 @@ import {
   isBrowser,
   WorkerFarm,
   getWorkerURL
-} from '@loaders.gl/worker-utils';
+} from '@sensat/loaders-gl-worker-utils';
 import type {Loader, LoaderOptions, LoaderContext} from '../../loader-types';
 
 /**
@@ -30,7 +30,7 @@ export function canParseWithWorker(loader: Loader, options?: LoaderOptions) {
 
 /**
  * this function expects that the worker function sends certain messages,
- * this can be automated if the worker is wrapper by a call to createLoaderWorker in @loaders.gl/loader-utils.
+ * this can be automated if the worker is wrapper by a call to createLoaderWorker in @sensat/loaders-gl-loader-utils.
  */
 export async function parseWithWorker(
   loader: Loader,

@@ -3,9 +3,9 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {fetchFile, _fetchProgress} from '@loaders.gl/core';
+import {fetchFile, _fetchProgress} from '@sensat/loaders-gl-core';
 
-const PROGRESS_IMAGE_URL = '@loaders.gl/images/test/data/img1-preview.jpeg';
+const PROGRESS_IMAGE_URL = '@sensat/loaders-gl-images/test/data/img1-preview.jpeg';
 
 test('progress#fetchProgress', async (t) => {
   t.ok(_fetchProgress, '_fetchProgress defined');

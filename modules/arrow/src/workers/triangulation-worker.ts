@@ -3,12 +3,12 @@
 // Copyright (c) vis.gl contributors
 
 import * as arrow from 'apache-arrow';
-import {createWorker} from '@loaders.gl/worker-utils';
+import {createWorker} from '@sensat/loaders-gl-worker-utils';
 import {
   getTriangleIndices,
   convertGeoArrowToBinaryFeatureCollection,
   BinaryDataFromGeoArrow
-} from '@loaders.gl/gis';
+} from '@sensat/loaders-gl-gis';
 import type {
   TriangulationWorkerInput,
   TriangulateInput,

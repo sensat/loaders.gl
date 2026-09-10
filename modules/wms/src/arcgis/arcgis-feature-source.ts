@@ -2,15 +2,15 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Schema, GeoJSONTable} from '@loaders.gl/schema';
+import type {Schema, GeoJSONTable} from '@sensat/loaders-gl-schema';
 import type {
   DataSourceOptions,
   VectorSourceMetadata,
   GetFeaturesParameters,
   VectorSource,
   LoaderWithParser
-} from '@loaders.gl/loader-utils';
-import {Source, DataSource} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
+import {Source, DataSource} from '@sensat/loaders-gl-loader-utils';
 
 const TEST_SERVICE =
   'https://services2.arcgis.com/CcI36Pduqd0OR4W9/ArcGIS/rest/services/Bicycle_Routes_Public/FeatureServer/0';

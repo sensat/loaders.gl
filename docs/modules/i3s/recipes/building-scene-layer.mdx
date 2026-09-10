@@ -32,8 +32,8 @@ For BSL it is necessary to do preparation steps to obtain data for `Tile3DLayer`
 Loaders.gl has `I3SBuildingSceneLayerLoader` that is used to load BSL JSON metadata and pick `3DObject` sublayers.
 
 ```javascript
-import {load} from '@loaders.gl/core';
-import {I3SBuildingSceneLayerLoader} from '@loaders.gl/i3s';
+import {load} from '@sensat/loaders-gl-core';
+import {I3SBuildingSceneLayerLoader} from '@sensat/loaders-gl-i3s';
 
 const {header, sublayers} = await load(tilesetData.url, I3SBuildingSceneLayerLoader);
 ```
@@ -47,7 +47,7 @@ import {StaticMap} from 'react-map-gl';
 import DeckGL from '@deck.gl/react';
 import {Tile3DLayer} from '@deck.gl/geo-layers';
 import {COORDINATE_SYSTEM} from '@deck.gl/core';
-import {I3SLoader} from '@loaders.gl/i3s';
+import {I3SLoader} from '@sensat/loaders-gl-i3s';
 
 function renderLayer() {
   const tile3dLayers = sublayers.map((layer) => {

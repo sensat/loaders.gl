@@ -1,12 +1,12 @@
 # Overview
 
-The `@loaders.gl/geotiff` module provides support for the [GeoTIFF](/docs/modules/geotiff/formats/geotiff) format.
+The `@sensat/loaders-gl-geotiff` module provides support for the [GeoTIFF](/docs/modules/geotiff/formats/geotiff) format.
 GeoTIFF images embedded georeferencing information within a multi-band image file.
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/core @loaders.gl/geotiff
+npm install @sensat/loaders-gl-core @sensat/loaders-gl-geotiff
 ```
 
 ## Loaders and Writers

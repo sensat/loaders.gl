@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-globals */
 import type {LoaderWithParser, LoaderOptions, LoaderContext} from '../../loader-types';
-import {WorkerBody} from '@loaders.gl/worker-utils';
+import {WorkerBody} from '@sensat/loaders-gl-worker-utils';
 // import {validateLoaderVersion} from './validate-loader-version';
 
 let requestId = 0;

@@ -138,7 +138,7 @@ type PreloadOptions = {
 };
 
 /**
- * A worker loader definition that can be used with `@loaders.gl/core` functions
+ * A worker loader definition that can be used with `@sensat/loaders-gl-core` functions
  */
 export type Loader<DataT = any, BatchT = any, LoaderOptionsT = StrictLoaderOptions> = Format & {
   /** The result type of this loader  */
@@ -183,7 +183,7 @@ export type Loader<DataT = any, BatchT = any, LoaderOptionsT = StrictLoaderOptio
 };
 
 /**
- * A "bundled" loader definition that can be used with `@loaders.gl/core` functions
+ * A "bundled" loader definition that can be used with `@sensat/loaders-gl-core` functions
  * If a worker loader is supported it will also be supported.
  */
 export type LoaderWithParser<

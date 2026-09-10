@@ -11,7 +11,7 @@ import {
   getJSModule,
   getJSModuleOrNull,
   ensureArrayBuffer
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
 
 // import {ZstdCodec} from 'zstd-codec'; // https://bundlephobia.com/package/zstd-codec
 

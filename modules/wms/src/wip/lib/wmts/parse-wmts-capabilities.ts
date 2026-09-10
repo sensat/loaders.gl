@@ -1,6 +1,6 @@
 // loaders.gl, MIT license
 
-import {XMLLoader} from '@loaders.gl/xml';
+import {XMLLoader} from '@sensat/loaders-gl-xml';
 
 
 /** All capabilities of a WMTS service - response to a WMTS `GetCapabilities` data structure extracted from XML */

@@ -1,14 +1,14 @@
 # Overview
 
-The `@loaders.gl/mvt` module handles the [Mapbox Vector Tile](/docs/modules/mvt/formats/mvt) format, a protobuf-encoded format that defines geospatial geometries.
+The `@sensat/loaders-gl-mvt` module handles the [Mapbox Vector Tile](/docs/modules/mvt/formats/mvt) format, a protobuf-encoded format that defines geospatial geometries.
 
 The modules also provides a `TableTileSource` class that can serve up dynamic tiles from an in-memory `GeoJSON` file.
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/mvt
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-mvt
+npm install @sensat/loaders-gl-core
 ```
 
 ## Loaders and Writers

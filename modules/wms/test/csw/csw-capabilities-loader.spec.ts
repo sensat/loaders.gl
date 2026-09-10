@@ -5,10 +5,10 @@
 import test from 'tape-promise/tape';
 // import {validateLoader} from 'test/common/conformance';
 
-import {CSWCapabilitiesLoader} from '@loaders.gl/wms';
-import {load} from '@loaders.gl/core';
+import {CSWCapabilitiesLoader} from '@sensat/loaders-gl-wms';
+import {load} from '@sensat/loaders-gl-core';
 
-const CSW_CAPABILITIES_URL = '@loaders.gl/wms/test/data/csw/get-capabilities.xml';
+const CSW_CAPABILITIES_URL = '@sensat/loaders-gl-wms/test/data/csw/get-capabilities.xml';
 
 test('CSWCapabilitiesLoader#forecasts.xml', async (t) => {
   const capabilities = await load(CSW_CAPABILITIES_URL, CSWCapabilitiesLoader);

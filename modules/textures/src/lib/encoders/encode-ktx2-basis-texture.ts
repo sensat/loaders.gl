@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {ImageDataType} from '@loaders.gl/images';
-import {extractLoadLibraryOptions} from '@loaders.gl/worker-utils';
+import type {ImageDataType} from '@sensat/loaders-gl-images';
+import {extractLoadLibraryOptions} from '@sensat/loaders-gl-worker-utils';
 import {loadBasisEncoderModule} from '../parsers/basis-module-loader';
 import {type KTX2BasisWriterOptions} from '../../ktx2-basis-writer';
 

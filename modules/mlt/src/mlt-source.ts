@@ -7,9 +7,9 @@ import type {
   VectorTileSource,
   GetTileParameters,
   GetTileDataParameters
-} from '@loaders.gl/loader-utils';
-import type {BinaryFeatureCollection, Schema, Feature} from '@loaders.gl/schema';
-import {TileSourceMetadata, DataSource, DataSourceOptions} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
+import type {BinaryFeatureCollection, Schema, Feature} from '@sensat/loaders-gl-schema';
+import {TileSourceMetadata, DataSource, DataSourceOptions} from '@sensat/loaders-gl-loader-utils';
 import {MLTLoader, MLTLoaderOptions} from './mlt-loader';
 import {MLTFormat} from './mlt-format';
 

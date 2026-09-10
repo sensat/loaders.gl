@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {MLTLoader, MLTLoaderOptions} from '@loaders.gl/mlt';
+import {MLTLoader, MLTLoaderOptions} from '@sensat/loaders-gl-mlt';
 
 test('MLTLoader#metadata', (t) => {
   t.ok(MLTLoader, 'MLTLoader defined');

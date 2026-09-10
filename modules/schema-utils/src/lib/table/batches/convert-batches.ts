@@ -8,7 +8,7 @@ import type {
   ObjectRowTableBatch,
   ColumnarTableBatch,
   ArrowTableBatch
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 import {convertTable} from '../tables/convert-table';
 
 export function convertBatch(batches: TableBatch, shape: 'object-row-table'): ObjectRowTableBatch;

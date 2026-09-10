@@ -3,13 +3,13 @@
 // Copyright (c) vis.gl contributors
 
 import * as arrow from 'apache-arrow';
-import type {Table} from '@loaders.gl/schema';
+import type {Table} from '@sensat/loaders-gl-schema';
 import {
   convertSchemaToArrow,
   getTableLength,
   getTableNumCols,
   getTableCellAt
-} from '@loaders.gl/schema-utils';
+} from '@sensat/loaders-gl-schema-utils';
 
 export function* makeTableToArrowBatchesIterator(
   table: Table,

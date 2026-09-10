@@ -1,12 +1,12 @@
 # Overview
 
-The `@loaders.gl/pcd` module handles the the [Point Cloud Data](/docs/modules/pcd/formats/pcd), which stores 3D point cloud data).
+The `@sensat/loaders-gl-pcd` module handles the the [Point Cloud Data](/docs/modules/pcd/formats/pcd), which stores 3D point cloud data).
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/pcd
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-pcd
+npm install @sensat/loaders-gl-core
 ```
 
 ## Attribution

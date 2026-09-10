@@ -2,7 +2,7 @@ import {Vector3} from '@math.gl/core';
 import {Ellipsoid} from '@math.gl/geospatial';
 import {OrientedBoundingBox} from '@math.gl/culling';
 // @ts-expect-error
-import {GeoidHeightModel} from '@loaders.gl/tile-converter/lib/geoid-height-model';
+import {GeoidHeightModel} from '@sensat/loaders-gl-tile-converter/lib/geoid-height-model';
 
 /**
  * Convert quaternion-based OBB to half-axes-based OBB

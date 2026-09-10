@@ -1,7 +1,7 @@
 # MapLibre Tile (MLT)
 
 - _[MapLibre Tile format](https://github.com/maplibre/mlt)_
-- _[@loaders.gl/mlt](/docs/modules/mlt)_
+- _[@sensat/loaders-gl-mlt](/docs/modules/mlt)_
 - _[MLTLoader](/docs/modules/mlt/api-reference/mlt-loader)_
 - _[MLTSource](/docs/modules/mlt/api-reference/mlt-source)_
 - _[MLT example](/examples/tiles/mlt)_

@@ -13,8 +13,8 @@ Loader for the [Mapbox Vector Tile](https://docs.mapbox.com/vector-tiles/specifi
 ## Usage
 
 ```typescript
-import {MVTLoader} from '@loaders.gl/mvt';
-import {load} from '@loaders.gl/core';
+import {MVTLoader} from '@sensat/loaders-gl-mvt';
+import {load} from '@sensat/loaders-gl-core';
 
 // GeoJSON objects containing local coordinates decoded from tile origin to a range of [0 - (bufferSize / tileExtent), 1 + (bufferSize / tileExtent)]
 const geometryData = await load(url, MVTLoader);
@@ -41,8 +41,8 @@ const geoJSONfeatures = await load(url, MVTLoader, loaderOptions);
 The parser will return an array of [GeoJSON objects](https://tools.ietf.org/html/rfc7946) with WGS84 coordinates and feature properties from MVT if `coordinates` property is set to `wgs84` and `tileIndex` properties are present.
 
 ```typescript
-import {MVTLoader} from '@loaders.gl/mvt';
-import {load} from '@loaders.gl/core';
+import {MVTLoader} from '@sensat/loaders-gl-mvt';
+import {load} from '@sensat/loaders-gl-core';
 
 const geoJSONfeatures = await load(url, MVTLoader, {
   mvt: {
@@ -65,8 +65,8 @@ Even though tile coordinates go from 0 to 1, there can be some negative (or grea
 Note that local coordinates are relative to tile origin, which is in the top left.
 
 ```typescript
-import {MVTLoader} from '@loaders.gl/mvt';
-import {load} from '@loaders.gl/core';
+import {MVTLoader} from '@sensat/loaders-gl-mvt';
+import {load} from '@sensat/loaders-gl-core';
 
 const geoJSONfeatures = await load(url, MVTLoader);
 

@@ -1,15 +1,16 @@
 {
-  "name": "@loaders.gl/core",
-  "version": "4.4.6",
+  "name": "@sensat/loaders-gl-core",
+  "version": "4.4.6-sensat.0",
   "description": "The core API for working with loaders.gl loaders and writers",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/visgl/loaders.gl"
+    "url": "https://github.com/sensat/loaders.gl"
   },
   "keywords": [
     "loader",
@@ -58,11 +59,10 @@
     "build-worker-node": "esbuild src/workers/null-worker.ts --outfile=dist/null-worker-node.js --bundle --platform=node --target=node16 --define:__VERSION__=\\\"$npm_package_version\\\""
   },
   "dependencies": {
-    "@loaders.gl/loader-utils": "4.4.6",
-    "@loaders.gl/schema": "4.4.6",
-    "@loaders.gl/schema-utils": "4.4.6",
-    "@loaders.gl/worker-utils": "4.4.6",
-    "@probe.gl/log": "^4.1.1"
-  },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+    "@probe.gl/log": "^4.1.1",
+    "@sensat/loaders-gl-loader-utils": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-schema": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-schema-utils": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-worker-utils": "4.4.6-sensat.0"
+  }
 }

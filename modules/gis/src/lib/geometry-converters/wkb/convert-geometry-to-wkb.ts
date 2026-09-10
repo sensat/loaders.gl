@@ -14,7 +14,7 @@ import type {
   Polygon,
   MultiPolygon,
   GeometryCollection
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 import {WKBGeometryType, WKBOptions} from './helpers/wkb-types';
 import {BinaryWriter} from '../../utils/binary-writer';
 

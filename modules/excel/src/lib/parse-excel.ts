@@ -4,7 +4,7 @@
 
 import type {ExcelLoaderOptions} from '../excel-loader';
 import {utils, read} from 'xlsx';
-// import {convertToArrayRow} from '@loaders.gl/schema';
+// import {convertToArrayRow} from '@sensat/loaders-gl-schema';
 
 // local table names cache with dataUrl/tableNames array key/values
 const dataTableNamesMap = {};

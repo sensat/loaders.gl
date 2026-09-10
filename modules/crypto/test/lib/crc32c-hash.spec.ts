@@ -3,8 +3,8 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {fetchFile} from '@loaders.gl/core';
-import {CRC32CHash, encodeNumber} from '@loaders.gl/crypto';
+import {fetchFile} from '@sensat/loaders-gl-core';
+import {CRC32CHash, encodeNumber} from '@sensat/loaders-gl-crypto';
 
 const loadJSON = async (relativePath: string) => {
   const url = new URL(relativePath, import.meta.url);

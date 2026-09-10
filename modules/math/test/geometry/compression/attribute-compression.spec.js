@@ -16,7 +16,7 @@ import {
   compressTextureCoordinates,
   decompressTextureCoordinates,
   zigZagDeltaDecode
-} from '@loaders.gl/math';
+} from '@sensat/loaders-gl-math';
 
 const negativeUnitZ = new Vector3(0.0, 0.0, -1.0);
 

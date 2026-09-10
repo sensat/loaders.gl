@@ -11,7 +11,7 @@ import type {
   GeoJSONTable,
   ArrowTable,
   Feature
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 
 import {
   convertTable,
@@ -20,8 +20,8 @@ import {
   getTableLength,
   getTableNumCols,
   getTableCellAt
-} from '@loaders.gl/schema-utils';
-import {getGeometryColumnsFromSchema} from '@loaders.gl/geoarrow';
+} from '@sensat/loaders-gl-schema-utils';
+import {getGeometryColumnsFromSchema} from '@sensat/loaders-gl-geoarrow';
 import {convertGeoArrowGeometryToGeoJSON} from '../geometry-converters/convert-geoarrow-to-geojson';
 
 /**

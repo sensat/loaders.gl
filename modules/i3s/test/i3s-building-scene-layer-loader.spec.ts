@@ -1,6 +1,6 @@
 import test from 'tape-promise/tape';
-import {load} from '@loaders.gl/core';
-import {I3SBuildingSceneLayerLoader} from '@loaders.gl/i3s';
+import {load} from '@sensat/loaders-gl-core';
+import {I3SBuildingSceneLayerLoader} from '@sensat/loaders-gl-i3s';
 
 const BUILDING_SCENE_SUBLAYER_0_EXPECTED = {
   id: 31,
@@ -13,7 +13,7 @@ const BUILDING_SCENE_SUBLAYER_0_EXPECTED = {
 };
 
 const I3S_TILE_CONTENT =
-  '@loaders.gl/i3s/test/data/BuildingSceneLayer/BuildingSceneLayerTileset.json';
+  '@sensat/loaders-gl-i3s/test/data/BuildingSceneLayer/BuildingSceneLayerTileset.json';
 
 test('ParseI3sTileContent#should parse tile content', async (t) => {
   const buildingSceneLayerStructure = await load(I3S_TILE_CONTENT, I3SBuildingSceneLayerLoader);

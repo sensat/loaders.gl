@@ -4,10 +4,10 @@
 
 import test from 'tape-promise/tape';
 
-import {isBrowser, load, setLoaderOptions} from '@loaders.gl/core';
-import {CrunchWorkerLoader} from '@loaders.gl/textures';
+import {isBrowser, load, setLoaderOptions} from '@sensat/loaders-gl-core';
+import {CrunchWorkerLoader} from '@sensat/loaders-gl-textures';
 
-const CRUNCH_URL = '@loaders.gl/textures/test/data/shannon-dxt1.crn';
+const CRUNCH_URL = '@sensat/loaders-gl-textures/test/data/shannon-dxt1.crn';
 
 setLoaderOptions({
   _workerType: 'test',

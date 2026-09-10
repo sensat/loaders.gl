@@ -1,24 +1,24 @@
 import test from 'tape-promise/tape';
 import {default as I3SConverter} from '../../src/i3s-converter/i3s-converter';
-import {isBrowser, setLoaderOptions} from '@loaders.gl/core';
+import {isBrowser, setLoaderOptions} from '@sensat/loaders-gl-core';
 
 import {cleanUpPath} from '../utils/file-utils';
 import {BROWSER_ERROR_MESSAGE} from '../../src/constants';
-import {parseSLPKArchive} from '@loaders.gl/i3s';
-import {NodeFile} from '@loaders.gl/loader-utils';
+import {parseSLPKArchive} from '@sensat/loaders-gl-i3s';
+import {NodeFile} from '@sensat/loaders-gl-loader-utils';
 
-const TILESET_URL = '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedColors/tileset.json';
+const TILESET_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedColors/tileset.json';
 const TILESET_WITH_TEXTURES =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedTextured/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedTextured/tileset.json';
 const TILESET_WITH_KTX_2_TEXTURE =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/VNext/agi-ktx2/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/VNext/agi-ktx2/tileset.json';
 const TILESET_WITH_FAILING_CONTENT =
-  '@loaders.gl/tile-converter/test/data/failing-content-error/tileset.json';
+  '@sensat/loaders-gl-tile-converter/test/data/failing-content-error/tileset.json';
 const TILESET_CDB_YEMEN =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/VNext/cdb-yemen-cut/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/VNext/cdb-yemen-cut/tileset.json';
 const TILESET_3TZ = './modules/3d-tiles/test/data/test.3tz';
 
-const PGM_FILE_PATH = '@loaders.gl/tile-converter/test/data/egm84-30.pgm';
+const PGM_FILE_PATH = '@sensat/loaders-gl-tile-converter/test/data/egm84-30.pgm';
 
 const TEST_TEXTURE_MATERIAL = {
   doubleSided: false,

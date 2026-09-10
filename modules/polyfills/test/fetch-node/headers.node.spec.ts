@@ -1,7 +1,7 @@
 // Based on https://github.com/github/fetch under MIT license
 
 import test from 'tape-promise/tape';
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 
 if (!isBrowser) {
   // https://fetch.spec.whatwg.org/#headers-class

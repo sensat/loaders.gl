@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Field, ObjectRowTable} from '@loaders.gl/schema';
-import {toArrayBufferIterator} from '@loaders.gl/loader-utils';
+import type {Field, ObjectRowTable} from '@sensat/loaders-gl-schema';
+import {toArrayBufferIterator} from '@sensat/loaders-gl-loader-utils';
 import {BinaryChunkReader} from '../streaming/binary-chunk-reader';
 import {
   DBFLoaderOptions,

@@ -1,5 +1,5 @@
 /* eslint-disable camelcase, @typescript-eslint/no-use-before-define */
-import {isBrowser} from '@loaders.gl/loader-utils';
+import {isBrowser} from '@sensat/loaders-gl-loader-utils';
 import type {
   Schema,
   Field,
@@ -8,8 +8,8 @@ import type {
   Tables,
   GeoJSONTable,
   Feature
-} from '@loaders.gl/schema';
-import {convertWKBToGeometry, transformGeoJsonCoords} from '@loaders.gl/gis';
+} from '@sensat/loaders-gl-schema';
+import {convertWKBToGeometry, transformGeoJsonCoords} from '@sensat/loaders-gl-gis';
 import {Proj4Projection} from '@math.gl/proj4';
 import initSqlJs, {SqlJsStatic, Database, Statement} from 'sql.js';
 

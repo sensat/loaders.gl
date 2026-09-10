@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {isBrowser} from '@loaders.gl/worker-utils';
+import {isBrowser} from '@sensat/loaders-gl-worker-utils';
 import {getLoadableWorkerURL} from '../../../src/lib/worker-utils/get-loadable-worker-url';
 
 const WORKER_SOURCE = `

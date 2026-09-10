@@ -32,7 +32,7 @@ Depending on how the underlying loader works (whether it is synchronous or async
 
 ## Dependency Management
 
-In general, it is recommended that loaders are "standalone" and avoid importing `@loaders.gl/core`. `@loaders.gl/loader-utils` provides a small set of shared loader utilities.
+In general, it is recommended that loaders are "standalone" and avoid importing `@sensat/loaders-gl-core`. `@sensat/loaders-gl-loader-utils` provides a small set of shared loader utilities.
 
 ## Creating Composite Loaders
 

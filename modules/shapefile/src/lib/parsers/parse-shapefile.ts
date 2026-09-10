@@ -2,20 +2,20 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-// import type {Feature} from '@loaders.gl/gis';
+// import type {Feature} from '@sensat/loaders-gl-gis';
 import {
   LoaderContext,
   parseInBatchesFromContext,
   parseFromContext,
   toArrayBufferIterator
-} from '@loaders.gl/loader-utils';
-import {convertBinaryGeometryToGeometry, transformGeoJsonCoords} from '@loaders.gl/gis';
+} from '@sensat/loaders-gl-loader-utils';
+import {convertBinaryGeometryToGeometry, transformGeoJsonCoords} from '@sensat/loaders-gl-gis';
 import type {
   BinaryGeometry,
   Geometry,
   ObjectRowTable,
   ObjectRowTableBatch
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 import {Proj4Projection} from '@math.gl/proj4';
 
 import type {SHXOutput} from './parse-shx';

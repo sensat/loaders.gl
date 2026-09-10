@@ -5,10 +5,10 @@
 import test from 'tape-promise/tape';
 import {validateLoader} from 'test/common/conformance';
 
-import {fetchFile, load} from '@loaders.gl/core';
-import {GPXLoader} from '@loaders.gl/kml';
+import {fetchFile, load} from '@sensat/loaders-gl-core';
+import {GPXLoader} from '@sensat/loaders-gl-kml';
 
-const GPX_URL = '@loaders.gl/kml/test/data/gpx/trek';
+const GPX_URL = '@sensat/loaders-gl-kml/test/data/gpx/trek';
 
 test('GPXLoader#loader conformance', (t) => {
   validateLoader(t, GPXLoader, 'GPXLoader');

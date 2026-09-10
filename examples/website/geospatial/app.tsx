@@ -18,14 +18,14 @@ import {ExamplePanel, MetadataViewer} from './components/example-panel';
 import type {Example} from './examples';
 import {INITIAL_LOADER_NAME, INITIAL_EXAMPLE_NAME, EXAMPLES} from './examples';
 
-import {Table, GeoJSON} from '@loaders.gl/schema';
-import {Loader, load, LoaderOptions} from '@loaders.gl/core';
-import {GeoArrowLoader} from '@loaders.gl/arrow';
-import {GeoParquetLoader, installBufferPolyfill, preloadCompressions} from '@loaders.gl/parquet';
-import {FlatGeobufLoader} from '@loaders.gl/flatgeobuf';
-import {ShapefileLoader} from '@loaders.gl/shapefile';
-import {KMLLoader, GPXLoader, TCXLoader} from '@loaders.gl/kml';
-// import {GeoPackageLoader} from '@loaders.gl/geopackage'; // GeoPackage depends on sql.js which has bundling issues in docusuarus.
+import {Table, GeoJSON} from '@sensat/loaders-gl-schema';
+import {Loader, load, LoaderOptions} from '@sensat/loaders-gl-core';
+import {GeoArrowLoader} from '@sensat/loaders-gl-arrow';
+import {GeoParquetLoader, installBufferPolyfill, preloadCompressions} from '@sensat/loaders-gl-parquet';
+import {FlatGeobufLoader} from '@sensat/loaders-gl-flatgeobuf';
+import {ShapefileLoader} from '@sensat/loaders-gl-shapefile';
+import {KMLLoader, GPXLoader, TCXLoader} from '@sensat/loaders-gl-kml';
+// import {GeoPackageLoader} from '@sensat/loaders-gl-geopackage'; // GeoPackage depends on sql.js which has bundling issues in docusuarus.
 
 // Needed for ParquetLoader zstd support
 import {ZstdCodec} from 'zstd-codec';

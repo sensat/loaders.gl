@@ -3,10 +3,10 @@
 // Copyright vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {load} from '@loaders.gl/core';
+import {load} from '@sensat/loaders-gl-core';
 import {Tiles3DArchiveFileLoader} from '../src';
 
-const testUrl = '@loaders.gl/3d-tiles/test/data/test.3tz';
+const testUrl = '@sensat/loaders-gl-3d-tiles/test/data/test.3tz';
 
 test('Tiles3DArchiveFileLoader#load uncompressed file', async (t) => {
   const uncompressedFile = await load(testUrl, Tiles3DArchiveFileLoader, {

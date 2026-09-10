@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {LoaderOptions} from '@loaders.gl/loader-utils';
-import type {ImageLoaderOptions} from '@loaders.gl/images';
+import type {LoaderOptions} from '@sensat/loaders-gl-loader-utils';
+import type {ImageLoaderOptions} from '@sensat/loaders-gl-images';
 
-export type {ImageType} from '@loaders.gl/images';
+export type {ImageType} from '@sensat/loaders-gl-images';
 
 export type UrlOptions = {
   baseUrl?: string;

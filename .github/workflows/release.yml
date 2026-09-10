@@ -17,7 +17,7 @@ jobs:
 
       - name: Fetch remote branches
         run: |
-          git fetch origin --depth=1
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*' --depth=1
 
       - name: Check if on permitted branch
         id: permitted
@@ -25,7 +25,7 @@ jobs:
           result=
           if git branch -a --contains $GITHUB_SHA | grep -q 'remotes/origin/master$'; then
             result=true
-          elif git branch -a --contains $GITHUB_SHA | grep -q 'remotes/origin/.*-release$'; then
+          elif git branch -a --contains $GITHUB_SHA | grep -q 'remotes/origin/sensat/4.4-release$'; then
             result=true
           fi
           echo "result=${result}" >> "$GITHUB_OUTPUT"
@@ -36,7 +36,7 @@ jobs:
     needs: check_branch
     timeout-minutes: 15
 
-    if: ${{ github.repository_owner == 'visgl' && needs.check_branch.outputs.should_build == 'true' }}
+    if: ${{ needs.check_branch.outputs.should_build == 'true' }}
 
     strategy:
       matrix:
@@ -63,7 +63,7 @@ jobs:
       - name: Enable Corepack / Yarn 4
         run: |
           corepack enable
-          corepack prepare yarn@4.10.3 --activate
+          corepack prepare "$(node -p "require('./package.json').packageManager")" --activate
           yarn -v
 
       - name: Cache Yarn 4 artifacts
@@ -85,7 +85,7 @@ jobs:
           node -p "process.versions"
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Build
         run: |
@@ -109,15 +109,15 @@ jobs:
           yarn run lint
 
   release:
-    name: Post GitHub release and publish to NPM
+    name: Post GitHub release and publish to GitHub Packages
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     needs: [check_branch, tests]
     permissions:
       contents: write
-      id-token: write
+      packages: write
 
-    if: ${{ success() && github.repository_owner == 'visgl' && needs.check_branch.outputs.should_build == 'true' }}
+    if: ${{ success() && github.repository == 'sensat/loaders.gl' && needs.check_branch.outputs.should_build == 'true' }}
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -130,7 +130,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@sensat'
 
       - name: Update npm
         run: npm install --global npm@^11.15.0
@@ -161,8 +162,9 @@ jobs:
       - name: Build workers
         run: yarn build-workers
 
-      # ocular-publish creates the GitHub Release before publishing the tagged packages to npm.
-      - name: Post GitHub release and publish to NPM
+      # ocular-publish creates the GitHub Release before publishing tagged packages.
+      - name: Post GitHub release and publish to GitHub Packages
         env:
           NPM_CONFIG_LOGLEVEL: verbose
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx ocular-publish from-git

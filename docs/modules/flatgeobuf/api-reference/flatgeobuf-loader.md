@@ -21,8 +21,8 @@ Loader for the [FlatGeobuf](/docs/modules/flatgeobuf/formats/flatgeobuf) format,
 ## Usage
 
 ```typescript
-import {FlatGeobufLoader} from '@loaders.gl/flatgeobuf';
-import {load} from '@loaders.gl/core';
+import {FlatGeobufLoader} from '@sensat/loaders-gl-flatgeobuf';
+import {load} from '@sensat/loaders-gl-core';
 
 const geojsonFeatures = await load(url, FlatGeobufLoader);
 ```

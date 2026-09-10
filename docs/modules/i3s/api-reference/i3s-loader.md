@@ -79,7 +79,7 @@ import {StaticMap} from 'react-map-gl';
 import DeckGL from '@deck.gl/react';
 import {MapController} from '@deck.gl/core';
 import {Tile3DLayer} from '@deck.gl/geo-layers';
-import {I3SLoader} from '@loaders.gl/i3s';
+import {I3SLoader} from '@sensat/loaders-gl-i3s';
 
 // How to get mapbox token https://docs.mapbox.com/help/how-mapbox-works/access-tokens/
 const MAPBOX_TOKEN = ''; // add your Mapbox token here
@@ -158,9 +158,9 @@ A more complex example can be found [here](https://github.com/visgl/loaders.gl/t
 Basic API usage is illustrated in the following snippet. Create a `Tileset3D` instance, point it a valid tileset URL, set up callbacks, and keep feeding in new camera positions:
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {I3SLoader} from '@loaders.gl/i3s';
-import {Tileset3D} from '@loaders.gl/tiles';
+import {load} from '@sensat/loaders-gl-core';
+import {I3SLoader} from '@sensat/loaders-gl-i3s';
+import {Tileset3D} from '@sensat/loaders-gl-tiles';
 import {WebMercatorViewport} from '@deck.gl/core';
 
 const tileseturl =

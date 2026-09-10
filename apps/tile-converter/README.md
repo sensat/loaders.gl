@@ -1,4 +1,4 @@
-# @loaders.gl/tile-converter
+# @sensat/loaders-gl-tile-converter
 
 [loaders.gl](https://loaders.gl/docs) is a collection of framework independent 3D and geospatial parsers and encoders.
 
@@ -9,5 +9,5 @@ For documentation please visit the [website](https://loaders.gl).
 ## Installation
 
 ```bash
-npm install @loaders.gl/tile-converter
+npm install @sensat/loaders-gl-tile-converter
 ```

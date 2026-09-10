@@ -18,9 +18,9 @@ Source selection heuristics are based on:
 Select a source from a list of provided sources (best effort):
 
 ```typescript
-import {selectSourceSync} from '@loaders.gl/core';
-import {PMTilesSource} from '@loaders.gl/pmtiles';
-import {MVTSource} from '@loaders.gl/csv';
+import {selectSourceSync} from '@sensat/loaders-gl-core';
+import {PMTilesSource} from '@sensat/loaders-gl-pmtiles';
+import {MVTSource} from '@sensat/loaders-gl-csv';
 
 selectSourceSync('filename.pmtiles', [PMTilesSource, MVTSource]); // => PMTilesSource
 ```

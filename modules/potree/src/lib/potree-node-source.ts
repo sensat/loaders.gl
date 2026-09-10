@@ -3,17 +3,17 @@
 // Copyright (c) vis.gl contributors
 
 import type {PotreeSourceOptions} from '../potree-source';
-import {load} from '@loaders.gl/core';
-import {Mesh} from '@loaders.gl/schema';
-import {DataSource, resolvePath} from '@loaders.gl/loader-utils';
-import {LASLoader} from '@loaders.gl/las';
+import {load} from '@sensat/loaders-gl-core';
+import {Mesh} from '@sensat/loaders-gl-schema';
+import {DataSource, resolvePath} from '@sensat/loaders-gl-loader-utils';
+import {LASLoader} from '@sensat/loaders-gl-las';
 import {PotreeBoundingBox, PotreeMetadata} from '../types/potree-metadata';
 import {POTreeNode} from '../parsers/parse-potree-hierarchy-chunk';
 import {PotreeHierarchyChunkLoader} from '../potree-hierarchy-chunk-loader';
 import {PotreeLoader} from '../potree-loader';
 import {parseVersion} from '../utils/parse-version';
 import {Proj4Projection} from '@math.gl/proj4';
-import {LASMesh} from '@loaders.gl/las/src/lib/las-types';
+import {LASMesh} from '@sensat/loaders-gl-las/src/lib/las-types';
 import {createProjection} from '../utils/projection-utils';
 import {getCartographicOriginFromBoundingBox} from '../utils/bounding-box-utils';
 

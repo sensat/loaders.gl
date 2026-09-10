@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Schema} from '@loaders.gl/schema';
+import type {Schema} from '@sensat/loaders-gl-schema';
 import type {
   Source,
   VectorTileSource,
@@ -10,10 +10,10 @@ import type {
   GetTileDataParameters,
   ImageTileSource,
   ImageType
-} from '@loaders.gl/loader-utils';
-import {DataSource, DataSourceOptions, resolvePath} from '@loaders.gl/loader-utils';
-import {ImageLoader, ImageLoaderOptions} from '@loaders.gl/images';
-import {MVTLoader, MVTLoaderOptions, TileJSONLoaderOptions} from '@loaders.gl/mvt';
+} from '@sensat/loaders-gl-loader-utils';
+import {DataSource, DataSourceOptions, resolvePath} from '@sensat/loaders-gl-loader-utils';
+import {ImageLoader, ImageLoaderOptions} from '@sensat/loaders-gl-images';
+import {MVTLoader, MVTLoaderOptions, TileJSONLoaderOptions} from '@sensat/loaders-gl-mvt';
 import {PMTilesFormat} from './pmtiles-format';
 
 import * as pmtiles from 'pmtiles';

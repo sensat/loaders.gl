@@ -3,14 +3,14 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {load, loadInBatches} from '@loaders.gl/core';
-import type {ObjectRowTable, ObjectRowTableBatch} from '@loaders.gl/schema';
-import {ExcelLoader} from '@loaders.gl/excel';
-import {CSVLoader} from '@loaders.gl/csv';
+import {load, loadInBatches} from '@sensat/loaders-gl-core';
+import type {ObjectRowTable, ObjectRowTableBatch} from '@sensat/loaders-gl-schema';
+import {ExcelLoader} from '@sensat/loaders-gl-excel';
+import {CSVLoader} from '@sensat/loaders-gl-csv';
 
-const ZIPCODES_XLSX_PATH = '@loaders.gl/excel/test/data/zipcodes.xlsx';
-const ZIPCODES_XLSB_PATH = '@loaders.gl/excel/test/data/zipcodes.xlsb';
-const ZIPCODES_CSV_PATH = '@loaders.gl/excel/test/data/zipcodes.csv';
+const ZIPCODES_XLSX_PATH = '@sensat/loaders-gl-excel/test/data/zipcodes.xlsx';
+const ZIPCODES_XLSB_PATH = '@sensat/loaders-gl-excel/test/data/zipcodes.xlsb';
+const ZIPCODES_CSV_PATH = '@sensat/loaders-gl-excel/test/data/zipcodes.csv';
 
 test('ExcelLoader#load(ZIPCODES)', async (t) => {
   const csvTable = (await load(ZIPCODES_CSV_PATH, CSVLoader, {

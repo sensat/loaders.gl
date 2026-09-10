@@ -3,9 +3,9 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {WorkerPool} from '@loaders.gl/worker-utils';
-import {toArrayBuffer, parseWithWorker} from '@loaders.gl/loader-utils';
-import {registerLoaders, _unregisterLoaders, NullWorkerLoader} from '@loaders.gl/core';
+import {WorkerPool} from '@sensat/loaders-gl-worker-utils';
+import {toArrayBuffer, parseWithWorker} from '@sensat/loaders-gl-loader-utils';
+import {registerLoaders, _unregisterLoaders, NullWorkerLoader} from '@sensat/loaders-gl-core';
 
 const CHUNKS_TOTAL = 6;
 const MAX_CONCURRENCY = 3;

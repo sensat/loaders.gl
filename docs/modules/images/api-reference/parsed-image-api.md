@@ -9,8 +9,8 @@ Background: The image returned by the [`ImageLoader`](/docs/modules/images/api-r
 E.g., the `getImageData` method enables the application to get width, height and pixel data from an image returned by the `ImageLoader` in a platform independent way:
 
 ```typescript
-import {ImageLoader, getImageSize, getImageData} from `@loaders.gl/images`;
-import {load} from `@loaders.gl/core`;
+import {ImageLoader, getImageSize, getImageData} from `@sensat/loaders-gl-images`;
+import {load} from `@sensat/loaders-gl-core`;
 
 const image = await load(URL, ImageLoader);
 
@@ -31,7 +31,7 @@ console.log(imageData.width, imageData.height, imageData.data);
 getSupportedImageTypes(): Promise<Set<string>>
 ```
 
-Returns a promise that resolves to a `Set` of MIME types that `@loaders.gl/images` can parse on the current platform (depends on the current browser, or whether the app is running under Node.js).
+Returns a promise that resolves to a `Set` of MIME types that `@sensat/loaders-gl-images` can parse on the current platform (depends on the current browser, or whether the app is running under Node.js).
 
 > This function is asynchronous which can be inconvenient to use. However, for technical reasons, asynchronous testing of supported image formats is significantly more reliable and is recommended in browsers.
 >
@@ -51,7 +51,7 @@ isImageTypeSupported(mimeType : string): boolean
 
 Synchronously checks if an image type is supported.
 
-Returns `true` if `mimeType` is one of the MIME types that `@loaders.gl/images` can use on the current platform (depends on browser, or whether running under Node.js).
+Returns `true` if `mimeType` is one of the MIME types that `@sensat/loaders-gl-images` can use on the current platform (depends on browser, or whether running under Node.js).
 
 > At this time, run-time checks for some recently added image formats such as AVIF (and to a lesser extent, WEBP) can not reliably be done in browsers using synchronous techniques. If your code allows for asynchronous calls, use `getSupportedImageTypes()` for the most accurate results.
 
@@ -63,7 +63,7 @@ isImage(image : any): boolean
 
 - `image`: An image returned by an image category loader, such as `ImageLoader`
 
-Returns `true` if `image` is one of the types that `@loaders.gl/images` can return.
+Returns `true` if `image` is one of the types that `@sensat/loaders-gl-images` can return.
 
 ### getImageType()
 

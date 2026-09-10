@@ -11,7 +11,7 @@ I3S Server is a NodeJS HTTP service built on top of [Express](https://expressjs.
 
 ## Installation
 
-The i3s-server is published as a part of `@loaders.gl/tile-converter` library.
+The i3s-server is published as a part of `@sensat/loaders-gl-tile-converter` library.
 
 Create a new folder:
 
@@ -20,10 +20,10 @@ mkdir tmp
 cd tmp
 ```
 
-Install `@loaders.gl/tile-converter` package:
+Install `@sensat/loaders-gl-tile-converter` package:
 
 ```bash
-npm i @loaders.gl/tile-converter
+npm i @sensat/loaders-gl-tile-converter
 ```
 
 ## Serve the output data of `tile-converter`

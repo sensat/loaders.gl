@@ -5,8 +5,8 @@
 import test from 'tape-promise/tape';
 import {validateLoader, validateWriter} from 'test/common/conformance';
 
-import {ZipWriter, ZipLoader} from '@loaders.gl/zip';
-import {encode, parse} from '@loaders.gl/core';
+import {ZipWriter, ZipLoader} from '@sensat/loaders-gl-zip';
+import {encode, parse} from '@sensat/loaders-gl-core';
 import JSZip from 'jszip';
 
 const FILE_MAP = {

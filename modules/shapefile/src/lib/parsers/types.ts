@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Schema, ObjectRowTable} from '@loaders.gl/schema';
-import type {StrictLoaderOptions} from '@loaders.gl/loader-utils';
+import type {Schema, ObjectRowTable} from '@sensat/loaders-gl-schema';
+import type {StrictLoaderOptions} from '@sensat/loaders-gl-loader-utils';
 
 export type SHPLoaderOptions = StrictLoaderOptions & {
   shp?: {

@@ -1,6 +1,6 @@
 # DDS
 
-- _[`@loaders.gl/textures`](/docs/modules/textures)_ - loaders.gl implementation
+- _[`@sensat/loaders-gl-textures`](/docs/modules/textures)_ - loaders.gl implementation
 - _[`CompressedTextureLoader`](/docs/modules/textures/api-reference/compressed-texture-loader)_ - reads DDS containers
 
 DDS, short for DirectDraw Surface, is a Microsoft texture container format widely used to store GPU texture data, especially in Direct3D-oriented pipelines.

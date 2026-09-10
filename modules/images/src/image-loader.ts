@@ -1,6 +1,6 @@
-import type {LoaderWithParser, StrictLoaderOptions} from '@loaders.gl/loader-utils';
+import type {LoaderWithParser, StrictLoaderOptions} from '@sensat/loaders-gl-loader-utils';
 import type {ImageType} from './types';
-// import type { ImageType } from '@loaders.gl/schema';
+// import type { ImageType } from '@sensat/loaders-gl-schema';
 import {VERSION} from './lib/utils/version';
 import {parseImage} from './lib/parsers/parse-image';
 import {getBinaryImageMetadata} from './lib/category-api/binary-image-api';

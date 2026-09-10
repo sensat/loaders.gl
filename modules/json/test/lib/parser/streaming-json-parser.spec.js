@@ -3,10 +3,10 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {fetchFile, makeIterator} from '@loaders.gl/core';
+import {fetchFile, makeIterator} from '@sensat/loaders-gl-core';
 import StreamingJSONParser from '../../../src/lib/json-parser/streaming-json-parser';
 
-const GEOJSON_PATH = `@loaders.gl/json/test/data/geojson-big.json`;
+const GEOJSON_PATH = `@sensat/loaders-gl-json/test/data/geojson-big.json`;
 
 test('StreamingJSONParser#geojson', async (t) => {
   const parser = new StreamingJSONParser();

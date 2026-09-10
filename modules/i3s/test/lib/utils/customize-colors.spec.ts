@@ -1,11 +1,11 @@
 import test from 'tape-promise/tape';
-import {fetchFile, parse} from '@loaders.gl/core';
-import {I3SContentLoader, customizeColors} from '@loaders.gl/i3s';
+import {fetchFile, parse} from '@sensat/loaders-gl-core';
+import {I3SContentLoader, customizeColors} from '@sensat/loaders-gl-i3s';
 
 const NEW_YORK_TILE_CONTENT =
-  '@loaders.gl/i3s/test/data/Buildings_NewYork_17/SceneServer/layers/0/nodes/2465/geometries/1';
+  '@sensat/loaders-gl-i3s/test/data/Buildings_NewYork_17/SceneServer/layers/0/nodes/2465/geometries/1';
 const NEW_YORK_CONTENT_LOADER_OPTIONS =
-  '@loaders.gl/i3s/test/data/Buildings_NewYork_17/i3s-content-loader-options.json';
+  '@sensat/loaders-gl-i3s/test/data/Buildings_NewYork_17/i3s-content-loader-options.json';
 
 // TODO v4.0 restore this test
 test.skip('i3s-utils#customizeColors', async (t) => {

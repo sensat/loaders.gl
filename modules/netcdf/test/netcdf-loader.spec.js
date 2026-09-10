@@ -1,10 +1,10 @@
 // import test from 'tape-promise/tape';
 
 import {describe, it, expect} from 'test/utils/expect-assertions';
-import {NetCDFLoader} from '@loaders.gl/netcdf';
-import {load} from '@loaders.gl/core';
+import {NetCDFLoader} from '@sensat/loaders-gl-netcdf';
+import {load} from '@sensat/loaders-gl-core';
 
-const DATA_PATH = `@loaders.gl/netcdf/test/data`;
+const DATA_PATH = `@sensat/loaders-gl-netcdf/test/data`;
 
 describe('NetCDFLoader', () => {
   // it('Throws on non NetCDF file', async () => {

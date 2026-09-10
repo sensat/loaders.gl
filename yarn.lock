@@ -4604,19 +4604,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@loaders.gl/3d-tiles@npm:^4.4.0, @loaders.gl/3d-tiles@workspace:modules/3d-tiles":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/3d-tiles@workspace:modules/3d-tiles"
+"@loaders.gl/3d-tiles@npm:^4.3.4":
+  version: 4.5.1
+  resolution: "@loaders.gl/3d-tiles@npm:4.5.1"
   dependencies:
-    "@loaders.gl/compression": "npm:4.4.6"
-    "@loaders.gl/crypto": "npm:4.4.6"
-    "@loaders.gl/draco": "npm:4.4.6"
-    "@loaders.gl/gltf": "npm:4.4.6"
-    "@loaders.gl/images": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/math": "npm:4.4.6"
-    "@loaders.gl/tiles": "npm:4.4.6"
-    "@loaders.gl/zip": "npm:4.4.6"
+    "@loaders.gl/compression": "npm:4.5.1"
+    "@loaders.gl/crypto": "npm:4.5.1"
+    "@loaders.gl/draco": "npm:4.5.1"
+    "@loaders.gl/gltf": "npm:4.5.1"
+    "@loaders.gl/images": "npm:4.5.1"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
+    "@loaders.gl/math": "npm:4.5.1"
+    "@loaders.gl/tiles": "npm:4.5.1"
+    "@loaders.gl/zip": "npm:4.5.1"
     "@math.gl/core": "npm:^4.1.0"
     "@math.gl/culling": "npm:^4.1.0"
     "@math.gl/geospatial": "npm:^4.1.0"
@@ -4624,46 +4624,16 @@ __metadata:
     long: "npm:^5.2.1"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/03e617af66db5ee4b0b4981114d3539c215481c1f02ced8d6e6841c71e7a7bacb959687a101f4410996328f5a21b818d8ad2bd644aeb820ca5cb6f9821a57f77
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/arrow@npm:4.4.6, @loaders.gl/arrow@workspace:modules/arrow":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/arrow@workspace:modules/arrow"
+"@loaders.gl/compression@npm:4.5.1":
+  version: 4.5.1
+  resolution: "@loaders.gl/compression@npm:4.5.1"
   dependencies:
-    "@loaders.gl/gis": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/schema-utils": "npm:4.4.6"
-    "@loaders.gl/wkt": "npm:4.4.6"
-    "@loaders.gl/worker-utils": "npm:4.4.6"
-    "@math.gl/polygon": "npm:^4.1.0"
-    apache-arrow: "npm:>= 17.0.0"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/bson@npm:4.4.6, @loaders.gl/bson@workspace:modules/bson":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/bson@workspace:modules/bson"
-  dependencies:
-    "@loaders.gl/gis": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@types/bson": "npm:4.2.0"
-    bson: "npm:4.2.0"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/compression@npm:^4.4.0, @loaders.gl/compression@workspace:modules/compression":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/compression@workspace:modules/compression"
-  dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/worker-utils": "npm:4.4.6"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
+    "@loaders.gl/worker-utils": "npm:4.5.1"
     "@types/brotli": "npm:^1.3.0"
     "@types/pako": "npm:^1.0.1"
     brotli: "npm:^1.3.2"
@@ -4683,502 +4653,239 @@ __metadata:
       optional: true
     zstd-codec:
       optional: true
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/de0f4bdb58d40438beeca6892d1b78a4ace89b0d2192c67e35ad91c5394ca032de37ab7f36b826062d4d580c35fed8b05be4fac5d3438c0659ef8e3bca9d34fa
+  languageName: node
+  linkType: hard
 
 "@loaders.gl/copc@workspace:modules/copc":
   version: 0.0.0-use.local
   resolution: "@loaders.gl/copc@workspace:modules/copc"
   dependencies:
-    "@loaders.gl/images": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/mvt": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
+    "@sensat/loaders-gl-images": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-mvt": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
     copc: "npm:0.0.6"
   languageName: unknown
   linkType: soft
 
-"@loaders.gl/core@npm:^4.4.0, @loaders.gl/core@workspace:modules/core":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/core@workspace:modules/core"
+"@loaders.gl/core@npm:^4.2.0, @loaders.gl/core@npm:^4.3.4":
+  version: 4.5.1
+  resolution: "@loaders.gl/core@npm:4.5.1"
   dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/schema-utils": "npm:4.4.6"
-    "@loaders.gl/worker-utils": "npm:4.4.6"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
+    "@loaders.gl/schema": "npm:4.5.1"
+    "@loaders.gl/schema-utils": "npm:4.5.1"
+    "@loaders.gl/worker-utils": "npm:4.5.1"
     "@probe.gl/log": "npm:^4.1.1"
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/694daa51121aa4d90bc2eaa3f8f6ab00c1d5aa3fbc53438f180348c58b9af45e6c7cab7a98a097c82bc0578bbdccb96f6a41642f572cf4691e2c2edfd45b8a49
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/crypto@npm:^4.4.0, @loaders.gl/crypto@workspace:modules/crypto":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/crypto@workspace:modules/crypto"
+"@loaders.gl/crypto@npm:4.5.1":
+  version: 4.5.1
+  resolution: "@loaders.gl/crypto@npm:4.5.1"
   dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/worker-utils": "npm:4.4.6"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
+    "@loaders.gl/worker-utils": "npm:4.5.1"
     "@types/crypto-js": "npm:^4.0.2"
-    crypto-js: "npm:^3.0.0 || ^4.0.0"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/fae6dd5c33ed1864288bec9ef5ba142bf2ab6734410f200c04f488fde6bec59e2915f4e18bad759524001f37be228b90a9032596ba601cb6cd82239c0e0dd997
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/csv@workspace:modules/csv":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/csv@workspace:modules/csv"
+"@loaders.gl/draco@npm:4.5.1":
+  version: 4.5.1
+  resolution: "@loaders.gl/draco@npm:4.5.1"
   dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    d3-dsv: "npm:^1.2.0"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/draco@npm:^4.4.0, @loaders.gl/draco@workspace:modules/draco":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/draco@workspace:modules/draco"
-  dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/schema-utils": "npm:4.4.6"
-    "@loaders.gl/worker-utils": "npm:4.4.6"
-    "@types/draco3d": "npm:^1.4.9"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
+    "@loaders.gl/schema": "npm:4.5.1"
+    "@loaders.gl/schema-utils": "npm:4.5.1"
+    "@loaders.gl/worker-utils": "npm:4.5.1"
     draco3d: "npm:1.5.7"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/88589ed9d1581939c82d932787a0c5460953b893ab7f95b501762e067f6508825f323fce0c4101fdb908786a6a58c8eac19670a5dc9979de90fa8ea4421c4bc6
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/excel@workspace:modules/excel":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/excel@workspace:modules/excel"
-  dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    xlsx: "npm:^0.18.5"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/flatgeobuf@workspace:modules/flatgeobuf":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/flatgeobuf@workspace:modules/flatgeobuf"
-  dependencies:
-    "@loaders.gl/gis": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@math.gl/proj4": "npm:^4.1.0"
-    flatgeobuf: "npm:3.27.2"
-    stream-buffers: "npm:3.0.2"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/geoarrow@npm:4.4.6, @loaders.gl/geoarrow@workspace:modules/geoarrow":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/geoarrow@workspace:modules/geoarrow"
+"@loaders.gl/geoarrow@npm:4.5.1":
+  version: 4.5.1
+  resolution: "@loaders.gl/geoarrow@npm:4.5.1"
   dependencies:
     "@math.gl/polygon": "npm:^4.1.0"
     apache-arrow: "npm:>= 17.0.0"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/9d23b404c2fe7a677887738774d01b52cde8a7b59231ec6f8bbb11ef36c9c2ff8024d2c2bd7d07c216f51b2bb1427b0415b81dffe573e0280c6ab6d54b5a2298
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/geopackage@npm:^4.4.0, @loaders.gl/geopackage@workspace:modules/geopackage":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/geopackage@workspace:modules/geopackage"
+"@loaders.gl/gis@npm:4.5.1, @loaders.gl/gis@npm:^4.3.4":
+  version: 4.5.1
+  resolution: "@loaders.gl/gis@npm:4.5.1"
   dependencies:
-    "@loaders.gl/gis": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/wkt": "npm:4.4.6"
-    "@math.gl/proj4": "npm:^4.1.0"
-    "@types/sql.js": "npm:^1.4.5"
-    fs: "npm:^0.0.1-security"
-    path: "npm:^0.12.7"
-    sql.js: "npm:1.8.0"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/geotiff@workspace:modules/geotiff":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/geotiff@workspace:modules/geotiff"
-  dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    fast-xml-parser: "npm:^5.3.6"
-    geotiff: "npm:^2.1.0"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/gis@npm:^4.4.0, @loaders.gl/gis@workspace:modules/gis":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/gis@workspace:modules/gis"
-  dependencies:
-    "@loaders.gl/geoarrow": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/schema-utils": "npm:4.4.6"
+    "@loaders.gl/geoarrow": "npm:4.5.1"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
+    "@loaders.gl/schema": "npm:4.5.1"
+    "@loaders.gl/schema-utils": "npm:4.5.1"
     "@mapbox/vector-tile": "npm:^1.3.1"
     "@math.gl/polygon": "npm:^4.1.0"
-    "@math.gl/proj4": "npm:^4.1.0"
     pbf: "npm:^3.2.1"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/ecbce0a82bb48638c176b925d34d27aa6dad7bf9e6cfa53fa09d755de6faed6321c7c287dde39dd66622093f3e7c22ec562734798a336631883a672ea9d04da4
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/gltf@npm:^4.4.0, @loaders.gl/gltf@workspace:modules/gltf":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/gltf@workspace:modules/gltf"
+"@loaders.gl/gltf@npm:4.5.1, @loaders.gl/gltf@npm:^4.2.0, @loaders.gl/gltf@npm:^4.3.4":
+  version: 4.5.1
+  resolution: "@loaders.gl/gltf@npm:4.5.1"
   dependencies:
-    "@loaders.gl/draco": "npm:4.4.6"
-    "@loaders.gl/images": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/textures": "npm:4.4.6"
+    "@loaders.gl/draco": "npm:4.5.1"
+    "@loaders.gl/images": "npm:4.5.1"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
+    "@loaders.gl/schema": "npm:4.5.1"
+    "@loaders.gl/textures": "npm:4.5.1"
     "@math.gl/core": "npm:^4.1.0"
     meshoptimizer: "npm:^1.2.0"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/f394967a02e06c9864e51bb3198e04857749afd9a53e3d2ce9ecb63bb36dd2c6f340aa473535542ee98cb26c7cf83077519b44a00947fe8e4b35877a90d6f118
+  languageName: node
+  linkType: hard
 
 "@loaders.gl/graphs@workspace:modules/graphs":
   version: 0.0.0-use.local
   resolution: "@loaders.gl/graphs@workspace:modules/graphs"
   peerDependencies:
-    "@loaders.gl/core": ~4.4.0
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
   languageName: unknown
   linkType: soft
 
-"@loaders.gl/i3s@npm:^4.4.0, @loaders.gl/i3s@workspace:modules/i3s":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/i3s@workspace:modules/i3s"
+"@loaders.gl/i3s@npm:^4.2.0":
+  version: 4.5.1
+  resolution: "@loaders.gl/i3s@npm:4.5.1"
   dependencies:
-    "@loaders.gl/compression": "npm:4.4.6"
-    "@loaders.gl/crypto": "npm:4.4.6"
-    "@loaders.gl/draco": "npm:4.4.6"
-    "@loaders.gl/images": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/math": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/textures": "npm:4.4.6"
-    "@loaders.gl/tiles": "npm:4.4.6"
-    "@loaders.gl/zip": "npm:4.4.6"
+    "@loaders.gl/compression": "npm:4.5.1"
+    "@loaders.gl/crypto": "npm:4.5.1"
+    "@loaders.gl/draco": "npm:4.5.1"
+    "@loaders.gl/images": "npm:4.5.1"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
+    "@loaders.gl/math": "npm:4.5.1"
+    "@loaders.gl/schema": "npm:4.5.1"
+    "@loaders.gl/textures": "npm:4.5.1"
+    "@loaders.gl/tiles": "npm:4.5.1"
+    "@loaders.gl/zip": "npm:4.5.1"
     "@math.gl/core": "npm:^4.1.0"
     "@math.gl/culling": "npm:^4.1.0"
     "@math.gl/geospatial": "npm:^4.1.0"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/2bc622160456658bd8f1a6954b04ef4b7f369532c3e486520f0cca0bec56f662257ef964eb890b50cdaff2f9b00dbb8a41e27dba737b6a6704b7446ad589372d
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/images@npm:^4.4.0, @loaders.gl/images@workspace:modules/images":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/images@workspace:modules/images"
+"@loaders.gl/images@npm:4.5.1, @loaders.gl/images@npm:^4.3.4":
+  version: 4.5.1
+  resolution: "@loaders.gl/images@npm:4.5.1"
   dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@types/get-pixels": "npm:^3.3.2"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/2a67632f025862b6f30b5d945fd417826cab1818f0308871129cd6175e0fb6d67c6950c10f232c82f0c5815b86d20a734fa83ff3c271dfdaf10b34843861c334
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/json@workspace:modules/json":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/json@workspace:modules/json"
+"@loaders.gl/loader-utils@npm:4.5.1, @loaders.gl/loader-utils@npm:^4.2.0, @loaders.gl/loader-utils@npm:^4.3.4":
+  version: 4.5.1
+  resolution: "@loaders.gl/loader-utils@npm:4.5.1"
   dependencies:
-    "@loaders.gl/gis": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/schema-utils": "npm:4.4.6"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/kml@workspace:modules/kml":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/kml@workspace:modules/kml"
-  dependencies:
-    "@loaders.gl/gis": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@tmcw/togeojson": "npm:^4.5.0"
-    "@xmldom/xmldom": "npm:^0.8.12"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/las@npm:^4.4.0, @loaders.gl/las@workspace:modules/las":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/las@workspace:modules/las"
-  dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/schema-utils": "npm:4.4.6"
-    laz-perf: "npm:^0.0.6"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/lerc@workspace:modules/lerc":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/lerc@workspace:modules/lerc"
-  dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    lerc: "npm:^4.0.4"
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/loader-utils@npm:^4.4.0, @loaders.gl/loader-utils@workspace:modules/loader-utils":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/loader-utils@workspace:modules/loader-utils"
-  dependencies:
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/worker-utils": "npm:4.4.6"
+    "@loaders.gl/schema": "npm:4.5.1"
+    "@loaders.gl/worker-utils": "npm:4.5.1"
     "@probe.gl/log": "npm:^4.1.1"
     "@probe.gl/stats": "npm:^4.1.1"
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/17474fe87f854cf82180d25e53066f5c90a1698ae9858f2c5d7b737b9a263e9f9b6bb03399f6dd321a5b69c7870866c7c0c73e83fa692d8db8ca06211839b90e
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/math@npm:^4.4.0, @loaders.gl/math@workspace:modules/math":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/math@workspace:modules/math"
+"@loaders.gl/math@npm:4.5.1":
+  version: 4.5.1
+  resolution: "@loaders.gl/math@npm:4.5.1"
   dependencies:
     "@math.gl/core": "npm:^4.1.0"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/6682b708eaa9dd161bc55c2b6aa12c0e3126ef888adfa06a5e889d8d298a38982f2e670ad82c9088dadfd7d3b417e74c3b746a424e97dfa49e4bb1e66a5c1e83
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/mlt@workspace:modules/mlt":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/mlt@workspace:modules/mlt"
+"@loaders.gl/mvt@npm:^4.3.4":
+  version: 4.5.1
+  resolution: "@loaders.gl/mvt@npm:4.5.1"
   dependencies:
-    "@loaders.gl/gis": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@maplibre/mlt": "npm:^1.1.6"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/mvt@npm:^4.4.0, @loaders.gl/mvt@workspace:modules/mvt":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/mvt@workspace:modules/mvt"
-  dependencies:
-    "@loaders.gl/gis": "npm:4.4.6"
-    "@loaders.gl/images": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/schema-utils": "npm:4.4.6"
+    "@loaders.gl/gis": "npm:4.5.1"
+    "@loaders.gl/images": "npm:4.5.1"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
+    "@loaders.gl/schema": "npm:4.5.1"
+    "@loaders.gl/schema-utils": "npm:4.5.1"
     "@math.gl/polygon": "npm:^4.1.0"
     "@probe.gl/stats": "npm:^4.1.1"
-    "@types/pbf": "npm:^3.0.2"
     pbf: "npm:^3.2.1"
+    zod: "npm:^4.1.12"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/75c8d4fae0d6767157a958a287cf1b321cb9f5e3d72357cb9b0eca734668f1007fde04c215bcfb405faed23dd1e32d8328c8deef5fd77106e76c04fa31da5178
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/netcdf@workspace:modules/netcdf":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/netcdf@workspace:modules/netcdf"
+"@loaders.gl/schema-utils@npm:4.5.1":
+  version: 4.5.1
+  resolution: "@loaders.gl/schema-utils@npm:4.5.1"
   dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/obj@npm:^4.4.0, @loaders.gl/obj@workspace:modules/obj":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/obj@workspace:modules/obj"
-  dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/schema-utils": "npm:4.4.6"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/parquet@workspace:modules/parquet":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/parquet@workspace:modules/parquet"
-  dependencies:
-    "@loaders.gl/arrow": "npm:4.4.6"
-    "@loaders.gl/bson": "npm:4.4.6"
-    "@loaders.gl/compression": "npm:4.4.6"
-    "@loaders.gl/geoarrow": "npm:4.4.6"
-    "@loaders.gl/gis": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/wkt": "npm:4.4.6"
-    "@probe.gl/log": "npm:^4.1.1"
-    "@types/node-int64": "npm:^0.4.29"
-    "@types/thrift": "npm:^0.10.8"
-    "@types/varint": "npm:^5.0.0"
-    async-mutex: "npm:^0.2.2"
-    base64-js: "npm:^1.3.1"
-    brotli: "npm:^1.3.2"
-    ieee754: "npm:^1.2.1"
-    int53: "npm:^0.2.4"
-    isomorphic-ws: "npm:^5.0.0"
-    lz4js: "npm:^0.2.0"
-    node-int64: "npm:^0.4.0"
-    object-stream: "npm:0.0.1"
-    parquet-wasm: "npm:^0.6.1"
-    snappyjs: "npm:^0.6.0"
-    thrift: "npm:^0.19.0"
-    util: "npm:^0.12.5"
-    varint: "npm:^6.0.0"
-    zstd-codec: "npm:^0.1"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-    apache-arrow: ">= 17.0.0"
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/pcd@workspace:modules/pcd":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/pcd@workspace:modules/pcd"
-  dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/schema-utils": "npm:4.4.6"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/ply@npm:^4.4.0, @loaders.gl/ply@workspace:modules/ply":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/ply@workspace:modules/ply"
-  dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/schema-utils": "npm:4.4.6"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/pmtiles@workspace:modules/pmtiles":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/pmtiles@workspace:modules/pmtiles"
-  dependencies:
-    "@loaders.gl/images": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/mvt": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    pmtiles: "npm:^3.0.4"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/polyfills@npm:4.4.6, @loaders.gl/polyfills@workspace:modules/polyfills":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/polyfills@workspace:modules/polyfills"
-  dependencies:
-    "@loaders.gl/crypto": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    buffer: "npm:^6.0.3"
-    get-pixels: "npm:^3.3.3"
-    ndarray: "npm:^1.0.19"
-    save-pixels: "npm:^2.3.6"
-    stream-to-async-iterator: "npm:^1.0.0"
-    through: "npm:^2.3.8"
-    web-streams-polyfill: "npm:^4.0.0"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/potree@workspace:modules/potree":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/potree@workspace:modules/potree"
-  dependencies:
-    "@loaders.gl/las": "npm:4.4.6"
-    "@loaders.gl/math": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@math.gl/core": "npm:^4.1.0"
-    "@math.gl/proj4": "npm:^4.1.0"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/schema-utils@npm:^4.4.0, @loaders.gl/schema-utils@workspace:modules/schema-utils":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/schema-utils@workspace:modules/schema-utils"
-  dependencies:
-    "@loaders.gl/schema": "npm:4.4.6"
+    "@loaders.gl/schema": "npm:4.5.1"
     "@math.gl/types": "npm:^4.1.0"
     "@types/geojson": "npm:^7946.0.7"
     apache-arrow: "npm:>= 17.0.0"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/8cb8b7013f36e3ad042a21379ec57b01d38283a656dde1ba3306d7b925174a1377c71d87c141209031d5cfc01a061c4778126a7109836ac7d4ecf5530d7229b1
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/schema@npm:^4.4.0, @loaders.gl/schema@workspace:modules/schema":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/schema@workspace:modules/schema"
+"@loaders.gl/schema@npm:4.5.1, @loaders.gl/schema@npm:^4.2.0, @loaders.gl/schema@npm:^4.3.4":
+  version: 4.5.1
+  resolution: "@loaders.gl/schema@npm:4.5.1"
   dependencies:
     "@types/geojson": "npm:^7946.0.7"
     apache-arrow: "npm:>= 17.0.0"
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/dbdfa1d566c68edcaa6633f4af505c94ff6925d59bcc1db6f55b1e574dcfef4435763002a3e08dfe17fe185c78970d86136fbb35d4b63cce4926d951fba3f784
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/shapefile@workspace:modules/shapefile":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/shapefile@workspace:modules/shapefile"
+"@loaders.gl/terrain@npm:^4.3.4":
+  version: 4.5.1
+  resolution: "@loaders.gl/terrain@npm:4.5.1"
   dependencies:
-    "@loaders.gl/gis": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@math.gl/proj4": "npm:^4.1.0"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/terrain@npm:^4.4.0, @loaders.gl/terrain@workspace:modules/terrain":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/terrain@workspace:modules/terrain"
-  dependencies:
-    "@loaders.gl/images": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
+    "@loaders.gl/images": "npm:4.5.1"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
+    "@loaders.gl/schema": "npm:4.5.1"
     "@mapbox/martini": "npm:^0.2.0"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/b478a8780116e673f01041316c81560b971813cf4bb524a2383c6f2e79421f4c9ba666cc47e934300a1d665e616a9fe7ecc249326fb1fd12543ca3f231284fcf
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/textures@npm:^4.4.0, @loaders.gl/textures@workspace:modules/textures":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/textures@workspace:modules/textures"
+"@loaders.gl/textures@npm:4.5.1, @loaders.gl/textures@npm:^4.2.0":
+  version: 4.5.1
+  resolution: "@loaders.gl/textures@npm:4.5.1"
   dependencies:
-    "@loaders.gl/images": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/worker-utils": "npm:4.4.6"
+    "@loaders.gl/images": "npm:4.5.1"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
+    "@loaders.gl/schema": "npm:4.5.1"
+    "@loaders.gl/worker-utils": "npm:4.5.1"
     "@math.gl/types": "npm:^4.1.0"
     ktx-parse: "npm:^0.7.0"
   peerDependencies:
@@ -5187,137 +4894,72 @@ __metadata:
   peerDependenciesMeta:
     texture-compressor:
       optional: true
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/3777b28cc0f608efa4e5849bf9fd6f9ede13666e28b099b2c1ab259eb8ae83aff9e0e9dfe5f75d936854789c5f912511717bde8c442f3db3fda2c47ecba6371b
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/tile-converter@workspace:apps/tile-converter":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/tile-converter@workspace:apps/tile-converter"
+"@loaders.gl/tiles@npm:4.5.1, @loaders.gl/tiles@npm:^4.2.0, @loaders.gl/tiles@npm:^4.3.4":
+  version: 4.5.1
+  resolution: "@loaders.gl/tiles@npm:4.5.1"
   dependencies:
-    "@loaders.gl/3d-tiles": "npm:4.4.6"
-    "@loaders.gl/compression": "npm:4.4.6"
-    "@loaders.gl/crypto": "npm:4.4.6"
-    "@loaders.gl/draco": "npm:4.4.6"
-    "@loaders.gl/gltf": "npm:4.4.6"
-    "@loaders.gl/i3s": "npm:4.4.6"
-    "@loaders.gl/images": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/math": "npm:4.4.6"
-    "@loaders.gl/polyfills": "npm:4.4.6"
-    "@loaders.gl/textures": "npm:4.4.6"
-    "@loaders.gl/tiles": "npm:4.4.6"
-    "@loaders.gl/worker-utils": "npm:4.4.6"
-    "@loaders.gl/zip": "npm:4.4.6"
-    "@math.gl/core": "npm:^4.1.0"
-    "@math.gl/culling": "npm:^4.1.0"
-    "@math.gl/geoid": "npm:^4.1.0"
-    "@math.gl/geospatial": "npm:^4.1.0"
-    "@types/express": "npm:^4.17.17"
-    "@types/inquirer": "npm:^9.0.7"
-    ajv: "npm:^8.12.0"
-    archiver: "npm:^5.0.0"
-    cors: "npm:^2.8.5"
-    crypt: "npm:^0.0.2"
-    debug: "npm:~4.3.4"
-    express: "npm:~4.19.2"
-    inquirer: "npm:^8.0.0"
-    json-map-transform: "npm:^1.2.6"
-    jszip: "npm:^3.5.0"
-    md5: "npm:^2.3.0"
-    morgan: "npm:~1.9.1"
-    uuid: "npm:^9.0.0"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  bin:
-    i3s-server: ./bin/i3s-server.js
-    tile-converter: ./bin/converter.js
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/tiles@npm:^4.4.0, @loaders.gl/tiles@workspace:modules/tiles":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/tiles@workspace:modules/tiles"
-  dependencies:
-    "@deck.gl/core": "npm:^9.0.33"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/math": "npm:4.4.6"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
+    "@loaders.gl/math": "npm:4.5.1"
     "@math.gl/core": "npm:^4.1.0"
     "@math.gl/culling": "npm:^4.1.0"
     "@math.gl/geospatial": "npm:^4.1.0"
     "@math.gl/web-mercator": "npm:^4.1.0"
     "@probe.gl/stats": "npm:^4.1.1"
   peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+    "@loaders.gl/core": ~4.5.0-alpha.2
+  checksum: 10c0/e2bc2500bfade32af43180af44af4e6dd78d026ceb32c36cc02dd6593b0cafd7073eb375f5e68420308fb540763b992f398237ee4f784eb95e8e021010d0f36a
+  languageName: node
+  linkType: hard
 
 "@loaders.gl/traces@workspace:modules/traces":
   version: 0.0.0-use.local
   resolution: "@loaders.gl/traces@workspace:modules/traces"
   peerDependencies:
-    "@loaders.gl/core": ~4.4.0
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
   languageName: unknown
   linkType: soft
 
-"@loaders.gl/video@workspace:modules/video":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/video@workspace:modules/video"
+"@loaders.gl/wms@npm:^4.3.4":
+  version: 4.5.1
+  resolution: "@loaders.gl/wms@npm:4.5.1"
   dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/worker-utils": "npm:4.4.6"
-    gifshot: "npm:^0.4.5"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/wkt@npm:4.4.6, @loaders.gl/wkt@workspace:modules/wkt":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/wkt@workspace:modules/wkt"
-  dependencies:
-    "@loaders.gl/gis": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    fuzzer: "npm:^0.2.1"
-  peerDependencies:
-    "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
-
-"@loaders.gl/wms@npm:^4.4.0, @loaders.gl/wms@workspace:modules/wms":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/wms@workspace:modules/wms"
-  dependencies:
-    "@loaders.gl/images": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
-    "@loaders.gl/xml": "npm:4.4.6"
+    "@loaders.gl/images": "npm:4.5.1"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
+    "@loaders.gl/schema": "npm:4.5.1"
+    "@loaders.gl/xml": "npm:4.5.1"
     "@turf/rewind": "npm:^5.1.5"
     deep-strict-equal: "npm:^0.2.0"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/a372ddb6c812c628cd1eb1de46a78807895f28e28d432fc546454ef4c1489919235b05d2d1e8a33fe9f288c0ce55795ff6f939718071fb3c680b2b103ce46d30
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/worker-utils@npm:^4.4.0, @loaders.gl/worker-utils@workspace:modules/worker-utils":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/worker-utils@workspace:modules/worker-utils"
+"@loaders.gl/worker-utils@npm:4.5.1":
+  version: 4.5.1
+  resolution: "@loaders.gl/worker-utils@npm:4.5.1"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/fd81523e9792779e85b65749749f02fd3eaa0db7103e6bd65a7c1b1e1d1e5b35dee45e54860f820f0d60ed581173b3d28ebcf94a8d026aef74fb995e2f1f13b8
+  languageName: node
+  linkType: hard
 
-"@loaders.gl/xml@npm:4.4.6, @loaders.gl/xml@workspace:modules/xml":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/xml@workspace:modules/xml"
+"@loaders.gl/xml@npm:4.5.1":
+  version: 4.5.1
+  resolution: "@loaders.gl/xml@npm:4.5.1"
   dependencies:
-    "@loaders.gl/loader-utils": "npm:4.4.6"
-    "@loaders.gl/schema": "npm:4.4.6"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
+    "@loaders.gl/schema": "npm:4.5.1"
     fast-xml-parser: "npm:^5.3.6"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/37f96eac6db8cbe70c0c9fbdf26b3ded352a2f4841ae321c03f47cf3b26059c74c5182852760ccdb640e163236ccaa4e84836a01aefadcfd1e8a7d46479dfcd3
+  languageName: node
+  linkType: hard
 
 "@loaders.gl/zarr@workspace:modules/zarr":
   version: 0.0.0-use.local
@@ -5325,23 +4967,24 @@ __metadata:
   dependencies:
     zarr: "npm:^0.5.0"
   peerDependencies:
-    "@loaders.gl/core": ~4.4.0
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
   languageName: unknown
   linkType: soft
 
-"@loaders.gl/zip@npm:^4.4.0, @loaders.gl/zip@workspace:modules/zip":
-  version: 0.0.0-use.local
-  resolution: "@loaders.gl/zip@workspace:modules/zip"
+"@loaders.gl/zip@npm:4.5.1":
+  version: 4.5.1
+  resolution: "@loaders.gl/zip@npm:4.5.1"
   dependencies:
-    "@loaders.gl/compression": "npm:4.4.6"
-    "@loaders.gl/crypto": "npm:4.4.6"
-    "@loaders.gl/loader-utils": "npm:4.4.6"
+    "@loaders.gl/compression": "npm:4.5.1"
+    "@loaders.gl/crypto": "npm:4.5.1"
+    "@loaders.gl/loader-utils": "npm:4.5.1"
     jszip: "npm:^3.1.5"
     md5: "npm:^2.3.0"
   peerDependencies:
     "@loaders.gl/core": ~4.4.0
-  languageName: unknown
-  linkType: soft
+  checksum: 10c0/a03ca4b13148c5b275217d813f2a208c2ce4d63ceab81133d40d08a855456e4b55ddccd73cfe25fa8435b5599ce35385b2511e10734e40b40636d82973564bd0
+  languageName: node
+  linkType: hard
 
 "@luma.gl/constants@npm:9.2.6, @luma.gl/constants@npm:^9.0.0, @luma.gl/constants@npm:^9.2.6":
   version: 9.2.6
@@ -6663,6 +6306,707 @@ __metadata:
   checksum: 10c0/b5bcfb0d87f7d1c1c7c0f7693f53b07866ed9fec4c34a97a8c948fb9a7c0082e416ce4d3b60beb4f5e167cbe04cdeefbf6771320f3ede059b9ce91188c409a5b
   languageName: node
   linkType: hard
+
+"@sensat/loaders-gl-3d-tiles@npm:4.4.6-sensat.0, @sensat/loaders-gl-3d-tiles@workspace:modules/3d-tiles":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-3d-tiles@workspace:modules/3d-tiles"
+  dependencies:
+    "@math.gl/core": "npm:^4.1.0"
+    "@math.gl/culling": "npm:^4.1.0"
+    "@math.gl/geospatial": "npm:^4.1.0"
+    "@probe.gl/log": "npm:^4.1.1"
+    "@sensat/loaders-gl-compression": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-crypto": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-draco": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-gltf": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-images": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-math": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-tiles": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-zip": "npm:4.4.6-sensat.0"
+    long: "npm:^5.2.1"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-arrow@npm:4.4.6-sensat.0, @sensat/loaders-gl-arrow@workspace:modules/arrow":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-arrow@workspace:modules/arrow"
+  dependencies:
+    "@math.gl/polygon": "npm:^4.1.0"
+    "@sensat/loaders-gl-gis": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-wkt": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-worker-utils": "npm:4.4.6-sensat.0"
+    apache-arrow: "npm:>= 17.0.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-bson@npm:4.4.6-sensat.0, @sensat/loaders-gl-bson@workspace:modules/bson":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-bson@workspace:modules/bson"
+  dependencies:
+    "@sensat/loaders-gl-gis": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@types/bson": "npm:4.2.0"
+    bson: "npm:4.2.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-compression@npm:4.4.6-sensat.0, @sensat/loaders-gl-compression@workspace:modules/compression":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-compression@workspace:modules/compression"
+  dependencies:
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-worker-utils": "npm:4.4.6-sensat.0"
+    "@types/brotli": "npm:^1.3.0"
+    "@types/pako": "npm:^1.0.1"
+    brotli: "npm:^1.3.2"
+    fflate: "npm:0.7.4"
+    lz4js: "npm:^0.2.0"
+    pako: "npm:1.0.11"
+    snappyjs: "npm:^0.6.1"
+    zstd-codec: "npm:^0.1"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  dependenciesMeta:
+    "@types/brotli":
+      optional: true
+    brotli:
+      optional: true
+    lz4js:
+      optional: true
+    zstd-codec:
+      optional: true
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-core@npm:4.4.6-sensat.0, @sensat/loaders-gl-core@workspace:modules/core":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-core@workspace:modules/core"
+  dependencies:
+    "@probe.gl/log": "npm:^4.1.1"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-worker-utils": "npm:4.4.6-sensat.0"
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-crypto@npm:4.4.6-sensat.0, @sensat/loaders-gl-crypto@workspace:modules/crypto":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-crypto@workspace:modules/crypto"
+  dependencies:
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-worker-utils": "npm:4.4.6-sensat.0"
+    "@types/crypto-js": "npm:^4.0.2"
+    crypto-js: "npm:^3.0.0 || ^4.0.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-csv@workspace:modules/csv":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-csv@workspace:modules/csv"
+  dependencies:
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    d3-dsv: "npm:^1.2.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-draco@npm:4.4.6-sensat.0, @sensat/loaders-gl-draco@workspace:modules/draco":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-draco@workspace:modules/draco"
+  dependencies:
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-worker-utils": "npm:4.4.6-sensat.0"
+    "@types/draco3d": "npm:^1.4.9"
+    draco3d: "npm:1.5.7"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-excel@workspace:modules/excel":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-excel@workspace:modules/excel"
+  dependencies:
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    xlsx: "npm:^0.18.5"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-flatgeobuf@workspace:modules/flatgeobuf":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-flatgeobuf@workspace:modules/flatgeobuf"
+  dependencies:
+    "@math.gl/proj4": "npm:^4.1.0"
+    "@sensat/loaders-gl-gis": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    flatgeobuf: "npm:3.27.2"
+    stream-buffers: "npm:3.0.2"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-geoarrow@npm:4.4.6-sensat.0, @sensat/loaders-gl-geoarrow@workspace:modules/geoarrow":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-geoarrow@workspace:modules/geoarrow"
+  dependencies:
+    "@math.gl/polygon": "npm:^4.1.0"
+    apache-arrow: "npm:>= 17.0.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-geopackage@npm:4.4.6-sensat.0, @sensat/loaders-gl-geopackage@workspace:modules/geopackage":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-geopackage@workspace:modules/geopackage"
+  dependencies:
+    "@math.gl/proj4": "npm:^4.1.0"
+    "@sensat/loaders-gl-gis": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-wkt": "npm:4.4.6-sensat.0"
+    "@types/sql.js": "npm:^1.4.5"
+    fs: "npm:^0.0.1-security"
+    path: "npm:^0.12.7"
+    sql.js: "npm:1.8.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-geotiff@workspace:modules/geotiff":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-geotiff@workspace:modules/geotiff"
+  dependencies:
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    fast-xml-parser: "npm:^5.3.6"
+    geotiff: "npm:^2.1.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-gis@npm:4.4.6-sensat.0, @sensat/loaders-gl-gis@workspace:modules/gis":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-gis@workspace:modules/gis"
+  dependencies:
+    "@mapbox/vector-tile": "npm:^1.3.1"
+    "@math.gl/polygon": "npm:^4.1.0"
+    "@math.gl/proj4": "npm:^4.1.0"
+    "@sensat/loaders-gl-geoarrow": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema-utils": "npm:4.4.6-sensat.0"
+    pbf: "npm:^3.2.1"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-gltf@npm:4.4.6-sensat.0, @sensat/loaders-gl-gltf@workspace:modules/gltf":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-gltf@workspace:modules/gltf"
+  dependencies:
+    "@math.gl/core": "npm:^4.1.0"
+    "@sensat/loaders-gl-draco": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-images": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-textures": "npm:4.4.6-sensat.0"
+    meshoptimizer: "npm:^1.2.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-i3s@npm:4.4.6-sensat.0, @sensat/loaders-gl-i3s@workspace:modules/i3s":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-i3s@workspace:modules/i3s"
+  dependencies:
+    "@math.gl/core": "npm:^4.1.0"
+    "@math.gl/culling": "npm:^4.1.0"
+    "@math.gl/geospatial": "npm:^4.1.0"
+    "@sensat/loaders-gl-compression": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-crypto": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-draco": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-images": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-math": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-textures": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-tiles": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-zip": "npm:4.4.6-sensat.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-images@npm:4.4.6-sensat.0, @sensat/loaders-gl-images@workspace:modules/images":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-images@workspace:modules/images"
+  dependencies:
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@types/get-pixels": "npm:^3.3.2"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-json@workspace:modules/json":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-json@workspace:modules/json"
+  dependencies:
+    "@sensat/loaders-gl-gis": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema-utils": "npm:4.4.6-sensat.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-kml@workspace:modules/kml":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-kml@workspace:modules/kml"
+  dependencies:
+    "@sensat/loaders-gl-gis": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@tmcw/togeojson": "npm:^4.5.0"
+    "@xmldom/xmldom": "npm:^0.8.12"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-las@npm:4.4.6-sensat.0, @sensat/loaders-gl-las@workspace:modules/las":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-las@workspace:modules/las"
+  dependencies:
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema-utils": "npm:4.4.6-sensat.0"
+    laz-perf: "npm:^0.0.6"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-lerc@workspace:modules/lerc":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-lerc@workspace:modules/lerc"
+  dependencies:
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    lerc: "npm:^4.0.4"
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-loader-utils@npm:4.4.6-sensat.0, @sensat/loaders-gl-loader-utils@workspace:modules/loader-utils":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-loader-utils@workspace:modules/loader-utils"
+  dependencies:
+    "@probe.gl/log": "npm:^4.1.1"
+    "@probe.gl/stats": "npm:^4.1.1"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-worker-utils": "npm:4.4.6-sensat.0"
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-math@npm:4.4.6-sensat.0, @sensat/loaders-gl-math@workspace:modules/math":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-math@workspace:modules/math"
+  dependencies:
+    "@math.gl/core": "npm:^4.1.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-mlt@workspace:modules/mlt":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-mlt@workspace:modules/mlt"
+  dependencies:
+    "@maplibre/mlt": "npm:^1.1.6"
+    "@sensat/loaders-gl-gis": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-mvt@npm:4.4.6-sensat.0, @sensat/loaders-gl-mvt@workspace:modules/mvt":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-mvt@workspace:modules/mvt"
+  dependencies:
+    "@math.gl/polygon": "npm:^4.1.0"
+    "@probe.gl/stats": "npm:^4.1.1"
+    "@sensat/loaders-gl-gis": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-images": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema-utils": "npm:4.4.6-sensat.0"
+    "@types/pbf": "npm:^3.0.2"
+    pbf: "npm:^3.2.1"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-netcdf@workspace:modules/netcdf":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-netcdf@workspace:modules/netcdf"
+  dependencies:
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-obj@npm:4.4.6-sensat.0, @sensat/loaders-gl-obj@workspace:modules/obj":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-obj@workspace:modules/obj"
+  dependencies:
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema-utils": "npm:4.4.6-sensat.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-parquet@workspace:modules/parquet":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-parquet@workspace:modules/parquet"
+  dependencies:
+    "@probe.gl/log": "npm:^4.1.1"
+    "@sensat/loaders-gl-arrow": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-bson": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-compression": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-geoarrow": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-gis": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-wkt": "npm:4.4.6-sensat.0"
+    "@types/node-int64": "npm:^0.4.29"
+    "@types/thrift": "npm:^0.10.8"
+    "@types/varint": "npm:^5.0.0"
+    async-mutex: "npm:^0.2.2"
+    base64-js: "npm:^1.3.1"
+    brotli: "npm:^1.3.2"
+    ieee754: "npm:^1.2.1"
+    int53: "npm:^0.2.4"
+    isomorphic-ws: "npm:^5.0.0"
+    lz4js: "npm:^0.2.0"
+    node-int64: "npm:^0.4.0"
+    object-stream: "npm:0.0.1"
+    parquet-wasm: "npm:^0.6.1"
+    snappyjs: "npm:^0.6.0"
+    thrift: "npm:^0.19.0"
+    util: "npm:^0.12.5"
+    varint: "npm:^6.0.0"
+    zstd-codec: "npm:^0.1"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+    apache-arrow: ">= 17.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-pcd@workspace:modules/pcd":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-pcd@workspace:modules/pcd"
+  dependencies:
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema-utils": "npm:4.4.6-sensat.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-ply@npm:4.4.6-sensat.0, @sensat/loaders-gl-ply@workspace:modules/ply":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-ply@workspace:modules/ply"
+  dependencies:
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema-utils": "npm:4.4.6-sensat.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-pmtiles@workspace:modules/pmtiles":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-pmtiles@workspace:modules/pmtiles"
+  dependencies:
+    "@sensat/loaders-gl-images": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-mvt": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    pmtiles: "npm:^3.0.4"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-polyfills@npm:4.4.6-sensat.0, @sensat/loaders-gl-polyfills@workspace:modules/polyfills":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-polyfills@workspace:modules/polyfills"
+  dependencies:
+    "@sensat/loaders-gl-crypto": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    buffer: "npm:^6.0.3"
+    get-pixels: "npm:^3.3.3"
+    ndarray: "npm:^1.0.19"
+    save-pixels: "npm:^2.3.6"
+    stream-to-async-iterator: "npm:^1.0.0"
+    through: "npm:^2.3.8"
+    web-streams-polyfill: "npm:^4.0.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-potree@workspace:modules/potree":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-potree@workspace:modules/potree"
+  dependencies:
+    "@math.gl/core": "npm:^4.1.0"
+    "@math.gl/proj4": "npm:^4.1.0"
+    "@sensat/loaders-gl-las": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-math": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-schema-utils@npm:4.4.6-sensat.0, @sensat/loaders-gl-schema-utils@workspace:modules/schema-utils":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-schema-utils@workspace:modules/schema-utils"
+  dependencies:
+    "@math.gl/types": "npm:^4.1.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@types/geojson": "npm:^7946.0.7"
+    apache-arrow: "npm:>= 17.0.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-schema@npm:4.4.6-sensat.0, @sensat/loaders-gl-schema@workspace:modules/schema":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-schema@workspace:modules/schema"
+  dependencies:
+    "@types/geojson": "npm:^7946.0.7"
+    apache-arrow: "npm:>= 17.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-shapefile@workspace:modules/shapefile":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-shapefile@workspace:modules/shapefile"
+  dependencies:
+    "@math.gl/proj4": "npm:^4.1.0"
+    "@sensat/loaders-gl-gis": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-terrain@workspace:modules/terrain":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-terrain@workspace:modules/terrain"
+  dependencies:
+    "@mapbox/martini": "npm:^0.2.0"
+    "@sensat/loaders-gl-images": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-textures@npm:4.4.6-sensat.0, @sensat/loaders-gl-textures@workspace:modules/textures":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-textures@workspace:modules/textures"
+  dependencies:
+    "@math.gl/types": "npm:^4.1.0"
+    "@sensat/loaders-gl-images": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-worker-utils": "npm:4.4.6-sensat.0"
+    ktx-parse: "npm:^0.7.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+    texture-compressor: ^1.0.2
+  peerDependenciesMeta:
+    texture-compressor:
+      optional: true
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-tile-converter@workspace:apps/tile-converter":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-tile-converter@workspace:apps/tile-converter"
+  dependencies:
+    "@math.gl/core": "npm:^4.1.0"
+    "@math.gl/culling": "npm:^4.1.0"
+    "@math.gl/geoid": "npm:^4.1.0"
+    "@math.gl/geospatial": "npm:^4.1.0"
+    "@sensat/loaders-gl-3d-tiles": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-compression": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-crypto": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-draco": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-gltf": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-i3s": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-images": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-math": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-polyfills": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-textures": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-tiles": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-worker-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-zip": "npm:4.4.6-sensat.0"
+    "@types/express": "npm:^4.17.17"
+    "@types/inquirer": "npm:^9.0.7"
+    ajv: "npm:^8.12.0"
+    archiver: "npm:^5.0.0"
+    cors: "npm:^2.8.5"
+    crypt: "npm:^0.0.2"
+    debug: "npm:~4.3.4"
+    express: "npm:~4.19.2"
+    inquirer: "npm:^8.0.0"
+    json-map-transform: "npm:^1.2.6"
+    jszip: "npm:^3.5.0"
+    md5: "npm:^2.3.0"
+    morgan: "npm:~1.9.1"
+    uuid: "npm:^9.0.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  bin:
+    i3s-server: ./bin/i3s-server.js
+    tile-converter: ./bin/converter.js
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-tiles@npm:4.4.6-sensat.0, @sensat/loaders-gl-tiles@workspace:modules/tiles":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-tiles@workspace:modules/tiles"
+  dependencies:
+    "@deck.gl/core": "npm:^9.0.33"
+    "@math.gl/core": "npm:^4.1.0"
+    "@math.gl/culling": "npm:^4.1.0"
+    "@math.gl/geospatial": "npm:^4.1.0"
+    "@math.gl/web-mercator": "npm:^4.1.0"
+    "@probe.gl/stats": "npm:^4.1.1"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-math": "npm:4.4.6-sensat.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-video@workspace:modules/video":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-video@workspace:modules/video"
+  dependencies:
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-worker-utils": "npm:4.4.6-sensat.0"
+    gifshot: "npm:^0.4.5"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-wkt@npm:4.4.6-sensat.0, @sensat/loaders-gl-wkt@workspace:modules/wkt":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-wkt@workspace:modules/wkt"
+  dependencies:
+    "@sensat/loaders-gl-gis": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    fuzzer: "npm:^0.2.1"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-wms@workspace:modules/wms":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-wms@workspace:modules/wms"
+  dependencies:
+    "@sensat/loaders-gl-images": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-xml": "npm:4.4.6-sensat.0"
+    "@turf/rewind": "npm:^5.1.5"
+    deep-strict-equal: "npm:^0.2.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-worker-utils@npm:4.4.6-sensat.0, @sensat/loaders-gl-worker-utils@workspace:modules/worker-utils":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-worker-utils@workspace:modules/worker-utils"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-xml@npm:4.4.6-sensat.0, @sensat/loaders-gl-xml@workspace:modules/xml":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-xml@workspace:modules/xml"
+  dependencies:
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    fast-xml-parser: "npm:^5.3.6"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
+
+"@sensat/loaders-gl-zip@npm:4.4.6-sensat.0, @sensat/loaders-gl-zip@workspace:modules/zip":
+  version: 0.0.0-use.local
+  resolution: "@sensat/loaders-gl-zip@workspace:modules/zip"
+  dependencies:
+    "@sensat/loaders-gl-compression": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-crypto": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    jszip: "npm:^3.1.5"
+    md5: "npm:^2.3.0"
+  peerDependencies:
+    "@sensat/loaders-gl-core": 4.4.6-sensat.0
+  languageName: unknown
+  linkType: soft
 
 "@sideway/address@npm:^4.1.5":
   version: 4.1.5
@@ -23740,15 +24084,6 @@ __metadata:
     "@fortawesome/fontawesome-svg-core": "npm:^1.2.34"
     "@fortawesome/free-solid-svg-icons": "npm:^5.15.2"
     "@fortawesome/react-fontawesome": "npm:^0.1.14"
-    "@loaders.gl/core": "npm:^4.4.0"
-    "@loaders.gl/geopackage": "npm:^4.4.0"
-    "@loaders.gl/i3s": "npm:^4.4.0"
-    "@loaders.gl/las": "npm:^4.4.0"
-    "@loaders.gl/loader-utils": "npm:^4.4.0"
-    "@loaders.gl/obj": "npm:^4.4.0"
-    "@loaders.gl/ply": "npm:^4.4.0"
-    "@loaders.gl/schema": "npm:^4.4.0"
-    "@loaders.gl/schema-utils": "npm:^4.4.0"
     "@luma.gl/gltf": "npm:^9.0.8"
     "@material-ui/core": "npm:^4.10.2"
     "@material-ui/icons": "npm:^4.9.1"
@@ -23758,6 +24093,15 @@ __metadata:
     "@probe.gl/bench": "npm:^4.0.2"
     "@probe.gl/react-bench": "npm:^4.0.2"
     "@probe.gl/stats-widget": "npm:^4.0.2"
+    "@sensat/loaders-gl-core": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-geopackage": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-i3s": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-las": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-loader-utils": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-obj": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-ply": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema": "npm:4.4.6-sensat.0"
+    "@sensat/loaders-gl-schema-utils": "npm:4.4.6-sensat.0"
     "@turf/turf": "npm:^6.5.0"
     babel-plugin-styled-components: "npm:~2.0.0"
     d3-color: "npm:^3.1.0"
@@ -28877,6 +29221,13 @@ __metadata:
   version: 3.23.8
   resolution: "zod@npm:3.23.8"
   checksum: 10c0/8f14c87d6b1b53c944c25ce7a28616896319d95bc46a9660fe441adc0ed0a81253b02b5abdaeffedbeb23bdd25a0bf1c29d2c12dd919aef6447652dd295e3e69
+  languageName: node
+  linkType: hard
+
+"zod@npm:^4.1.12":
+  version: 4.6.1
+  resolution: "zod@npm:4.6.1"
+  checksum: 10c0/ef427982cc9b89e25a2559f5d28c9ee29504332de35c50523c2c61bbbb1f55a688713f7d39ddcb2e4fb4ef905432699b9cac7510e7b7d4da3f41099e35601dd2
   languageName: node
   linkType: hard
 

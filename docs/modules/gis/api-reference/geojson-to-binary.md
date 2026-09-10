@@ -8,9 +8,9 @@ main process.
 ## Usage
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {JSONLoader} from '@loaders.gl/json';
-import {geojsonToBinary} from '@loaders.gl/gis';
+import {load} from '@sensat/loaders-gl-core';
+import {JSONLoader} from '@sensat/loaders-gl-json';
+import {geojsonToBinary} from '@sensat/loaders-gl-gis';
 
 const geoJSONfeatures = await load('data.geojson', JSONLoader);
 

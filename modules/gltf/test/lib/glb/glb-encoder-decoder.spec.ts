@@ -2,9 +2,9 @@
 /*
 import test from 'tape-promise/tape';
 
-import {GLBBuilder, GLBParser} from '@loaders.gl/gltf';
+import {GLBBuilder, GLBParser} from '@sensat/loaders-gl-gltf';
 
-import TEST_JSON from '@loaders.gl/gltf/test/data/glb/test-data.json';
+import TEST_JSON from '@sensat/loaders-gl-gltf/test/data/glb/test-data.json';
 
 const BUFFERS = [
   new Int8Array([3, 2, 3]),

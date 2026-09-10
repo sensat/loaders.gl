@@ -1,4 +1,4 @@
-# @loaders.gl/flatgeobuf
+# @sensat/loaders-gl-flatgeobuf
 
 This module contains a geometry loader for FlatGeobuf.
 

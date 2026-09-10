@@ -2,13 +2,13 @@
 
 ![flatgeobuf-logo](./images/flatgeobuf-logo.png)
 
-The `@loaders.gl/flatgeobuf` module handles the [FlatGeobuf](http://flatgeobuf.org/) format, a binary FlatBuffers-encoded format that defines geospatial geometries.
+The `@sensat/loaders-gl-flatgeobuf` module handles the [FlatGeobuf](http://flatgeobuf.org/) format, a binary FlatBuffers-encoded format that defines geospatial geometries.
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/flatgeobuf
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-flatgeobuf
+npm install @sensat/loaders-gl-core
 ```
 
 ## Loaders and Writers

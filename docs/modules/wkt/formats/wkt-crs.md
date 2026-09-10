@@ -2,7 +2,7 @@
 
 ![ogc-logo](../../../images/logos/ogc-logo-60.png)
 
-- _[`@loaders.gl/wkt`](/docs/modules/wkt)_
+- _[`@sensat/loaders-gl-wkt`](/docs/modules/wkt)_
 - _[OGC Standard](https://www.ogc.org/standards/wkt-crs)_
 - _[Wikipedia Page](https://en.wikipedia.org/wiki/Well-known_text_representation_of_coordinate_reference_systems)_
 

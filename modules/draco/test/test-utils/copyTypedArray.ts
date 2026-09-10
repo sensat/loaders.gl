@@ -1,4 +1,4 @@
-import {copyToArray} from '@loaders.gl/loader-utils';
+import {copyToArray} from '@sensat/loaders-gl-loader-utils';
 
 export function cloneTypeArray(source) {
   const indicesContainer = new Uint8Array(source.byteLength);

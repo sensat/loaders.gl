@@ -1,4 +1,4 @@
-# @loaders.gl/mlt
+# @sensat/loaders-gl-mlt
 
 <p class="badges">
   <img src="https://img.shields.io/badge/From-v4.4-blue.svg?style=flat-square" alt="From-v4.4" />
@@ -9,8 +9,8 @@ Support for loading [MapLibre Tile](/docs/modules/mlt/formats/mlt) vector tiles.
 ## Installation
 
 ```bash
-npm install @loaders.gl/mlt
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-mlt
+npm install @sensat/loaders-gl-core
 ```
 
 ## Loaders

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {TableBatch, Table} from '@loaders.gl/schema';
+import type {TableBatch, Table} from '@sensat/loaders-gl-schema';
 import {getTableLength} from '../tables/table-accessors';
 
 /**

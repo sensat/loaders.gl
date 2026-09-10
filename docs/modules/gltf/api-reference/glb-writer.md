@@ -15,8 +15,8 @@ Note: applications that want to encode GLB-formatted glTF files should normally 
 ## Usage
 
 ```typescript
-import {GLBWriter} from '@loaders.gl/gltf';
-import {encodeSync} from '@loaders.gl/core';
+import {GLBWriter} from '@sensat/loaders-gl-gltf';
+import {encodeSync} from '@sensat/loaders-gl-core';
 
 const arrayBuffer = encodeSync(gltf, GLBWriter, options);
 ```

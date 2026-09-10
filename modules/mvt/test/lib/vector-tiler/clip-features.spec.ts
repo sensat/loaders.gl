@@ -5,7 +5,7 @@
 
 import test from 'tape-promise/tape';
 // @ts-ignore-error
-import {clipFeatures} from '@loaders.gl/mvt/lib/vector-tiler/features/clip-features';
+import {clipFeatures} from '@sensat/loaders-gl-mvt/lib/vector-tiler/features/clip-features';
 
 /* eslint comma-spacing:0*/
 

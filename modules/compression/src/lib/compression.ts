@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 // Compression interface
-import {concatenateArrayBuffersAsync, registerJSModules} from '@loaders.gl/loader-utils';
+import {concatenateArrayBuffersAsync, registerJSModules} from '@sensat/loaders-gl-loader-utils';
 
 /** Compression options */
 export type CompressionOptions = {

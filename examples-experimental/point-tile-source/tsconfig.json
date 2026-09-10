@@ -5,6 +5,6 @@
   "include": ["./app.js"],
   "baseUrl": "../..",
   "paths": {
-    "@loaders.gl/potree": ["modules/potree/src"]
+    "@sensat/loaders-gl-potree": ["modules/potree/src"]
   }
 }

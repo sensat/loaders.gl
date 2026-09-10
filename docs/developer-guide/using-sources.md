@@ -57,9 +57,9 @@ Just like applications can create their own own loaders, apps can also create (a
 Just like loaders, sources accept nested options, so that options for multiple sources can be specified:
 
 ```ts
-import {createDataSource} from '@loaders.gl/core';
-import {PMTileseSource} from '@loaders.gl/pmtiles';
-import {MVTSource} from '@loaders.gl/mvt`;
+import {createDataSource} from '@sensat/loaders-gl-core';
+import {PMTileseSource} from '@sensat/loaders-gl-pmtiles';
+import {MVTSource} from '@sensat/loaders-gl-mvt`;
 
 const dataSource = createDataSource(url, [PMTileSource, MVTSource], {
   core: {
@@ -81,9 +81,9 @@ A source can sometimes use one or more loaders internally to load sub resources.
 An advanced source is the `TableTileSource` which lets you dynamically generate MVT tiles from a table.
 
 ```typescript
-import {createDataSource} from '@loaders.gl/core';
-import {TableTileSource} from '@loaders.gl/mvt';
-import {GeoJSONLoader} from '@loaders.gl/json';
+import {createDataSource} from '@sensat/loaders-gl-core';
+import {TableTileSource} from '@sensat/loaders-gl-mvt';
+import {GeoJSONLoader} from '@sensat/loaders-gl-json';
 
 // build an initial index of tiles.
 const tileSource = createDataSource(url, TableTileSource, {

@@ -1,6 +1,6 @@
 import {encodeGLBSync} from './encode-glb';
 import {GLTFWriterOptions} from '../../gltf-writer';
-import {GLTFWithBuffers} from '@loaders.gl/gltf';
+import {GLTFWithBuffers} from '@sensat/loaders-gl-gltf';
 
 export type GLTFEncodeOptions = Record<string, any>;
 

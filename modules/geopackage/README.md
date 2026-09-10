@@ -1,4 +1,4 @@
-# @loaders.gl/geopackage
+# @sensat/loaders-gl-geopackage
 
 This module contains a loader for the [GeoPackage](https://www.geopackage.org/) format.
 

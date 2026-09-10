@@ -1,4 +1,4 @@
-import {getJSModule, registerJSModules} from '@loaders.gl/loader-utils';
+import {getJSModule, registerJSModules} from '@sensat/loaders-gl-loader-utils';
 import {Hash} from './hash';
 
 type CryptoHashOptions = {

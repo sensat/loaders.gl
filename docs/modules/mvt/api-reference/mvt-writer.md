@@ -17,15 +17,15 @@ Writer for the [Mapbox Vector Tile](https://docs.mapbox.com/vector-tiles/specifi
 ## Installation
 
 ```bash
-npm install @loaders.gl/mvt
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-mvt
+npm install @sensat/loaders-gl-core
 ```
 
 ## Usage
 
 ```typescript
-import {encode} from '@loaders.gl/core';
-import {MVTWriter} from '@loaders.gl/mvt';
+import {encode} from '@sensat/loaders-gl-core';
+import {MVTWriter} from '@sensat/loaders-gl-mvt';
 
 const arrayBuffer = await encode(geojson, MVTWriter, {
   mvt: {

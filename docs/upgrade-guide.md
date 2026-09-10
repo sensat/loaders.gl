@@ -2,11 +2,11 @@
 
 ## Upgrading to v4.4
 
-**@loaders.gl/textures**
+**@sensat/loaders-gl-textures**
 
 - `TextureLevel` now exposes `shape`, `format`, and `textureFormat`. Use `format` for WebGL APIs and `textureFormat` for WebGPU-style or luma.gl APIs.
 - `BasisLoader` uses `basis.supportedTextureFormats` to control `'auto'` basis format selection, and can accept explicit `basis.format` targets.
-- `@loaders.gl/textures` no longer exports `selectSupportedBasisFormat` or `getSupportedGPUTextureFormats`. Pass `basis.supportedTextureFormats` to `BasisLoader` instead of using exported auto-detection helpers.
+- `@sensat/loaders-gl-textures` no longer exports `selectSupportedBasisFormat` or `getSupportedGPUTextureFormats`. Pass `basis.supportedTextureFormats` to `BasisLoader` instead of using exported auto-detection helpers.
 - `BasisLoader`, `CrunchLoader`, and `CompressedTextureLoader` no longer support `libraryPath`. Supply runtime libraries through `options.modules` instead.
 
 | Deprecated helper         | Replacement                     |
@@ -15,11 +15,11 @@
 | `loadImageTextureArray()` | `load(url, TextureArrayLoader)` |
 | `loadImageTextureCube()`  | `load(url, TextureCubeLoader)`  |
 
-**@loaders.gl/draco**
+**@sensat/loaders-gl-draco**
 
 - `DracoLoader` no longer supports `draco.libraryPath`. Supply `modules: {draco3d}` instead of configuring decoder library paths manually.
 
-**@loaders.gl/compression**
+**@sensat/loaders-gl-compression**
 
 - `LZOCompression` was removed due to maintenance and licensing concerns with the underlying `lzo-wasm` library.
 
@@ -29,8 +29,8 @@
 
 - `loaders.gl/core` - Improved loader type inference: `load()`, `parse()`, etc now infer correct option and return types even when an array of loaders is passed. This can lead to previously undetected type errors now being reported and breaking your build, requiring you to fix the errors.
 - `loaders.gl/core` - internal tile index in `Source` classes has changed from `tileIndex.zoom` to `tileIndex.z`. Should not impact most applications.
-- `@loaders.gl/loader-utils` - Deprecated `FileProvider` classes have been removed from the main entrypoint; use `HttpFile`, `BlobFile`, `NodeFile`, or `DataViewReadableFile` to provide `ReadableFile` access instead.
-- `@loaders.gl/zip`/`@loaders.gl/i3s` - Archive parsing helpers expect `ReadableFile` inputs rather than custom provider classes.
+- `@sensat/loaders-gl-loader-utils` - Deprecated `FileProvider` classes have been removed from the main entrypoint; use `HttpFile`, `BlobFile`, `NodeFile`, or `DataViewReadableFile` to provide `ReadableFile` access instead.
+- `@sensat/loaders-gl-zip`/`@sensat/loaders-gl-i3s` - Archive parsing helpers expect `ReadableFile` inputs rather than custom provider classes.
 
 **Deprecations**
 
@@ -43,7 +43,7 @@
 
 ## Additional changes in v4.2
 
-**@loaders.gl/mvt**
+**@sensat/loaders-gl-mvt**
 
 **Deprecations**
 
@@ -59,17 +59,17 @@
 
 **Breaking Changes**
 
-- `@loaders.gl/wkt`- `WKBLoader`/`TWKBLoader`/`HexWKBLoader` - The default `shape` is now `geojson-geometry` rather than `binary-geometry`. If you were relying on `binary-geometry`, just add a `shape: 'binary-geometry'` option, as in `load(..., WKBLoader, {wkb: {shape: 'binary-geometry}})`.
+- `@sensat/loaders-gl-wkt`- `WKBLoader`/`TWKBLoader`/`HexWKBLoader` - The default `shape` is now `geojson-geometry` rather than `binary-geometry`. If you were relying on `binary-geometry`, just add a `shape: 'binary-geometry'` option, as in `load(..., WKBLoader, {wkb: {shape: 'binary-geometry}})`.
 
 **Deprecations**
 
-- `@loaders.gl/wkt`- The `geometry` shape is deprecated, and now called `geojson-geometry`.
+- `@sensat/loaders-gl-wkt`- The `geometry` shape is deprecated, and now called `geojson-geometry`.
 
 ## Upgrading to v4.0
 
 **Node.js v18+**
 
-When using loaders.gl on Node.js your application should import the `@loaders.gl/polyfills` module before calling any loaders.gl functions.
+When using loaders.gl on Node.js your application should import the `@sensat/loaders-gl-polyfills` module before calling any loaders.gl functions.
 
 **Typed Loaders**
 
@@ -94,17 +94,17 @@ Since Apache Arrow JS does not yet come with upgrade notes, you can refer to the
 If you are referencing table schemas returned by loaders, they will no longer be Apache Arrow schemas, but instead equivalent "serialized" lower-overhead loaders.gl schemas. You can recover Arrow schemas as follows
 
 ```typescript
-import {deserializeArrowSchema} from '@loaders.gl/arrow';
+import {deserializeArrowSchema} from '@sensat/loaders-gl-arrow';
 const table = load(url, ParquetLoader);
 const arrowSchema = deserializeArrowSchema(table.schema);
 ```
 
 **Polyfills**
 
-If you were relying on `@loaders.gl/polyfills` module to install a global `fetch()` function under Node.js that supported fetching from local files, loaders.gl v4 uses the built-in fetch in Node.js v18+ (which doesn't support fetching from local files), so to fetch from local files, you now need to use `fetchFile()` instead.
+If you were relying on `@sensat/loaders-gl-polyfills` module to install a global `fetch()` function under Node.js that supported fetching from local files, loaders.gl v4 uses the built-in fetch in Node.js v18+ (which doesn't support fetching from local files), so to fetch from local files, you now need to use `fetchFile()` instead.
 
 ```typescript
-import {fetchFile} from '@loaders.gl/core';
+import {fetchFile} from '@sensat/loaders-gl-core';
 const response = await fetchFile('/path/to/local/file');
 ...
 ```
@@ -121,28 +121,28 @@ and loaders.gl v4.0 aligns with this practice.
 
 Loader module changes, in order of estimated impact to applications:
 
-**@loaders.gl/images**
+**@sensat/loaders-gl-images**
 
 - `loadImage()` has moved to `loaders.gl/textures`.
 
-**@loaders.gl/gltf**
+**@sensat/loaders-gl-gltf**
 
 - `GLTFLoader` - no longer post processes data. Applications need to import and call the `postProcessGLTF` function after calling the loader to get the same result.
 
-**@loaders.gl/crypto**
+**@sensat/loaders-gl-crypto**
 
 - All hashes now require an encoding parameter. To get previous behavior, just specify `.hash...(..., 'base64')`.
 
-**@loaders.gl/arrow**
+**@sensat/loaders-gl-arrow**
 
 - Batches now contain a Table with a single `RecordBatch` (instead of just a `RecordBatch`).
 
-**@loaders.gl/geopackage**
+**@sensat/loaders-gl-geopackage**
 
 - `options.geopackage.shape` replaces all other format specification options, such as `options.gis.format`
-- `options.geopackage.shape: 'tables'` - The default data format returned is now `tables` which returns the type `Tables<ObjectRowTable>`, where the `data` of each table is an array of GeoJSON features. (The `Tables` and `ObjectRowTable` types are exported from `@loaders.gl/schema`.) You can use `options.geopackage.shape: 'geojson-table'`.
+- `options.geopackage.shape: 'tables'` - The default data format returned is now `tables` which returns the type `Tables<ObjectRowTable>`, where the `data` of each table is an array of GeoJSON features. (The `Tables` and `ObjectRowTable` types are exported from `@sensat/loaders-gl-schema`.) You can use `options.geopackage.shape: 'geojson-table'`.
 
-**@loaders.gl/kml**
+**@sensat/loaders-gl-kml**
 
 - `options.kml.shape` replaces all other mechanisms for specifying format of returned data (`.format` etc), and aligns with the `geojson-table` table shape as this is compatible with a GeoJSON `FeatureCollection`.
 - `options.gpx.shape` applies the same changes as `options.kml.shape`.
@@ -150,7 +150,7 @@ Loader module changes, in order of estimated impact to applications:
 
 ## Upgrading to v3.4
 
-**@loaders.gl/wms**
+**@sensat/loaders-gl-wms**
 
 This module is still marked as experimental and had some breaking changes.
 
@@ -162,9 +162,9 @@ This module is still marked as experimental and had some breaking changes.
 
 ## Upgrading to v3.2
 
-**@loaders.gl/geopackage**
+**@sensat/loaders-gl-geopackage**
 
-- The default data format returned is now `options.gis.format: 'tables'`, which returns the type `Tables<ObjectRowTable>`, where the `data` of each table is an array of GeoJSON features. (The `Tables` and `ObjectRowTable` types are exported from `@loaders.gl/schema`.) You can use `options.gis.format: 'geojson'` to return an object mapping table names to an array of GeoJSON features.
+- The default data format returned is now `options.gis.format: 'tables'`, which returns the type `Tables<ObjectRowTable>`, where the `data` of each table is an array of GeoJSON features. (The `Tables` and `ObjectRowTable` types are exported from `@sensat/loaders-gl-schema`.) You can use `options.gis.format: 'geojson'` to return an object mapping table names to an array of GeoJSON features.
 
 ## Upgrading to v3.0
 
@@ -177,35 +177,35 @@ This module is still marked as experimental and had some breaking changes.
 
 Default number of worker threads for each loader has been reduced from `5` to `3` on non-mobile devices and to `1` on mobile devices to reduce memory use. Generally, increasing the number of workers has diminishing returns.
 
-**@loaders.gl/core**
+**@sensat/loaders-gl-core**
 
 - Passing `fetch` options (such as `headers`) to `load()` and `parse()` etc. should now be done via the `options.fetch` options object (e.g. `options.fetch.headers`). Specifying `fetch` options on the root options object was deprecated in v2.3 and is no longer supported in v3.0.
 
-**@loaders.gl/compression**
+**@sensat/loaders-gl-compression**
 
 - The `Transform` API in v2.3 has been replaced with `Compression` classes that handle both compression and decompression. Please refer to the documentation.
 
-**@loaders.gl/crypto**
+**@sensat/loaders-gl-crypto**
 
 - The `Transform` API in v2.3 has been replaced with `Hash` classes that handle both compression and decompression. Please refer to the documentation.
 
-**@loaders.gl/csv**
+**@sensat/loaders-gl-csv**
 
 - The format of parsed data (i.e. whether table rows are objects or arrays) is now controlled by `options.csv.shape` instead of being dynamically selected based on whether the CSV file has a header row. The default `shape` is now `object-row-table`. Default column names are generated if no header row is present. This is a breaking change when loading CSV files without header rows.
 - Duplicate column names will have a counter suffix added to ensure that they are unique. In rare cases this could be a breaking change.
 
-**@loaders.gl/gltf**
+**@sensat/loaders-gl-gltf**
 
 - `GLTFScenegraph` is updated to provide modifying capabilities. Signatures of some methods have been changed to use named parameters (rather than positional parameters).
 - The deprecated `GLBBuilder` class and `encodeGLTFSync` functions have now been removed.
 
 **@loaders.gl/basis**
 
-- Module has been moved to `@loaders.gl/textures`.
+- Module has been moved to `@sensat/loaders-gl-textures`.
 
-**@loaders.gl/images**
+**@sensat/loaders-gl-images**
 
-- The texture API `loadImage`, `loadImageArray`, `loadImageCube` has been moved to the new `@loaders.gl/textures` module, and have been renamed to `loadImageTexture*`.
+- The texture API `loadImage`, `loadImageArray`, `loadImageCube` has been moved to the new `@sensat/loaders-gl-textures` module, and have been renamed to `loadImageTexture*`.
 - The binary image API has been consolidated in a single function `getBinaryImageMetadata()`:
 - A number of previously deprecated exports have been removed:
 
@@ -218,38 +218,38 @@ Default number of worker threads for each loader has been reduced from `5` to `3
 | `getDefaultImageType()`                | N/A                                                     |
 | `getSupportedImageType(imageType?)` NA |
 
-**@loaders.gl/kml**
+**@sensat/loaders-gl-kml**
 
 - The `KMLLoader`, `GPXLoader`, and `TCXLoader` now require a value for `options.gis.format`. Previously, the lack of a value would return data in "raw" format, i.e. not normalized to GeoJSON. To return GeoJSON-formatted data, use `options.gis.format: 'geojson'`. Other options are `binary` and `raw`.
 - The `kml.normalize` option has been deprecated. When `options.gis.format` is `geojson`, coordinates will always be in longitude-latitude ordering.
 
-**@loaders.gl/loader-utils**
+**@sensat/loaders-gl-loader-utils**
 
 - `createWorker()` now creates a generic worker. For loader workers use the new `createLoaderWorker()` function.
 
-**@loaders.gl/tiles-3d-loader**
+**@sensat/loaders-gl-tiles-3d-loader**
 
 - Added `featureIds` attribute to i3s tile content. It is an array of feature ids which specify which feature each vertex belongs to. Can be used for picking functionality.
 
 **@loaders.gl/tables**
 
-- The (undocumented) `@loaders.gl/tables` module has been renamed to `@loaders.gl/schema`.
+- The (undocumented) `@loaders.gl/tables` module has been renamed to `@sensat/loaders-gl-schema`.
 
 ## Upgrading to v2.3
 
-`@loaders.gl/core`:
+`@sensat/loaders-gl-core`:
 
 - `selectLoader()` is now async and returns a `Promise` that resolves to a loader.
 - `selectLoaderSync()` is available for situations when calling an async function is inconvenient.
 - Passing `fetch` options to `load()` and `parse()` etc. should now be done via the `options.fetch` sub-options object. fetch options on the root object are now deprecated.
 
-`@loaders.gl/kml`:
+`@sensat/loaders-gl-kml`:
 
 - The `KMLAsGeoJsonLoader` has been removed, use `KMLLoader`, with `options.gis.format: 'geojson'`.
 
 ## Upgrading to v2.2
 
-**`@loaders.gl/core`**
+**`@sensat/loaders-gl-core`**
 
 - `selectLoader` is no longer experimental. If you were using the experimental export, replace `_selectLoader` with `selectLoader`. Also note that argument order has changed and now aligns with `load` and `parse`
 - `parseInBatchesSync` has been removed, all batched parsing is now performed asynchronously.
@@ -266,25 +266,25 @@ Some iterator utilities that are mostly used internally have been changed.
 | `getStreamIterator`         | Deprecated in 2.1, now removed in 2.2 |
 | `contatenateAsyncIterator`  | Deprecated in 2.1, now removed in 2.2 |
 
-**`@loaders.gl/csv`**
+**`@sensat/loaders-gl-csv`**
 
 - Header auto-detection now requires `options.csv.header` to be set to `'auto'` instead of `undefined`. `'auto'` is the new default value for this option, so this change is unlikely to affect applications.
 
-**`@loaders.gl/json`**
+**`@sensat/loaders-gl-json`**
 
 - The experimental `json._rootObjectBatches` option is now deprecated. Use the top-level `metadata: true` option instead. Note that the `batchType` names have also changed, see the JSONLoader docs for details.
 
-**`@loaders.gl/ply`**
+**`@sensat/loaders-gl-ply`**
 
 The experimental streaming `_PLYStreamingLoader` has been removed. Use the non-streaming `PLYLoader` instead.
 
-**`@loaders.gl/images`**
+**`@sensat/loaders-gl-images`**
 
 The new function `getBinaryImageMetadata()` replaces `isBinaryImage()`, `getBinaryImageSize()` and `getBinaryImageMIMEType()`. The old functions are now deprecated, but still available.
 
 ## Upgrading to v2.1
 
-**`@loaders.gl/core`**
+**`@sensat/loaders-gl-core`**
 
 Some iterator helper functions have been renamed, the old naming is now deprecated.
 
@@ -293,19 +293,19 @@ Some iterator helper functions have been renamed, the old naming is now deprecat
 | `getStreamIterator`        | `makeStreamIterator`     |
 | `contatenateAsyncIterator` | `concatenateChunksAsync` |
 
-**`@loaders.gl/json`**
+**`@sensat/loaders-gl-json`**
 
 - Experimental exports have been removed `JSONParser`, `StreamingJSONParser`, `ClarinetParser`.
 
-**`@loaders.gl/images`**
+**`@sensat/loaders-gl-images`**
 
 The experimental ImageLoaders for individual formats introduced in 2.0 have been removed, use `ImageLoader` for all formats.
-`@loaders.gl/images`
+`@sensat/loaders-gl-images`
 
 - `getImageData(image)` now returns an object with `{data, width, height}` instead of just the `data` array. This small breaking change ensures that the concept of _image data_ is consistent across the API.
 - `ImageLoader`: `options.image.type`: The `html` and `ndarray` image types are now deprecated and replaced with `image` and `data` respectively.
 
-**`@loaders.gl/3d-tiles`**
+**`@sensat/loaders-gl-3d-tiles`**
 
 `Tileset3DLoader` and `Tile3DLoader` are replaced by `Tiles3DLoader`, which supports loading both a 3D tileset file and a tile. Check `loaders.gl/3d-tiles` for loaded data format.
 
@@ -315,21 +315,21 @@ Version 2.0 is a major release that consolidates functionality and APIs, and a n
 
 Some general changes:
 
-- All exported loader and writer objects now expose a `mimeType` field. This field is not yet used by `@loaders.gl/core` but is available for applications (e.g. see `selectLoader`).
-- All (non-worker) loaders are now required to expose a `parse` function (in addition to any more specialized `parseSync/parseText/parseInBatches` functions). This simplifies using loaders without `@loaders.gl/core`, which can reduce footprint in small applications.
+- All exported loader and writer objects now expose a `mimeType` field. This field is not yet used by `@sensat/loaders-gl-core` but is available for applications (e.g. see `selectLoader`).
+- All (non-worker) loaders are now required to expose a `parse` function (in addition to any more specialized `parseSync/parseText/parseInBatches` functions). This simplifies using loaders without `@sensat/loaders-gl-core`, which can reduce footprint in small applications.
 
-### `@loaders.gl/core`
+### `@sensat/loaders-gl-core`
 
 | Removal            | Replacement                                                            |
 | ------------------ | ---------------------------------------------------------------------- |
-| `TextEncoder`      | Use global `TextEncoder` instead and `@loaders.gl/polyfills` if needed |
-| `TextDecoder`      | Use global `TextDecoder` instead and `@loaders.gl/polyfills` if needed |
+| `TextEncoder`      | Use global `TextEncoder` instead and `@sensat/loaders-gl-polyfills` if needed |
+| `TextDecoder`      | Use global `TextDecoder` instead and `@sensat/loaders-gl-polyfills` if needed |
 | `createReadStream` | `fetch().then(resp => resp.body)`                                      |
 | `parseFile`        | `parse`                                                                |
 | `parseFileSync`    | `parseSync`                                                            |
 | `loadFile`         | `load`                                                                 |
 
-### `@loaders.gl/images`
+### `@sensat/loaders-gl-images`
 
 | Removal             | Replacement                                               |
 | ------------------- | --------------------------------------------------------- |
@@ -345,7 +345,7 @@ Some general changes:
 
 - Loaders can no longer have a `loadAndParse` method. Remove it, and just make sure you define `parse` on your loaders instead.
 
-### `@loaders.gl/gltf`
+### `@sensat/loaders-gl-gltf`
 
 The `GLTFLoader` now always uses the new v2 parser, and the original `GLTFParser` has been removed.
 
@@ -376,7 +376,7 @@ The foillowing top-level options are deprecated and will be removed in v2.0
 | `uri`                  | `baseUri`                               | Auto-populated when loading from a url-equipped source                    |
 | `fetch`                | N/A                                     | fetch is automatically available to sub-loaders.                          |
 
-### `@loaders.gl/draco`
+### `@sensat/loaders-gl-draco`
 
 | Removal        | Replacement   |
 | -------------- | ------------- |
@@ -395,19 +395,19 @@ The foillowing top-level options are deprecated and will be removed in v2.0
 
 A couple of functions have been deprecated and will be removed in v2.0. They now emit console warnings. Start replacing your use of these functions now to remove the console warnings and ensure a smooth future upgrade to v2.0.
 
-Also, Node support now requires installing `@loaders.gl/polyfills` before use.
+Also, Node support now requires installing `@sensat/loaders-gl-polyfills` before use.
 
-### @loaders.gl/core
+### @sensat/loaders-gl-core
 
-- Removal: Node support for `fetchFile` now requires importing `@loaders.gl/polyfills` before use.
-- Removal: Node support for `TextEncoder`, and `TextDecoder` now requires importing `@loaders.gl/polyfills` before use.
+- Removal: Node support for `fetchFile` now requires importing `@sensat/loaders-gl-polyfills` before use.
+- Removal: Node support for `TextEncoder`, and `TextDecoder` now requires importing `@sensat/loaders-gl-polyfills` before use.
 - Deprecation: `TextEncoder` and `TextDecoder` will not be exported from `loaders.gl/core` in v2.0.
 
-### @loaders.gl/images
+### @sensat/loaders-gl-images
 
-- Removal: Node support for images now requires importing `@loaders.gl/polyfills` before use.
+- Removal: Node support for images now requires importing `@sensat/loaders-gl-polyfills` before use.
 
-### @loaders.gl/gltf
+### @sensat/loaders-gl-gltf
 
 - Deprecation: `GLBParser`/`GLBBuilder` - These will be merged into GLTF classes..
 - Deprecation: `GLTFParser`/`GLTFBuilder` - The new `GLTF` class can hold GLTF data and lets application access/modify it.

@@ -11,8 +11,8 @@ loaders.gl provides a suite of pre-built loader objects packaged as scoped npm m
 Loaders are passed into utility functions in the loaders.gl core API to enable parsing of the chosen format.
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {CSVLoader} from '@loaders.gl/csv';
+import {load} from '@sensat/loaders-gl-core';
+import {CSVLoader} from '@sensat/loaders-gl-csv';
 
 data = await load(url, CSVLoader);
 // Application code here
@@ -24,9 +24,9 @@ data = await load(url, CSVLoader);
 As seen above can be specified directly in a call to `load` or any of the `parse` functions:
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {PCDLoader} from '@loaders.gl/pcd';
-import {LASLoader} from '@loaders.gl/las';
+import {load} from '@sensat/loaders-gl-core';
+import {PCDLoader} from '@sensat/loaders-gl-pcd';
+import {LASLoader} from '@sensat/loaders-gl-las';
 
 const pointCloud = await load(url, [PCDLoader, LASLoader]);
 
@@ -41,9 +41,9 @@ Since v4.0, all loaders are typed, meaning that loaders.gl can infer types for r
 Note that type inference only works when single loader is provided:
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {PCDLoader} from '@loaders.gl/pcd';
-import {LASLoader} from '@loaders.gl/las';
+import {load} from '@sensat/loaders-gl-core';
+import {PCDLoader} from '@sensat/loaders-gl-pcd';
+import {LASLoader} from '@sensat/loaders-gl-las';
 
 // Single loader infers type
 const pcdPointCloud = await load(url, PCDLoader); // => type PCDMesh
@@ -55,9 +55,9 @@ const pointCloud = await load(url, [PCDLoader, LASLoader]); // => type unknown
 Note that you can use selectLoader and a switch statement to remain typed
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {PCDLoader} from '@loaders.gl/pcd';
-import {LASLoader} from '@loaders.gl/las';
+import {load} from '@sensat/loaders-gl-core';
+import {PCDLoader} from '@sensat/loaders-gl-pcd';
+import {LASLoader} from '@sensat/loaders-gl-las';
 
 const loader = await selectLoader(url, [PCDLoader, LASLoader]);
 switch (loader.id) {
@@ -77,8 +77,8 @@ Registered loaders will be included in loader selection if you call any form of
 `parse()` or `load()` that does not specify a single loader.
 
 ```typescript
-import {registerLoaders, load} from '@loaders.gl/core';
-import {CSVLoader} from '@loaders.gl/csv';
+import {registerLoaders, load} from '@sensat/loaders-gl-core';
+import {CSVLoader} from '@sensat/loaders-gl-csv';
 
 registerLoaders([CSVLoader]);
 
@@ -99,9 +99,9 @@ The mechanism is provided but the choice to use it is yours.
 The loader selection algorithm is exposed to applications via `selectLoader`:
 
 ```typescript
-import {selectLoader} from '@loaders.gl/core';
-import {ArrowLoader} from '@loaders.gl/arrow';
-import {CSVLoader} from '@loaders.gl/csv';
+import {selectLoader} from '@sensat/loaders-gl-core';
+import {ArrowLoader} from '@sensat/loaders-gl-arrow';
+import {CSVLoader} from '@sensat/loaders-gl-csv';
 
 selectLoader([ArrowLoader, CSVLoader], 'filename.csv'); // => CSVLoader
 ```

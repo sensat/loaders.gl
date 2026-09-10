@@ -8,9 +8,9 @@ import {
   makeLineIterator,
   makeNumberedLineIterator,
   concatenateArrayBuffersAsync
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
 
-import {NDJSONLoader} from '@loaders.gl/json';
+import {NDJSONLoader} from '@sensat/loaders-gl-json';
 
 const parseNDJSONInBatches = NDJSONLoader.parseInBatches;
 

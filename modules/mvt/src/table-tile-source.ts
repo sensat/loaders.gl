@@ -11,10 +11,10 @@ import type {
   GetTileDataParameters,
   GetTileParameters,
   LoaderWithParser
-} from '@loaders.gl/loader-utils';
-import {DataSource, getRequiredOptions, log} from '@loaders.gl/loader-utils';
-import type {Schema, GeoJSONTable, Feature, BinaryFeatureCollection} from '@loaders.gl/schema';
-import {deduceTableSchema} from '@loaders.gl/schema-utils';
+} from '@sensat/loaders-gl-loader-utils';
+import {DataSource, getRequiredOptions, log} from '@sensat/loaders-gl-loader-utils';
+import type {Schema, GeoJSONTable, Feature, BinaryFeatureCollection} from '@sensat/loaders-gl-schema';
+import {deduceTableSchema} from '@sensat/loaders-gl-schema-utils';
 import {Stats, Stat} from '@probe.gl/stats';
 
 import type {ProtoFeature} from './lib/vector-tiler/features/proto-feature';

@@ -7,9 +7,9 @@ import {TileLayer, TileLayerProps} from '@deck.gl/geo-layers';
 import {MVTLayer, MVTLayerProps} from '@deck.gl/geo-layers';
 import {BitmapLayer, GeoJsonLayer, PathLayer} from '@deck.gl/layers';
 
-import type {Feature, BinaryFeatureCollection} from '@loaders.gl/schema';
-import type {TileSource} from '@loaders.gl/loader-utils';
-import type {ImageTileSource, VectorTileSource} from '@loaders.gl/loader-utils';
+import type {Feature, BinaryFeatureCollection} from '@sensat/loaders-gl-schema';
+import type {TileSource} from '@sensat/loaders-gl-loader-utils';
+import type {ImageTileSource, VectorTileSource} from '@sensat/loaders-gl-loader-utils';
 
 // deck.gl audit while working on TileSourceLayer
 // - PropTypes system undocumented, not even typescript comments, hard to understand

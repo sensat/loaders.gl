@@ -3,8 +3,8 @@
 // Copyright (c) vis.gl contributors
 // Copyright 2022 Foursquare Labs, Inc.
 
-import type {Table} from '@loaders.gl/schema';
-import {makeArrayRowIterator, getTableNumCols} from '@loaders.gl/schema-utils';
+import type {Table} from '@sensat/loaders-gl-schema';
+import {makeArrayRowIterator, getTableNumCols} from '@sensat/loaders-gl-schema-utils';
 import {csvFormatRows} from 'd3-dsv';
 import type {CSVWriterOptions} from '../../csv-writer';
 

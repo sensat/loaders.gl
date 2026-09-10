@@ -13,7 +13,7 @@ import type {
   FlatLineString,
   FlatPolygon,
   TypedArray
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 import {GeojsonGeometryInfo} from '../geometry-api/geometry-info';
 import {
   PropArrayConstructor,

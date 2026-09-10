@@ -5,7 +5,7 @@ Synchronous parsing is not supported by all loaders. Refer to the documentation 
 :::
 
 :::caution
-When calling parse from a loader to invoke a sub-loader, do not use this function. Use `parseSyncWithContext` counterparts in `@loaders.gl/loader-utils``
+When calling parse from a loader to invoke a sub-loader, do not use this function. Use `parseSyncWithContext` counterparts in `@sensat/loaders-gl-loader-utils``
 :::
 
 The `parseSync()` function parses data synchronously using the provided loader, if possible.
@@ -32,8 +32,8 @@ Returns:
 ## Usage
 
 ```typescript
-import {fetchFile, parseSync} from '@loaders.gl/core';
-import {OBJLoader} from '@loaders.gl/obj';
+import {fetchFile, parseSync} from '@sensat/loaders-gl-core';
+import {OBJLoader} from '@sensat/loaders-gl-obj';
 
 const response = await fetchFile(url);
 const arraybuffer = await response.arrayBuffer();

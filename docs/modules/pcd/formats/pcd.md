@@ -1,6 +1,6 @@
 # PCD - Point Cloud Data
 
-- _[`@loaders.gl/pcd`](/docs/modules/pcd)_
+- _[`@sensat/loaders-gl-pcd`](/docs/modules/pcd)_
 - _[PCD documentation](https://pcl.readthedocs.io/projects/tutorials/en/latest/pcd_file_format.html)_
 - _[Wikipedia article](https://en.wikipedia.org/wiki/Point_Cloud_Library)_
 

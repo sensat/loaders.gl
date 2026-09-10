@@ -1,5 +1,5 @@
 import test from 'tape-promise/tape';
-import {_JSONPath} from '@loaders.gl/json';
+import {_JSONPath} from '@sensat/loaders-gl-json';
 
 const VALID_JSONPATHS = [
   {jsonpath: '$', expected: [], canonical: '$'},

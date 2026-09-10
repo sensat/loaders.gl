@@ -9,16 +9,16 @@ import DeckGL from '@deck.gl/react';
 import {COORDINATE_SYSTEM, OrbitView, LinearInterpolator} from '@deck.gl/core';
 import {PointCloudLayer} from '@deck.gl/layers';
 
-import {load} from '@loaders.gl/core';
-import {getDeckBinaryDataFromArrowMesh, getBoundingBoxFromArrowPositions} from '@loaders.gl/geoarrow';
-import type {Mesh} from '@loaders.gl/schema';
-import {convertTableToMesh} from '@loaders.gl/schema-utils';
+import {load} from '@sensat/loaders-gl-core';
+import {getDeckBinaryDataFromArrowMesh, getBoundingBoxFromArrowPositions} from '@sensat/loaders-gl-geoarrow';
+import type {Mesh} from '@sensat/loaders-gl-schema';
+import {convertTableToMesh} from '@sensat/loaders-gl-schema-utils';
 
-import {DracoArrowLoader} from '@loaders.gl/draco';
-import {LASArrowLoader} from '@loaders.gl/las';
-import {PLYArrowLoader} from '@loaders.gl/ply';
-import {PCDArrowLoader} from '@loaders.gl/pcd';
-import {OBJArrowLoader} from '@loaders.gl/obj';
+import {DracoArrowLoader} from '@sensat/loaders-gl-draco';
+import {LASArrowLoader} from '@sensat/loaders-gl-las';
+import {PLYArrowLoader} from '@sensat/loaders-gl-ply';
+import {PCDArrowLoader} from '@sensat/loaders-gl-pcd';
+import {OBJArrowLoader} from '@sensat/loaders-gl-obj';
 
 import {ExamplePanel, Example, MetadataViewer} from './components/example-panel';
 import {EXAMPLES} from './examples';

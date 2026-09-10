@@ -2,7 +2,7 @@
 
 ![ogc-logo](../../../images/logos/ogc-logo-60.png)
 
-- _[`@loaders.gl/wms`](/docs/modules/wms)_
+- _[`@sensat/loaders-gl-wms`](/docs/modules/wms)_
 - _[Wikipedia article](https://en.wikipedia.org/wiki/Web_Feature_Service)_
 
 WFS (Web Feature Service) is a standardized protocol for serving geographical features (points, lines and polygons) over the internet.

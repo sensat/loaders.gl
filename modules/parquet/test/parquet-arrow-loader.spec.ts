@@ -5,13 +5,13 @@
 import test from 'tape-promise/tape';
 // import {validateLoader} from 'test/common/conformance';
 
-import {load, loadInBatches, encode, setLoaderOptions} from '@loaders.gl/core';
-import type {ArrowTable} from '@loaders.gl/schema';
-import {ParquetArrowLoader, ParquetArrowWriter} from '@loaders.gl/parquet';
+import {load, loadInBatches, encode, setLoaderOptions} from '@sensat/loaders-gl-core';
+import type {ArrowTable} from '@sensat/loaders-gl-schema';
+import {ParquetArrowLoader, ParquetArrowWriter} from '@sensat/loaders-gl-parquet';
 import * as arrow from 'apache-arrow';
 import {WASM_SUPPORTED_FILES} from './data/files';
 
-const PARQUET_DIR = '@loaders.gl/parquet/test/data';
+const PARQUET_DIR = '@sensat/loaders-gl-parquet/test/data';
 
 setLoaderOptions({
   _workerType: 'test'

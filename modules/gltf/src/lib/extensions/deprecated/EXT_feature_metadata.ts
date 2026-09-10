@@ -10,7 +10,7 @@ import type {
   GLTF_EXT_feature_metadata_TextureAccessor,
   GLTF_EXT_feature_metadata_Schema
 } from '../../types/gltf-ext-feature-metadata-schema';
-import type {BigTypedArray, TypedArray} from '@loaders.gl/schema';
+import type {BigTypedArray, TypedArray} from '@sensat/loaders-gl-schema';
 import {GLTFScenegraph} from '../../api/gltf-scenegraph';
 import {GLTFMeshPrimitive} from '../../types/gltf-json-schema';
 import {GLTFLoaderOptions} from '../../../gltf-loader';

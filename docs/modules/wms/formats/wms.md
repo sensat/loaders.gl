@@ -2,7 +2,7 @@
 
 ![ogc-logo](../../../images/logos/ogc-logo-60.png)
 
-- _[`@loaders.gl/wms`](/docs/modules/wms)_
+- _[`@sensat/loaders-gl-wms`](/docs/modules/wms)_
 - _[Wikipedia article](https://en.wikipedia.org/wiki/Web_Map_Service)_
 - _[OGC Specification](https://raw.githubusercontent.com/visgl/deck.gl-data/master/specifications/wms/06-042_OpenGIS_Web_Map_Service_WMS_Implementation_Specification.pdf) (PDF)_
 

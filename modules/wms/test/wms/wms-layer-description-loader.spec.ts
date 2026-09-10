@@ -10,8 +10,8 @@ import test from 'tape-promise/tape';
 import {
   _WMSLayerDescriptionLoader as WMSLayerDescriptionLoader
   // _WMSLayerDescription as WMSLayerDescription
-} from '@loaders.gl/wms';
-import {parse} from '@loaders.gl/core';
+} from '@sensat/loaders-gl-wms';
+import {parse} from '@sensat/loaders-gl-core';
 
 test.skip('WMSLayerDescriptionLoader#read_WMSDescribeLayer', async (t) => {
   const text =

@@ -6,13 +6,13 @@
   <img src="https://img.shields.io/badge/From-v3.4-blue.svg?style=flat-square" alt="From-v3.4" />
 </p>
 
-The `@loaders.gl/bson` module provides support for the [BSON](/docs/modules/bson/formats/bson) format.
+The `@sensat/loaders-gl-bson` module provides support for the [BSON](/docs/modules/bson/formats/bson) format.
 The BSON format stores arbitrary (loosely structured) data largely equivalent to the textual JSON format.
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/core @loaders.gl/bson
+npm install @sensat/loaders-gl-core @sensat/loaders-gl-bson
 ```
 
 ## Loaders and Writers

@@ -1,4 +1,4 @@
-import type {LoaderWithParser, LoaderOptions, LoaderContext} from '@loaders.gl/loader-utils';
+import type {LoaderWithParser, LoaderOptions, LoaderContext} from '@sensat/loaders-gl-loader-utils';
 import type {I3SLoaderOptions} from './i3s-loader';
 import type {BuildingSceneLayerTileset} from './types';
 

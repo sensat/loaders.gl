@@ -6,9 +6,9 @@
 /* global TextDecoder */
 import test from 'tape-promise/tape';
 
-import {_GeoJSONWriter} from '@loaders.gl/json';
-import {encodeTableAsText, encodeTableInBatches} from '@loaders.gl/core';
-import {tableWithNullGeometryColumn} from '@loaders.gl/schema-utils/test/shared-utils';
+import {_GeoJSONWriter} from '@sensat/loaders-gl-json';
+import {encodeTableAsText, encodeTableInBatches} from '@sensat/loaders-gl-core';
+import {tableWithNullGeometryColumn} from '@sensat/loaders-gl-schema-utils/test/shared-utils';
 
 const EXPECTED_GEOJSON = `\
 {

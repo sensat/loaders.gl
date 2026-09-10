@@ -48,7 +48,7 @@ export {WFSCapabilitiesLoader as _WFSCapabilitiesLoader} from './wfs-capabilitie
 
 // GML - Geographic Markup Language
 
-export type {GeoJSON as _GeoJSON} from '@loaders.gl/schema';
+export type {GeoJSON as _GeoJSON} from '@sensat/loaders-gl-schema';
 export type {GMLLoaderOptions as _GMLLoaderOptions} from './gml-loader';
 export {GMLLoader as _GMLLoader} from './gml-loader';
 
@@ -64,6 +64,6 @@ export {WMSSource, WMSImageSource} from './wms-source';
 export {getArcGISServices as _getArcGISServices} from './arcgis/arcgis-server';
 export {ArcGISImageServerSource as _ArcGISImageServerSource} from './arcgis/arcgis-image-source';
 
-export {ImageSource} from '@loaders.gl/loader-utils';
-export type {ImageType} from '@loaders.gl/images';
+export {ImageSource} from '@sensat/loaders-gl-loader-utils';
+export type {ImageType} from '@sensat/loaders-gl-images';
 export {createImageSource} from './lib/deprecated/create-image-source';

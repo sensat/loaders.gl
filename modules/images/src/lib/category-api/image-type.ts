@@ -1,4 +1,4 @@
-import {isBrowser} from '@loaders.gl/loader-utils';
+import {isBrowser} from '@sensat/loaders-gl-loader-utils';
 import type {ImageTypeEnum} from '../../types';
 
 // @ts-ignore TS2339: Property does not exist on type
@@ -27,7 +27,7 @@ export function isImageTypeSupported(type: string): boolean {
       return DATA_SUPPORTED;
 
     default:
-      throw new Error(`@loaders.gl/images: image ${type} not supported in this environment`);
+      throw new Error(`@sensat/loaders-gl-images: image ${type} not supported in this environment`);
   }
 }
 
@@ -47,5 +47,5 @@ export function getDefaultImageType(): ImageTypeEnum {
   }
 
   // This should only happen in Node.js
-  throw new Error('Install \'@loaders.gl/polyfills\' to parse images under Node.js');
+  throw new Error('Install \'@sensat/loaders-gl-polyfills\' to parse images under Node.js');
 }

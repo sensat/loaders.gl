@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {load} from '@loaders.gl/core';
-import {PLYLoader} from '@loaders.gl/ply';
+import {load} from '@sensat/loaders-gl-core';
+import {PLYLoader} from '@sensat/loaders-gl-ply';
 import {getModel, drawModelInViewport} from '../test-utils/get-model';
 
 const PLY_BINARY_URL =

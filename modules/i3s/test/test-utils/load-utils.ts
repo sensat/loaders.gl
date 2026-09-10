@@ -1,5 +1,5 @@
-import {I3SLoader, I3STilesetHeader, SceneLayer3D} from '@loaders.gl/i3s';
-import {Tileset3D, Tile3D, TILESET_TYPE} from '@loaders.gl/tiles';
+import {I3SLoader, I3STilesetHeader, SceneLayer3D} from '@sensat/loaders-gl-i3s';
+import {Tileset3D, Tile3D, TILESET_TYPE} from '@sensat/loaders-gl-tiles';
 import I3SNodePagesTiles from '../../src/lib/helpers/i3s-nodepages-tiles';
 
 export const TEST_LAYER_URL =

@@ -1,7 +1,7 @@
 import test from 'tape-promise/tape';
-import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
-import {load, setLoaderOptions, isBrowser} from '@loaders.gl/core';
-import {WorkerFarm} from '@loaders.gl/worker-utils';
+import {Tiles3DLoader} from '@sensat/loaders-gl-3d-tiles';
+import {load, setLoaderOptions, isBrowser} from '@sensat/loaders-gl-core';
+import {WorkerFarm} from '@sensat/loaders-gl-worker-utils';
 import convertB3dmToI3sGeometry, {
   getPropertyTable
 } from '../../../src/i3s-converter/helpers/geometry-converter';
@@ -12,19 +12,19 @@ import {AttributeMetadataInfo} from '../../../src/i3s-converter/helpers/attribut
 import {BoundingSphere, OrientedBoundingBox} from '@math.gl/culling';
 import {Matrix4} from '@math.gl/core';
 
-const PGM_FILE_PATH = '@loaders.gl/tile-converter/test/data/egm84-30.pgm';
+const PGM_FILE_PATH = '@sensat/loaders-gl-tile-converter/test/data/egm84-30.pgm';
 const FRANKFURT_B3DM_FILE_PATH =
-  '@loaders.gl/tile-converter/test/data/Frankfurt/L5/OF/474_5548_-1_lv5_group_0.osgb_3.b3dm';
+  '@sensat/loaders-gl-tile-converter/test/data/Frankfurt/L5/OF/474_5548_-1_lv5_group_0.osgb_3.b3dm';
 const BERLIN_B3DM_FILE_PATH =
-  '@loaders.gl/tile-converter/test/data/Berlin/1511577738.buildings.b3dm';
-const NEW_YORK_B3DM_FILE_PATH = '@loaders.gl/tile-converter/test/data/NewYork/75343/6/5/1.b3dm';
-const FERRY_GLTF_FILE_PATH = '@loaders.gl/tile-converter/test/data/Ferry/754834/6/0000000.glb';
-const MUSCATATUCK_GLB_FILE_PATH = '@loaders.gl/tile-converter/test/data/Muscatatuck/0/0/0.glb';
+  '@sensat/loaders-gl-tile-converter/test/data/Berlin/1511577738.buildings.b3dm';
+const NEW_YORK_B3DM_FILE_PATH = '@sensat/loaders-gl-tile-converter/test/data/NewYork/75343/6/5/1.b3dm';
+const FERRY_GLTF_FILE_PATH = '@sensat/loaders-gl-tile-converter/test/data/Ferry/754834/6/0000000.glb';
+const MUSCATATUCK_GLB_FILE_PATH = '@sensat/loaders-gl-tile-converter/test/data/Muscatatuck/0/0/0.glb';
 const TRIANGLE_STRIP_B3DM_FILE_PATH =
-  '@loaders.gl/tile-converter/test/data/TriangleStrip/lod1_0.b3dm';
+  '@sensat/loaders-gl-tile-converter/test/data/TriangleStrip/lod1_0.b3dm';
 const HELSINKI_GLB_FILE_PATH =
-  '@loaders.gl/tile-converter/test/data/helsinki-glb-8-meshopt/0/0.glb';
-const BASEGLOBE_GLB_FILE_PATH = '@loaders.gl/tile-converter/test/data/baseglobe/0/0/0/0.glb';
+  '@sensat/loaders-gl-tile-converter/test/data/helsinki-glb-8-meshopt/0/0.glb';
+const BASEGLOBE_GLB_FILE_PATH = '@sensat/loaders-gl-tile-converter/test/data/baseglobe/0/0/0/0.glb';
 
 setLoaderOptions({
   _worker: 'test'

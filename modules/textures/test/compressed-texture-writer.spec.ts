@@ -3,10 +3,10 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {encodeURLtoURL, isBrowser} from '@loaders.gl/core';
-import {CompressedTextureWriter} from '@loaders.gl/textures';
+import {encodeURLtoURL, isBrowser} from '@sensat/loaders-gl-core';
+import {CompressedTextureWriter} from '@sensat/loaders-gl-textures';
 
-export const IMAGE_URL = '@loaders.gl/images/test/data/img1-preview.png';
+export const IMAGE_URL = '@sensat/loaders-gl-images/test/data/img1-preview.png';
 
 test('CompressedTextureWriter#write-and-read-image', async (t) => {
   if (isBrowser) {

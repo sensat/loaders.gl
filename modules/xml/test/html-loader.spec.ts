@@ -5,8 +5,8 @@
 import test from 'tape-promise/tape';
 // import {validateLoader} from 'test/common/conformance';
 
-import {HTMLLoader} from '@loaders.gl/xml';
-import {parse} from '@loaders.gl/core';
+import {HTMLLoader} from '@sensat/loaders-gl-xml';
+import {parse} from '@sensat/loaders-gl-core';
 
 const HTML = `
 <HTML>

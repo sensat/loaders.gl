@@ -4,7 +4,7 @@
 &nbsp;
 ![3dtiles-logo](./images/3d-tiles-logo-60.png)
 
-The `@loaders.gl/3d-tiles` module supports loading and traversing 3D Tiles.
+The `@sensat/loaders-gl-3d-tiles` module supports loading and traversing 3D Tiles.
 
 References
 
@@ -14,8 +14,8 @@ References
 ## Installation
 
 ```bash
-npm install @loaders.gl/3d-tiles
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-3d-tiles
+npm install @sensat/loaders-gl-core
 ```
 
 ## API
@@ -25,7 +25,7 @@ A standard complement of loaders and writers are provided to load the individual
 - [`Tiles3DLoader`](/docs/modules/3d-tiles/api-reference/tiles-3d-loader), a loader for loading a top-down or nested tileset and its tiles.
 - [`CesiumIonLoader`](/docs/modules/3d-tiles/api-reference/cesium-ion-loader), a loader extends from `Tiles3DLoader` with resolving credentials from Cesium ion.
 
-To handle the complex dynamic tile selection and loading required to performantly render larger-than-browser-memory tilesets, additional helper classes are provided in `@loaders.gl/tiles` module:
+To handle the complex dynamic tile selection and loading required to performantly render larger-than-browser-memory tilesets, additional helper classes are provided in `@sensat/loaders-gl-tiles` module:
 
 - [`Tileset3D`](/docs/modules/tiles/api-reference/tileset-3d) to work with the loaded tileset.
 - [`Tile3D`](/docs/modules/tiles/api-reference/tile-3d) to access data for a specific tile.
@@ -35,9 +35,9 @@ To handle the complex dynamic tile selection and loading required to performantl
 Basic API usage is illustrated in the following snippet. Create a `Tileset3D` instance, point it a valid tileset URL, set up callbacks, and keep feeding in new camera positions:
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
-import {Tileset3D} from '@loaders.gl/tiles';
+import {load} from '@sensat/loaders-gl-core';
+import {Tiles3DLoader} from '@sensat/loaders-gl-3d-tiles';
+import {Tileset3D} from '@sensat/loaders-gl-tiles';
 
 const tilesetUrl = ''; // add the url to your tileset.json file here
 
@@ -62,7 +62,7 @@ const visibleTiles = tileset3d.tiles.filter((tile) => tile.selected);
 
 ## Remarks
 
-`@loaders.gl/3d-tiles` does not yet support the full 3D tiles standard. Notable omissions are:
+`@sensat/loaders-gl-3d-tiles` does not yet support the full 3D tiles standard. Notable omissions are:
 
 - [Region bounding volumes](https://github.com/AnalyticalGraphicsInc/3d-tiles/tree/master/specification#bounding-volume) are supported but not optimally
 - [Styling](https://github.com/AnalyticalGraphicsInc/3d-tiles/tree/master/specification/Styling) is not yet supported
@@ -70,4 +70,4 @@ const visibleTiles = tileset3d.tiles.filter((tile) => tile.selected);
 
 ## Attribution
 
-`@loaders.gl/3d-tiles` is a fork of 3D tile related code in the [Cesium github repository](https://github.com/AnalyticalGraphicsInc/cesium) under Apache 2 License, and is developed in collabration with the Cesium engineering team.
+`@sensat/loaders-gl-3d-tiles` is a fork of 3D tile related code in the [Cesium github repository](https://github.com/AnalyticalGraphicsInc/cesium) under Apache 2 License, and is developed in collabration with the Cesium engineering team.

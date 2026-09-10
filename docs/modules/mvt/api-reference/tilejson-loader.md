@@ -19,8 +19,8 @@ The `TileJSONLoader` parses metadata from a TileJSON / tilestats file. It merges
 ## Usage
 
 ```typescript
-import {TileJSONLoader} from '@loaders.gl/pmtiles';
-import {load} from '@loaders.gl/core';
+import {TileJSONLoader} from '@sensat/loaders-gl-pmtiles';
+import {load} from '@sensat/loaders-gl-core';
 
 const tileJSON = await load(url, TileJSONLoader, options);
 ```

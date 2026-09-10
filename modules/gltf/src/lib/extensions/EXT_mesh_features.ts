@@ -1,7 +1,7 @@
 // GLTF EXTENSION: EXT_mesh_features
 // https://github.com/CesiumGS/glTF/tree/3d-tiles-next/extensions/2.0/Vendor/EXT_mesh_features
 /* eslint-disable camelcase */
-import type {NumericArray} from '@loaders.gl/loader-utils';
+import type {NumericArray} from '@sensat/loaders-gl-loader-utils';
 import type {GLTF, GLTFMeshPrimitive} from '../types/gltf-json-schema';
 import {GLTFLoaderOptions} from '../../gltf-loader';
 import {GLTFWriterOptions} from '../../gltf-writer';

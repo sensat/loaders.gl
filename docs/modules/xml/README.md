@@ -6,7 +6,7 @@
 	<img src="https://img.shields.io/badge/-BETA-teal.svg" alt="BETA" />
 </p>
 
-The `@loaders.gl/xml` module handles the [eXtensible Markup Language](https://www.w3.org/TR/xml/) format.
+The `@sensat/loaders-gl-xml` module handles the [eXtensible Markup Language](https://www.w3.org/TR/xml/) format.
 
 ## XML Format Overview
 
@@ -17,8 +17,8 @@ The `@loaders.gl/xml` module handles the [eXtensible Markup Language](https://ww
 ## Installation
 
 ```bash
-npm install @loaders.gl/xml
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-xml
+npm install @sensat/loaders-gl-core
 ```
 
 ## Attribution

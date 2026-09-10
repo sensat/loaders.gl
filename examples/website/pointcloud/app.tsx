@@ -9,14 +9,14 @@ import DeckGL from '@deck.gl/react';
 import {COORDINATE_SYSTEM, OrbitView, LinearInterpolator, OrbitViewState} from '@deck.gl/core';
 import {PointCloudLayer} from '@deck.gl/layers';
 
-import {load} from '@loaders.gl/core';
-import type {Mesh} from '@loaders.gl/schema';
+import {load} from '@sensat/loaders-gl-core';
+import type {Mesh} from '@sensat/loaders-gl-schema';
 
-import {DracoLoader} from '@loaders.gl/draco';
-import {LASLoader} from '@loaders.gl/las';
-import {PLYLoader} from '@loaders.gl/ply';
-import {PCDLoader} from '@loaders.gl/pcd';
-import {OBJLoader} from '@loaders.gl/obj';
+import {DracoLoader} from '@sensat/loaders-gl-draco';
+import {LASLoader} from '@sensat/loaders-gl-las';
+import {PLYLoader} from '@sensat/loaders-gl-ply';
+import {PCDLoader} from '@sensat/loaders-gl-pcd';
+import {OBJLoader} from '@sensat/loaders-gl-obj';
 
 import {ExamplePanel, Example, MetadataViewer} from './components/example-panel';
 import {EXAMPLES} from './examples';

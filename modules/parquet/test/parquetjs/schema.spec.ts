@@ -4,7 +4,7 @@
 
 /* eslint-disable max-statements */
 import test from 'tape-promise/tape';
-import {ParquetSchema, convertParquetSchema} from '@loaders.gl/parquet';
+import {ParquetSchema, convertParquetSchema} from '@sensat/loaders-gl-parquet';
 
 // tslint:disable:ter-prefer-arrow-callback
 

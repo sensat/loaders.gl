@@ -5,12 +5,12 @@
 // This file is derived from the Cesium code base under Apache 2 license
 // See LICENSE.md and https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md
 
-import {fetchFile, load} from '@loaders.gl/core';
-import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
-import {Tileset3D} from '@loaders.gl/tiles';
-import type {Tile3D} from '@loaders.gl/tiles';
+import {fetchFile, load} from '@sensat/loaders-gl-core';
+import {Tiles3DLoader} from '@sensat/loaders-gl-3d-tiles';
+import {Tileset3D} from '@sensat/loaders-gl-tiles';
+import type {Tile3D} from '@sensat/loaders-gl-tiles';
 
-/** @typedef {import('@loaders.gl/tiles').Tile3D} Tile3D */
+/** @typedef {import('@sensat/loaders-gl-tiles').Tile3D} Tile3D */
 
 /**
  * @returns {Promise<Tile3D>}

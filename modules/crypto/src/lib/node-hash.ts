@@ -23,7 +23,7 @@ export class NodeHash extends Hash {
     super();
     this.options = options;
     if (!globalThis.loaders.NodeHash) {
-      throw new Error('install @loaders.gl/crypto on Node.js to use NodeHash');
+      throw new Error('install @sensat/loaders-gl-crypto on Node.js to use NodeHash');
     }
     return new globalThis.loaders.NodeHash(options);
   }

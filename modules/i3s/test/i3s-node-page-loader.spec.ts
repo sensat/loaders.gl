@@ -1,9 +1,9 @@
 import test from 'tape-promise/tape';
-import {parse, fetchFile} from '@loaders.gl/core';
-import {I3SNodePageLoader} from '@loaders.gl/i3s';
+import {parse, fetchFile} from '@sensat/loaders-gl-core';
+import {I3SNodePageLoader} from '@sensat/loaders-gl-i3s';
 
 const NODEPAGE_URL =
-  '@loaders.gl/i3s/test/data/SanFrancisco_3DObjects_1_7/SceneServer/layers/0/nodepages/0';
+  '@sensat/loaders-gl-i3s/test/data/SanFrancisco_3DObjects_1_7/SceneServer/layers/0/nodepages/0';
 
 test('I3SNodePageLoader#Load node page', async (t) => {
   const response = await fetchFile(NODEPAGE_URL);

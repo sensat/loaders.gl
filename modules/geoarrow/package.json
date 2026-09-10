@@ -1,15 +1,16 @@
 {
-  "name": "@loaders.gl/geoarrow",
-  "version": "4.4.6",
+  "name": "@sensat/loaders-gl-geoarrow",
+  "version": "4.4.6-sensat.0",
   "description": "GeoArrow columnar geometry encoding and decoding",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/visgl/loaders.gl"
+    "url": "https://github.com/sensat/loaders.gl"
   },
   "keywords": [
     "loader",
@@ -57,7 +58,6 @@
     "apache-arrow": ">= 17.0.0"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "~4.4.0"
-  },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+    "@sensat/loaders-gl-core": "4.4.6-sensat.0"
+  }
 }

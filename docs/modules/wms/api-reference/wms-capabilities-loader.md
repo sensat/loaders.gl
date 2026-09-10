@@ -24,8 +24,8 @@ the [OGC](https://www.opengeospatial.org/) [WMS](https://www.ogc.org/standards/w
 ## Usage
 
 ```typescript
-import {WMSCapabilitiesLoader} from '@loaders.gl/wms';
-import {load} from '@loaders.gl/core';
+import {WMSCapabilitiesLoader} from '@sensat/loaders-gl-wms';
+import {load} from '@sensat/loaders-gl-core';
 
 // Form a WMS request
 const url = `${WMS_SERVICE_URL}?REQUEST=GetCapabilities`;

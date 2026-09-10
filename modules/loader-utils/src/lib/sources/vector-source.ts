@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Schema, GeoJSONTable, BinaryFeatureCollection} from '@loaders.gl/schema';
+import type {Schema, GeoJSONTable, BinaryFeatureCollection} from '@sensat/loaders-gl-schema';
 
 export type VectorSourceProps = {};
 

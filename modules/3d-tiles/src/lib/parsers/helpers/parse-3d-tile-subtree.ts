@@ -3,7 +3,7 @@
 // Copyright vis.gl contributors
 
 import type {Subtree, Availability} from '../../../types';
-import type {LoaderContext, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {LoaderContext, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
 
 const SUBTREE_FILE_MAGIC = 0x74627573;
 const SUBTREE_FILE_VERSION = 1;

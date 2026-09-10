@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import type {LoaderWithParser, StrictLoaderOptions, LoaderContext} from '@loaders.gl/loader-utils';
-// / import type { GLTFLoaderOptions } from '@loaders.gl/gltf';
-import type {DracoLoaderOptions} from '@loaders.gl/draco';
-import type {ImageLoaderOptions} from '@loaders.gl/images';
+import type {LoaderWithParser, StrictLoaderOptions, LoaderContext} from '@sensat/loaders-gl-loader-utils';
+// / import type { GLTFLoaderOptions } from '@sensat/loaders-gl-gltf';
+import type {DracoLoaderOptions} from '@sensat/loaders-gl-draco';
+import type {ImageLoaderOptions} from '@sensat/loaders-gl-images';
 
-import {path} from '@loaders.gl/loader-utils';
-import {TILESET_TYPE, LOD_METRIC_TYPE} from '@loaders.gl/tiles';
+import {path} from '@sensat/loaders-gl-loader-utils';
+import {TILESET_TYPE, LOD_METRIC_TYPE} from '@sensat/loaders-gl-tiles';
 import {VERSION} from './lib/utils/version';
 import {parse3DTile} from './lib/parsers/parse-3d-tile';
 import {normalizeTileHeaders} from './lib/parsers/parse-3d-tile-header';

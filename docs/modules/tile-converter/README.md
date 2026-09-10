@@ -11,14 +11,14 @@
 For CLI
 
 ```bash
-npm install @loaders.gl/tile-converter
+npm install @sensat/loaders-gl-tile-converter
 ```
 
 For API
 
 ```bash
-npm install @loaders.gl/core
-npm install @loaders.gl/tile-converter
+npm install @sensat/loaders-gl-core
+npm install @sensat/loaders-gl-tile-converter
 ```
 
 ## Command Line Utilities
@@ -36,8 +36,8 @@ Note: the command line tools are implemented using this API and offer the same f
 
 ## References
 
-- The `@loaders.gl/i3s` module supports loading and traversing Indexed 3d Scene Layer (I3S).
-- The `@loaders.gl/3d-tiles` module supports loading and traversing 3D Tiles.
+- The `@sensat/loaders-gl-i3s` module supports loading and traversing Indexed 3d Scene Layer (I3S).
+- The `@sensat/loaders-gl-3d-tiles` module supports loading and traversing 3D Tiles.
 
 - [I3S Indexed Scene Layer Specification](https://github.com/Esri/i3s-spec) - The living specification.
 - [3D Tiles Specification](https://github.com/AnalyticalGraphicsInc/3d-tiles) - The living specification.

@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {ArrayRowTable, ObjectRowTable} from '@loaders.gl/schema';
-import {makeTableFromData} from '@loaders.gl/schema-utils';
+import type {ArrayRowTable, ObjectRowTable} from '@sensat/loaders-gl-schema';
+import {makeTableFromData} from '@sensat/loaders-gl-schema-utils';
 
 export function parseNDJSONSync(ndjsonText: string): ArrayRowTable | ObjectRowTable {
   const lines = ndjsonText.trim().split('\n');

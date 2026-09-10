@@ -1,14 +1,15 @@
 import test from 'tape-promise/tape';
 import {WebMercatorViewport} from '@deck.gl/core';
-import {load} from '@loaders.gl/core';
-import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
-import {Tileset3D} from '@loaders.gl/tiles';
+import {load} from '@sensat/loaders-gl-core';
+import {Tiles3DLoader} from '@sensat/loaders-gl-3d-tiles';
+import {Tileset3D} from '@sensat/loaders-gl-tiles';
 
 import {TilesetTraverser} from '../../src/tileset/tileset-traverser';
 import {getFrameState} from '../../src/tileset/helpers/frame-state';
+import {TILE_REFINEMENT} from '../../src/constants';
 
 // Parent tile with content and four child tiles with content
-const TILESET_URL = '@loaders.gl/3d-tiles/test/data/CesiumJS/Tilesets/Tileset/tileset.json';
+const TILESET_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Tilesets/Tileset/tileset.json';
 
 test('Tileset3D#traverser base class', async (t) => {
   const tilesetJson = await load(TILESET_URL, Tiles3DLoader);
@@ -51,4 +52,40 @@ test('Tileset3D#traverser base class', async (t) => {
     t.ok(traverser);
     t.end();
   }
+});
+
+test('TilesetTraverser#touchTile updates display priority once per frame', (t) => {
+  let priorityCalls = 0;
+  const tile = {
+    tileset: {_cache: {touch: () => {}}},
+    _displayPriority: 0,
+    _touchedFrame: 0,
+    _getDisplayPriority: () => {
+      priorityCalls++;
+      return 42;
+    }
+  };
+  const traverser = new TilesetTraverser({});
+  const frameState = {frameNumber: 1};
+
+  traverser.touchTile(tile as Tile3D, frameState as any);
+  traverser.touchTile(tile as Tile3D, frameState as any);
+
+  t.equal(tile._displayPriority, 42, 'uses the tile display priority');
+  t.equal(priorityCalls, 1, 'does not recompute it in the same frame');
+  t.end();
+});
+
+test('TilesetTraverser#loadTile preserves an empty root ID for replacement grouping', (t) => {
+  const tile = {
+    parent: {refine: TILE_REFINEMENT.REPLACE, id: ''},
+    tileset: {url: 'https://example.tld/tileset.json'},
+    _replacedTileId: undefined
+  };
+  const traverser = new TilesetTraverser({});
+
+  traverser.loadTile(tile as Tile3D, {frameNumber: 1} as any);
+
+  t.equal(tile._replacedTileId, '', 'does not replace a defined root ID with the tileset URL');
+  t.end();
 });

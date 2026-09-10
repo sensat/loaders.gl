@@ -7,12 +7,12 @@
 // See README.md in `./data` directory for full license text copy.
 
 import test from 'tape-promise/tape';
-import {GML_V3_TESTS} from '@loaders.gl/wms/test/data/gml/v3/tests';
+import {GML_V3_TESTS} from '@sensat/loaders-gl-wms/test/data/gml/v3/tests';
 // import {validateLoader} from 'test/common/conformance';
 
-import {_GMLLoader as GMLLoader} from '@loaders.gl/wms';
-import type {GeoJSON} from '@loaders.gl/schema';
-import {parse} from '@loaders.gl/core';
+import {_GMLLoader as GMLLoader} from '@sensat/loaders-gl-wms';
+import type {GeoJSON} from '@sensat/loaders-gl-schema';
+import {parse} from '@sensat/loaders-gl-core';
 
 const VALID_TEST = {
   'v3/envelope.xml': true,

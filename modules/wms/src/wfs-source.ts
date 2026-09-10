@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Schema, GeoJSONTable} from '@loaders.gl/schema';
+import type {Schema, GeoJSONTable} from '@sensat/loaders-gl-schema';
 import type {
   DataSourceOptions,
   VectorSourceMetadata,
   GetFeaturesParameters
-} from '@loaders.gl/loader-utils';
-import {Source, DataSource, VectorSource, mergeOptions} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
+import {Source, DataSource, VectorSource, mergeOptions} from '@sensat/loaders-gl-loader-utils';
 
 import type {WFSCapabilities} from './wfs-capabilities-loader';
 import {WFSCapabilitiesLoader} from './wfs-capabilities-loader';

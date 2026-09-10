@@ -22,8 +22,8 @@ The complete case of attributes colorization is done in [I3S Explorer](https://i
 It is necessary to pick some attribute to colorize a layer by. So it is necessary to load the layer JSON:
 
 ```javascript
-import {load} from '@loaders.gl/core';
-import {I3SLoader} from '@loaders.gl/i3s';
+import {load} from '@sensat/loaders-gl-core';
+import {I3SLoader} from '@sensat/loaders-gl-i3s';
 
 const i3sLayer = await load(url, I3SBuildingSceneLayerLoader);
 ```
@@ -39,8 +39,8 @@ To get minimum and maximum attribute values [statistics](https://github.com/Esri
 As soon as statistics info is stored in separate resources, it has to be loaded in a separate request. Statistics is just a JSON data and can be loaded the following way:
 
 ```ts
-import {fetchFile} from '@loaders.gl/core';
-import {StatsInfo} from '@loaders.gl/i3s';
+import {fetchFile} from '@sensat/loaders-gl-core';
+import {StatsInfo} from '@sensat/loaders-gl-i3s';
 
 const dataResponse = await fetchFile(`${url}/statistics/f_5/0`);
 const data = JSON.parse(await dataResponse.text());
@@ -62,7 +62,7 @@ import Map from 'react-map-gl';
 import maplibregl from 'maplibre-gl';
 import DeckGL from "@deck.gl/react";
 import {DataDrivenTile3DLayer, colorizeTile} from '@deck.gl-community/layers';
-import {I3SLoader} from "@loaders.gl/i3s";
+import {I3SLoader} from "@sensat/loaders-gl-i3s";
 
 function renderLayers() {
   const loadOptions = {i3s: {coordinateSystem: COORDINATE_SYSTEM.LNGLAT_OFFSETS}};

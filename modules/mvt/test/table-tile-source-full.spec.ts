@@ -4,10 +4,10 @@
 // Forked from https://github.com/mapbox/geojson-vt under compatible ISC license
 
 import test from 'tape-promise/tape';
-import {fetchFile} from '@loaders.gl/core';
-import {TableTileSource, TableTileSourceProps} from '@loaders.gl/mvt';
+import {fetchFile} from '@sensat/loaders-gl-core';
+import {TableTileSource, TableTileSourceProps} from '@sensat/loaders-gl-mvt';
 
-const DATA_PATH = '@loaders.gl/mvt/test/data/geojson-vt';
+const DATA_PATH = '@sensat/loaders-gl-mvt/test/data/geojson-vt';
 
 const TEST_CASES = [
   {

@@ -6,10 +6,10 @@
 import test from 'tape-promise/tape';
 import {validateLoader, validateMeshCategoryData} from 'test/common/conformance';
 
-import {QuantizedMeshLoader, QuantizedMeshWorkerLoader} from '@loaders.gl/terrain';
-import {setLoaderOptions, load} from '@loaders.gl/core';
+import {QuantizedMeshLoader, QuantizedMeshWorkerLoader} from '@sensat/loaders-gl-terrain';
+import {setLoaderOptions, load} from '@sensat/loaders-gl-core';
 
-const TILE_WITH_EXTENSIONS_URL = '@loaders.gl/terrain/test/data/tile-with-extensions.terrain';
+const TILE_WITH_EXTENSIONS_URL = '@sensat/loaders-gl-terrain/test/data/tile-with-extensions.terrain';
 
 setLoaderOptions({
   _workerType: 'test'

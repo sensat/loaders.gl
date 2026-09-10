@@ -5,10 +5,10 @@
 /* eslint-disable camelcase */
 
 import test from 'tape-promise/tape';
-import {FlatGeobufLoader} from '@loaders.gl/flatgeobuf';
-import {setLoaderOptions, load, loadInBatches} from '@loaders.gl/core';
+import {FlatGeobufLoader} from '@sensat/loaders-gl-flatgeobuf';
+import {setLoaderOptions, load, loadInBatches} from '@sensat/loaders-gl-core';
 
-const FLATGEOBUF_COUNTRIES_DATA_URL = '@loaders.gl/flatgeobuf/test/data/countries.fgb';
+const FLATGEOBUF_COUNTRIES_DATA_URL = '@sensat/loaders-gl-flatgeobuf/test/data/countries.fgb';
 const FGB_METADATA = {
   metadata: {
     title: '',

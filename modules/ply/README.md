@@ -1,4 +1,4 @@
-# @loaders.gl/ply
+# @sensat/loaders-gl-ply
 
 [loaders.gl](https://loaders.gl/docs) is a collection of loaders for big data visualizations.
 

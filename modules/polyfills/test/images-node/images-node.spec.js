@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
 import test from 'tape-promise/tape';
-import {isBrowser, fetchFile} from '@loaders.gl/core';
+import {isBrowser, fetchFile} from '@sensat/loaders-gl-core';
 import {parseImageNode} from '../../src/images/parse-image-node';
 
 const images = [
-  ['@loaders.gl/images/test/data/img1-preview.png', 'image/png'],
-  ['@loaders.gl/images/test/data/img1-preview.jpeg', 'image/jpeg'],
-  ['@loaders.gl/images/test/data/img1-preview.gif', 'image/gif']
+  ['@sensat/loaders-gl-images/test/data/img1-preview.png', 'image/png'],
+  ['@sensat/loaders-gl-images/test/data/img1-preview.jpeg', 'image/jpeg'],
+  ['@sensat/loaders-gl-images/test/data/img1-preview.gif', 'image/gif']
 ];
 
 if (!isBrowser) {

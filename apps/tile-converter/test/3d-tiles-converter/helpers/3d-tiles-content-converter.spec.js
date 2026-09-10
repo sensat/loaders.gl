@@ -1,9 +1,9 @@
 import test from 'tape-promise/tape';
-import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
-import {loadI3STile} from '@loaders.gl/i3s/test/test-utils/load-utils';
+import {Tiles3DLoader} from '@sensat/loaders-gl-3d-tiles';
+import {loadI3STile} from '@sensat/loaders-gl-i3s/test/test-utils/load-utils';
 import {Tiles3DContentConverter} from '../../../src/3d-tiles-converter/helpers/3d-tiles-content-converter';
-import {isBrowser, parse, load} from '@loaders.gl/core';
-import {I3SAttributeLoader, COORDINATE_SYSTEM} from '@loaders.gl/i3s';
+import {isBrowser, parse, load} from '@sensat/loaders-gl-core';
+import {I3SAttributeLoader, COORDINATE_SYSTEM} from '@sensat/loaders-gl-i3s';
 import {Matrix4, Vector3} from '@math.gl/core';
 import {Ellipsoid} from '@math.gl/geospatial';
 

@@ -6,13 +6,13 @@
 
 import test from 'tape-promise/tape';
 import {compareArrayBuffers, getBinaryData} from '../test-utils/test-utils';
-import {concatenateArrayBuffers, concatenateArrayBuffersAsync} from '@loaders.gl/loader-utils';
-import {fetchFile, loadInBatches} from '@loaders.gl/core';
-import {CSVLoader} from '@loaders.gl/csv';
-import {CryptoHash} from '@loaders.gl/crypto';
+import {concatenateArrayBuffers, concatenateArrayBuffersAsync} from '@sensat/loaders-gl-loader-utils';
+import {fetchFile, loadInBatches} from '@sensat/loaders-gl-core';
+import {CSVLoader} from '@sensat/loaders-gl-csv';
+import {CryptoHash} from '@sensat/loaders-gl-crypto';
 import CryptoJS from 'crypto-js';
 
-const CSV_URL = '@loaders.gl/csv/test/data/sample-very-long.csv';
+const CSV_URL = '@sensat/loaders-gl-csv/test/data/sample-very-long.csv';
 /** Externally computed hash: `openssl md5 -binary sample-very-long.json | openssl base64` */
 const CSV_MD5 = 'zmLuuVSkigYR9r5FcsKkCw==';
 

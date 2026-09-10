@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {BinaryGeometry} from '@loaders.gl/schema';
-import {toArrayBufferIterator} from '@loaders.gl/loader-utils';
+import type {BinaryGeometry} from '@sensat/loaders-gl-schema';
+import {toArrayBufferIterator} from '@sensat/loaders-gl-loader-utils';
 import {BinaryChunkReader} from '../streaming/binary-chunk-reader';
 import {parseSHPHeader, SHPHeader} from './parse-shp-header';
 import {parseRecord} from './parse-shp-geometry';

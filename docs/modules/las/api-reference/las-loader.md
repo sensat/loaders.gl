@@ -1,7 +1,7 @@
 # LASLoader
 
 :::caution
-The `@loaders.gl/las` module only supports LAS/lAZ files up to LAS v1.3. It does not support LAS v1.4 files.
+The `@sensat/loaders-gl-las` module only supports LAS/lAZ files up to LAS v1.3. It does not support LAS v1.4 files.
 For more detail, see the discussion in [Github Issues](https://github.com/visgl/loaders.gl/issues/591).
 :::
 
@@ -20,8 +20,8 @@ The `LASLoader` parses a point cloud in the LASER file format.
 ## Usage
 
 ```typescript
-import {LASLoader} from '@loaders.gl/las';
-import {load} from '@loaders.gl/core';
+import {LASLoader} from '@sensat/loaders-gl-las';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, LASLoader, options);
 ```

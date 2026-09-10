@@ -4,7 +4,7 @@ import type {
   GroupedByFeatureIdAttributes,
   GroupedAttributes
 } from '../types';
-import {concatenateTypedArrays} from '@loaders.gl/loader-utils';
+import {concatenateTypedArrays} from '@sensat/loaders-gl-loader-utils';
 
 const VALUES_PER_VERTEX = 3;
 const POSITIONS_AND_NORMALS_PER_TRIANGLE = 9;

@@ -5,7 +5,7 @@
 
 import test from 'tape-promise/tape';
 import {testSax} from '../utils/test-utils';
-import {SAXParser} from '@loaders.gl/xml';
+import {SAXParser} from '@sensat/loaders-gl-xml';
 
 let xml = '<r>';
 let text = '';

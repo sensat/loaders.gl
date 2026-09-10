@@ -3,8 +3,8 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {fetchFile, makeIterator} from '@loaders.gl/core';
-import {concatenateArrayBuffersAsync, makeTextEncoderIterator} from '@loaders.gl/loader-utils';
+import {fetchFile, makeIterator} from '@sensat/loaders-gl-core';
+import {concatenateArrayBuffersAsync, makeTextEncoderIterator} from '@sensat/loaders-gl-loader-utils';
 
 const setTimeoutPromise = (timeout) => new Promise((resolve) => setTimeout(resolve, timeout));
 
@@ -64,7 +64,7 @@ test('makeIterator#arrayBuffer', async (t) => {
   t.end();
 });
 
-const DATA_URL = '@loaders.gl/draco/test/data/raw-attribute-buffers/lidar-positions.bin';
+const DATA_URL = '@sensat/loaders-gl-draco/test/data/raw-attribute-buffers/lidar-positions.bin';
 
 test('makeIterator(fetch)#async iterate', async (t) => {
   const response = await fetchFile(DATA_URL);

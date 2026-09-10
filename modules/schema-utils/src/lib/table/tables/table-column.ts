@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 // import type {TypedArray,} from '../../../types/types';
-import type {Field} from '@loaders.gl/schema';
+import type {Field} from '@sensat/loaders-gl-schema';
 import {getArrayTypeFromDataType} from '../../schema/data-type';
 
 export interface ArrayType<T = unknown> {

@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {DATA_ARRAY} from '@loaders.gl/i3s/test/data/test.zip';
+import {DATA_ARRAY} from '@sensat/loaders-gl-i3s/test/data/test.zip';
 
 import {DataViewReadableFile} from '../../src/parse-zip/readable-file-utils';
 import {searchFromTheEnd} from '../../src/parse-zip/search-from-the-end';

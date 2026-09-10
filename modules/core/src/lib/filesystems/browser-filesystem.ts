@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {FileSystem, ReadableFile} from '@loaders.gl/loader-utils';
-import {BlobFile} from '@loaders.gl/loader-utils';
+import type {FileSystem, ReadableFile} from '@sensat/loaders-gl-loader-utils';
+import {BlobFile} from '@sensat/loaders-gl-loader-utils';
 
 type BrowserFileSystemOptions = {
   fetch?: typeof fetch;

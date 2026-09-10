@@ -4,10 +4,10 @@
 
 import * as arrow from 'apache-arrow';
 import {earcut} from '@math.gl/polygon';
-import type {BinaryFeatureCollection} from '@loaders.gl/schema';
-import type {GeoArrowEncoding} from '@loaders.gl/geoarrow';
-import {updateBoundsFromGeoArrowSamples} from '@loaders.gl/geoarrow';
-import {TypedArray} from '@loaders.gl/loader-utils';
+import type {BinaryFeatureCollection} from '@sensat/loaders-gl-schema';
+import type {GeoArrowEncoding} from '@sensat/loaders-gl-geoarrow';
+import {updateBoundsFromGeoArrowSamples} from '@sensat/loaders-gl-geoarrow';
+import {TypedArray} from '@sensat/loaders-gl-loader-utils';
 
 /**
  * Binary geometry type

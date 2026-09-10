@@ -1,6 +1,6 @@
 # ImageLoader
 
-An image loader that works under both Node.js (requires `@loaders.gl/polyfills`) and the browser.
+An image loader that works under both Node.js (requires `@sensat/loaders-gl-polyfills`) and the browser.
 
 | Loader         | Characteristic                                                            |
 | -------------- | ------------------------------------------------------------------------- |
@@ -15,9 +15,9 @@ An image loader that works under both Node.js (requires `@loaders.gl/polyfills`)
 ## Usage
 
 ```typescript
-import '@loaders.gl/polyfills'; // only needed if using under Node
-import {ImageLoader} from '@loaders.gl/images';
-import {load} from '@loaders.gl/core';
+import '@sensat/loaders-gl-polyfills'; // only needed if using under Node
+import {ImageLoader} from '@sensat/loaders-gl-images';
+import {load} from '@sensat/loaders-gl-core';
 
 const image = await load(url, ImageLoader, options);
 ```
@@ -55,4 +55,4 @@ Portability note: The exact set of `imagebitmap` options supported may depend on
 ## Remarks
 
 - While generic, the `ImageLoader` is designed with WebGL applications in mind, ensuring that loaded image data can be used to create a `WebGLTexture` both in the browser and in headless gl under Node.js
-- Node.js support requires import `@loaders.gl/polyfills` before installing this module.
+- Node.js support requires import `@sensat/loaders-gl-polyfills` before installing this module.

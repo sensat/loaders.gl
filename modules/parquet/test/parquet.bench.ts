@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {ParquetLoader, ParquetArrowLoader} from '@loaders.gl/parquet';
-import {fetchFile, load} from '@loaders.gl/core';
+import {ParquetLoader, ParquetArrowLoader} from '@sensat/loaders-gl-parquet';
+import {fetchFile, load} from '@sensat/loaders-gl-core';
 
-// const PARQUET_URL = '@loaders.gl/parquet/test/data/apache/good/alltypes_plain.parquet';
-const PARQUET_URL = '@loaders.gl/parquet/test/data/fruits.parquet';
-const GEO_PARQUET_URL = '@loaders.gl/parquet/test/data/geoparquet/airports.parquet';
+// const PARQUET_URL = '@sensat/loaders-gl-parquet/test/data/apache/good/alltypes_plain.parquet';
+const PARQUET_URL = '@sensat/loaders-gl-parquet/test/data/fruits.parquet';
+const GEO_PARQUET_URL = '@sensat/loaders-gl-parquet/test/data/geoparquet/airports.parquet';
 
 export async function parquetBench(suite) {
   suite.group('ParquetLoader');

@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {assert} from '@loaders.gl/loader-utils';
-import {getImageSize} from '@loaders.gl/images';
+import {assert} from '@sensat/loaders-gl-loader-utils';
+import {getImageSize} from '@sensat/loaders-gl-images';
 import {
   loadCompositeImageMember,
   loadCompositeImageUrlTree,

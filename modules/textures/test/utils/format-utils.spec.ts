@@ -4,8 +4,8 @@
 
 import test from 'tape-promise/tape';
 
-import type {TextureFormat} from '@loaders.gl/schema';
-import {isBrowser} from '@loaders.gl/core';
+import type {TextureFormat} from '@sensat/loaders-gl-schema';
+import {isBrowser} from '@sensat/loaders-gl-core';
 import {
   getSupportedBasisFormats,
   selectSupportedBasisFormat

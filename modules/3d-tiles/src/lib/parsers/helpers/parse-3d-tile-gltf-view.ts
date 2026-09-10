@@ -11,8 +11,8 @@
 // - Do we add an option to control this?
 // - Also, should we have hard dependency on gltf module or use injection or auto-discovery for gltf parser?
 
-import {GLTFLoader, postProcessGLTF, _getMemoryUsageGLTF} from '@loaders.gl/gltf';
-import {LoaderContext, sliceArrayBuffer, parseFromContext} from '@loaders.gl/loader-utils';
+import {GLTFLoader, postProcessGLTF, _getMemoryUsageGLTF} from '@sensat/loaders-gl-gltf';
+import {LoaderContext, sliceArrayBuffer, parseFromContext} from '@sensat/loaders-gl-loader-utils';
 import {Tiles3DTileContent} from '../../../types';
 import {Tiles3DLoaderOptions} from '../../../tiles-3d-loader';
 

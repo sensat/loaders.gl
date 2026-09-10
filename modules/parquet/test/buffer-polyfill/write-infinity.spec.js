@@ -4,7 +4,7 @@
 // This file is forked from https://github.com/feross/buffer under MIT license
 
 import test from 'tape-promise/tape';
-import {BufferPolyfill} from '@loaders.gl/parquet';
+import {BufferPolyfill} from '@sensat/loaders-gl-parquet';
 
 test('write/read Infinity as a float', function (t) {
   const buf = new BufferPolyfill(4)

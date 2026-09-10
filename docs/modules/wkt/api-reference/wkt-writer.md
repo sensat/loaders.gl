@@ -19,14 +19,14 @@ Writer for the [Well-known text] format for representation of geometry.
 ## Installation
 
 ```bash
-npm install @loaders.gl/wkt
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-wkt
+npm install @sensat/loaders-gl-core
 ```
 
 ## Usage
 
 ```typescript
-import {WKTWriter} from '@loaders.gl/wkt';
+import {WKTWriter} from '@sensat/loaders-gl-wkt';
 ```
 
 ## Options

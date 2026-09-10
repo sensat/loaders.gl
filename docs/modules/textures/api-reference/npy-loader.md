@@ -22,8 +22,8 @@ The `NPYLoader` parses an array from the [NPY format][npy-spec], a lightweight e
 ## Usage
 
 ```typescript
-import {_NPYLoader} from '@loaders.gl/textures';
-import {load} from '@loaders.gl/core';
+import {_NPYLoader} from '@sensat/loaders-gl-textures';
+import {load} from '@sensat/loaders-gl-core';
 
 const {data, header} = await load(url, _NPYLoader);
 ```

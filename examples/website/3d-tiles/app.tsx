@@ -15,7 +15,7 @@ import {Tile3DLayer} from '@deck.gl/geo-layers';
 import {StatsWidget} from '@probe.gl/stats-widget';
 
 // To manage dependencies and bundle size, the app must decide which supporting loaders to bring in
-import {CesiumIonLoader, Tiles3DLoader} from '@loaders.gl/3d-tiles';
+import {CesiumIonLoader, Tiles3DLoader} from '@sensat/loaders-gl-3d-tiles';
 
 import ControlPanel from './components/control-panel';
 import {loadExampleIndex, INITIAL_EXAMPLE_CATEGORY, INITIAL_EXAMPLE_NAME} from './examples';

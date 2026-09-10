@@ -13,8 +13,8 @@
 ## Usage
 
 ```typescript
-import {ExcelLoader} from '@loaders.gl/excel';
-import {load} from '@loaders.gl/core';
+import {ExcelLoader} from '@sensat/loaders-gl-excel';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, ExcelLoader, {excel: options});
 ```

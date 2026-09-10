@@ -20,8 +20,8 @@ Writer for BSON files.
 ## Usage
 
 ```typescript
-import {BSONWriter} from '@loaders.gl/json';
-import {encode} from '@loaders.gl/core';
+import {BSONWriter} from '@sensat/loaders-gl-json';
+import {encode} from '@sensat/loaders-gl-core';
 
 const arrayBufer = await encode(data, BSONWriter);
 ```

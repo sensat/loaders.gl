@@ -1,13 +1,13 @@
 import test from 'tape-promise/tape';
-import {load} from '@loaders.gl/core';
-import {GLTFLoader, GLTFScenegraph} from '@loaders.gl/gltf';
+import {load} from '@sensat/loaders-gl-core';
+import {GLTFLoader, GLTFScenegraph} from '@sensat/loaders-gl-gltf';
 import {
   decodeMeshoptCompression,
   validateMeshoptCompressionExclusivity
 } from '../../../src/lib/extensions/meshopt-compression';
 
 const KHR_MESHOPT_CUBE_URL =
-  '@loaders.gl/gltf/test/data/meshopt/MeshoptCubeTest/glTF-Meshopt/MeshoptCubeTest.gltf';
+  '@sensat/loaders-gl-gltf/test/data/meshopt/MeshoptCubeTest/glTF-Meshopt/MeshoptCubeTest.gltf';
 
 test('KHR_meshopt_compression#decodes official version 1 fixture', async (t) => {
   const gltf = await load(KHR_MESHOPT_CUBE_URL, GLTFLoader, {

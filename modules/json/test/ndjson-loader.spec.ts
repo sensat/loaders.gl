@@ -3,11 +3,11 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {load, loadInBatches, isIterator, isAsyncIterable} from '@loaders.gl/core';
-import {NDJSONLoader} from '@loaders.gl/json';
+import {load, loadInBatches, isIterator, isAsyncIterable} from '@sensat/loaders-gl-core';
+import {NDJSONLoader} from '@sensat/loaders-gl-json';
 
-const NDJSON_PATH = '@loaders.gl/json/test/data/ndjson.ndjson';
-const NDJSON_INVALID_PATH = '@loaders.gl/json/test/data/ndjson-invalid.ndjson';
+const NDJSON_PATH = '@sensat/loaders-gl-json/test/data/ndjson.ndjson';
+const NDJSON_INVALID_PATH = '@sensat/loaders-gl-json/test/data/ndjson-invalid.ndjson';
 
 test('NDJSONLoader#load(ndjson.ndjson)', async (t) => {
   const table = await load(NDJSON_PATH, NDJSONLoader);

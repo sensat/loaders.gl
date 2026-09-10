@@ -6,7 +6,7 @@
   <img src="https://img.shields.io/badge/From-v3.4-blue.svg?style=flat-square" alt="From-v3.4" />
 </p>
 
-This loader is part of the [`@loaders.gl/bson`](/docs/modules/bson) module.
+This loader is part of the [`@sensat/loaders-gl-bson`](/docs/modules/bson) module.
 
 Streaming loader for BSON encoded files.
 
@@ -24,8 +24,8 @@ Streaming loader for BSON encoded files.
 For simple usage, you can load and parse a BSON file atomically:
 
 ```typescript
-import {BSONLoader} from '@loaders.gl/bson';
-import {load} from '@loaders.gl/core';
+import {BSONLoader} from '@sensat/loaders-gl-bson';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, BSONLoader, {bson: options});
 ```

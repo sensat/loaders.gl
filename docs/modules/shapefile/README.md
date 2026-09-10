@@ -1,11 +1,11 @@
 # Overview
 
-The `@loaders.gl/shapefile` module handles the [Shapefile](/docs/modules/shapefile/formats/shapefile) format, a widely used binary format.
+The `@sensat/loaders-gl-shapefile` module handles the [Shapefile](/docs/modules/shapefile/formats/shapefile) format, a widely used binary format.
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/shapefile
+npm install @sensat/loaders-gl-shapefile
 ```
 
 ## Loaders and Writers

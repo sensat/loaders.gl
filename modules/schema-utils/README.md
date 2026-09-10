@@ -1,4 +1,4 @@
-# @loaders.gl/schema
+# @sensat/loaders-gl-schema
 
 This module contains:
 

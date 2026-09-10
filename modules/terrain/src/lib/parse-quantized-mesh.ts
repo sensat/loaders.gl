@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Mesh} from '@loaders.gl/schema';
-import {getMeshBoundingBox} from '@loaders.gl/schema-utils';
+import type {Mesh} from '@sensat/loaders-gl-schema';
+import {getMeshBoundingBox} from '@sensat/loaders-gl-schema-utils';
 import decode, {DECODING_STEPS} from './decode-quantized-mesh';
 import {addSkirt} from './helpers/skirt';
 

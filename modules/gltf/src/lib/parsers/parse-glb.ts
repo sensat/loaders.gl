@@ -2,7 +2,7 @@
 // https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#glb-file-format-specification
 // https://github.com/KhronosGroup/glTF/tree/master/extensions/1.0/Khronos/KHR_binary_glTF
 import type {GLB} from '../types/glb-types';
-import {padToNBytes, assert} from '@loaders.gl/loader-utils';
+import {padToNBytes, assert} from '@sensat/loaders-gl-loader-utils';
 
 /** Options for parsing a GLB */
 export type ParseGLBOptions = {

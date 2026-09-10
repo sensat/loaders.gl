@@ -1,4 +1,4 @@
-# @loaders.gl/geoarrow
+# @sensat/loaders-gl-geoarrow
 
 This module contains support for the Apache Arrow GeoArrow format.
 

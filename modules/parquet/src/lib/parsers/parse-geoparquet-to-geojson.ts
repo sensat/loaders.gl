@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {ReadableFile} from '@loaders.gl/loader-utils';
+import type {ReadableFile} from '@sensat/loaders-gl-loader-utils';
 import type {
   GeoJSONTable,
   GeoJSONTableBatch,
   ObjectRowTable,
   ObjectRowTableBatch
-} from '@loaders.gl/schema';
-import {convertWKBTableToGeoJSON} from '@loaders.gl/gis';
+} from '@sensat/loaders-gl-schema';
+import {convertWKBTableToGeoJSON} from '@sensat/loaders-gl-gis';
 
 import type {ParquetJSONLoaderOptions} from '../../parquet-json-loader';
 

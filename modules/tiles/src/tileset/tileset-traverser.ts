@@ -3,6 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import type {Tile3D} from './tile-3d';
+import {TileGroup3D} from './tile-group-3d';
 import {ManagedArray} from '../utils/managed-array';
 import {TILE_REFINEMENT} from '../constants';
 import {FrameState} from './helpers/frame-state';
@@ -32,7 +33,7 @@ export class TilesetTraverser {
   root: any = null;
 
   // tiles should be rendered
-  selectedTiles: Record<string, Tile3D> = {};
+  selectedTileGroups: Record<string, Tile3D | TileGroup3D> = {};
   // tiles should be loaded from server
   requestedTiles: Record<string, Tile3D> = {};
   // tiles does not have render content
@@ -73,7 +74,7 @@ export class TilesetTraverser {
 
   reset() {
     this.requestedTiles = {};
-    this.selectedTiles = {};
+    this.selectedTileGroups = {};
     this.emptyTiles = {};
     this._traversalStack.reset();
     this._emptyTraversalStack.reset();
@@ -134,12 +135,10 @@ export class TilesetTraverser {
 
         // replace tiles
       } else if (tile.refine === TILE_REFINEMENT.REPLACE) {
-        // Always load tiles in the base traversal
-        // Select tiles that can't refine further
+        // Track all available replacement levels. The grouped selection pass
+        // later chooses a coherent level of detail for the global tile budget.
         this.loadTile(tile, frameState);
-        if (stoppedRefining) {
-          this.selectTile(tile, frameState);
-        }
+        this.selectTile(tile, frameState);
       }
 
       // 3. update cache, most recent touched tiles have higher priority to be fetched from server
@@ -228,7 +227,19 @@ export class TilesetTraverser {
     if (this.shouldSelectTile(tile)) {
       // The tile can be selected right away and does not require traverseAndSelect
       tile._selectedFrame = frameState.frameNumber;
-      this.selectedTiles[tile.id] = tile;
+      if (tile._replacedTileId) {
+        const groupId = `replace:${tile._replacedTileId}`;
+        let selected = this.selectedTileGroups[groupId];
+        if (!selected) {
+          selected = new TileGroup3D();
+          this.selectedTileGroups[groupId] = selected;
+        }
+        if (selected instanceof TileGroup3D) {
+          selected.addTile(tile);
+        }
+        return;
+      }
+      this.selectedTileGroups[`tile:${tile.id}`] = tile;
     }
   }
 
@@ -236,14 +247,23 @@ export class TilesetTraverser {
   loadTile(tile: Tile3D, frameState: FrameState): void {
     if (this.shouldLoadTile(tile)) {
       tile._requestedFrame = frameState.frameNumber;
-      tile._priority = tile._getPriority();
+      tile._loadPriority = tile._getLoadPriority();
       this.requestedTiles[tile.id] = tile;
+    }
+
+    // A root tile need not have an ID. Its tileset URL remains stable and
+    // prevents its descendants being selected alongside it.
+    if (tile.parent?.refine === TILE_REFINEMENT.REPLACE && !tile._replacedTileId) {
+      tile._replacedTileId = tile.parent.id ?? tile.tileset.url;
     }
   }
 
   // cache tile
   touchTile(tile: Tile3D, frameState: FrameState): void {
     tile.tileset._cache.touch(tile);
+    if (tile._touchedFrame !== frameState.frameNumber) {
+      tile._displayPriority = tile._getDisplayPriority();
+    }
     tile._touchedFrame = frameState.frameNumber;
   }
 

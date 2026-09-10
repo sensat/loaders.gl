@@ -11,7 +11,7 @@ import {
   padStringToByteAlignment,
   copyStringToDataView,
   copyBinaryToDataView
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
 
 const DEFAULT_FEATURE_TABLE_JSON = {
   POINTS_LENGTH: 1,

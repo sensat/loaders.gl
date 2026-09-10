@@ -1,6 +1,6 @@
 import {Vector3} from '@math.gl/core';
-import {DataSource} from '@loaders.gl/loader-utils';
-import {POTreeNode} from '@loaders.gl/potree';
+import {DataSource} from '@sensat/loaders-gl-loader-utils';
+import {POTreeNode} from '@sensat/loaders-gl-potree';
 import {PointTileSourceTraverser} from './point-tile-source-traverser';
 
 /** Deck.gl Viewport instance type.

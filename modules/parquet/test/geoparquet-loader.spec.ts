@@ -5,12 +5,12 @@
 import test from 'tape-promise/tape';
 // import {validateLoader} from 'test/common/conformance';
 
-import {ParquetJSONLoader, _ParquetJSONWriter as ParquetJSONWriter} from '@loaders.gl/parquet';
-import {load, encode, setLoaderOptions} from '@loaders.gl/core';
-import {getTableLength} from '@loaders.gl/schema-utils';
+import {ParquetJSONLoader, _ParquetJSONWriter as ParquetJSONWriter} from '@sensat/loaders-gl-parquet';
+import {load, encode, setLoaderOptions} from '@sensat/loaders-gl-core';
+import {getTableLength} from '@sensat/loaders-gl-schema-utils';
 import * as arrow from 'apache-arrow';
 
-const PARQUET_DIR = '@loaders.gl/parquet/test/data/geoparquet';
+const PARQUET_DIR = '@sensat/loaders-gl-parquet/test/data/geoparquet';
 const GEOPARQUET_EXAMPLE = `${PARQUET_DIR}/example.parquet`;
 const GEOPARQUET_FILES = ['example.parquet', 'airports.parquet', 'geojson-big.parquet'];
 

@@ -3,12 +3,12 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 import {
   makeResponse,
   checkResponse,
   checkResponseSync
-} from '@loaders.gl/core/lib/utils/response-utils';
+} from '@sensat/loaders-gl-core/lib/utils/response-utils';
 
 test('Response', async (t) => {
   const response = new Response('abc');

@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {LoaderWithParser} from '@loaders.gl/loader-utils';
+import type {LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
 import type {
   ArrowTable,
   ArrowTableBatch,
   GeoJSONTable,
   GeoJSONTableBatch
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 import {parseGeoArrowSync, parseGeoArrowInBatches} from './lib/parsers/parse-geoarrow';
 import type {GeoArrowLoaderOptions} from './exports/geoarrow-loader';
 import {GeoArrowWorkerLoader} from './exports/geoarrow-loader';

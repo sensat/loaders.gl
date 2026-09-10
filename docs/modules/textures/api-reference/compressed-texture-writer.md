@@ -9,7 +9,7 @@
 
 The writer delegates compression to the optional
 [`texture-compressor`](https://github.com/TimvanScherpenzeel/texture-compressor) command-line
-tool. Install it alongside `@loaders.gl/textures` before using this Node.js-only writer:
+tool. Install it alongside `@sensat/loaders-gl-textures` before using this Node.js-only writer:
 
 ```sh
 npm install --save-dev texture-compressor
@@ -32,8 +32,8 @@ resolved locally, `encodeURLtoURL()` rejects.
 
 ```typescript
 import '@loaders.gl/polyfill'; // only if using under Node
-import {encodeURLtoURL} from '@loaders.gl/core';
-import {CompressedTextureWriter} from '@loaders.gl/textures';
+import {encodeURLtoURL} from '@sensat/loaders-gl-core';
+import {CompressedTextureWriter} from '@sensat/loaders-gl-textures';
 
 export const IMAGE_URL = 'image.png';
 

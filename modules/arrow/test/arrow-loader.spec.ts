@@ -7,7 +7,7 @@ import {validateLoader} from 'test/common/conformance';
 
 import * as fs from 'fs';
 
-import {ArrowLoader} from '@loaders.gl/arrow';
+import {ArrowLoader} from '@sensat/loaders-gl-arrow';
 import {
   isBrowser,
   makeIterator,
@@ -16,7 +16,7 @@ import {
   fetchFile,
   parse,
   parseInBatches
-} from '@loaders.gl/core';
+} from '@sensat/loaders-gl-core';
 
 import {
   ARROW_SIMPLE,

@@ -8,7 +8,7 @@ import {
   makeTableFromData,
   makeBatchFromTable,
   getTableLength
-} from '../../../src'; // '@loaders.gl/schema'; why don't we get typings?
+} from '../../../src'; // '@sensat/loaders-gl-schema'; why don't we get typings?
 
 // import * from '../../data/table/tables';
 import {

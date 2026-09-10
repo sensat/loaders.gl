@@ -14,8 +14,8 @@ In contrast to `load` and `parse` which parse a single file, the returned `DataS
 The return value from `fetch` or `fetchFile` is a `Promise` that resolves to the fetch `Response` object and can be passed directly to the non-sync parser functions:
 
 ```typescript
-import {createDataSource} from '@loaders.gl/core';
-import {PMTilesSource} from '@loaders.gl/pmtiles';
+import {createDataSource} from '@sensat/loaders-gl-core';
+import {PMTilesSource} from '@sensat/loaders-gl-pmtiles';
 
 const source = await createDataSource(url, [PMTilesSource]);
 // Application code here
@@ -25,9 +25,9 @@ const source = await createDataSource(url, [PMTilesSource]);
 Automatic selection is performed with best-effort heuristics.
 
 ```typescript
-import {fetchFile, parseInBatches} from '@loaders.gl/core';
-import {PMTilesSource} from '@loaders.gl/pmtiles';
-import {MVTSource} from '@loaders.gl/mvt';
+import {fetchFile, parseInBatches} from '@sensat/loaders-gl-core';
+import {PMTilesSource} from '@sensat/loaders-gl-pmtiles';
+import {MVTSource} from '@sensat/loaders-gl-mvt';
 
 const dataSource = await createDataSource(url, [PMTilesSource, MVTSource]);
 await dataSource.getMetadata(...);
@@ -63,9 +63,9 @@ Sources accept nested options, so that options for multiple sources can be speci
 | `core.loaders`      | `Loader[]`      | `[]`     | If a source is using loaders to loader a subresource, the application can add additional loaders to support more formats.                                            |
 
 ```ts
-import {createDataSource} from '@loaders.gl/core';
-import {PMTileseSource} from '@loaders.gl/pmtiles';
-import {MVTSource} from '@loaders.gl/mvt`;
+import {createDataSource} from '@sensat/loaders-gl-core';
+import {PMTileseSource} from '@sensat/loaders-gl-pmtiles';
+import {MVTSource} from '@sensat/loaders-gl-mvt`;
 
 const dataSource = createDataSource(url, [PMTileSource, MVTSource], {
   core: {

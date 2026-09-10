@@ -4,7 +4,7 @@ import {fileURLToPath} from 'url';
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const tileConverterDirectory = path.join(repositoryRoot, 'apps', 'tile-converter');
-const tileConverterPackageName = '@loaders.gl/tile-converter';
+const tileConverterPackageName = '@sensat/loaders-gl-tile-converter';
 
 async function main() {
   const commandType = process.argv[2];

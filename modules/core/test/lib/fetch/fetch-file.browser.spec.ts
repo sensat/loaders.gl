@@ -4,11 +4,11 @@
 
 import test from 'tape-promise/tape';
 
-import {isBrowser, fetchFile} from '@loaders.gl/core';
+import {isBrowser, fetchFile} from '@sensat/loaders-gl-core';
 
 const TEXT_DATA = 'important content!';
 const JSON_DATA = [{col1: 22, col2: 'abc'}];
-const BINARY_URL = '@loaders.gl/core/test/data/files/binary-data.bin';
+const BINARY_URL = '@sensat/loaders-gl-core/test/data/files/binary-data.bin';
 
 test('fetchFile(Blob)#Response.text() BROWSER ONLY', async (t) => {
   if (isBrowser) {

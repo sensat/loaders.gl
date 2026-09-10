@@ -2,7 +2,7 @@
 
 copc.js was forked after some consideration:
 
-- Split out LAZ functionality (use `@loaders.gl/las` module).
+- Split out LAZ functionality (use `@sensat/loaders-gl-las` module).
 - Adapt to loaders.gl dynamic source system (replace `Getter`).
 - Avoid bundling issues (e.g. dynamic import of fs) as loaders.gl already handles these.
 - Modernize / simplify code (see below)

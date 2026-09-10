@@ -18,7 +18,7 @@ export type {
   Stat,
   FileSystem,
   RandomAccessFileSystem
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
 
 // FILE READING AND WRITING
 export {fetchFile} from './lib/fetch/fetch-file';
@@ -51,8 +51,8 @@ export {createDataSource} from './lib/api/create-data-source';
 export {selectSource as _selectSource} from './lib/api/select-source';
 
 // CORE UTILS SHARED WITH LOADERS (RE-EXPORTED FROM LOADER-UTILS)
-export {setPathPrefix, getPathPrefix, resolvePath} from '@loaders.gl/loader-utils';
-export {RequestScheduler} from '@loaders.gl/loader-utils';
+export {setPathPrefix, getPathPrefix, resolvePath} from '@sensat/loaders-gl-loader-utils';
+export {RequestScheduler} from '@sensat/loaders-gl-loader-utils';
 
 // ITERATOR UTILS
 export {makeIterator} from './iterators/make-iterator/make-iterator';
@@ -60,7 +60,7 @@ export {makeStream} from './iterators/make-stream/make-stream';
 
 // CORE LOADERS
 export {NullWorkerLoader, NullLoader} from './null-loader';
-export {JSONLoader} from '@loaders.gl/loader-utils';
+export {JSONLoader} from '@sensat/loaders-gl-loader-utils';
 
 // EXPERIMENTAL
 export {fetchProgress as _fetchProgress} from './lib/progress/fetch-progress';
@@ -73,16 +73,16 @@ export {_unregisterLoaders} from './lib/api/register-loaders';
 // TODO - MOVE TO LOADER-UTILS AND DEPRECATE IN CORE?
 //
 
-export {isBrowser, isWorker, self, window, global, document} from '@loaders.gl/loader-utils';
-export {assert} from '@loaders.gl/loader-utils';
-export {forEach, concatenateArrayBuffersAsync} from '@loaders.gl/loader-utils';
+export {isBrowser, isWorker, self, window, global, document} from '@sensat/loaders-gl-loader-utils';
+export {assert} from '@sensat/loaders-gl-loader-utils';
+export {forEach, concatenateArrayBuffersAsync} from '@sensat/loaders-gl-loader-utils';
 
 export {
   makeTextDecoderIterator,
   makeTextEncoderIterator,
   makeLineIterator,
   makeNumberedLineIterator
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
 
 // "JAVASCRIPT" UTILS - move to loader-utils?
 export {
@@ -94,4 +94,4 @@ export {
   isResponse,
   isReadableStream,
   isWritableStream
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';

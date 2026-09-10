@@ -4,15 +4,15 @@ import {
   generateTileAttributeUrls,
   generateTilesetAttributeUrls
   // @ts-expect-error
-} from '@loaders.gl/i3s/lib/utils/url-utils';
+} from '@sensat/loaders-gl-i3s/lib/utils/url-utils';
 import {getUrlWithoutParams} from '../../../src/lib/utils/url-utils';
 
 test('i3s-utils#getUrlWithoutParams', async (t) => {
   const url = getUrlWithoutParams('http://a.b.c/x/y/z?token=efk');
   t.equal(url, 'http://a.b.c/x/y/z');
 
-  const url2 = getUrlWithoutParams('@loaders.gl/core/test/data/url');
-  t.equal(url2, '@loaders.gl/core/test/data/url');
+  const url2 = getUrlWithoutParams('@sensat/loaders-gl-core/test/data/url');
+  t.equal(url2, '@sensat/loaders-gl-core/test/data/url');
   t.end();
 });
 

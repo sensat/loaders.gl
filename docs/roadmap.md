@@ -23,17 +23,17 @@ While no loader support has been removed, the flavor of the loaders.gl framework
 
 ### Per-module changes
 
-- **`@loaders.gl/csv`**
+- **`@sensat/loaders-gl-csv`**
   - `CSVArrowLoader` - New CSV loader that returns Apache Arrow tables.
 
-- **`@loaders.gl/parquet`**
+- **`@sensat/loaders-gl-parquet`**
   - `ParquetArrowLoader` now returns Apache Arrow tables and leverages the high-performance `parquet-wasm` library.
   - The v4 Parquet loader is still available as `ParquetJSONLoader`
 
-- **`@loaders.gl/schema-utils`**
+- **`@sensat/loaders-gl-schema-utils`**
   - New module for working with and converting Apache Arrow data.
 
-- **`@loaders.gl/gis`**
+- **`@sensat/loaders-gl-gis`**
   - Now provides support for working Apache GeoArrow data.
 
 ### Upgrading to v4.4
@@ -49,9 +49,9 @@ While no loader support has been removed, the flavor of the loaders.gl framework
 - **Cloud native** (point clouds): `COPCService`, `POTreeV2Service`...
 - Unbundled loaders (load non-worker loaders as separate bundle, similar to how workers are loaded today).
 - More comprehensive support for `options.shape` to control the output format of loaders.
-- `ffmpeg` WASM integration for `@loaders.gl/video`
+- `ffmpeg` WASM integration for `@sensat/loaders-gl-video`
 
 **Single output format per loader**
 
 - The `shape` option that was introduced in loaders.gl v3 to allow loaders to return different data formats is now deprecated and will be removed in many places.
-- Instead, applications can use utilities in the `@loaders.gl/schema-utils` and `@loaders.gl/gis` modules to convert for Apache Arrow and Apache GeoArrow to more traditional (but less efficient) JavaScript formats.
+- Instead, applications can use utilities in the `@sensat/loaders-gl-schema-utils` and `@sensat/loaders-gl-gis` modules to convert for Apache Arrow and Apache GeoArrow to more traditional (but less efficient) JavaScript formats.

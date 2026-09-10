@@ -1,6 +1,6 @@
 # PLY - Polygon File Format
 
-- _[`@loaders.gl/ply`](/docs/modules/ply)_
+- _[`@sensat/loaders-gl-ply`](/docs/modules/ply)_
 - _[PLY documentation](http://paulbourke.net/dataformats/ply/)_
 
 PLY (Polygon File Format, also known as the Stanford Triangle Format) is a format for storing graphical objects that are described as a collection of polygons.

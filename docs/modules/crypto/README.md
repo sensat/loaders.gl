@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/From-v2.3-blue.svg?style=flat-square" alt="From-v3.0" />
 </p>
 
-The `@loaders.gl/crypto` module provides a selection of optional cryptographic hash plugins for loaders.gl.
+The `@sensat/loaders-gl-crypto` module provides a selection of optional cryptographic hash plugins for loaders.gl.
 
 Terminology:
 
@@ -24,7 +24,7 @@ Which one you want to use often depends on what you are planning to do with the 
 If you are calling an existing API (perhaps a cloud storage service)
 you will want to generate the encoding that matches or is required by that API.
 
-All hash functions in the `@loaders.gl/crypto` module take an `encoding` parameter that lets you specify the encoding.
+All hash functions in the `@sensat/loaders-gl-crypto` module take an `encoding` parameter that lets you specify the encoding.
 
 ## Cryptographic Hash API
 
@@ -39,11 +39,11 @@ The API offers "transforms" that can calculate a cryptographic hash incrementall
 
 ## Using Transforms
 
-The `@loaders.gl/crypto` libraries exports transform that can be used to incrementally calculate a cryptographic hash as data is being loaded and parsed:
+The `@sensat/loaders-gl-crypto` libraries exports transform that can be used to incrementally calculate a cryptographic hash as data is being loaded and parsed:
 
 ```typescript
-import {loadInBatches} from '@loaders.gl/core';
-import {CRC32Hash} from '@loaders.gl/crypto';
+import {loadInBatches} from '@sensat/loaders-gl-core';
+import {CRC32Hash} from '@sensat/loaders-gl-crypto';
 
 let hash;
 

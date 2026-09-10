@@ -1,15 +1,16 @@
 {
-  "name": "@loaders.gl/arrow",
-  "version": "4.4.6",
+  "name": "@sensat/loaders-gl-arrow",
+  "version": "4.4.6-sensat.0",
   "description": "Simple columnar table loader for the Apache Arrow format",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/visgl/loaders.gl"
+    "url": "https://github.com/sensat/loaders.gl"
   },
   "keywords": [
     "loader",
@@ -60,17 +61,16 @@
     "build-worker2": "esbuild src/workers/arrow-worker.ts --bundle --outfile=dist/arrow-worker.js --platform=browser --external:{stream}"
   },
   "dependencies": {
-    "@loaders.gl/gis": "4.4.6",
-    "@loaders.gl/loader-utils": "4.4.6",
-    "@loaders.gl/schema": "4.4.6",
-    "@loaders.gl/schema-utils": "4.4.6",
-    "@loaders.gl/wkt": "4.4.6",
-    "@loaders.gl/worker-utils": "4.4.6",
     "@math.gl/polygon": "^4.1.0",
+    "@sensat/loaders-gl-gis": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-loader-utils": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-schema": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-schema-utils": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-wkt": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-worker-utils": "4.4.6-sensat.0",
     "apache-arrow": ">= 17.0.0"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "~4.4.0"
-  },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+    "@sensat/loaders-gl-core": "4.4.6-sensat.0"
+  }
 }

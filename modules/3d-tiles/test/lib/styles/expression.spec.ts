@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import Expression from '@loaders.gl/3d-tiles/styles/expression';
+import Expression from '@sensat/loaders-gl-3d-tiles/styles/expression';
 import {Vector2, Vector3, Vector4, Color, CesiumMath} from '@math.gl/core';
 
 // ExpressionNodeType) {

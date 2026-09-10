@@ -24,9 +24,9 @@ unless `options.ignoreRegisteredLoaders` is `true`.
 Select a loader from a list of provided loaders:
 
 ```typescript
-import {selectLoaderSync} from '@loaders.gl/core';
-import {ArrowLoader} from '@loaders.gl/arrow';
-import {CSVLoader} from '@loaders.gl/csv';
+import {selectLoaderSync} from '@sensat/loaders-gl-core';
+import {ArrowLoader} from '@sensat/loaders-gl-arrow';
+import {CSVLoader} from '@sensat/loaders-gl-csv';
 
 selectLoaderSync('filename.csv', [ArrowLoader, CSVLoader]); // => CSVLoader
 ```
@@ -34,9 +34,9 @@ selectLoaderSync('filename.csv', [ArrowLoader, CSVLoader]); // => CSVLoader
 Select a loader from pre-registered loaders in the loader registry:
 
 ```typescript
-import {registerLoaders, selectLoader} from '@loaders.gl/core';
-import {ArrowLoader} from '@loaders.gl/arrow';
-import {CSVLoader} from '@loaders.gl/csv';
+import {registerLoaders, selectLoader} from '@sensat/loaders-gl-core';
+import {ArrowLoader} from '@sensat/loaders-gl-arrow';
+import {CSVLoader} from '@sensat/loaders-gl-csv';
 
 registerLoaders(ArrowLoader, CSVLoader);
 

@@ -3,12 +3,12 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {load} from '@loaders.gl/core';
-import {BSONLoader} from '@loaders.gl/bson';
+import {load} from '@sensat/loaders-gl-core';
+import {BSONLoader} from '@sensat/loaders-gl-bson';
 // import corruptScenarios from './data/js-bson/corrupt';
 
-const TAGS_BSON_URL = '@loaders.gl/bson/test/data/js-bson/mongodump.airpair.tags.bson';
-const MINI_BSON_URL = '@loaders.gl/bson/test/data/js-bson/test.bson';
+const TAGS_BSON_URL = '@sensat/loaders-gl-bson/test/data/js-bson/mongodump.airpair.tags.bson';
+const MINI_BSON_URL = '@sensat/loaders-gl-bson/test/data/js-bson/test.bson';
 
 test('BSONLoader#load(test.bson)', async (t) => {
   const data = await load(MINI_BSON_URL, BSONLoader);

@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {getTransferList, getTransferListForWriter} from '@loaders.gl/worker-utils';
+import {getTransferList, getTransferListForWriter} from '@sensat/loaders-gl-worker-utils';
 
 const typedArray = new Uint8Array(4);
 const typedArray2 = new Float32Array(typedArray.buffer);

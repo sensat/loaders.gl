@@ -7,7 +7,7 @@
 
 import {Vector3, Matrix3, Matrix4, Quaternion} from '@math.gl/core';
 import {Ellipsoid} from '@math.gl/geospatial';
-import {GL} from '@loaders.gl/math'; // 'math.gl/geometry';
+import {GL} from '@sensat/loaders-gl-math'; // 'math.gl/geometry';
 import Tile3DFeatureTable from '../classes/tile-3d-feature-table';
 import Tile3DBatchTable from '../classes/tile-3d-batch-table';
 
@@ -15,7 +15,7 @@ import {parse3DTileHeaderSync} from './helpers/parse-3d-tile-header';
 import {parse3DTileTablesHeaderSync, parse3DTileTablesSync} from './helpers/parse-3d-tile-tables';
 import {parse3DTileGLTFViewSync, extractGLTF} from './helpers/parse-3d-tile-gltf-view';
 import {Tiles3DLoaderOptions} from '../../tiles-3d-loader';
-import {LoaderContext} from '@loaders.gl/loader-utils';
+import {LoaderContext} from '@sensat/loaders-gl-loader-utils';
 import {Tiles3DTileContent} from '../../types';
 
 export async function parseInstancedModel3DTile(

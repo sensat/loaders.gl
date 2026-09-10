@@ -14,10 +14,10 @@ import {
   COORDINATE_SYSTEM,
   I3SBuildingSceneLayerLoader,
   I3SLoader
-} from '@loaders.gl/i3s';
-import {fetchFile, load} from '@loaders.gl/core';
+} from '@sensat/loaders-gl-i3s';
+import {fetchFile, load} from '@sensat/loaders-gl-core';
 import {Sublayer, buildSublayersTree} from './helpers/sublayers';
-import {Tileset3D} from '@loaders.gl/tiles';
+import {Tileset3D} from '@sensat/loaders-gl-tiles';
 import {BuildingExplorer} from './components/building-explorer';
 import {filterTile} from '@deck.gl-community/experimental';
 

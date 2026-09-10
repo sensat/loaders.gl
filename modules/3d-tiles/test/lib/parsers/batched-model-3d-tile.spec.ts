@@ -6,36 +6,36 @@
 // See LICENSE.md and https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md
 
 import test from 'tape-promise/tape';
-import {parse, encodeSync, fetchFile} from '@loaders.gl/core';
-import {Tiles3DLoader, Tile3DWriter, TILE3D_TYPE} from '@loaders.gl/3d-tiles';
-import {ImageLoader} from '@loaders.gl/images';
+import {parse, encodeSync, fetchFile} from '@sensat/loaders-gl-core';
+import {Tiles3DLoader, Tile3DWriter, TILE3D_TYPE} from '@sensat/loaders-gl-3d-tiles';
+import {ImageLoader} from '@sensat/loaders-gl-images';
 import {loadRootTileFromTileset, loadRootTile} from '../utils/load-utils';
 
 const EPSILON = 1e-12;
 
 const WITH_BATCH_TABLE_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedWithBatchTable/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedWithBatchTable/tileset.json';
 const WITH_Z_UP_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedColorsZUp/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedColorsZUp/tileset.json';
 const WITH_BATCH_TABLE_BINARY_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedWithBatchTableBinary/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedWithBatchTableBinary/tileset.json';
 const WITHOUT_BATCH_TABLE_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedWithoutBatchTable/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedWithoutBatchTable/tileset.json';
 const TRANSLUCENT_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedTranslucent/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedTranslucent/tileset.json';
 const TRANSLUCENT_OPAQUE_MIX_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedTranslucentOpaqueMix/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedTranslucentOpaqueMix/tileset.json';
 const WITH_TRANSFORM_BOX_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedWithTransformBox/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedWithTransformBox/tileset.json';
 const WITH_TRANSFORM_SPHERE_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedWithTransformSphere/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedWithTransformSphere/tileset.json';
 const WITH_TRANSFORM_REGION_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedWithTransformRegion/tileset.json';
-const TEXTURED_URL = '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedTextured/tileset.json';
-// const DEPRECATED1_URL = '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedDeprecated1/tileset.json';
-// const DEPRECATED2_URL = '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedDeprecated2/tileset.json';
-// const WITH_RTC_CENTER_URL = '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedWithRtcCenter/tileset.json';
-const CESIUM_RTC_EXTENSION_URL = '@loaders.gl/3d-tiles/test/data/cesium-rtc-extension.b3dm';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedWithTransformRegion/tileset.json';
+const TEXTURED_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedTextured/tileset.json';
+// const DEPRECATED1_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedDeprecated1/tileset.json';
+// const DEPRECATED2_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedDeprecated2/tileset.json';
+// const WITH_RTC_CENTER_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedWithRtcCenter/tileset.json';
+const CESIUM_RTC_EXTENSION_URL = '@sensat/loaders-gl-3d-tiles/test/data/cesium-rtc-extension.b3dm';
 
 test('batched model tile#throws with invalid version', async (t) => {
   const TILE = {

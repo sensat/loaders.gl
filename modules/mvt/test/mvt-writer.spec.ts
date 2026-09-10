@@ -3,11 +3,11 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {encode, fetchFile, parse} from '@loaders.gl/core';
-import {MVTLoader, MVTWriter} from '@loaders.gl/mvt';
+import {encode, fetchFile, parse} from '@sensat/loaders-gl-core';
+import {MVTLoader, MVTWriter} from '@sensat/loaders-gl-mvt';
 
-const RECTANGLE_URL = '@loaders.gl/mvt/test/data/mapbox-vt-pbf-fixtures/rectangle.geojson';
-const RECTANGLE_TILE = '@loaders.gl/mvt/test/data/mapbox-vt-pbf-fixtures/rectangle-1.0.0.pbf';
+const RECTANGLE_URL = '@sensat/loaders-gl-mvt/test/data/mapbox-vt-pbf-fixtures/rectangle.geojson';
+const RECTANGLE_TILE = '@sensat/loaders-gl-mvt/test/data/mapbox-vt-pbf-fixtures/rectangle-1.0.0.pbf';
 
 test('MVTWriter#import', async (t) => {
   t.ok(MVTWriter, 'MVTWriter is defined');
@@ -32,7 +32,7 @@ test.skip('MVTWriter#encode', async (t) => {
 
 test('MVTWriter#roundtrip', async (t) => {
   const tileIndex = {x: 2, y: 1, z: 2};
-  const response = await fetchFile('@loaders.gl/mvt/test/data/mvt/lines_2-2-1.mvt');
+  const response = await fetchFile('@sensat/loaders-gl-mvt/test/data/mvt/lines_2-2-1.mvt');
   const sourceTile = await response.arrayBuffer();
 
   const loaderOptions = {mvt: {coordinates: 'local'}};

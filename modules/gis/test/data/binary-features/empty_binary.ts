@@ -1,4 +1,4 @@
-import {BinaryFeatureCollection} from '@loaders.gl/schema';
+import {BinaryFeatureCollection} from '@sensat/loaders-gl-schema';
 
 export const EMPTY_BINARY_DATA: BinaryFeatureCollection = {
   shape: 'binary-feature-collection',

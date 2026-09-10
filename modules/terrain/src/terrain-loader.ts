@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader} from '@loaders.gl/loader-utils';
-import type {Mesh} from '@loaders.gl/schema';
-import type {ImageLoaderOptions} from '@loaders.gl/images';
+import type {Loader} from '@sensat/loaders-gl-loader-utils';
+import type {Mesh} from '@sensat/loaders-gl-schema';
+import type {ImageLoaderOptions} from '@sensat/loaders-gl-images';
 import {VERSION} from './lib/utils/version';
 
 import type {TerrainOptions} from './lib/parse-terrain';

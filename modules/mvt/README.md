@@ -1,4 +1,4 @@
-# @loaders.gl/mvt
+# @sensat/loaders-gl-mvt
 
 This module contains a geometry loader for Mapbox Vector Tiles (MVT) and a writer for generating MVT tiles from GeoJSON.
 
@@ -6,11 +6,11 @@ This module contains a geometry loader for Mapbox Vector Tiles (MVT) and a write
 
 ## Writing
 
-Use the `MVTWriter` with `@loaders.gl/core`'s `encode` helper to serialize GeoJSON into a Mapbox Vector Tile `ArrayBuffer`.
+Use the `MVTWriter` with `@sensat/loaders-gl-core`'s `encode` helper to serialize GeoJSON into a Mapbox Vector Tile `ArrayBuffer`.
 
 ```typescript
-import {encode} from '@loaders.gl/core';
-import {MVTWriter} from '@loaders.gl/mvt';
+import {encode} from '@sensat/loaders-gl-core';
+import {MVTWriter} from '@sensat/loaders-gl-mvt';
 
 const arrayBuffer = await encode(geojson, MVTWriter, {
   mvt: {layerName: 'my-layer', version: 2, extent: 4096}

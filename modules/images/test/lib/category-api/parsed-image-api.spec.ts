@@ -1,5 +1,5 @@
 import test from 'tape-promise/tape';
-import {load} from '@loaders.gl/core';
+import {load} from '@sensat/loaders-gl-core';
 import {
   ImageLoader,
   ImageType,
@@ -10,13 +10,13 @@ import {
   getImageType,
   getImageSize,
   getImageData
-} from '@loaders.gl/images';
+} from '@sensat/loaders-gl-images';
 
 type ImageT = 'auto' | 'image' | 'imagebitmap' | 'data';
 
 const IMAGE_TYPES: ImageT[] = ['auto', 'image', 'imagebitmap', 'data'];
 
-const IMAGE_URL = '@loaders.gl/images/test/data/img1-preview.png';
+const IMAGE_URL = '@sensat/loaders-gl-images/test/data/img1-preview.png';
 
 let imagesPromise: Promise<ImageType[]> | null = null;
 

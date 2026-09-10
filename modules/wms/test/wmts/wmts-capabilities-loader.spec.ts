@@ -12,11 +12,11 @@
 import test from 'tape-promise/tape';
 // import {validateLoader} from 'test/common/conformance';
 
-import {_WMTSCapabilitiesLoader as WMTSCapabilitiesLoader, _WMTSCapabilities as WMTSCapabilities} from '@loaders.gl/wms';
-import {load} from '@loaders.gl/core';
+import {_WMTSCapabilitiesLoader as WMTSCapabilitiesLoader, _WMTSCapabilities as WMTSCapabilities} from '@sensat/loaders-gl-wms';
+import {load} from '@sensat/loaders-gl-core';
 
 const WMTS_CAPABILITIES_RESPONSE_URL =
-  '@loaders.gl/wms/test/data/wmts/get-capabilities-response.xml';
+  '@sensat/loaders-gl-wms/test/data/wmts/get-capabilities-response.xml';
 
 test('WMTSCapabilitiesLoader#response.xml', async (t) => {
   const capabilities = (await load(

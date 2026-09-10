@@ -2,7 +2,7 @@
 
 ![flatgeobuf-logo](../images/flatgeobuf-logo.png)
 
-- _[`@loaders.gl/flatgeobuf`](/docs/modules/flatgeobuf)_
+- _[`@sensat/loaders-gl-flatgeobuf`](/docs/modules/flatgeobuf)_
 - _[FlatGeobuf](http://flatgeobuf.org/)_
 
 FlatGeobuf is a binary (FlatBuffers-encoded) format that defines geospatial geometries. It is row-oriented rather than columnar like GeoParquet and GeoArrow and offers a different set of trade-offs.

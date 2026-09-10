@@ -1,14 +1,14 @@
 /* eslint-disable max-depth */
 import test from 'tape-promise/tape';
-import type {BinaryFeatureCollection, FeatureCollection} from '@loaders.gl/schema';
-import {fetchFile} from '@loaders.gl/core';
-import {binaryToGeojson, convertBinaryGeometryToGeometry} from '@loaders.gl/gis';
+import type {BinaryFeatureCollection, FeatureCollection} from '@sensat/loaders-gl-schema';
+import {fetchFile} from '@sensat/loaders-gl-core';
+import {binaryToGeojson, convertBinaryGeometryToGeometry} from '@sensat/loaders-gl-gis';
 
-import {GEOMETRY_TEST_CASES} from '@loaders.gl/gis/test/data/binary-features/geometry-test-cases';
-import {EMPTY_BINARY_DATA} from '@loaders.gl/gis/test/data/binary-features/empty_binary';
+import {GEOMETRY_TEST_CASES} from '@sensat/loaders-gl-gis/test/data/binary-features/geometry-test-cases';
+import {EMPTY_BINARY_DATA} from '@sensat/loaders-gl-gis/test/data/binary-features/empty_binary';
 
 const FEATURE_COLLECTION_TEST_CASES =
-  '@loaders.gl/gis/test/data/binary-features/featurecollection.json';
+  '@sensat/loaders-gl-gis/test/data/binary-features/featurecollection.json';
 
 type FeatureCollectionTestCase = {
   geoJSON: FeatureCollection;

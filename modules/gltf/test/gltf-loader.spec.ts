@@ -2,19 +2,19 @@
 import test from 'tape-promise/tape';
 import {validateLoader} from 'test/common/conformance';
 
-import {registerLoaders, load, parseSync, fetchFile} from '@loaders.gl/core';
-import {GLTFLoader, postProcessGLTF, type GLTFLoaderOptions} from '@loaders.gl/gltf';
-import {DracoLoader} from '@loaders.gl/draco';
-import {ImageLoader} from '@loaders.gl/images';
+import {registerLoaders, load, parseSync, fetchFile} from '@sensat/loaders-gl-core';
+import {GLTFLoader, postProcessGLTF, type GLTFLoaderOptions} from '@sensat/loaders-gl-gltf';
+import {DracoLoader} from '@sensat/loaders-gl-draco';
+import {ImageLoader} from '@sensat/loaders-gl-images';
 import {getGLTFImageOptions} from '../src/lib/parsers/parse-gltf';
 
-const GLTF_BINARY_URL = '@loaders.gl/gltf/test/data/gltf-2.0/2CylinderEngine.glb';
-const GLTF_JSON_URL = '@loaders.gl/gltf/test/data/gltf-2.0/2CylinderEngine.gltf';
+const GLTF_BINARY_URL = '@sensat/loaders-gl-gltf/test/data/gltf-2.0/2CylinderEngine.glb';
+const GLTF_JSON_URL = '@sensat/loaders-gl-gltf/test/data/gltf-2.0/2CylinderEngine.gltf';
 
 // Extracted from Cesium 3D Tiles
-const GLB_TILE_WITH_DRACO_URL = '@loaders.gl/gltf/test/data/3d-tiles/143.glb';
-const GLB_V1_TILE_CESIUM_AIR_URL = '@loaders.gl/gltf/test/data/3d-tiles/Cesium_Air.glb';
-const GLB_TILE_URL = '@loaders.gl/gltf/test/data/3d-tiles/tile.glb';
+const GLB_TILE_WITH_DRACO_URL = '@sensat/loaders-gl-gltf/test/data/3d-tiles/143.glb';
+const GLB_V1_TILE_CESIUM_AIR_URL = '@sensat/loaders-gl-gltf/test/data/3d-tiles/Cesium_Air.glb';
+const GLB_TILE_URL = '@sensat/loaders-gl-gltf/test/data/3d-tiles/tile.glb';
 
 test('GLTFLoader#loader conformance', (t) => {
   validateLoader(t, GLTFLoader, 'GLTFLoader');

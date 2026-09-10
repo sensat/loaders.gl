@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {StrictLoaderOptions, LoaderWithParser} from '@loaders.gl/loader-utils';
-import type {Batch, GeoJSONTable} from '@loaders.gl/schema';
+import type {StrictLoaderOptions, LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
+import type {Batch, GeoJSONTable} from '@sensat/loaders-gl-schema';
 import {SHP_MAGIC_NUMBER, SHPLoaderOptions} from './shp-loader';
 import {parseShapefile, parseShapefileInBatches} from './lib/parsers/parse-shapefile';
 import {DBFLoaderOptions} from './dbf-loader';

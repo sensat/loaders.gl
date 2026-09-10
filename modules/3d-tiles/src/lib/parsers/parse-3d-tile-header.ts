@@ -3,11 +3,11 @@
 // Copyright vis.gl contributors
 
 import type {Tiles3DLoaderOptions} from '../../tiles-3d-loader';
-import type {StrictLoaderOptions} from '@loaders.gl/loader-utils';
-import {path} from '@loaders.gl/loader-utils';
+import type {StrictLoaderOptions} from '@sensat/loaders-gl-loader-utils';
+import {path} from '@sensat/loaders-gl-loader-utils';
 import {Tile3DSubtreeLoader} from '../../tile-3d-subtree-loader';
-import {load} from '@loaders.gl/core';
-import {LOD_METRIC_TYPE, TILE_REFINEMENT, TILE_TYPE} from '@loaders.gl/tiles';
+import {load} from '@sensat/loaders-gl-core';
+import {LOD_METRIC_TYPE, TILE_REFINEMENT, TILE_TYPE} from '@sensat/loaders-gl-tiles';
 import {
   ImplicitTilingExensionData,
   Subtree,
@@ -84,6 +84,11 @@ function getRefine(refine?: string): TILE_REFINEMENT | string | undefined {
 }
 
 function resolveUri(uri: string, basePath: string): string {
+  if (uri === '') {
+    // Sparse implicit tiles can be available without render content.
+    return '';
+  }
+
   // url scheme per RFC3986
   const urlSchemeRegex = /^[a-z][0-9a-z+.-]*:/i;
 
@@ -106,7 +111,7 @@ export function normalizeTileData(
   }
   let tileContentUrl: string | undefined;
   if (tile.content) {
-    const contentUri = tile.content.uri || tile.content?.url;
+    const contentUri = tile.content.uri ?? tile.content.url;
     if (typeof contentUri !== 'undefined') {
       // sparse implicit tilesets may not define content for all nodes
       tileContentUrl = resolveUri(contentUri, basePath);

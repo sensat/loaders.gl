@@ -4,11 +4,11 @@
 
 import test from 'tape-promise/tape';
 
-import {isBrowser, fetchFile} from '@loaders.gl/core';
+import {isBrowser, fetchFile} from '@sensat/loaders-gl-core';
 
 const DATA_URL = 'data:,important content!';
-const BINARY_URL = '@loaders.gl/core/test/data/files/binary-data.bin';
-const TEXT_URL = '@loaders.gl/core/test/data/files/hello-world.txt';
+const BINARY_URL = '@sensat/loaders-gl-core/test/data/files/binary-data.bin';
+const TEXT_URL = '@sensat/loaders-gl-core/test/data/files/hello-world.txt';
 
 test('fetchFile#imports', (t) => {
   t.ok(fetchFile, 'fetchFile defined');

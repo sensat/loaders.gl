@@ -4,7 +4,7 @@
 
 import type {SerializeOptions} from 'bson';
 import * as BSON from 'bson';
-import {ensureArrayBuffer} from '@loaders.gl/loader-utils';
+import {ensureArrayBuffer} from '@sensat/loaders-gl-loader-utils';
 
 export type EncodeBSONOptions = SerializeOptions;
 

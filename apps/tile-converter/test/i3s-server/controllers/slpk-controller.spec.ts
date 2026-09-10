@@ -1,6 +1,6 @@
 import test from 'tape-promise/tape';
-import {isBrowser} from '@loaders.gl/core';
-import {path} from '@loaders.gl/loader-utils';
+import {isBrowser} from '@sensat/loaders-gl-core';
+import {path} from '@sensat/loaders-gl-loader-utils';
 import {getFileByUrl, loadArchive} from '../../../src/i3s-server/controllers/slpk-controller';
 
 const URL_PREFIX = '';

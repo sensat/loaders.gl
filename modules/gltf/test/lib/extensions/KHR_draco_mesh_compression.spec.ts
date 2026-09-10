@@ -2,12 +2,12 @@
 /*
 import test from 'tape-promise/tape';
 
-import {fetchFile} from '@loaders.gl/core';
-import {GLTFBuilder, GLTFParser} from '@loaders.gl/gltf';
-import {DracoWriter, DracoLoader} from '@loaders.gl/draco';
+import {fetchFile} from '@sensat/loaders-gl-core';
+import {GLTFBuilder, GLTFParser} from '@sensat/loaders-gl-gltf';
+import {DracoWriter, DracoLoader} from '@sensat/loaders-gl-draco';
 
-const POSITIONS_URL = '@loaders.gl/draco/test/data/raw-attribute-buffers/lidar-positions.bin';
-const COLORS_URL = '@loaders.gl/draco/test/data/raw-attribute-buffers/lidar-colors.bin';
+const POSITIONS_URL = '@sensat/loaders-gl-draco/test/data/raw-attribute-buffers/lidar-positions.bin';
+const COLORS_URL = '@sensat/loaders-gl-draco/test/data/raw-attribute-buffers/lidar-colors.bin';
 
 test('GLTFBuilder#addCompressedPointCloud', async t => {
   let response = await fetchFile(POSITIONS_URL);

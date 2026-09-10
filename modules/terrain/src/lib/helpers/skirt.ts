@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {concatenateTypedArrays} from '@loaders.gl/loader-utils';
+import {concatenateTypedArrays} from '@sensat/loaders-gl-loader-utils';
 
 export type EdgeIndices = {
   westIndices: number[];

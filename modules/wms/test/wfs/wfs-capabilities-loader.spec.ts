@@ -11,11 +11,11 @@ import test from 'tape-promise/tape';
 
 // @ts-nocheck
 
-import {_WFSCapabilitiesLoader as WFSCapabilitiesLoader} from '@loaders.gl/wms';
-import {load} from '@loaders.gl/core';
+import {_WFSCapabilitiesLoader as WFSCapabilitiesLoader} from '@sensat/loaders-gl-wms';
+import {load} from '@sensat/loaders-gl-core';
 
 const WFS_CAPABILITIES_RESPONSE_URL =
-  '@loaders.gl/wms/test/data/wmts/get-capabilities-response.xml';
+  '@sensat/loaders-gl-wms/test/data/wmts/get-capabilities-response.xml';
 
 test('WFSCapabilitiesLoader#response.xml', async (t) => {
   const capabilities = await load(

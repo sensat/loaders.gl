@@ -3,10 +3,10 @@
 // Copyright (c) vis.gl contributors
 
 // ported and es6-ified from https://github.com/verma/plasio/
-// import type {ArrowTable, ColumnarTable} from '@loaders.gl/schema';
+// import type {ArrowTable, ColumnarTable} from '@sensat/loaders-gl-schema';
 import type {LASLoaderOptions} from '../../las-loader';
 import type {LASMesh, LASHeader} from '../las-types';
-import {getMeshBoundingBox /* , convertMeshToTable */} from '@loaders.gl/schema-utils';
+import {getMeshBoundingBox /* , convertMeshToTable */} from '@sensat/loaders-gl-schema-utils';
 import {getLASSchema} from '../get-las-schema';
 import {LASFile} from './laslaz-decoder';
 

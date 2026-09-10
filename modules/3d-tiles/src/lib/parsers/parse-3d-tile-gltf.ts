@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT license
 // Copyright (c) vis.gl contributors
 
-import {parseFromContext, LoaderContext} from '@loaders.gl/loader-utils';
-import {_getMemoryUsageGLTF, GLTFLoader, postProcessGLTF} from '@loaders.gl/gltf';
+import {parseFromContext, LoaderContext} from '@sensat/loaders-gl-loader-utils';
+import {_getMemoryUsageGLTF, GLTFLoader, postProcessGLTF} from '@sensat/loaders-gl-gltf';
 import type {Tiles3DLoaderOptions} from '../../tiles-3d-loader';
 import {Tiles3DTileContent} from '../../types';
 

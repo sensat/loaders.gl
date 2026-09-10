@@ -4,8 +4,8 @@
 // Forked from https://github.com/mapbox/geojson-vt under compatible ISC license
 
 import test from 'tape-promise/tape';
-import {TableTileSource} from '@loaders.gl/mvt';
-import type {GeoJSONTable, Feature} from '@loaders.gl/schema';
+import {TableTileSource} from '@sensat/loaders-gl-mvt';
+import type {GeoJSONTable, Feature} from '@sensat/loaders-gl-schema';
 
 const leftPoint = {
   type: 'Feature',

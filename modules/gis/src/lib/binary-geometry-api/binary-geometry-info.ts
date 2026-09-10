@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {BinaryGeometry} from '@loaders.gl/schema';
+import type {BinaryGeometry} from '@sensat/loaders-gl-schema';
 
 /**
  * Information about a binary geometry

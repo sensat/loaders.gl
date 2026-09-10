@@ -1,6 +1,6 @@
 # Overview
 
-> The `@loaders.gl/math` library is being developed to support 3D tiles and will be moved to the math.gl repository when it stabilizes.
+> The `@sensat/loaders-gl-math` library is being developed to support 3D tiles and will be moved to the math.gl repository when it stabilizes.
 
 Classes and utilities to help working with geometries (arrays of vertices) stored in typed arrays according to WebGL/OpenGL layout rules.
 

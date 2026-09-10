@@ -32,6 +32,8 @@ const TESTS = [
   ],
   // non-url basePath
   ['c/file.glb', '/a/b', '/a/b/c/file.glb'],
+  // An available sparse implicit tile without content must not resolve to its base path.
+  ['', 'https://example.tld/a/b/c', ''],
 
   // template-urls
   [

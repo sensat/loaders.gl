@@ -17,8 +17,8 @@ A loader for cubemaps described by a JSON manifest.
 ## Usage
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {TextureCubeLoader} from '@loaders.gl/textures';
+import {load} from '@sensat/loaders-gl-core';
+import {TextureCubeLoader} from '@sensat/loaders-gl-textures';
 
 const imageCube = await load('environment.image-texture-cube.json', TextureCubeLoader);
 ```

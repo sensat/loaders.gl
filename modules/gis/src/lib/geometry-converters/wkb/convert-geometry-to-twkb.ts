@@ -12,7 +12,7 @@ import type {
   MultiPolygon,
   GeometryCollection,
   Geometry
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 
 import {BinaryWriter} from '../../utils/binary-writer';
 import {WKBGeometryType} from './helpers/wkb-types';

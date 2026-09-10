@@ -3,8 +3,8 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import type {ObjectRowTableBatch, ArrayRowTableBatch} from '@loaders.gl/schema';
-import {_zipBatchIterators as zipBatchIterators} from '@loaders.gl/shapefile';
+import type {ObjectRowTableBatch, ArrayRowTableBatch} from '@sensat/loaders-gl-schema';
+import {_zipBatchIterators as zipBatchIterators} from '@sensat/loaders-gl-shapefile';
 
 type RowTableBatch = ObjectRowTableBatch | ArrayRowTableBatch;
 

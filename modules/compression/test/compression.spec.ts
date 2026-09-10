@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-/** @typedef {import('@loaders.gl/compression').Compression} Compression */
+/** @typedef {import('@sensat/loaders-gl-compression').Compression} Compression */
 import test from 'tape-promise/tape';
 import {
   NoCompression,
@@ -14,9 +14,9 @@ import {
   BrotliCompression,
   // LZOCompression,
   CompressionWorker
-} from '@loaders.gl/compression';
-import {processOnWorker, isBrowser, WorkerFarm} from '@loaders.gl/worker-utils';
-import {concatenateArrayBuffers, concatenateArrayBuffersAsync} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-compression';
+import {processOnWorker, isBrowser, WorkerFarm} from '@sensat/loaders-gl-worker-utils';
+import {concatenateArrayBuffers, concatenateArrayBuffersAsync} from '@sensat/loaders-gl-loader-utils';
 import {getData, compareArrayBuffers} from './utils/test-utils';
 
 // Import big dependencies

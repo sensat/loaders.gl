@@ -1,5 +1,5 @@
 
-import {fetchFile} from '@loaders.gl/core';
+import {fetchFile} from '@sensat/loaders-gl-core';
 
 const DECK_DATA_URI = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master';
 const ION_TOKEN =

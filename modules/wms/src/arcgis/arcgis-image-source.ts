@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {ImageType} from '@loaders.gl/images';
+import type {ImageType} from '@sensat/loaders-gl-images';
 import type {
   Source,
   DataSourceOptions,
   ImageSourceMetadata,
   GetImageParameters
-} from '@loaders.gl/loader-utils';
-import {DataSource, ImageSource} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
+import {DataSource, ImageSource} from '@sensat/loaders-gl-loader-utils';
 
 export type ArcGISImageSourceProps = DataSourceOptions & {
   'arcgis-image-server'?: {

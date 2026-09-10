@@ -22,8 +22,8 @@ Note: Most applications will want to use the `ShapefileLoader` instead of this l
 ## Usage
 
 ```typescript
-import {SHPLoader} from '@loaders.gl/shapefile';
-import {load} from '@loaders.gl/core';
+import {SHPLoader} from '@sensat/loaders-gl-shapefile';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, SHPLoader);
 ```

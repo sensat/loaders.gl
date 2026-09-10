@@ -4,11 +4,11 @@
 
 import test, {Test} from 'tape-promise/tape';
 
-import {getGeometryColumnsFromSchema} from '@loaders.gl/geoarrow';
-import {getBinaryGeometryTemplate, convertGeoArrowToBinaryFeatureCollection} from '@loaders.gl/gis';
-import {convertArrowToSchema} from '@loaders.gl/schema-utils';
-import {load} from '@loaders.gl/core';
-import {ArrowLoader} from '@loaders.gl/arrow';
+import {getGeometryColumnsFromSchema} from '@sensat/loaders-gl-geoarrow';
+import {getBinaryGeometryTemplate, convertGeoArrowToBinaryFeatureCollection} from '@sensat/loaders-gl-gis';
+import {convertArrowToSchema} from '@sensat/loaders-gl-schema-utils';
+import {load} from '@sensat/loaders-gl-core';
+import {ArrowLoader} from '@sensat/loaders-gl-arrow';
 
 import {
   GEOARROW_POINT_FILE,
@@ -18,7 +18,7 @@ import {
   GEOARROW_POLYGON_FILE,
   GEOARROW_MULTIPOLYGON_FILE,
   GEOARROW_MULTIPOLYGON_HOLE_FILE
-} from '@loaders.gl/arrow/test/data/geoarrow/test-cases';
+} from '@sensat/loaders-gl-arrow/test/data/geoarrow/test-cases';
 
 const expectedPointBinaryGeometry = {
   binaryGeometries: [

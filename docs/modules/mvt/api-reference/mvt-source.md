@@ -16,8 +16,8 @@ The `MVTSource` dynamically loads tiles, typically from big pre-tiled hierarchie
 ## Usage
 
 ```typescript
-import {createDataSource} from '@loaders.gl/core';
-import {MVTSource} from '@loaders.gl/pmtiles';
+import {createDataSource} from '@sensat/loaders-gl-core';
+import {MVTSource} from '@sensat/loaders-gl-pmtiles';
 
 const source = createDataSource(url, [MVTSource]);
 const tile = await source.getTile(...);

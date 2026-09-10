@@ -2,7 +2,7 @@
 import {
   copyPaddedStringToDataView,
   copyPaddedArrayBufferToDataView
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
 // import type {GLB} from '../types/glb-types';
 
 const MAGIC_glTF = 0x46546c67; // glTF in ASCII

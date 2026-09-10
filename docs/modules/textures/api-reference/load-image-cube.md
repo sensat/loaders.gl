@@ -7,8 +7,8 @@ A function that loads 6 images representing the faces of a cube. Primarily inten
 Load images for a cubemap with one image per face
 
 ```typescript
-import '@loaders.gl/polyfills'; // only needed for Node.js support
-import {loadImageCube} from `@loaders.gl/images`;
+import '@sensat/loaders-gl-polyfills'; // only needed for Node.js support
+import {loadImageCube} from `@sensat/loaders-gl-images`;
 
 const imageCube = await loadImageCube(({direction}) => `diffuse-${direction}.png`);
 
@@ -20,8 +20,8 @@ for (const face in imageCube) {
 Load images for a cubemap with an array of mip images per face
 
 ```typescript
-import '@loaders.gl/polyfills'; // only needed for Node.js support
-import {loadImageCube} from `@loaders.gl/images`;
+import '@sensat/loaders-gl-polyfills'; // only needed for Node.js support
+import {loadImageCube} from `@sensat/loaders-gl-images`;
 
 const imageCube = await loadImageCube('mips', ({direction}) => `diffuse-${direction}.png`);
 

@@ -1,3 +1,3 @@
 // Re-export core API so they don't get overwritten
-export * from '@loaders.gl/core';
-export * from '@loaders.gl/video';
+export * from '@sensat/loaders-gl-core';
+export * from '@sensat/loaders-gl-video';

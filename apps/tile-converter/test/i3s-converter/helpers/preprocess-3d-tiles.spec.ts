@@ -1,6 +1,6 @@
 import test from 'tape-promise/tape';
-import {load} from '@loaders.gl/core';
-import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
+import {load} from '@sensat/loaders-gl-core';
+import {Tiles3DLoader} from '@sensat/loaders-gl-3d-tiles';
 import {
   GLTF_PRIMITIVE_MODES,
   analyzeTileContent,
@@ -9,7 +9,7 @@ import {
 import {GLTFPrimitiveModeString} from '../../../src/i3s-converter/types';
 
 const FRANKFURT_B3DM_FILE_PATH =
-  '@loaders.gl/tile-converter/test/data/Frankfurt/L5/OF/474_5548_-1_lv5_group_0.osgb_3.b3dm';
+  '@sensat/loaders-gl-tile-converter/test/data/Frankfurt/L5/OF/474_5548_-1_lv5_group_0.osgb_3.b3dm';
 
 test('tile-converter(i3s)#analyzeTileContent', async (t) => {
   const tileContentNoArrayBuffer = await load(FRANKFURT_B3DM_FILE_PATH, Tiles3DLoader);

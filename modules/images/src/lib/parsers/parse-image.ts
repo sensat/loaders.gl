@@ -1,5 +1,5 @@
-import type {LoaderContext} from '@loaders.gl/loader-utils';
-import {assert} from '@loaders.gl/loader-utils';
+import type {LoaderContext} from '@sensat/loaders-gl-loader-utils';
+import {assert} from '@sensat/loaders-gl-loader-utils';
 import type {ImageType} from '../../types';
 import type {ImageLoaderOptions} from '../../image-loader';
 import {isImageTypeSupported, getDefaultImageType} from '../category-api/image-type';

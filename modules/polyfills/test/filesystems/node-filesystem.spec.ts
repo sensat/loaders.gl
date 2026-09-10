@@ -3,9 +3,9 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {NodeFilesystem} from '@loaders.gl/loader-utils';
+import {NodeFilesystem} from '@sensat/loaders-gl-loader-utils';
 
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 
 if (!isBrowser) {
   test('NodeFileSystem#import', (t) => {

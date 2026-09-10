@@ -4,7 +4,7 @@
 
 import test from 'tape-promise/tape';
 
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 import {
   createReadableFileFromBuffer,
   createReadableFileFromPath,
@@ -12,7 +12,7 @@ import {
 } from 'test/utils/readable-files';
 import {ZipFileSystem} from '../../src/filesystems/zip-filesystem';
 
-const ZIP_FILE_PATH = '@loaders.gl/zip/test/data/test-store.zip';
+const ZIP_FILE_PATH = '@sensat/loaders-gl-zip/test/data/test-store.zip';
 
 test('zip#ZipFileSystem - initialize from existing fileHandler', async (t) => {
   const fileProvider = await getFileProvider(ZIP_FILE_PATH);

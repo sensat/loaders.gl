@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {LoaderWithParser} from '@loaders.gl/loader-utils';
-import type {Table, ArrowTableBatch} from '@loaders.gl/schema';
+import type {LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
+import type {Table, ArrowTableBatch} from '@sensat/loaders-gl-schema';
 import {parseArrowSync, parseArrowInBatches} from './lib/parsers/parse-arrow';
 
 import type {ArrowLoaderOptions} from './exports/arrow-loader';

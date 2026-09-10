@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {HexWKBLoader} from '@loaders.gl/wkt';
+import {HexWKBLoader} from '@sensat/loaders-gl-wkt';
 
 const isHexWKB = HexWKBLoader.testText;
 

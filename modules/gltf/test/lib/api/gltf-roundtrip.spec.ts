@@ -2,7 +2,7 @@
 /*
 import test from 'tape-promise/tape';
 
-import {GLTFBuilder, GLTFParser} from '@loaders.gl/gltf';
+import {GLTFBuilder, GLTFParser} from '@sensat/loaders-gl-gltf';
 
 const EXTRA_DATA = {extraData: 1};
 const APP_DATA = {vizData: 2};

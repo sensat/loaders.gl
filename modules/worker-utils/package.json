@@ -1,15 +1,16 @@
 {
-  "name": "@loaders.gl/worker-utils",
-  "version": "4.4.6",
+  "name": "@sensat/loaders-gl-worker-utils",
+  "version": "4.4.6-sensat.0",
   "description": "Utilities for running tasks on worker threads",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/visgl/loaders.gl"
+    "url": "https://github.com/sensat/loaders.gl"
   },
   "keywords": [
     "worker",
@@ -54,7 +55,6 @@
     "build-worker-node": "esbuild src/workers/null-worker.ts --outfile=dist/null-worker-node.js --platform=node --target=node16 --bundle --sourcemap --define:__VERSION__=\\\"$npm_package_version\\\""
   },
   "peerDependencies": {
-    "@loaders.gl/core": "~4.4.0"
-  },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+    "@sensat/loaders-gl-core": "4.4.6-sensat.0"
+  }
 }

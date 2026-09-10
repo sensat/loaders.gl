@@ -1,6 +1,6 @@
 // TODO - GLTFScenegraph should use these
 import {assert} from '../utils/assert';
-import type {TypedArray} from '@loaders.gl/schema';
+import type {TypedArray} from '@sensat/loaders-gl-schema';
 import type {GLTF, GLTFExternalBuffer, GLTFAccessor} from '../types/gltf-types';
 import {getAccessorArrayTypeAndLength} from './gltf-utils';
 

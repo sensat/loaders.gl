@@ -1,4 +1,4 @@
-import {LoaderWithParser, load} from '@loaders.gl/core';
+import {LoaderWithParser, load} from '@sensat/loaders-gl-core';
 import {
   I3STileContent,
   I3STileHeader,
@@ -6,9 +6,9 @@ import {
   I3SLoader,
   I3SLoaderOptions,
   parseSLPKArchive
-} from '@loaders.gl/i3s';
-import {NodeFile} from '@loaders.gl/loader-utils';
-import {ZipFileSystem, makeZipCDHeaderIterator} from '@loaders.gl/zip';
+} from '@sensat/loaders-gl-i3s';
+import {NodeFile} from '@sensat/loaders-gl-loader-utils';
+import {ZipFileSystem, makeZipCDHeaderIterator} from '@sensat/loaders-gl-zip';
 
 export type SLPKUrlParts = {slpkFileName: string; internalFileName: string};
 

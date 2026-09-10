@@ -4,11 +4,11 @@
 
 import test from 'tape-promise/tape';
 import {fromFile} from 'geotiff';
-import {resolvePath, isBrowser} from '@loaders.gl/core';
+import {resolvePath, isBrowser} from '@sensat/loaders-gl-core';
 
-import {loadGeoTiff} from '@loaders.gl/geotiff';
+import {loadGeoTiff} from '@sensat/loaders-gl-geotiff';
 
-const TIFF_URL = resolvePath('@loaders.gl/geotiff/test/data/multi-channel.ome.tif');
+const TIFF_URL = resolvePath('@sensat/loaders-gl-geotiff/test/data/multi-channel.ome.tif');
 
 test('Creates correct TiffPixelSource for OME-TIFF.', async (t) => {
   if (isBrowser) {

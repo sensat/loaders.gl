@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import type {StrictLoaderOptions, LoaderWithParser} from '@loaders.gl/loader-utils';
+import type {StrictLoaderOptions, LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
 import {Tiles3DLoader} from './tiles-3d-loader';
 import {getIonTilesetMetadata} from './lib/ion/ion';
 

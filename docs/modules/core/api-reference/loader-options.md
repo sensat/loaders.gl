@@ -1,6 +1,6 @@
 # LoaderOptions
 
-APIs in `@loaders.gl/core` takes an `options?: LoaderOptions` parameter. The options are documented on this page.
+APIs in `@sensat/loaders-gl-core` takes an `options?: LoaderOptions` parameter. The options are documented on this page.
 
 ## Top-level options
 

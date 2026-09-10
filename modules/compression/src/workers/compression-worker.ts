@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {createWorker} from '@loaders.gl/worker-utils';
+import {createWorker} from '@sensat/loaders-gl-worker-utils';
 
 // Compressors
 import {NoCompression} from '../lib/no-compression';
@@ -73,7 +73,7 @@ function getOperation(operation: string): 'compress' | 'decompress' {
       return 'decompress';
     default:
       throw new Error(
-        `@loaders.gl/compression: Unsupported operation ${operation}. Expected 'compress' or 'decompress'`
+        `@sensat/loaders-gl-compression: Unsupported operation ${operation}. Expected 'compress' or 'decompress'`
       );
   }
 }
@@ -81,7 +81,7 @@ function getOperation(operation: string): 'compress' | 'decompress' {
 function getCompression(name: string) {
   const Compression = COMPRESSIONS.find((compression_) => name === compression_.name);
   if (!Compression) {
-    throw new Error(`@loaders.gl/compression: Unsupported compression ${name}`);
+    throw new Error(`@sensat/loaders-gl-compression: Unsupported compression ${name}`);
   }
   return Compression;
 }

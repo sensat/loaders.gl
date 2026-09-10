@@ -1,4 +1,4 @@
-# @loaders.gl/shapefile
+# @sensat/loaders-gl-shapefile
 
 This module contains a geometry loader for the ESRI Shapefile format.
 

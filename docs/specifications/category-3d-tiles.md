@@ -24,7 +24,7 @@ The 3D Tiles category can represent the major tiled 3D formats:
 
 ## Helper Classes
 
-The `@loaders.gl/tiles` module provides classes that facilitate working with `3D Tiles` loader category data.
+The `@sensat/loaders-gl-tiles` module provides classes that facilitate working with `3D Tiles` loader category data.
 
 Tileset Traversal Support
 

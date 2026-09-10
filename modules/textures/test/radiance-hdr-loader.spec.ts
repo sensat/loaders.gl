@@ -4,12 +4,12 @@
 
 import test from 'tape-promise/tape';
 
-import {load, setLoaderOptions} from '@loaders.gl/core';
-import {RadianceHDRLoader} from '@loaders.gl/textures';
+import {load, setLoaderOptions} from '@sensat/loaders-gl-core';
+import {RadianceHDRLoader} from '@sensat/loaders-gl-textures';
 import {GL_RGBA32F} from '../src/lib/gl-extensions';
 
-const HDR_URL = '@loaders.gl/textures/test/data/simple-rle.hdr';
-const POLY_HAVEN_HDR_URL = '@loaders.gl/textures/test/data/venice_sunset_256.hdr';
+const HDR_URL = '@sensat/loaders-gl-textures/test/data/simple-rle.hdr';
+const POLY_HAVEN_HDR_URL = '@sensat/loaders-gl-textures/test/data/venice_sunset_256.hdr';
 
 setLoaderOptions({
   _workerType: 'test'

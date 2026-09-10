@@ -1,15 +1,16 @@
 {
-  "name": "@loaders.gl/3d-tiles",
-  "version": "4.4.6",
+  "name": "@sensat/loaders-gl-3d-tiles",
+  "version": "4.4.6-sensat.0",
   "description": "3D Tiles, an open standard for streaming massive heterogeneous 3D geospatial datasets.",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/visgl/loaders.gl"
+    "url": "https://github.com/sensat/loaders.gl"
   },
   "keywords": [
     "loader",
@@ -46,23 +47,22 @@
     "build-bundle-dev": "ocular-bundle ./bundle.ts --env=dev --output=dist/dist.dev.js"
   },
   "dependencies": {
-    "@loaders.gl/compression": "4.4.6",
-    "@loaders.gl/crypto": "4.4.6",
-    "@loaders.gl/draco": "4.4.6",
-    "@loaders.gl/gltf": "4.4.6",
-    "@loaders.gl/images": "4.4.6",
-    "@loaders.gl/loader-utils": "4.4.6",
-    "@loaders.gl/math": "4.4.6",
-    "@loaders.gl/tiles": "4.4.6",
-    "@loaders.gl/zip": "4.4.6",
     "@math.gl/core": "^4.1.0",
     "@math.gl/culling": "^4.1.0",
     "@math.gl/geospatial": "^4.1.0",
     "@probe.gl/log": "^4.1.1",
+    "@sensat/loaders-gl-compression": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-crypto": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-draco": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-gltf": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-images": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-loader-utils": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-math": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-tiles": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-zip": "4.4.6-sensat.0",
     "long": "^5.2.1"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "~4.4.0"
-  },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+    "@sensat/loaders-gl-core": "4.4.6-sensat.0"
+  }
 }

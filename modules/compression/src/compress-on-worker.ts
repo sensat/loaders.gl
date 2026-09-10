@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-// import type {WorkerObject} from '@loaders.gl/worker-utils';
-import {processOnWorker} from '@loaders.gl/worker-utils';
+// import type {WorkerObject} from '@sensat/loaders-gl-worker-utils';
+import {processOnWorker} from '@sensat/loaders-gl-worker-utils';
 
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.

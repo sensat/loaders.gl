@@ -1,4 +1,4 @@
-# @loaders.gl/lerc
+# @sensat/loaders-gl-lerc
 
 This module contains a loader for the LERC raster format.
 

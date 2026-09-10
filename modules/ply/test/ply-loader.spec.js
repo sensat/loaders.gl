@@ -2,7 +2,7 @@
 import test from 'tape-promise/tape';
 import {validateLoader, validateMeshCategoryData} from 'test/common/conformance';
 
-import {PLYLoader, PLYWorkerLoader} from '@loaders.gl/ply';
+import {PLYLoader, PLYWorkerLoader} from '@sensat/loaders-gl-ply';
 import {
   setLoaderOptions,
   fetchFile,
@@ -11,11 +11,11 @@ import {
   parseSync,
   parseInBatches,
   makeIterator
-} from '@loaders.gl/core';
+} from '@sensat/loaders-gl-core';
 
-const PLY_CUBE_ATT_URL = '@loaders.gl/ply/test/data/cube_att.ply';
-const PLY_BUN_ZIPPER_URL = '@loaders.gl/ply/test/data/bun_zipper.ply';
-const PLY_BUN_BINARY_URL = '@loaders.gl/ply/test/data/bunny.ply';
+const PLY_CUBE_ATT_URL = '@sensat/loaders-gl-ply/test/data/cube_att.ply';
+const PLY_BUN_ZIPPER_URL = '@sensat/loaders-gl-ply/test/data/bun_zipper.ply';
+const PLY_BUN_BINARY_URL = '@sensat/loaders-gl-ply/test/data/bunny.ply';
 
 setLoaderOptions({
   _workerType: 'test'

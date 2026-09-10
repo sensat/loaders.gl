@@ -4,7 +4,7 @@
 
 export {Buffer} from './polyfills/buffer/install-buffer-polyfill';
 
-// import {ArrowTable, ArrowTableBatch} from '@loaders.gl/arrow';
+// import {ArrowTable, ArrowTableBatch} from '@sensat/loaders-gl-arrow';
 
 export {ParquetFormat} from './parquet-format';
 

@@ -5,16 +5,16 @@
 import test from 'tape-promise/tape';
 // import {validateLoader} from 'test/common/conformance';
 
-import {WMSCapabilitiesLoader} from '@loaders.gl/wms';
-import {load} from '@loaders.gl/core';
+import {WMSCapabilitiesLoader} from '@sensat/loaders-gl-wms';
+import {load} from '@sensat/loaders-gl-core';
 
-const WMS_ANALYSES_URL = '@loaders.gl/wms/test/data/wms/get-capabilities/analyses.xml';
-const WMS_DMSP_URL = '@loaders.gl/wms/test/data/wms/get-capabilities/dmsp.xml';
-const WMS_FORECASTS_URL = '@loaders.gl/wms/test/data/wms/get-capabilities/forecasts.xml';
-const WMS_OBS_URL = '@loaders.gl/wms/test/data/wms/get-capabilities/obs.xml';
-const WMS_WWA_URL = '@loaders.gl/wms/test/data/wms/get-capabilities/wwa.xml';
+const WMS_ANALYSES_URL = '@sensat/loaders-gl-wms/test/data/wms/get-capabilities/analyses.xml';
+const WMS_DMSP_URL = '@sensat/loaders-gl-wms/test/data/wms/get-capabilities/dmsp.xml';
+const WMS_FORECASTS_URL = '@sensat/loaders-gl-wms/test/data/wms/get-capabilities/forecasts.xml';
+const WMS_OBS_URL = '@sensat/loaders-gl-wms/test/data/wms/get-capabilities/obs.xml';
+const WMS_WWA_URL = '@sensat/loaders-gl-wms/test/data/wms/get-capabilities/wwa.xml';
 
-const WMS_ADHOC_URL = '@loaders.gl/wms/test/data/wms/get-capabilities/?.xml';
+const WMS_ADHOC_URL = '@sensat/loaders-gl-wms/test/data/wms/get-capabilities/?.xml';
 
 test('WMSCapabilitiesLoader#forecasts.xml', async (t) => {
   const capabilities = await load(WMS_FORECASTS_URL, WMSCapabilitiesLoader);

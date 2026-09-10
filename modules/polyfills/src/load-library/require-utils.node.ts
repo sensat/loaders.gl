@@ -7,7 +7,7 @@
 import Module from 'module';
 import path from 'path';
 import fs from 'fs';
-import {ensureArrayBuffer} from '@loaders.gl/loader-utils';
+import {ensureArrayBuffer} from '@sensat/loaders-gl-loader-utils';
 
 /**
  * Load a file from local file system

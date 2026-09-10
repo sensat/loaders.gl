@@ -3,8 +3,8 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {processOnWorker, isBrowser, WorkerFarm} from '@loaders.gl/worker-utils';
-import {CryptoWorker, CryptoJSWorker} from '@loaders.gl/crypto';
+import {processOnWorker, isBrowser, WorkerFarm} from '@sensat/loaders-gl-worker-utils';
+import {CryptoWorker, CryptoJSWorker} from '@sensat/loaders-gl-crypto';
 import {getBinaryData} from './test-utils/test-utils';
 
 test('CryptoWorker', async (t) => {

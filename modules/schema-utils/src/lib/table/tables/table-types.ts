@@ -9,7 +9,7 @@ import type {
   ColumnarTable,
   GeoJSONTable,
   ArrowTable
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 
 /** Checks if a table is of array row layout */
 export function isArrayRowTable(table: Table): table is ArrayRowTable {

@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {GeoJSONTable, BinaryFeatureCollection} from '@loaders.gl/schema';
-import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {GeoJSONTable, BinaryFeatureCollection} from '@sensat/loaders-gl-schema';
+import type {Loader, LoaderWithParser, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
 import {
   parseFlatGeobuf,
   parseFlatGeobufInBatches,

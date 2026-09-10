@@ -11,7 +11,7 @@ import type {
   GeoJSONTable,
   ArrowTable,
   Feature
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 
 import {convertTable} from './convert-table';
 import {convertArrowToSchema} from '../../schema/convert-arrow-schema';

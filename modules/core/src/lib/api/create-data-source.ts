@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {Source, SourceArrayOptionsType, SourceArrayDataSourceType} from '@loaders.gl/loader-utils';
+import {Source, SourceArrayOptionsType, SourceArrayDataSourceType} from '@sensat/loaders-gl-loader-utils';
 
 /**
  * Creates a source from a service

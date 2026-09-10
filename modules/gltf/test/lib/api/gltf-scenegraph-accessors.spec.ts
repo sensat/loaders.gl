@@ -1,15 +1,15 @@
 /* eslint-disable max-len */
 import test from 'tape-promise/tape';
 
-import {GLTFScenegraph, GLTFLoader, GLTFAccessor} from '@loaders.gl/gltf';
-import {load} from '@loaders.gl/core';
-import type {TypedArray} from '@loaders.gl/schema';
+import {GLTFScenegraph, GLTFLoader, GLTFAccessor} from '@sensat/loaders-gl-gltf';
+import {load} from '@sensat/loaders-gl-core';
+import type {TypedArray} from '@sensat/loaders-gl-schema';
 
 // Extracted from Cesium 3D Tiles
-const GLB_TILE_WITH_DRACO_URL = '@loaders.gl/gltf/test/data/3d-tiles/143.glb';
+const GLB_TILE_WITH_DRACO_URL = '@sensat/loaders-gl-gltf/test/data/3d-tiles/143.glb';
 
-const GLB_MESHOPT_GEOMETRY_URL = '@loaders.gl/gltf/test/data/meshopt/pirate.glb';
-const GLB_KTX2_GEOMETRY_URL = '@loaders.gl/3d-tiles/test/data/CesiumJS/VNext/agi-ktx2/0/0.glb';
+const GLB_MESHOPT_GEOMETRY_URL = '@sensat/loaders-gl-gltf/test/data/meshopt/pirate.glb';
+const GLB_KTX2_GEOMETRY_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/VNext/agi-ktx2/0/0.glb';
 
 test('GLTFScenegraph#ctor', (t) => {
   const gltfScenegraph = new GLTFScenegraph();
@@ -81,7 +81,7 @@ test('GLTFScenegraph#BufferView indices resolve correctly', async (t) => {
 });
 
 test('GLTFScenegraph#Typed Arrays should be taken by Accessor', async (t) => {
-  const GLB_ACCESSOR_URL = '@loaders.gl/gltf/test/data/glb/DamagedHelmet.glb';
+  const GLB_ACCESSOR_URL = '@sensat/loaders-gl-gltf/test/data/glb/DamagedHelmet.glb';
   const testDataSet = [
     {
       accessorIndex: 0,

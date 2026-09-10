@@ -5,7 +5,7 @@ import {
   Node3DIndexDocument,
   NodeInPage,
   NodeReference
-} from '@loaders.gl/i3s';
+} from '@sensat/loaders-gl-i3s';
 import transform from 'json-map-transform';
 import {v4 as uuidv4} from 'uuid';
 import {openJson, writeFileForSlpk} from '../../lib/utils/file-utils';

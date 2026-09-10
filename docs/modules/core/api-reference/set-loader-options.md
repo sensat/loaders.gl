@@ -8,7 +8,7 @@ Bundling the entire `draco3d` library (instead of loading it on-demand from CDN)
 
 ```typescript
 import draco from 'draco3d';
-import {setLoaderOptions} from '@loaders.gl/core';
+import {setLoaderOptions} from '@sensat/loaders-gl-core';
 setLoaderOptions({
   modules: {
     draco3d

@@ -11,8 +11,8 @@ Writes WKT-CRS ([Well-known text representation of coordinate reference systems]
 ## Installation
 
 ```bash
-npm install @loaders.gl/wkt
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-wkt
+npm install @sensat/loaders-gl-core
 ```
 
 ## Usage
@@ -22,8 +22,8 @@ If you need to write WKT, or in other words, convert JSON back to WKT, use the *
 engine before being written and anything after `raw:` will be written directly into the output without quotes.
 
 ```typescript
-import {encode} from '@loaders.gl/core';
-import {WKTCRSWriter} from '@loaders.gl/wkt';
+import {encode} from '@sensat/loaders-gl-core';
+import {WKTCRSWriter} from '@sensat/loaders-gl-wkt';
 
 encode(WKTWriter, [
   [

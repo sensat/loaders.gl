@@ -10,7 +10,7 @@ import type {
   Tiles3DTileContent,
   Tiles3DTileJSONPostprocessed,
   Tiles3DTilesetJSONPostprocessed
-} from '@loaders.gl/3d-tiles';
+} from '@sensat/loaders-gl-3d-tiles';
 import type {WriteQueueItem} from '../lib/utils/write-queue';
 import type {
   SceneLayer3D,
@@ -19,9 +19,9 @@ import type {
   NodeInPage,
   Attribute,
   Node3DIndexDocument
-} from '@loaders.gl/i3s';
-import {load, encode, isBrowser} from '@loaders.gl/core';
-import {CesiumIonLoader, Tiles3DLoader} from '@loaders.gl/3d-tiles';
+} from '@sensat/loaders-gl-i3s';
+import {load, encode, isBrowser} from '@sensat/loaders-gl-core';
+import {CesiumIonLoader, Tiles3DLoader} from '@sensat/loaders-gl-3d-tiles';
 import {Geoid} from '@math.gl/geoid';
 import {join} from 'path';
 import {v4 as uuidv4} from 'uuid';
@@ -46,11 +46,11 @@ import {LAYERS as layersTemplate} from './json-templates/layers';
 import {GEOMETRY_DEFINITION as geometryDefinitionTemlate} from './json-templates/geometry-definitions';
 import {SHARED_RESOURCES as sharedResourcesTemplate} from './json-templates/shared-resources';
 import {validateNodeBoundingVolumes} from './helpers/node-debug';
-import {KTX2BasisWriterWorker} from '@loaders.gl/textures';
-import {LoaderWithParser} from '@loaders.gl/loader-utils';
-import {I3SMaterialDefinition, TextureSetDefinitionFormats} from '@loaders.gl/i3s';
-import {ImageWriter} from '@loaders.gl/images';
-import {GLTFImagePostprocessed} from '@loaders.gl/gltf';
+import {KTX2BasisWriterWorker} from '@sensat/loaders-gl-textures';
+import {LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
+import {I3SMaterialDefinition, TextureSetDefinitionFormats} from '@sensat/loaders-gl-i3s';
+import {ImageWriter} from '@sensat/loaders-gl-images';
+import {GLTFImagePostprocessed} from '@sensat/loaders-gl-gltf';
 import {
   GLTFPrimitiveModeString,
   I3SConvertedResources,
@@ -58,7 +58,7 @@ import {
   ResourceType,
   SharedResourcesArrays
 } from './types';
-import {WorkerFarm} from '@loaders.gl/worker-utils';
+import {WorkerFarm} from '@sensat/loaders-gl-worker-utils';
 import WriteQueue from '../lib/utils/write-queue';
 import {BROWSER_ERROR_MESSAGE} from '../constants';
 import {
@@ -74,11 +74,11 @@ import {
 } from './helpers/load-3d-tiles';
 import {Matrix4} from '@math.gl/core';
 import {BoundingSphere, OrientedBoundingBox} from '@math.gl/culling';
-import {TILE_REFINEMENT, createBoundingVolume} from '@loaders.gl/tiles';
+import {TILE_REFINEMENT, createBoundingVolume} from '@sensat/loaders-gl-tiles';
 import {TraversalConversionProps, traverseDatasetWith} from './helpers/tileset-traversal';
 import {analyzeTileContent, mergePreprocessData} from './helpers/preprocess-3d-tiles';
 import {Progress} from './helpers/progress';
-import {composeHashFile, createZip} from '@loaders.gl/zip';
+import {composeHashFile, createZip} from '@sensat/loaders-gl-zip';
 import {ConversionDump, ConversionDumpOptions, DumpMetadata} from '../lib/utils/conversion-dump';
 import {PromptModule} from 'inquirer';
 

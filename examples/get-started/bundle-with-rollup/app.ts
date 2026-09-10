@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {parse} from '@loaders.gl/core';
-import {GLTFLoader} from '@loaders.gl/gltf';
-import {CompressedTextureLoader} from '@loaders.gl/textures';
+import {parse} from '@sensat/loaders-gl-core';
+import {GLTFLoader} from '@sensat/loaders-gl-gltf';
+import {CompressedTextureLoader} from '@sensat/loaders-gl-textures';
 
 const TEXTURE_URL =
   'https://raw.githubusercontent.com/visgl/loaders.gl/master/modules/textures/test/data/shannon-astc-12x12.pvr';

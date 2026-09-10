@@ -1,14 +1,14 @@
 /* eslint-disable camelcase, max-statements, no-restricted-globals */
-import type {LoaderContext, StrictLoaderOptions} from '@loaders.gl/loader-utils';
+import type {LoaderContext, StrictLoaderOptions} from '@sensat/loaders-gl-loader-utils';
 import type {GLTFLoaderOptions} from '../../gltf-loader';
 import type {GLTFWithBuffers} from '../types/gltf-types';
 import type {GLB} from '../types/glb-types';
 import type {ParseGLBOptions} from './parse-glb';
 
-import type {ImageType, TextureLevel} from '@loaders.gl/schema';
-import {parseJSON, sliceArrayBuffer, parseFromContext} from '@loaders.gl/loader-utils';
-import {ImageLoader} from '@loaders.gl/images';
-import {BasisLoader, selectSupportedBasisFormat} from '@loaders.gl/textures';
+import type {ImageType, TextureLevel} from '@sensat/loaders-gl-schema';
+import {parseJSON, sliceArrayBuffer, parseFromContext} from '@sensat/loaders-gl-loader-utils';
+import {ImageLoader} from '@sensat/loaders-gl-images';
+import {BasisLoader, selectSupportedBasisFormat} from '@sensat/loaders-gl-textures';
 
 import {assert} from '../utils/assert';
 import {isGLB, parseGLBSync} from './parse-glb';

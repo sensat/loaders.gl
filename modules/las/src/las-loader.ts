@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 // LASER (LAS) FILE FORMAT
-import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {Loader, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
 import type {LASMesh} from './lib/las-types';
 import {LASFormat} from './las-format';
 

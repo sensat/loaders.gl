@@ -1,5 +1,5 @@
-import type {Mesh, MeshAttributes} from '@loaders.gl/schema';
-import {getMeshBoundingBox} from '@loaders.gl/schema-utils';
+import type {Mesh, MeshAttributes} from '@sensat/loaders-gl-schema';
+import {getMeshBoundingBox} from '@sensat/loaders-gl-schema-utils';
 import {parseOBJMeshes} from './parse-obj-meshes';
 import {getOBJSchema} from './get-obj-schema';
 

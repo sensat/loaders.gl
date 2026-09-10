@@ -1,7 +1,7 @@
 import test from 'tape-promise/tape';
-import {isBrowser, load} from '@loaders.gl/core';
+import {isBrowser, load} from '@sensat/loaders-gl-core';
 import {loadI3STileContent} from './test-utils/load-utils';
-import {I3SLoader} from '@loaders.gl/i3s';
+import {I3SLoader} from '@sensat/loaders-gl-i3s';
 
 test('I3SLoader#Load tile content', async (t) => {
   const content = await loadI3STileContent({
@@ -52,7 +52,7 @@ test('I3SLoader#DRACO geometry', async (t) => {
 });
 
 test('I3SLoader#slpk is not supported', async (t) => {
-  const slpkUrl = '@loaders.gl/i3s/test/data/DA12_subset.slpk';
+  const slpkUrl = '@sensat/loaders-gl-i3s/test/data/DA12_subset.slpk';
   const message = 'Files with .slpk extention currently are not supported by I3SLoader';
   try {
     await load(slpkUrl, I3SLoader, {});
@@ -64,7 +64,7 @@ test('I3SLoader#slpk is not supported', async (t) => {
 });
 
 test('I3SLoader#point cloud is not supported', async (t) => {
-  const pointCloudUrl = '@loaders.gl/i3s/test/data/point-cloud/SceneServer/layers/0';
+  const pointCloudUrl = '@sensat/loaders-gl-i3s/test/data/point-cloud/SceneServer/layers/0';
   const message = 'Point Cloud layers currently are not supported by I3SLoader';
 
   try {

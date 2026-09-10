@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import test from 'tape-promise/tape';
-import {load} from '@loaders.gl/core';
+import {load} from '@sensat/loaders-gl-core';
 
-import {GLTFLoader, GLTFScenegraph, postProcessGLTF} from '@loaders.gl/gltf';
+import {GLTFLoader, GLTFScenegraph, postProcessGLTF} from '@sensat/loaders-gl-gltf';
 
-const GLTF_BINARY_URL = '@loaders.gl/gltf/test/data/3d-tiles/143.glb';
+const GLTF_BINARY_URL = '@sensat/loaders-gl-gltf/test/data/3d-tiles/143.glb';
 
 // prettier-ignore
 const PNG1x1 = new Uint8Array([

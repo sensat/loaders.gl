@@ -7,8 +7,8 @@ import {
   type WriterWithEncoder,
   type WriterOptions,
   concatenateArrayBuffersAsync
-} from '@loaders.gl/loader-utils';
-import type {Table, TableBatch} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-loader-utils';
+import type {Table, TableBatch} from '@sensat/loaders-gl-schema';
 import {encodeTableAsGeojsonInBatches} from './lib/encoders/geojson-encoder';
 
 export type GeoJSONWriterOptions = WriterOptions & {

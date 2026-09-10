@@ -3,10 +3,10 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {isBrowser, load, resolvePath} from '@loaders.gl/core';
-import {JSONLoader} from '@loaders.gl/json';
+import {isBrowser, load, resolvePath} from '@sensat/loaders-gl-core';
+import {JSONLoader} from '@sensat/loaders-gl-json';
 
-const JSON_URL = '@loaders.gl/core/test/data/files/basic.json';
+const JSON_URL = '@sensat/loaders-gl-core/test/data/files/basic.json';
 
 test('load#Node stream - NODE ONLY', async (t) => {
   if (isBrowser) {

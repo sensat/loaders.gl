@@ -1,4 +1,4 @@
-import {RequestScheduler} from '@loaders.gl/loader-utils';
+import {RequestScheduler} from '@sensat/loaders-gl-loader-utils';
 import test from 'tape-promise/tape';
 
 const sleep = (t: number) => new Promise((resolve) => setTimeout(resolve, t));

@@ -1,6 +1,6 @@
 # KTX / KTX2
 
-- _[`@loaders.gl/textures`](/docs/modules/textures)_ - loaders.gl implementation
+- _[`@sensat/loaders-gl-textures`](/docs/modules/textures)_ - loaders.gl implementation
 - _[`CompressedTextureLoader`](/docs/modules/textures/api-reference/compressed-texture-loader)_ - reads KTX and KTX2 containers
 - _[`BasisLoader`](/docs/modules/textures/api-reference/basis-loader)_ - decodes Basis-compressed payloads commonly stored in KTX2
 

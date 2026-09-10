@@ -14,9 +14,9 @@ References
 Loading a tileset and instantiating a `Tileset3D` instance.
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {Tileset3D} from '@loaders.gl/tiles';
-import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
+import {load} from '@sensat/loaders-gl-core';
+import {Tileset3D} from '@sensat/loaders-gl-tiles';
+import {Tiles3DLoader} from '@sensat/loaders-gl-3d-tiles';
 
 const tilesetUrl = 'https://assets.ion.cesium.com/43978/tileset.json';
 const tilesetJson = await load(tilesetUrl, Tiles3DLoader);
@@ -28,9 +28,9 @@ const tileset3d = new Tileset3D(tilesetJson, {
 Loading a tileset and dynamically load/unload with viewport.
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {Tileset3D} from '@loaders.gl/tiles';
-import {I3SLoader} from '@loaders.gl/i3s';
+import {load} from '@sensat/loaders-gl-core';
+import {Tileset3D} from '@sensat/loaders-gl-tiles';
+import {I3SLoader} from '@sensat/loaders-gl-i3s';
 import {WebMercatorViewport} from '@deck.gl/web-mercator';
 
 const tileseturl =
@@ -47,7 +47,7 @@ tileset3d.update(viewport);
 Since `Tileset3D's update` is a synchronized call, which selects the tiles qualified for rendering based on current viewport and available tiles, user can trigger another `update` when new tiles are loaded.
 
 ```typescript
-import {Tileset3D} from '@loaders.gl/tiles';
+import {Tileset3D} from '@sensat/loaders-gl-tiles';
 
 const viewport = new WebMercatorViewport({latitude, longitude, zoom});
 

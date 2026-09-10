@@ -4,7 +4,7 @@
 
 import zlib from 'zlib';
 import {Readable} from 'stream';
-import {toArrayBuffer} from '@loaders.gl/loader-utils';
+import {toArrayBuffer} from '@sensat/loaders-gl-loader-utils';
 
 /**
  *

@@ -16,8 +16,8 @@ The `ImageWriter` class can encode an image into `ArrayBuffer` both under browse
 
 ```typescript
 import '@loaders.gl/polyfill'; // only if using under Node
-import {ImageWriter} from '@loaders.gl/images';
-import {encode} from '@loaders.gl/core';
+import {ImageWriter} from '@sensat/loaders-gl-images';
+import {encode} from '@sensat/loaders-gl-core';
 
 const image = new Image(...);
 const arrayBuffer = await encode(image, ImageWriter, {image: {mimeType: 'image/jpeg'}});

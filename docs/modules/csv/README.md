@@ -1,12 +1,12 @@
 # Overview
 
-The `@loaders.gl/csv` module handles tabular data stored in CSV and TSV format
+The `@sensat/loaders-gl-csv` module handles tabular data stored in CSV and TSV format
 [CSV/DSV file format](https://en.wikipedia.org/wiki/Comma-separated_values).
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/core @loaders.gl/csv
+npm install @sensat/loaders-gl-core @sensat/loaders-gl-csv
 ```
 
 ## Loaders and Writers

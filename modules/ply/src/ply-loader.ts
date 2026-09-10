@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 // PLY Loader
-import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {Loader, LoaderWithParser, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
 import type {PLYMesh} from './lib/ply-types';
 import type {ParsePLYOptions} from './lib/parse-ply';
 import {parsePLY} from './lib/parse-ply';

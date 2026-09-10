@@ -31,7 +31,7 @@ Buffers can be objects in the shape of `{buffer, byteOffset, byteLength}`.
 
 ## Helper Classes
 
-To simplify higher-level processing of the loaded, raw glTF data, several helper classes are provided in the `@loaders.gl/gltf` module, these can:
+To simplify higher-level processing of the loaded, raw glTF data, several helper classes are provided in the `@sensat/loaders-gl-gltf` module, these can:
 
 - unpack and remove certain glTF extensions
 - extract typed array views from the JSON objects into the binary buffers

@@ -6,7 +6,7 @@
       "opacity": 1,
       "disablePopup": true,
       "title": "Non-Project Buildings",
-      "url": "@loaders.gl/i3s/test/data/arcgis-webscenes/layers/not-supported-crs-layer.json",
+      "url": "@sensat/loaders-gl-i3s/test/data/arcgis-webscenes/layers/not-supported-crs-layer.json",
       "visibility": true,
       "layerType": "ArcGISSceneServiceLayer",
       "itemId": "01f432dabdc845bb899cdd27143e1ea6",

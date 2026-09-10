@@ -1,6 +1,6 @@
-// import type {} from '@loaders.gl/loader-utils';
+// import type {} from '@sensat/loaders-gl-loader-utils';
 
-import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
+import type {WriterWithEncoder, WriterOptions} from '@sensat/loaders-gl-loader-utils';
 import {ColumnarTable, encodeArrowSync} from './lib/encoders/encode-arrow';
 
 // __VERSION__ is injected by babel-plugin-version-inline

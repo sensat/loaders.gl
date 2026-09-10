@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {WorkerPool} from '@loaders.gl/worker-utils';
+import {WorkerPool} from '@sensat/loaders-gl-worker-utils';
 
 const CHUNKS_TOTAL = 6;
 const MAX_CONCURRENCY = 3;

@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderWithParser} from '@loaders.gl/loader-utils';
-import type {BinaryFeatureCollection, GeoJSONTable, TableBatch} from '@loaders.gl/schema';
+import type {Loader, LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
+import type {BinaryFeatureCollection, GeoJSONTable, TableBatch} from '@sensat/loaders-gl-schema';
 import type {JSONLoaderOptions} from './json-loader';
-import {geojsonToBinary} from '@loaders.gl/gis';
+import {geojsonToBinary} from '@sensat/loaders-gl-gis';
 // import {parseJSONSync} from './lib/parsers/parse-json';
 import {parseJSONInBatches} from './lib/parsers/parse-json-in-batches';
 

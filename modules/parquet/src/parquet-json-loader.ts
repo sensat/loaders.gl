@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {Loader, LoaderWithParser, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
 import type {
   ObjectRowTable,
   ObjectRowTableBatch,
@@ -10,8 +10,8 @@ import type {
   GeoJSONTableBatch
   // ColumnarTable,
   // ColumnarTableBatch
-} from '@loaders.gl/schema';
-import {BlobFile} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-schema';
+import {BlobFile} from '@sensat/loaders-gl-loader-utils';
 
 import {parseParquetFile, parseParquetFileInBatches} from './lib/parsers/parse-parquet-to-json';
 import {

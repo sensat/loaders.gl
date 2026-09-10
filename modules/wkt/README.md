@@ -1,4 +1,4 @@
-# @loaders.gl/wkt
+# @sensat/loaders-gl-wkt
 
 This module contains a geometry loader for the following formats:
 

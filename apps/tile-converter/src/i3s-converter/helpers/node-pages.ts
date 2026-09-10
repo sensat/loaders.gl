@@ -1,7 +1,7 @@
 import {join} from 'path';
 import transform from 'json-map-transform';
 import {METADATA as metadataTemplate} from '../json-templates/metadata';
-import {NodeInPage} from '@loaders.gl/i3s';
+import {NodeInPage} from '@sensat/loaders-gl-i3s';
 import {isFileExists, openJson} from '../../lib/utils/file-utils';
 import I3SConverter from '../i3s-converter';
 

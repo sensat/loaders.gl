@@ -4,7 +4,7 @@
 
 import {getPolygonSignedArea} from '@math.gl/polygon';
 
-import {Feature, Position, FlatFeature} from '@loaders.gl/schema';
+import {Feature, Position, FlatFeature} from '@sensat/loaders-gl-schema';
 
 /**
  * Options for `geojsonToFlatGeojson`

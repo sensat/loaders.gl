@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {processOnWorker, NullWorker, isBrowser} from '@loaders.gl/worker-utils';
+import {processOnWorker, NullWorker, isBrowser} from '@sensat/loaders-gl-worker-utils';
 
 test('processOnWorker', async (t) => {
   if (!isBrowser) {

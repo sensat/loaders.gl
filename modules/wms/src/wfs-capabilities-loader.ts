@@ -1,6 +1,6 @@
 // loaders.gl, MIT license
 
-import type {LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {LoaderWithParser, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
 import type {WFSCapabilities} from './lib/parsers/wfs/parse-wfs-capabilities';
 import {parseWFSCapabilities} from './lib/parsers/wfs/parse-wfs-capabilities';
 

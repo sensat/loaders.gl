@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {compareArrayBuffers, concatenateArrayBuffers} from '@loaders.gl/loader-utils';
-import type {ReadableFile} from '@loaders.gl/loader-utils';
+import {compareArrayBuffers, concatenateArrayBuffers} from '@sensat/loaders-gl-loader-utils';
+import type {ReadableFile} from '@sensat/loaders-gl-loader-utils';
 import {ZipSignature, searchFromTheEnd} from './search-from-the-end';
 import {readBigUint64, readUint16, readUint32, readRange} from './readable-file-utils';
 import {setFieldToNumber} from './zip64-info-generation';

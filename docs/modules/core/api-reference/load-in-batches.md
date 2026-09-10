@@ -28,8 +28,8 @@ for await (const iterator of iteratorPromises) {
 ```
 
 ```typescript
-import {fetchFile, parseFilesInBatches} from '@loaders.gl/core';
-import {ShapefileLoader} from '@loaders.gl/shapefile';
+import {fetchFile, parseFilesInBatches} from '@sensat/loaders-gl-core';
+import {ShapefileLoader} from '@sensat/loaders-gl-shapefile';
 
 const batchIterators = await loadFilesInBatches([shpFile, dbfFile, projFile], ShapefileLoader));
 for (const batchIterator of batchIterators) {

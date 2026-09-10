@@ -3,7 +3,7 @@ import {
   getGLTFAccessors,
   getGLTFAccessor
   // @ts-expect-error
-} from '@loaders.gl/gltf/lib/gltf-utils/gltf-attribute-utils';
+} from '@sensat/loaders-gl-gltf/lib/gltf-utils/gltf-attribute-utils';
 
 // Check if an attribute contains indices
 

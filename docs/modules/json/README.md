@@ -1,6 +1,6 @@
 # Overview
 
-The `@loaders.gl/json` module parses JSON. It can parse arbitrary JSON data but is optimized for:
+The `@sensat/loaders-gl-json` module parses JSON. It can parse arbitrary JSON data but is optimized for:
 
 - loading tabular data stored in JSON arrays.
 - loading tabular geospatial data stored in GeoJSON.
@@ -12,7 +12,7 @@ to avoid blocking for tens of seconds.
 ## Installation
 
 ```bash
-npm install @loaders.gl/core @loaders.gl/json
+npm install @sensat/loaders-gl-core @sensat/loaders-gl-json
 ```
 
 ## Loaders and Writers

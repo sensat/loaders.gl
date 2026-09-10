@@ -1,18 +1,18 @@
 import test from 'tape-promise/tape';
-import {load} from '@loaders.gl/core';
-import {ArcGISWebSceneLoader} from '@loaders.gl/i3s';
+import {load} from '@sensat/loaders-gl-core';
+import {ArcGISWebSceneLoader} from '@sensat/loaders-gl-i3s';
 
 const ARCGIS_WEB_SCENE_WITH_SUPPORTED_LAYERS_URL =
-  '@loaders.gl/i3s/test/data/arcgis-webscenes/arcgis-webscene-with-supported-layers.json';
+  '@sensat/loaders-gl-i3s/test/data/arcgis-webscenes/arcgis-webscene-with-supported-layers.json';
 
 const ARCGIS_WEB_SCENE_WITH_UNSUPPORTED_LAYER_IN_LIST_URL =
-  '@loaders.gl/i3s/test/data/arcgis-webscenes/arcgis-webscene-with-one-unsupported-layer.json';
+  '@sensat/loaders-gl-i3s/test/data/arcgis-webscenes/arcgis-webscene-with-one-unsupported-layer.json';
 
 const ARCGIS_WEB_SCENE_WITH_UNSUPPORTED_CRS_URL =
-  '@loaders.gl/i3s/test/data/arcgis-webscenes/arcgis-webscene-with-unsupported-crs.json';
+  '@sensat/loaders-gl-i3s/test/data/arcgis-webscenes/arcgis-webscene-with-unsupported-crs.json';
 
 const ARCGIS_WEB_SCENE_WITH_UNSUPPORTED_LAYERS_URL =
-  '@loaders.gl/i3s/test/data/arcgis-webscenes/arcgis-webscene-with-all-unsupported-layers.json';
+  '@sensat/loaders-gl-i3s/test/data/arcgis-webscenes/arcgis-webscene-with-all-unsupported-layers.json';
 
 test('ArcGISWebSceneLoader#should load WebScene', async (t) => {
   const WEB_SCENE_FIRST_OPERATIONAL_LAYER_EXPECTED = {

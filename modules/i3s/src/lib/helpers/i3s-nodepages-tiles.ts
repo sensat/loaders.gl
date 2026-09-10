@@ -1,8 +1,8 @@
-import {load} from '@loaders.gl/core';
+import {load} from '@sensat/loaders-gl-core';
 import {I3SNodePageLoader} from '../../i3s-node-page-loader';
 import {normalizeTileNonUrlData} from '../parsers/parse-i3s';
 import {getUrlWithToken, generateTilesetAttributeUrls} from '../utils/url-utils';
-import type {LoaderOptions} from '@loaders.gl/loader-utils';
+import type {LoaderOptions} from '@sensat/loaders-gl-loader-utils';
 import {
   LodSelection,
   NodePage,

@@ -1,10 +1,10 @@
-import {JSONLoader} from '@loaders.gl/json';
-import {load} from '@loaders.gl/core';
+import {JSONLoader} from '@sensat/loaders-gl-json';
+import {load} from '@sensat/loaders-gl-core';
 
-import {geojsonToBinary} from '@loaders.gl/gis';
+import {geojsonToBinary} from '@sensat/loaders-gl-gis';
 
-// const GEOJSON_URL = '@loaders.gl/json/test/data/geojson-big.json';
-const GEOJSON_POLYGONS_URL = '@loaders.gl/mvt/test/data/geojson-vt/us-states.json';
+// const GEOJSON_URL = '@sensat/loaders-gl-json/test/data/geojson-big.json';
+const GEOJSON_POLYGONS_URL = '@sensat/loaders-gl-mvt/test/data/geojson-vt/us-states.json';
 
 export default async function gisBench(suite) {
   suite.group('geojson-to-binary');

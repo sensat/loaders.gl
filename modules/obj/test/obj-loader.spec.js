@@ -2,14 +2,14 @@
 import test from 'tape-promise/tape';
 import {validateLoader, validateMeshCategoryData} from 'test/common/conformance';
 
-import {OBJLoader, OBJWorkerLoader} from '@loaders.gl/obj';
-import {setLoaderOptions, load} from '@loaders.gl/core';
+import {OBJLoader, OBJWorkerLoader} from '@sensat/loaders-gl-obj';
+import {setLoaderOptions, load} from '@sensat/loaders-gl-core';
 import {equals} from '@math.gl/core';
 
-const OBJ_ASCII_URL = '@loaders.gl/obj/test/data/bunny.obj';
-const OBJ_NORMALS_URL = '@loaders.gl/obj/test/data/cube.obj';
-const OBJ_MULTI_PART_URL = '@loaders.gl/obj/test/data/magnolia.obj';
-const OBJ_VERTEX_COLOR_URL = '@loaders.gl/obj/test/data/cube-vertex-colors.obj';
+const OBJ_ASCII_URL = '@sensat/loaders-gl-obj/test/data/bunny.obj';
+const OBJ_NORMALS_URL = '@sensat/loaders-gl-obj/test/data/cube.obj';
+const OBJ_MULTI_PART_URL = '@sensat/loaders-gl-obj/test/data/magnolia.obj';
+const OBJ_VERTEX_COLOR_URL = '@sensat/loaders-gl-obj/test/data/cube-vertex-colors.obj';
 
 setLoaderOptions({
   _workerType: 'test'

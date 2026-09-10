@@ -3,22 +3,22 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {fetchFile, load, parse, selectLoader} from '@loaders.gl/core';
+import {fetchFile, load, parse, selectLoader} from '@sensat/loaders-gl-core';
 import {
   TextureArrayLoader,
   TextureCubeArrayLoader,
   TextureCubeLoader,
   TextureLoader
-} from '@loaders.gl/textures';
+} from '@sensat/loaders-gl-textures';
 
 const IMAGE_TEXTURE_MANIFEST_URL =
-  '@loaders.gl/textures/test/data/composite-image/image-texture.json';
+  '@sensat/loaders-gl-textures/test/data/composite-image/image-texture.json';
 const IMAGE_TEXTURE_MIPMAP_MANIFEST_URL =
-  '@loaders.gl/textures/test/data/composite-image/image-texture-mipmaps.json';
+  '@sensat/loaders-gl-textures/test/data/composite-image/image-texture-mipmaps.json';
 const IMAGE_TEXTURE_ARRAY_MANIFEST_URL =
-  '@loaders.gl/textures/test/data/composite-image/image-texture-array.json';
+  '@sensat/loaders-gl-textures/test/data/composite-image/image-texture-array.json';
 const IMAGE_TEXTURE_CUBE_MANIFEST_URL =
-  '@loaders.gl/textures/test/data/composite-image/image-texture-cube.json';
+  '@sensat/loaders-gl-textures/test/data/composite-image/image-texture-cube.json';
 
 function checkImageTextureLevel(t, textureLevel, message: string) {
   t.equal(textureLevel.shape, 'texture-level', `${message} has texture-level shape`);
@@ -79,7 +79,7 @@ test('TextureCubeLoader#load manifest', async (t) => {
 
 test('TextureLoader#parse with core.baseUrl', async (t) => {
   const requestedUrls: string[] = [];
-  const memberUrl = '@loaders.gl/images/test/data/ibl/brdfLUT.png';
+  const memberUrl = '@sensat/loaders-gl-images/test/data/ibl/brdfLUT.png';
   const fetch = async (url: string): Promise<Response> => {
     requestedUrls.push(url);
     if (!url.endsWith('images/test/data/ibl/brdfLUT.png')) {
@@ -113,7 +113,7 @@ test('TextureLoader#parse with extensionless core.baseUrl', async (t) => {
   const requestedUrls: string[] = [];
   const fetch = async (url: string): Promise<Response> => {
     requestedUrls.push(url);
-    return await fetchFile('@loaders.gl/images/test/data/ibl/brdfLUT.png');
+    return await fetchFile('@sensat/loaders-gl-images/test/data/ibl/brdfLUT.png');
   };
 
   const texture = await parse(
@@ -151,7 +151,7 @@ test('TextureLoader#template with auto mipLevels', async (t) => {
       throw new Error(`Unexpected URL ${url}`);
     }
     return await fetchFile(
-      `@loaders.gl/images/test/data/ibl/papermill/specular/specular_back_${match[1]}.jpg`
+      `@sensat/loaders-gl-images/test/data/ibl/papermill/specular/specular_back_${match[1]}.jpg`
     );
   };
 
@@ -186,7 +186,7 @@ test('TextureLoader#template supports escaped braces', async (t) => {
   const requestedUrls: string[] = [];
   const fetch = async (url: string): Promise<Response> => {
     requestedUrls.push(url);
-    return await fetchFile('@loaders.gl/images/test/data/ibl/brdfLUT.png');
+    return await fetchFile('@sensat/loaders-gl-images/test/data/ibl/brdfLUT.png');
   };
 
   const texture = await parse(
@@ -239,7 +239,7 @@ test('TextureArrayLoader#template supports index placeholder', async (t) => {
   const requestedUrls: string[] = [];
   const fetch = async (url: string): Promise<Response> => {
     requestedUrls.push(url);
-    return await fetchFile('@loaders.gl/images/test/data/ibl/brdfLUT.png');
+    return await fetchFile('@sensat/loaders-gl-images/test/data/ibl/brdfLUT.png');
   };
 
   const texture = await parse(
@@ -287,7 +287,7 @@ test('TextureLoader#uses the top-level fetch function for members', async (t) =>
     }
 
     if (url === memberUrl) {
-      return await fetchFile('@loaders.gl/images/test/data/ibl/brdfLUT.png');
+      return await fetchFile('@sensat/loaders-gl-images/test/data/ibl/brdfLUT.png');
     }
 
     throw new Error(`Unexpected URL ${url}`);
@@ -351,7 +351,7 @@ test('TextureCubeLoader#template supports cube placeholders', async (t) => {
   const requestedUrls: string[] = [];
   const fetch = async (url: string): Promise<Response> => {
     requestedUrls.push(url);
-    return await fetchFile('@loaders.gl/images/test/data/ibl/brdfLUT.png');
+    return await fetchFile('@sensat/loaders-gl-images/test/data/ibl/brdfLUT.png');
   };
 
   const texture = await parse(
@@ -396,7 +396,7 @@ test('TextureCubeArrayLoader#template supports layer index and face placeholders
   const requestedUrls: string[] = [];
   const fetch = async (url: string): Promise<Response> => {
     requestedUrls.push(url);
-    return await fetchFile('@loaders.gl/images/test/data/ibl/brdfLUT.png');
+    return await fetchFile('@sensat/loaders-gl-images/test/data/ibl/brdfLUT.png');
   };
 
   const texture = await parse(
@@ -474,7 +474,7 @@ test('Texture loaders#load selects by shape for JSON responses', async (t) => {
     }
 
     if (url === memberUrl) {
-      return await fetchFile('@loaders.gl/images/test/data/ibl/brdfLUT.png');
+      return await fetchFile('@sensat/loaders-gl-images/test/data/ibl/brdfLUT.png');
     }
 
     throw new Error(`Unexpected URL ${url}`);

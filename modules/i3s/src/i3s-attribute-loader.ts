@@ -1,5 +1,5 @@
-import type {LoaderOptions, LoaderWithParser} from '@loaders.gl/loader-utils';
-import {load} from '@loaders.gl/core';
+import type {LoaderOptions, LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
+import {load} from '@sensat/loaders-gl-core';
 import type {I3SLoaderOptions} from './i3s-loader';
 import type {I3STileAttributes} from './lib/parsers/parse-i3s-attribute';
 import {parseI3STileAttribute} from './lib/parsers/parse-i3s-attribute';

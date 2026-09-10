@@ -26,7 +26,7 @@ Notes:
 - If `url` is not a `string`, `load` will call `parse` directly.
 - Any path prefix set by `setPathPrefix` will be appended to relative urls.
 - `load` takes a `url` and a loader object, checks what type of data that loader prefers to work on (e.g. text, binary, stream, ...), loads the data in the appropriate way, and passes it to the loader.
-- If `@loaders.gl/polyfills` is installed, `load` will work under Node.js as well.
+- If `@sensat/loaders-gl-polyfills` is installed, `load` will work under Node.js as well.
 
 ## Options
 

@@ -2,7 +2,7 @@
 import test from 'tape-promise/tape';
 
 // @ts-expect-error
-import {decodeExtensions} from '@loaders.gl/gltf/lib/api/gltf-extensions';
+import {decodeExtensions} from '@sensat/loaders-gl-gltf/lib/api/gltf-extensions';
 
 test('gltf#EXT_feature_metadata - Should do nothing if no "EXT_feature_metadata" extension', async (t) => {
   const gltfWithFeatureTextures = {

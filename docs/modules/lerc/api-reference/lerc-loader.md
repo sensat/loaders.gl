@@ -25,8 +25,8 @@ There are two major versions, known as "Lerc1" and "Lerc2".
 ## Usage
 
 ```typescript
-import {LERCLoader} from '@loaders.gl/wms';
-import {load} from '@loaders.gl/core';
+import {LERCLoader} from '@sensat/loaders-gl-wms';
+import {load} from '@sensat/loaders-gl-core';
 
 // Form a LERC request
 const url = `${WFS_SERVICE_URL}?REQUEST=GetFeature&...`;

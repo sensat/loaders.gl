@@ -5,11 +5,11 @@
 import test from 'tape-promise/tape';
 import {validateLoader} from 'test/common/conformance';
 
-import {fetchFile, load, loadInBatches} from '@loaders.gl/core';
-import {TCXLoader} from '@loaders.gl/kml';
-import type {GeoJSONTable} from '@loaders.gl/schema';
+import {fetchFile, load, loadInBatches} from '@sensat/loaders-gl-core';
+import {TCXLoader} from '@sensat/loaders-gl-kml';
+import type {GeoJSONTable} from '@sensat/loaders-gl-schema';
 
-const TCX_URL = '@loaders.gl/kml/test/data/tcx/tcx_sample';
+const TCX_URL = '@sensat/loaders-gl-kml/test/data/tcx/tcx_sample';
 
 test('TCXLoader#loader conformance', (t) => {
   validateLoader(t, TCXLoader, 'TCXLoader');

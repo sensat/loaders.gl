@@ -1,22 +1,22 @@
 import test from 'tape-promise/tape';
 
-import {load} from '@loaders.gl/core';
-import {I3SAttributeLoader} from '@loaders.gl/i3s';
+import {load} from '@sensat/loaders-gl-core';
+import {I3SAttributeLoader} from '@sensat/loaders-gl-i3s';
 // @ts-expect-error
-import {loadFeatureAttributes} from '@loaders.gl/i3s/i3s-attribute-loader';
+import {loadFeatureAttributes} from '@sensat/loaders-gl-i3s/i3s-attribute-loader';
 
-const objectIdsUrl = '@loaders.gl/i3s/test/data/attributes/f_0/0/index.bin';
-const namesUrl = '@loaders.gl/i3s/test/data/attributes/f_1/0/index.bin';
-const heightRoofUrl = '@loaders.gl/i3s/test/data/attributes/f_2/0/index.bin';
-const wrongNamesUrl = '@loaders.gl/i3s/test/data/attributes/f_1/0/wrong.bin';
-const wrongBufferNamesUrl = '@loaders.gl/i3s/test/data/attributes/f_1/0/wrong-buffer.bin';
+const objectIdsUrl = '@sensat/loaders-gl-i3s/test/data/attributes/f_0/0/index.bin';
+const namesUrl = '@sensat/loaders-gl-i3s/test/data/attributes/f_1/0/index.bin';
+const heightRoofUrl = '@sensat/loaders-gl-i3s/test/data/attributes/f_2/0/index.bin';
+const wrongNamesUrl = '@sensat/loaders-gl-i3s/test/data/attributes/f_1/0/wrong.bin';
+const wrongBufferNamesUrl = '@sensat/loaders-gl-i3s/test/data/attributes/f_1/0/wrong-buffer.bin';
 
 const objectIdsWithCodeValuesUrl =
-  '@loaders.gl/i3s/test/data/BuildingSceneLayer/attributes/f_0/0/index.bin';
+  '@sensat/loaders-gl-i3s/test/data/BuildingSceneLayer/attributes/f_0/0/index.bin';
 const attributesWithCodeValuesUrl =
-  '@loaders.gl/i3s/test/data/BuildingSceneLayer/attributes/f_27/0/index.bin';
+  '@sensat/loaders-gl-i3s/test/data/BuildingSceneLayer/attributes/f_27/0/index.bin';
 const shortInt16AttributesUrl =
-  '@loaders.gl/i3s/test/data/BuildingSceneLayer/attributes/f_7/0/index.bin';
+  '@sensat/loaders-gl-i3s/test/data/BuildingSceneLayer/attributes/f_7/0/index.bin';
 
 const name602 = 'West End Building\0';
 const objecId0 = 979297;

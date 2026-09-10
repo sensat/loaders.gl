@@ -4,7 +4,7 @@
 // Forked from sax-ts & sax under ISC license
 
 import type {Test} from 'tape-promise/tape';
-import {SAXParser, SAXParserOptions} from '@loaders.gl/xml';
+import {SAXParser, SAXParserOptions} from '@sensat/loaders-gl-xml';
 
 type TestSAXParams = {
   xml?: string | Buffer;

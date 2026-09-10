@@ -2,7 +2,7 @@
 // Copyright (c) 2016-17 Karl Cheng, MIT license
 
 import test from 'tape-promise/tape';
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 import {decodeDataUri} from '../../src/fetch/decode-data-uri';
 
 const toString = (arrayBuffer) => new TextDecoder().decode(arrayBuffer);

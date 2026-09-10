@@ -4,12 +4,12 @@
 
 /* eslint-disable max-len */
 import test from 'tape-promise/tape';
-import {load} from '@loaders.gl/core';
-import {Tileset3D} from '@loaders.gl/tiles';
-import {GLTFLoader, _getMemoryUsageGLTF, postProcessGLTF} from '@loaders.gl/gltf';
-import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
+import {load} from '@sensat/loaders-gl-core';
+import {Tileset3D} from '@sensat/loaders-gl-tiles';
+import {GLTFLoader, _getMemoryUsageGLTF, postProcessGLTF} from '@sensat/loaders-gl-gltf';
+import {Tiles3DLoader} from '@sensat/loaders-gl-3d-tiles';
 
-const GLB_URL = '@loaders.gl/3d-tiles/test/data/143.glb';
+const GLB_URL = '@sensat/loaders-gl-3d-tiles/test/data/143.glb';
 test('3D Tiles#getMemoryUsageGLTF', async (t) => {
   const gltfWithBuffers = await load(GLB_URL, GLTFLoader);
   const data = postProcessGLTF(gltfWithBuffers);
@@ -20,17 +20,17 @@ test('3D Tiles#getMemoryUsageGLTF', async (t) => {
 
 const TEST_CASES = [
   {
-    url: '@loaders.gl/3d-tiles/test/data/CesiumJS/Tilesets/Tileset/tileset.json',
+    url: '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Tilesets/Tileset/tileset.json',
     type: 'scenegraph',
     gpuMemoryUsageInBytes: 7440
   },
   {
-    url: '@loaders.gl/3d-tiles/test/data/CesiumJS/Tilesets/TilesetPoints/tileset.json',
+    url: '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Tilesets/TilesetPoints/tileset.json',
     type: 'pointcloud',
     gpuMemoryUsageInBytes: 15108
   },
   {
-    url: '@loaders.gl/3d-tiles/test/data/CesiumJS/Tilesets/TilesetEmptyRoot/tileset.json',
+    url: '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Tilesets/TilesetEmptyRoot/tileset.json',
     type: 'empty',
     gpuMemoryUsageInBytes: 0
   }

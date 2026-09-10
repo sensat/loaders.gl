@@ -1,5 +1,5 @@
-import {load} from '@loaders.gl/core';
-import {BasisLoader} from '@loaders.gl/textures';
+import {load} from '@sensat/loaders-gl-core';
+import {BasisLoader} from '@sensat/loaders-gl-textures';
 
 const canvas = document.createElement('canvas');
 document.body.appendChild(canvas);

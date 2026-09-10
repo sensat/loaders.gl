@@ -4,8 +4,8 @@
 
 import test from 'tape-promise/tape';
 
-import type {GeoArrowMetadata} from '@loaders.gl/geoarrow';
-import {getGeometryColumnsFromSchema} from '@loaders.gl/geoarrow';
+import type {GeoArrowMetadata} from '@sensat/loaders-gl-geoarrow';
+import {getGeometryColumnsFromSchema} from '@sensat/loaders-gl-geoarrow';
 
 // fix a bug that map bounds are not updated correctly from arrow samples
 test('geoarrow#getGeometryColumnsFromSchema', (t) => {

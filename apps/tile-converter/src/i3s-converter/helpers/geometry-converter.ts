@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import type {FeatureTableJson, Tiles3DTileContent} from '@loaders.gl/3d-tiles';
+import type {FeatureTableJson, Tiles3DTileContent} from '@sensat/loaders-gl-3d-tiles';
 import type {
   GLTFAccessorPostprocessed,
   GLTFMaterialPostprocessed,
@@ -13,7 +13,7 @@ import type {
   GLTF_EXT_structural_metadata_GLTF,
   GLTF_EXT_structural_metadata_PropertyTable,
   GLTF_EXT_structural_metadata_PropertyTexture
-} from '@loaders.gl/gltf';
+} from '@sensat/loaders-gl-gltf';
 
 import {Vector3, Matrix4, Vector4} from '@math.gl/core';
 import {Ellipsoid} from '@math.gl/geospatial';
@@ -23,14 +23,14 @@ import {createRequire} from 'node:module';
 /* @ts-expect-error TS2732: Cannot find module 'node:module' or its corresponding type declarations. */
 import {dirname, join} from 'node:path';
 
-import {DracoWriterWorker} from '@loaders.gl/draco';
-import {assert, encode} from '@loaders.gl/core';
+import {DracoWriterWorker} from '@sensat/loaders-gl-draco';
+import {assert, encode} from '@sensat/loaders-gl-core';
 import {
   concatenateArrayBuffers,
   concatenateTypedArrays,
   NumberArray,
   TypedArray
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
 import md5 from 'md5';
 import {v4 as uuidv4} from 'uuid';
 import {generateAttributes} from './geometry-attributes';
@@ -47,12 +47,12 @@ import {
   I3SMaterialDefinition,
   MaterialDefinitionInfo,
   TextureDefinitionInfo
-} from '@loaders.gl/i3s';
+} from '@sensat/loaders-gl-i3s';
 import {Geoid} from '@math.gl/geoid';
 import {prepareDataForAttributesConversion} from './gltf-attributes';
 import {getTextureByMetadataClass, handleBatchIdsExtensions} from './batch-ids-extensions';
 import {checkPropertiesLength, flattenPropertyTableByFeatureIds} from './feature-attributes';
-import {GL} from '@loaders.gl/math';
+import {GL} from '@sensat/loaders-gl-math';
 
 /*
   At the moment of writing the type TypedArrayConstructor is not exported in '@math.gl/types'.
@@ -63,7 +63,7 @@ import type {GLTFAttributesData, TextureImageProperties, TypedArrayConstructor} 
 import {generateSyntheticIndices} from '../../lib/utils/geometry-utils';
 import {BoundingSphere, OrientedBoundingBox} from '@math.gl/culling';
 
-import {EXT_FEATURE_METADATA, EXT_STRUCTURAL_METADATA} from '@loaders.gl/gltf';
+import {EXT_FEATURE_METADATA, EXT_STRUCTURAL_METADATA} from '@sensat/loaders-gl-gltf';
 
 // Spec - https://github.com/Esri/i3s-spec/blob/master/docs/1.7/pbrMetallicRoughness.cmn.md
 const DEFAULT_ROUGHNESS_FACTOR = 1;
@@ -1643,7 +1643,7 @@ async function generateCompressedGeometry(
 function getLocalDracoWriterWorkerUrl(): string {
   try {
     const require = createRequire(import.meta.url);
-    const packageJsonPath = require.resolve('@loaders.gl/draco/package.json');
+    const packageJsonPath = require.resolve('@sensat/loaders-gl-draco/package.json');
     return join(dirname(packageJsonPath), 'src/workers/draco-writer-worker-node.cjs');
   } catch {
     // Fall back to monorepo-local path

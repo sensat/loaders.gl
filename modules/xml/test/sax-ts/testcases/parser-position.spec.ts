@@ -4,7 +4,7 @@
 // Forked from sax-ts & sax under ISC license
 
 import test from 'tape-promise/tape';
-import {SAXParser} from '@loaders.gl/xml';
+import {SAXParser} from '@sensat/loaders-gl-xml';
 
 function testPosition(t, chunks, expectedEvents) {
   const parser = new SAXParser();

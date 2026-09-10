@@ -6,7 +6,7 @@ import {
   createExtStructuralMetadata,
   type PropertyAttribute,
   GLTF_EXT_structural_metadata_GLTF
-} from '@loaders.gl/gltf';
+} from '@sensat/loaders-gl-gltf';
 
 test('gltf#EXT_structural_metadata - Should decode', async (t) => {
   const binaryBufferData = [

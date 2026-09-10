@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
-import type {TextureLevel} from '@loaders.gl/schema';
+import type {Loader, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
+import type {TextureLevel} from '@sensat/loaders-gl-schema';
 import {VERSION} from './lib/utils/version';
 
 /** CrunchLoader options */

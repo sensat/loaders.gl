@@ -1,7 +1,7 @@
 import test from 'tape-promise/tape';
-import {isBrowser} from '@loaders.gl/loader-utils';
+import {isBrowser} from '@sensat/loaders-gl-loader-utils';
 
-import {isImageFormatSupported, getSupportedImageFormats} from '@loaders.gl/images';
+import {isImageFormatSupported, getSupportedImageFormats} from '@sensat/loaders-gl-images';
 
 export const TEST_CASES = [
   {

@@ -11,8 +11,8 @@ import type {
   LoaderReturnType,
   LoaderArrayOptionsType,
   LoaderArrayReturnType
-} from '@loaders.gl/loader-utils';
-import {isBlob} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
+import {isBlob} from '@sensat/loaders-gl-loader-utils';
 import {isLoaderObject} from '../loader-utils/normalize-loader';
 import {getFetchFunction} from '../loader-utils/get-fetch-function';
 import {normalizeLoaderOptions} from '../loader-utils/option-utils';

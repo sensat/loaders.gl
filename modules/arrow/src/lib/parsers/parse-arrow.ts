@@ -3,10 +3,10 @@
 // Copyright (c) vis.gl contributors
 
 import * as arrow from 'apache-arrow';
-import type {Table, ArrowTableBatch} from '@loaders.gl/schema';
+import type {Table, ArrowTableBatch} from '@sensat/loaders-gl-schema';
 import {ArrowLoaderOptions} from '../../exports/arrow-loader';
-import {convertArrowToTable} from '@loaders.gl/schema-utils';
-import {toArrayBufferIterator} from '@loaders.gl/loader-utils';
+import {convertArrowToTable} from '@sensat/loaders-gl-schema-utils';
+import {toArrayBufferIterator} from '@sensat/loaders-gl-loader-utils';
 
 /** Parses arrow to a loaders.gl table. Defaults to `arrow-table` */
 export function parseArrowSync(arrayBuffer, options?: {shape?: Table['shape']}): Table {

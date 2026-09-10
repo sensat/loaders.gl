@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {LoaderContext, LoaderWithParser} from '@loaders.gl/loader-utils';
-import {parseFromContext} from '@loaders.gl/loader-utils';
+import type {LoaderContext, LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
+import {parseFromContext} from '@sensat/loaders-gl-loader-utils';
 import {parseQuantizedMesh} from './lib/parse-quantized-mesh';
 import {TerrainOptions, makeTerrainMeshFromImage} from './lib/parse-terrain';
 

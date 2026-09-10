@@ -35,8 +35,8 @@ Metadata Support:
 ## Usage
 
 ```typescript
-import {DracoLoader} from '@loaders.gl/draco';
-import {load} from '@loaders.gl/core';
+import {DracoLoader} from '@sensat/loaders-gl-draco';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, DracoLoader, options);
 ```

@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {load, fetchFile, parse, encode} from '@loaders.gl/core';
-import {DracoWriter, DracoLoader} from '@loaders.gl/draco';
-import {LASLoader} from '@loaders.gl/las';
+import {load, fetchFile, parse, encode} from '@sensat/loaders-gl-core';
+import {DracoWriter, DracoLoader} from '@sensat/loaders-gl-draco';
+import {LASLoader} from '@sensat/loaders-gl-las';
 
 import {getModel, drawModelInViewport} from '../test-utils/get-model';
 
 // LAZ
-const LAS_BINARY_URL = '@loaders.gl/las/test/data/indoor.laz';
+const LAS_BINARY_URL = '@sensat/loaders-gl-las/test/data/indoor.laz';
 
 // Raw point cloud data URLS
 const KITTI_POSITIONS_URL =

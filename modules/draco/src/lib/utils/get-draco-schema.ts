@@ -1,5 +1,5 @@
-import {MeshAttribute, Schema, Field} from '@loaders.gl/schema';
-import {deduceMeshField} from '@loaders.gl/schema-utils';
+import {MeshAttribute, Schema, Field} from '@sensat/loaders-gl-schema';
+import {deduceMeshField} from '@sensat/loaders-gl-schema-utils';
 import type {DracoAttribute, DracoLoaderData, DracoMetadataEntry} from '../draco-types';
 
 /** Extract an arrow-like schema from a Draco mesh */

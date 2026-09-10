@@ -9,15 +9,15 @@
 import test from 'tape-promise/tape';
 // import {validateLoader} from 'test/common/conformance';
 
-// import {LERCLoader, LERCData} from '@loaders.gl/wms';
+// import {LERCLoader, LERCData} from '@sensat/loaders-gl-wms';
 import type {LERCData} from '../../src/lib/parsers/lerc/lerc-types';
 import {LERCLoader} from '../../src/lerc-loader';
-import {load, isBrowser} from '@loaders.gl/core';
+import {load, isBrowser} from '@sensat/loaders-gl-core';
 
 const LERC_FILES = [
-  '@loaders.gl/lerc/test/data/lerc/bluemarble_256_256_3_byte.lerc2',
-  '@loaders.gl/lerc/test/data/lerc/california_400_400_1_float.lerc2',
-  '@loaders.gl/lerc/test/data/lerc/world.lerc1'
+  '@sensat/loaders-gl-lerc/test/data/lerc/bluemarble_256_256_3_byte.lerc2',
+  '@sensat/loaders-gl-lerc/test/data/lerc/california_400_400_1_float.lerc2',
+  '@sensat/loaders-gl-lerc/test/data/lerc/world.lerc1'
 ];
 
 test('LERCLoader#level2', async (t) => {

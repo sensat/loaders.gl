@@ -3,14 +3,14 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {setLoaderOptions, fetchFile, parse} from '@loaders.gl/core';
-import {DBFArrowLoader} from '@loaders.gl/shapefile';
+import {setLoaderOptions, fetchFile, parse} from '@sensat/loaders-gl-core';
+import {DBFArrowLoader} from '@sensat/loaders-gl-shapefile';
 
 setLoaderOptions({
   _workerType: 'test'
 });
 
-const SHAPEFILE_JS_DATA_FOLDER = '@loaders.gl/shapefile/test/data/shapefile-js';
+const SHAPEFILE_JS_DATA_FOLDER = '@sensat/loaders-gl-shapefile/test/data/shapefile-js';
 const SHAPEFILE_JS_TEST_FILES = [
   'boolean-property',
   'date-property',

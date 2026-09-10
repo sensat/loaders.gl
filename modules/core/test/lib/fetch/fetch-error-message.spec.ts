@@ -7,7 +7,7 @@ import test from 'tape-promise/tape';
 import {
   getErrorMessageFromResponseSync,
   getErrorMessageFromResponse
-} from '@loaders.gl/core/lib/fetch/fetch-error-message';
+} from '@sensat/loaders-gl-core/lib/fetch/fetch-error-message';
 
 test('getErrorMessageFromResponseSync#imports', (t) => {
   t.ok(

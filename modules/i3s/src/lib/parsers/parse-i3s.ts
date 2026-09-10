@@ -1,7 +1,7 @@
 import {OrientedBoundingBox} from '@math.gl/culling';
 import {Ellipsoid} from '@math.gl/geospatial';
-import {load} from '@loaders.gl/core';
-import {TILE_TYPE, TILE_REFINEMENT, TILESET_TYPE} from '@loaders.gl/tiles';
+import {load} from '@sensat/loaders-gl-core';
+import {TILE_TYPE, TILE_REFINEMENT, TILESET_TYPE} from '@sensat/loaders-gl-tiles';
 import I3SNodePagesTiles from '../helpers/i3s-nodepages-tiles';
 import {generateTileAttributeUrls, getUrlWithToken, getUrlWithoutParams} from '../utils/url-utils';
 import {
@@ -13,7 +13,7 @@ import {
   SceneLayer3D,
   I3SParseOptions
 } from '../../types';
-import type {LoaderOptions, LoaderContext} from '@loaders.gl/loader-utils';
+import type {LoaderOptions, LoaderContext} from '@sensat/loaders-gl-loader-utils';
 import { I3SLoader } from '../../i3s-loader';
 
 export function normalizeTileData(tile : Node3DIndexDocument, context: LoaderContext): I3STileHeader {

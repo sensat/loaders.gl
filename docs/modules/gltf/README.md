@@ -2,19 +2,19 @@
 
 ![logo](./images/gltf-small.png)
 
-The `@loaders.gl/gltf` module provides loaders and writers of the GLB/glTF formats.
+The `@sensat/loaders-gl-gltf` module provides loaders and writers of the GLB/glTF formats.
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/gltf
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-gltf
+npm install @sensat/loaders-gl-core
 ```
 
 Optionally, to support Draco encoded gltf files
 
 ```bash
-npm install @loaders.gl/draco
+npm install @sensat/loaders-gl-draco
 ```
 
 ## GLTFScenegraph API
@@ -24,8 +24,8 @@ To simplify traversing and building glTF data objects, the [`GLTFScenegraph`](/d
 A glTF data object can also be built programmatically using the GLTFScenegraph's "fluent API":
 
 ```typescript
-import {encode} from '@loaders.gl/gltf';
-import {GLTFScenegraph, GLTFWriter} from '@loaders.gl/gltf';
+import {encode} from '@sensat/loaders-gl-gltf';
+import {GLTFScenegraph, GLTFWriter} from '@sensat/loaders-gl-gltf';
 const gltfScenegraph = new GLTFScenegraph()
   .addApplicationData(...)
   .addExtras(...)
@@ -56,8 +56,8 @@ Certain glTF extensions are fully or partially supported by the glTF classes. Fo
 Draco encoding and decoding is supported by the `GLTFBuilder` and `GLTFParser` classes but requires the DracoWriter and DracoLoader dependencies to be "injected" by the application.
 
 ```typescript
-import {GLTFBuilder} from '@loaders.gl/gltf';
-import {DracoWriter, DracoLoader} from '@loaders.gl/draco';
+import {GLTFBuilder} from '@sensat/loaders-gl-gltf';
+import {DracoWriter, DracoLoader} from '@sensat/loaders-gl-draco';
 
 const gltfBuilder = new GLTFBuilder({DracoWriter, DracoLoader});
 ```

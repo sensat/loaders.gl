@@ -1,11 +1,11 @@
 # Overview
 
-The `@loaders.gl/excel` module handles tabular data stored in the Excel file format.
+The `@sensat/loaders-gl-excel` module handles tabular data stored in the Excel file format.
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/core @loaders.gl/excel
+npm install @sensat/loaders-gl-core @sensat/loaders-gl-excel
 ```
 
 ## Loaders and Writers

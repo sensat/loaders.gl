@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Feature, GeoJSONTable, BinaryFeatureCollection} from '@loaders.gl/schema';
-import {geojsonToBinary} from '@loaders.gl/gis';
+import type {Feature, GeoJSONTable, BinaryFeatureCollection} from '@sensat/loaders-gl-schema';
+import {geojsonToBinary} from '@sensat/loaders-gl-gis';
 import type {Feature as MLTFeature} from '@maplibre/mlt';
 import * as maplibreMLT from '@maplibre/mlt';
 

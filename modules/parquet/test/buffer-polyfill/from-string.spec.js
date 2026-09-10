@@ -4,7 +4,7 @@
 // This file is forked from https://github.com/feross/buffer under MIT license
 
 import test from 'tape-promise/tape';
-import {BufferPolyfill} from '@loaders.gl/parquet';
+import {BufferPolyfill} from '@sensat/loaders-gl-parquet';
 
 test('detect utf16 surrogate pairs', function (t) {
   const text = '\uD83D\uDE38' + '\uD83D\uDCAD' + '\uD83D\uDC4D'

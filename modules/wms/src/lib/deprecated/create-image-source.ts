@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Source, SourceArrayDataSourceType, DataSourceOptions} from '@loaders.gl/loader-utils';
+import type {Source, SourceArrayDataSourceType, DataSourceOptions} from '@sensat/loaders-gl-loader-utils';
 import type {WMSSourceOptions} from '../../wms-source';
 import {WMSSource} from '../../wms-source';
 import {ArcGISImageServerSource} from '../../arcgis/arcgis-image-source';
@@ -12,7 +12,7 @@ export type ImageSourceType = 'wms' | 'arcgis-image-server' | 'template';
 const SOURCES = [WMSSource, ArcGISImageServerSource] as const;
 
 /**
- * * @deprecated Use createDataSource from @loaders.gl/core
+ * * @deprecated Use createDataSource from @sensat/loaders-gl-core
  */
 type CreateImageSourceOptions = DataSourceOptions &
   WMSSourceOptions & {
@@ -26,7 +26,7 @@ type CreateImageSourceOptions = DataSourceOptions &
  * @param type type of source. if not known, set to 'auto'
  * @returns an ImageSource instance
  *
- * @deprecated Use createDataSource from @loaders.gl/core
+ * @deprecated Use createDataSource from @sensat/loaders-gl-core
  */
 export function createImageSource<SourceArrayT extends Source[]>(options: {
   url: string;

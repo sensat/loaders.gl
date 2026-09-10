@@ -1,7 +1,7 @@
 // @loaders.gl, MIT license
 import test from 'tape-promise/tape';
 import {loadZarr} from '@loaders.gl/zarr';
-import {resolvePath, isBrowser} from '@loaders.gl/core';
+import {resolvePath, isBrowser} from '@sensat/loaders-gl-core';
 
 const CONTENT_BASE = resolvePath('@loaders.gl/zarr/test/data');
 const OME_FIXTURE = `${CONTENT_BASE}/ome.zarr`;

@@ -20,8 +20,8 @@ Shapefile loader
 ## Usage
 
 ```typescript
-import {ShapefileLoader} from '@loaders.gl/shapefile';
-import {load} from '@loaders.gl/core';
+import {ShapefileLoader} from '@sensat/loaders-gl-shapefile';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, ShapefileLoader);
 ```

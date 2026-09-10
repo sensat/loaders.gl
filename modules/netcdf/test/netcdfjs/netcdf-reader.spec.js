@@ -1,8 +1,8 @@
 import {describe, it, expect} from 'test/utils/expect-assertions';
-import {NetCDFReader} from '@loaders.gl/netcdf';
-import {fetchFile} from '@loaders.gl/core';
+import {NetCDFReader} from '@sensat/loaders-gl-netcdf';
+import {fetchFile} from '@sensat/loaders-gl-core';
 
-const DATA_PATH = `@loaders.gl/netcdf/test/data`;
+const DATA_PATH = `@sensat/loaders-gl-netcdf/test/data`;
 
 describe('NetCDFReader', () => {
   it('Throws on non NetCDF file', async () => {

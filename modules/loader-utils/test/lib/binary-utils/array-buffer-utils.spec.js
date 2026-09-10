@@ -3,7 +3,7 @@ import {
   toArrayBuffer,
   concatenateArrayBuffers,
   concatenateTypedArrays
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
 
 test('toArrayBuffer', (t) => {
   const typedArray = new Float32Array([0, 1, 2, 3]);

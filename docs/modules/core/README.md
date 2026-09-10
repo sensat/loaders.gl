@@ -1,6 +1,6 @@
 # Overview
 
-The `@loaders.gl/core` module contains the core API of loaders.gl
+The `@sensat/loaders-gl-core` module contains the core API of loaders.gl
 
 The core API offers functions to parse loaded data in various ways using loaders
 

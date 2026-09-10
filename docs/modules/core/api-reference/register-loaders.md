@@ -8,8 +8,8 @@ Applications can then make all those imported loaders available (via format auto
 
 ```typescript
 // centralize loader registration in your application instead of relying on the global registry
-import {parse} from '@loaders.gl/core';
-import {CSVLoader} from '@loaders.gl/csv';
+import {parse} from '@sensat/loaders-gl-core';
+import {CSVLoader} from '@sensat/loaders-gl-csv';
 
 export const applicationLoaders = [CSVLoader];
 
@@ -22,8 +22,8 @@ const result = await parse('data.csv', applicationLoaders);
 Sample application initialization code that imports and registers loaders:
 
 ```typescript
-import {registerLoaders} from '@loaders.gl/core';
-import {CSVLoader} from '@loaders.gl/csv';
+import {registerLoaders} from '@sensat/loaders-gl-core';
+import {CSVLoader} from '@sensat/loaders-gl-csv';
 
 registerLoaders(CSVLoader);
 ```
@@ -31,7 +31,7 @@ registerLoaders(CSVLoader);
 Some other file that needs to load CSV:
 
 ```typescript
-import {load} from '@loaders.gl/core';
+import {load} from '@sensat/loaders-gl-core';
 
 // The pre-registered CSVLoader gets auto selected based on file extension...
 const data = await load('data.csv');

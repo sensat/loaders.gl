@@ -1,4 +1,4 @@
-import type {TypedArray} from '@loaders.gl/loader-utils';
+import type {TypedArray} from '@sensat/loaders-gl-loader-utils';
 
 /**
  * Apply uvRegions to texture coordinates.

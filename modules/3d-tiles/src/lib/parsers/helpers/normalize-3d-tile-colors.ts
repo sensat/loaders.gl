@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import {Tile3DBatchTable} from '@loaders.gl/3d-tiles';
-import {decodeRGB565, GL} from '@loaders.gl/math';
+import {Tile3DBatchTable} from '@sensat/loaders-gl-3d-tiles';
+import {decodeRGB565, GL} from '@sensat/loaders-gl-math';
 import {Tiles3DTileContent} from '../../../types';
 
 /* eslint-disable complexity*/

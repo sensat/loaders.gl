@@ -1,11 +1,11 @@
 # Overview
 
-The `@loaders.gl/ply` module handles the the [Polygon file format](/docs/modules/ply/formats/ply), a file format for 3D graphical objects described as a collection of polygons that is sometimes used to store point clouds.
+The `@sensat/loaders-gl-ply` module handles the the [Polygon file format](/docs/modules/ply/formats/ply), a file format for 3D graphical objects described as a collection of polygons that is sometimes used to store point clouds.
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/core @loaders.gl/ply
+npm install @sensat/loaders-gl-core @sensat/loaders-gl-ply
 ```
 
 ## Attribution

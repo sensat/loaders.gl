@@ -4,21 +4,21 @@
 
 /* eslint-disable max-len */
 import test from 'tape-promise/tape';
-import {isLoaderObject, normalizeLoader} from '@loaders.gl/core/lib/loader-utils/normalize-loader';
+import {isLoaderObject, normalizeLoader} from '@sensat/loaders-gl-core/lib/loader-utils/normalize-loader';
 
-import * as threeDTiles from '@loaders.gl/3d-tiles';
-import * as arrow from '@loaders.gl/arrow';
-import * as csv from '@loaders.gl/csv';
-import * as draco from '@loaders.gl/draco';
-import * as tables from '@loaders.gl/schema-utils';
-import * as gltf from '@loaders.gl/gltf';
-import * as images from '@loaders.gl/images';
-import * as kml from '@loaders.gl/kml';
-import * as las from '@loaders.gl/las';
-import * as obj from '@loaders.gl/obj';
-import * as pcd from '@loaders.gl/pcd';
-import * as ply from '@loaders.gl/ply';
-import * as zip from '@loaders.gl/zip';
+import * as threeDTiles from '@sensat/loaders-gl-3d-tiles';
+import * as arrow from '@sensat/loaders-gl-arrow';
+import * as csv from '@sensat/loaders-gl-csv';
+import * as draco from '@sensat/loaders-gl-draco';
+import * as tables from '@sensat/loaders-gl-schema-utils';
+import * as gltf from '@sensat/loaders-gl-gltf';
+import * as images from '@sensat/loaders-gl-images';
+import * as kml from '@sensat/loaders-gl-kml';
+import * as las from '@sensat/loaders-gl-las';
+import * as obj from '@sensat/loaders-gl-obj';
+import * as pcd from '@sensat/loaders-gl-pcd';
+import * as ply from '@sensat/loaders-gl-ply';
+import * as zip from '@sensat/loaders-gl-zip';
 
 const modules = [
   threeDTiles,

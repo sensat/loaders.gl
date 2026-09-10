@@ -1,7 +1,7 @@
 // loaders.gl, MIT license
 
-import type {LoaderWithParser} from '@loaders.gl/loader-utils';
-import type {XMLLoaderOptions} from '@loaders.gl/xml';
+import type {LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
+import type {XMLLoaderOptions} from '@sensat/loaders-gl-xml';
 import {WMSCapabilitiesLoader} from '../wms-capabilities-loader';
 
 import type {WMSLayerDescription} from '../lib/parsers/wms/parse-wms-layer-description';

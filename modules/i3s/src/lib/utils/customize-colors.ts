@@ -1,7 +1,7 @@
-import type {MeshAttribute, TypedArray} from '@loaders.gl/schema';
+import type {MeshAttribute, TypedArray} from '@sensat/loaders-gl-schema';
 import type {AttributeStorageInfo, COLOR, Field} from '../../types';
 
-import {load} from '@loaders.gl/core';
+import {load} from '@sensat/loaders-gl-core';
 import {getAttributeValueType, I3SAttributeLoader} from '../../i3s-attribute-loader';
 import {getUrlWithToken} from './url-utils';
 import {I3STileAttributes} from '../parsers/parse-i3s-attribute';

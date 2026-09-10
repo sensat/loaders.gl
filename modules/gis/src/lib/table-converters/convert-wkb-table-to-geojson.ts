@@ -9,9 +9,9 @@ import type {
   Schema,
   Feature,
   Geometry
-} from '@loaders.gl/schema';
-import {getTableLength, getTableRowAsObject} from '@loaders.gl/schema-utils';
-import {GeoColumnMetadata, getGeoMetadata} from '@loaders.gl/geoarrow';
+} from '@sensat/loaders-gl-schema';
+import {getTableLength, getTableRowAsObject} from '@sensat/loaders-gl-schema-utils';
+import {GeoColumnMetadata, getGeoMetadata} from '@sensat/loaders-gl-geoarrow';
 import {convertWKBToGeometry} from '../geometry-converters/wkb/convert-wkb-to-geometry';
 import {convertWKTToGeometry} from '../geometry-converters/wkb/convert-wkt-to-geometry';
 

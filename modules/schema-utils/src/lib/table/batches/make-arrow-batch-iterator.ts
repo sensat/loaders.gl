@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import * as arrow from 'apache-arrow';
-import type {Table, ArrowTableBatch} from '@loaders.gl/schema';
+import type {Table, ArrowTableBatch} from '@sensat/loaders-gl-schema';
 
 import {convertSchemaToArrow} from '../../schema/convert-arrow-schema';
 import {getTableLength, getTableNumCols, getTableCellAt} from '../tables/table-accessors';

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {MeshAttribute, MeshAttributes, Schema, Field} from '@loaders.gl/schema';
+import {MeshAttribute, MeshAttributes, Schema, Field} from '@sensat/loaders-gl-schema';
 import {getDataTypeFromTypedArray} from '../schema/data-type';
 
 /**

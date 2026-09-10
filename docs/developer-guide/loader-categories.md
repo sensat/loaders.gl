@@ -13,8 +13,8 @@ The fact that loaders belong to categories enable applications to flexibly regis
 For instance, once an application has added support for one loader in a category, other loaders in the same category can be registered during application startup.
 
 ```typescript
-import {parse, registerLoaders} from '@loaders.gl/core';
-import {PCDLoader} from '@loaders.gl/pcd';
+import {parse, registerLoaders} from '@sensat/loaders-gl-core';
+import {PCDLoader} from '@sensat/loaders-gl-pcd';
 async function loadPointCloud(url) {
   const pointCloud = await parse(fetch(url, PCDLoader));
   // Use some WebGL framework to render the parsed cloud

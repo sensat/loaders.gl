@@ -8,10 +8,10 @@ import {
   getGlobalLoaderOptions,
   normalizeOptions,
   setGlobalOptions
-} from '@loaders.gl/core/lib/loader-utils/option-utils';
+} from '@sensat/loaders-gl-core/lib/loader-utils/option-utils';
 
-import {GLTFLoader} from '@loaders.gl/gltf';
-import {LASLoader} from '@loaders.gl/las';
+import {GLTFLoader} from '@sensat/loaders-gl-gltf';
+import {LASLoader} from '@sensat/loaders-gl-las';
 
 const TEST_CASES = [
   {

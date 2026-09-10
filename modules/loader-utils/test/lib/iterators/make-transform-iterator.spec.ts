@@ -1,10 +1,10 @@
 import test from 'tape-promise/tape';
-import {concatenateArrayBuffers} from '@loaders.gl/loader-utils';
-import {fetchFile, parseInBatches, makeIterator} from '@loaders.gl/core';
-import {ShapefileLoader} from '@loaders.gl/shapefile';
-import {CRC32CHash} from '@loaders.gl/crypto';
+import {concatenateArrayBuffers} from '@sensat/loaders-gl-loader-utils';
+import {fetchFile, parseInBatches, makeIterator} from '@sensat/loaders-gl-core';
+import {ShapefileLoader} from '@sensat/loaders-gl-shapefile';
+import {CRC32CHash} from '@sensat/loaders-gl-crypto';
 
-const SHAPEFILE_URL = '@loaders.gl/shapefile/test/data/shapefile-js/boolean-property.shp';
+const SHAPEFILE_URL = '@sensat/loaders-gl-shapefile/test/data/shapefile-js/boolean-property.shp';
 
 async function* calculateByteLengthInBaches(asyncIterator, options) {
   let byteLength = 0;

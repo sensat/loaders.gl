@@ -1,4 +1,4 @@
-import type {LoaderWithParser, StrictLoaderOptions} from '@loaders.gl/loader-utils';
+import type {LoaderWithParser, StrictLoaderOptions} from '@sensat/loaders-gl-loader-utils';
 import type {GLB} from './lib/types/glb-types';
 import type {ParseGLBOptions} from './lib/parsers/parse-glb';
 import {VERSION} from './lib/utils/version';

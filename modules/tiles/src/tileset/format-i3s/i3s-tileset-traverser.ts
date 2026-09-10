@@ -1,4 +1,4 @@
-import {load} from '@loaders.gl/core';
+import {load} from '@sensat/loaders-gl-core';
 import {TilesetTraverser} from '../tileset-traverser';
 
 import {getLodStatus} from '../helpers/i3s-lod';

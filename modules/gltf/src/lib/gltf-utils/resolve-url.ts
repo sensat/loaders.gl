@@ -1,4 +1,4 @@
-import type {LoaderContext, StrictLoaderOptions} from '@loaders.gl/loader-utils';
+import type {LoaderContext, StrictLoaderOptions} from '@sensat/loaders-gl-loader-utils';
 
 // Resolves a relative url against a baseUrl
 // If url is absolute, return it unchanged

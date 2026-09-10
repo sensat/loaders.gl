@@ -3,8 +3,8 @@
 // Copyright (c) vis.gl contributors
 
 /* global Cesium */
-import {load} from '@loaders.gl/core';
-import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
+import {load} from '@sensat/loaders-gl-core';
+import {Tiles3DLoader} from '@sensat/loaders-gl-3d-tiles';
 
 const Axis = Cesium.Axis;
 const Cartesian3 = Cesium.Cartesian3;

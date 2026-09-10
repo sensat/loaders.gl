@@ -1,6 +1,6 @@
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 
-const CONTENT_BASE = '@loaders.gl/images/test/data';
+const CONTENT_BASE = '@sensat/loaders-gl-images/test/data';
 
 // eslint-disable-next-line quotes
 const PNG_BITS = `\
@@ -20,7 +20,7 @@ const SVG_BITS_NOT_LATIN = `\
 
 export const IMAGE_DATA_URL = `data:image/png;base64,${PNG_BITS}`;
 export const SVG_DATA_URL = `data:image/svg+xml;charset=utf-8,${SVG_BITS}`;
-export const IMAGE_URL = '@loaders.gl/images/test/data/img1-preview.png';
+export const IMAGE_URL = '@sensat/loaders-gl-images/test/data/img1-preview.png';
 export const SVG_DATA_URL_NOT_LATIN = `data:image/svg+xml;charset=utf-8,${SVG_BITS_NOT_LATIN}`;
 
 export const TEST_CASES = [

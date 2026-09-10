@@ -23,15 +23,15 @@ Loader for hex encoded [Well-known binary][wkb] format for representation of geo
 ## Installation
 
 ```bash
-npm install @loaders.gl/wkt
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-wkt
+npm install @sensat/loaders-gl-core
 ```
 
 ## Usage
 
 ```typescript
-import {HexWKBLoader} from '@loaders.gl/wkt';
-import {parseSync} from '@loaders.gl/core';
+import {HexWKBLoader} from '@sensat/loaders-gl-wkt';
+import {parseSync} from '@sensat/loaders-gl-core';
 
 // prettier-ignore
 const data = parseSync(data, HexWKBLoader);
@@ -39,8 +39,8 @@ const data = parseSync(data, HexWKBLoader);
 ```
 
 ```typescript
-import {HexWKBLoader} from '@loaders.gl/wkt';
-import {load} from '@loaders.gl/core';
+import {HexWKBLoader} from '@sensat/loaders-gl-wkt';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, HexWKBLoader);
 ```

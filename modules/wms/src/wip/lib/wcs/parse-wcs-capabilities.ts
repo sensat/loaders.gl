@@ -1,6 +1,6 @@
 // loaders.gl, MIT license
 
-import {XMLLoader} from '@loaders.gl/xml';
+import {XMLLoader} from '@sensat/loaders-gl-xml';
 
 /** All capabilities of a WCS service - response to a WCS `GetCapabilities` data structure extracted from XML */
 export type WCSCapabilities = {

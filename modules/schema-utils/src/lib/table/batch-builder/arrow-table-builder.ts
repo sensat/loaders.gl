@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Schema, ArrowTable, ArrowTableBatch} from '@loaders.gl/schema';
+import type {Schema, ArrowTable, ArrowTableBatch} from '@sensat/loaders-gl-schema';
 import * as arrow from 'apache-arrow';
-import {convertSchemaToArrow} from '@loaders.gl/schema-utils';
+import {convertSchemaToArrow} from '@sensat/loaders-gl-schema-utils';
 
 /** Builds an arrow table or batches */
 export class ArrowTableBuilder {

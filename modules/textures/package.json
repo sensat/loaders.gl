@@ -1,15 +1,16 @@
 {
-  "name": "@loaders.gl/textures",
-  "version": "4.4.6",
+  "name": "@sensat/loaders-gl-textures",
+  "version": "4.4.6-sensat.0",
   "description": "Framework-independent loaders for compressed and super compressed (basis) textures ",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/visgl/loaders.gl"
+    "url": "https://github.com/sensat/loaders.gl"
   },
   "keywords": [
     "webgl",
@@ -75,21 +76,20 @@
     "build-crunch-worker": "esbuild src/workers/crunch-worker.ts --outfile=dist/crunch-worker.js --target=esnext --bundle --define:__VERSION__=\\\"$npm_package_version\\\""
   },
   "dependencies": {
-    "@loaders.gl/images": "4.4.6",
-    "@loaders.gl/loader-utils": "4.4.6",
-    "@loaders.gl/schema": "4.4.6",
-    "@loaders.gl/worker-utils": "4.4.6",
     "@math.gl/types": "^4.1.0",
+    "@sensat/loaders-gl-images": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-loader-utils": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-schema": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-worker-utils": "4.4.6-sensat.0",
     "ktx-parse": "^0.7.0"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "~4.4.0",
+    "@sensat/loaders-gl-core": "4.4.6-sensat.0",
     "texture-compressor": "^1.0.2"
   },
   "peerDependenciesMeta": {
     "texture-compressor": {
       "optional": true
     }
-  },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+  }
 }

@@ -5,8 +5,8 @@
 /* eslint-disable camelcase */
 import test from 'tape-promise/tape';
 
-import {BasisLoader} from '@loaders.gl/textures';
-import {load, setLoaderOptions, isBrowser} from '@loaders.gl/core';
+import {BasisLoader} from '@sensat/loaders-gl-textures';
+import {load, setLoaderOptions, isBrowser} from '@sensat/loaders-gl-core';
 import {
   GL_COMPRESSED_RGB_ETC1_WEBGL,
   GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG,
@@ -18,8 +18,8 @@ import {
 } from '../src/lib/gl-extensions';
 import {withBasisTranscodingLock} from '../src/lib/parsers/parse-basis';
 
-const BASIS_TEST_URL = '@loaders.gl/textures/test/data/alpha3.basis';
-const KTX2_BASIS_TEST_URL = '@loaders.gl/textures/test/data/kodim23.ktx2';
+const BASIS_TEST_URL = '@sensat/loaders-gl-textures/test/data/alpha3.basis';
+const KTX2_BASIS_TEST_URL = '@sensat/loaders-gl-textures/test/data/kodim23.ktx2';
 
 setLoaderOptions({
   _workerType: 'test',

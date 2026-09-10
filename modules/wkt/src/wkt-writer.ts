@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
-import type {Geometry} from '@loaders.gl/schema';
-import {convertGeometryToWKT} from '@loaders.gl/gis';
+import type {WriterWithEncoder, WriterOptions} from '@sensat/loaders-gl-loader-utils';
+import type {Geometry} from '@sensat/loaders-gl-schema';
+import {convertGeometryToWKT} from '@sensat/loaders-gl-gis';
 import {VERSION} from './lib/version';
 
 export type WKTWriterOptions = WriterOptions & {

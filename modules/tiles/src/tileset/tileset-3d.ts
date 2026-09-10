@@ -7,10 +7,15 @@
 import {Matrix4, Vector3} from '@math.gl/core';
 import {Ellipsoid} from '@math.gl/geospatial';
 import {Stats} from '@probe.gl/stats';
-import {RequestScheduler, path, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+import {
+  RequestScheduler,
+  path,
+  LoaderWithParser,
+  LoaderOptions
+} from '@sensat/loaders-gl-loader-utils';
 import {TilesetCache} from './tileset-cache';
 import {calculateTransformProps} from './helpers/transform-utils';
-import {FrameState, getFrameState, limitSelectedTiles} from './helpers/frame-state';
+import {FrameState, getFrameState} from './helpers/frame-state';
 import {getZoomFromBoundingVolume, getZoomFromExtent, getZoomFromFullExtent} from './helpers/zoom';
 
 import type {GeospatialViewport, Viewport} from '../types';
@@ -18,6 +23,7 @@ import {Tile3D} from './tile-3d';
 import {TILESET_TYPE} from '../constants';
 
 import {TilesetTraverser} from './tileset-traverser';
+import {GroupedTilesArray} from './grouped-tiles.array';
 
 // TODO - these should be moved into their respective modules
 import {Tileset3DTraverser} from './format-3d-tiles/tileset-3d-traverser';
@@ -70,6 +76,8 @@ export type Tileset3DProps = {
   viewportTraversersMap?: any;
   updateTransforms?: boolean;
   viewDistanceScale?: number;
+  rootViewDistanceScale?: number;
+  displayPriorityFunc?: (tile: Tile3D) => number;
 
   // Callbacks
   onTileLoad?: (tile: Tile3D) => any;
@@ -118,6 +126,10 @@ type Props = {
   updateTransforms: boolean;
   /** View distance scale modifier */
   viewDistanceScale: number;
+  /** Optional scale modifier used only for the root 3D Tiles tile. */
+  rootViewDistanceScale?: number;
+  /** Optional tile priority function for grouped REPLACE selection. */
+  displayPriorityFunc?: (tile: Tile3D) => number;
   basePath: string;
   /** Optional async tile content loader */
   contentLoader?: (tile: Tile3D) => Promise<void>;
@@ -142,6 +154,7 @@ const DEFAULT_PROPS: Props = {
   onTraversalComplete: (selectedTiles: Tile3D[]) => selectedTiles,
   onUpdate: () => {},
   contentLoader: undefined,
+  displayPriorityFunc: undefined,
   viewDistanceScale: 1.0,
   maximumScreenSpaceError: 8,
   memoryAdjustedScreenSpaceError: false,
@@ -275,6 +288,8 @@ export class Tileset3D {
 
   /** Hold traversal results */
   selectedTiles: Tile3D[] = [];
+  /** Grouped candidates used to resolve REPLACE refinement consistently. */
+  selectedTileGroups = new GroupedTilesArray();
 
   // TRAVERSAL
   traverseCounter: number = 0;
@@ -516,19 +531,23 @@ export class Tileset3D {
   _onTraversalEnd(frameState: FrameState): void {
     const id = frameState.viewport.id;
     if (!this.frameStateData[id]) {
-      this.frameStateData[id] = {selectedTiles: [], _requestedTiles: [], _emptyTiles: []};
+      this.frameStateData[id] = {
+        selectedTiles: [],
+        selectedTileGroups: new GroupedTilesArray(),
+        _requestedTiles: [],
+        _emptyTiles: []
+      };
     }
     const currentFrameStateData = this.frameStateData[id];
-    const selectedTiles = Object.values(this._traverser.selectedTiles);
-    const [filteredSelectedTiles, unselectedTiles] = limitSelectedTiles(
-      selectedTiles,
-      frameState,
+    const candidates = new GroupedTilesArray(Object.values(this._traverser.selectedTileGroups));
+    const selectedTileGroups = candidates.spliceHighestPriorityTilesOrGroups(
       this.options.maximumTilesSelected
     );
-    currentFrameStateData.selectedTiles = filteredSelectedTiles;
-    for (const tile of unselectedTiles) {
+    currentFrameStateData.selectedTileGroups = selectedTileGroups;
+    currentFrameStateData.selectedTiles = selectedTileGroups.flatten();
+    candidates.forEach((tile) => {
       tile.unselect();
-    }
+    });
 
     currentFrameStateData._requestedTiles = Object.values(this._traverser.requestedTiles);
     currentFrameStateData._emptyTiles = Object.values(this._traverser.emptyTiles);
@@ -547,16 +566,22 @@ export class Tileset3D {
   _updateTiles(): void {
     const previousSelectedTiles = this.selectedTiles;
     this.selectedTiles = [];
+    this.selectedTileGroups = new GroupedTilesArray();
     this._requestedTiles = [];
     this._emptyTiles = [];
 
     for (const frameStateKey in this.frameStateData) {
       const frameStateDataValue = this.frameStateData[frameStateKey];
-      this.selectedTiles = this.selectedTiles.concat(frameStateDataValue.selectedTiles);
+      if (frameStateDataValue.selectedTileGroups) {
+        this.selectedTileGroups.addTilesOrGroups(frameStateDataValue.selectedTileGroups);
+      } else {
+        this.selectedTiles = this.selectedTiles.concat(frameStateDataValue.selectedTiles);
+      }
       this._requestedTiles = this._requestedTiles.concat(frameStateDataValue._requestedTiles);
       this._emptyTiles = this._emptyTiles.concat(frameStateDataValue._emptyTiles);
     }
 
+    this.selectedTiles = this.selectedTiles.concat(this.selectedTileGroups.flatten());
     this.selectedTiles = this.options.onTraversalComplete(this.selectedTiles);
 
     // Transition hold: keep recently-deselected tiles visible until all their
@@ -625,7 +650,7 @@ export class Tileset3D {
   _loadTiles(): void {
     // Sort requests by priority before making any requests.
     // This makes it less likely this requests will be cancelled after being issued.
-    this._requestedTiles.sort((a, b) => a._priority - b._priority);
+    this._requestedTiles.sort((a, b) => a._loadPriority - b._loadPriority);
     for (const tile of this._requestedTiles) {
       if (tile.contentUnloaded) {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises

@@ -5,8 +5,8 @@
 /* eslint-disable camelcase */
 import test from 'tape-promise/tape';
 
-import * as parquetThrift from '@loaders.gl/parquet/parquetjs/parquet-thrift';
-import {serializeThrift} from '@loaders.gl/parquet/parquetjs/utils/read-utils';
+import * as parquetThrift from '@sensat/loaders-gl-parquet/parquetjs/parquet-thrift';
+import {serializeThrift} from '@sensat/loaders-gl-parquet/parquetjs/utils/read-utils';
 
 // TODO v4 disabled because of Node.js Buffer dependency
 test.skip('thrift#should correctly en/decode literal zeroes with the CompactProtocol', assert => {

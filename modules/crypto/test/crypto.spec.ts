@@ -3,8 +3,8 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {fetchFile, loadInBatches, NullLoader, isBrowser} from '@loaders.gl/core';
-import {CRC32Hash, CRC32CHash, MD5Hash, SHA256Hash, NodeHash} from '@loaders.gl/crypto';
+import {fetchFile, loadInBatches, NullLoader, isBrowser} from '@sensat/loaders-gl-core';
+import {CRC32Hash, CRC32CHash, MD5Hash, SHA256Hash, NodeHash} from '@sensat/loaders-gl-crypto';
 import {getBinaryData} from './test-utils/test-utils';
 
 import CryptoJS from 'crypto-js';
@@ -16,7 +16,7 @@ const {binaryData, repeatedData} = getBinaryData();
 const TEST_CASES = [
   {
     title: 'streaming CSV',
-    url: '@loaders.gl/csv/test/data/sample-very-long.csv',
+    url: '@sensat/loaders-gl-csv/test/data/sample-very-long.csv',
     digests: {
       crc32: 'W5bZ9Q==',
       crc32c: 'YPBZXg==',

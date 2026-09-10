@@ -1,6 +1,6 @@
 # Overview
 
-`@loaders/tiles` exposes handy classes `Tileset3D` and `Tile3D` which can understand the loaded data from tile loaders (`@loaders.gl/3d-tiles`, `@loaders.gl/i3s`, etc.), and provide useful functions for dynamically selecting tiles for rendering under a viewport.
+`@loaders/tiles` exposes handy classes `Tileset3D` and `Tile3D` which can understand the loaded data from tile loaders (`@sensat/loaders-gl-3d-tiles`, `@sensat/loaders-gl-i3s`, etc.), and provide useful functions for dynamically selecting tiles for rendering under a viewport.
 
 ## Concepts
 

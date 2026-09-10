@@ -8,11 +8,11 @@ import type {
   DataSourceOptions,
   ImageSourceMetadata,
   GetImageParameters
-} from '@loaders.gl/loader-utils';
-import {DataSource, ImageSource, mergeOptions} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
+import {DataSource, ImageSource, mergeOptions} from '@sensat/loaders-gl-loader-utils';
 
-import type {ImageType} from '@loaders.gl/images';
-import {ImageLoader} from '@loaders.gl/images';
+import type {ImageType} from '@sensat/loaders-gl-images';
+import {ImageLoader} from '@sensat/loaders-gl-images';
 
 import type {WMSCapabilities} from './wms-capabilities-loader';
 import type {WMSFeatureInfo} from './wip/wms-feature-info-loader';

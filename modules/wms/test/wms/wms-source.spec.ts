@@ -5,7 +5,7 @@
 import test from 'tape-promise/tape';
 import {withFetchMock, mockResults, requestInits} from '../test-utils/fetch-spy';
 
-import {WMSSource} from '@loaders.gl/wms';
+import {WMSSource} from '@sensat/loaders-gl-wms';
 
 const WMS_SERVICE_URL = 'https:/mock-wms-service';
 const WMS_VERSION = '1.3.0';

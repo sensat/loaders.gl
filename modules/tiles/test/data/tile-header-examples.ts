@@ -1,4 +1,4 @@
-import {I3STileHeader} from '@loaders.gl/i3s/src';
+import {I3STileHeader} from '@sensat/loaders-gl-i3s/src';
 import {TILE_TYPE} from '../../src';
 
 /* eslint-disable @typescript-eslint/no-loss-of-precision */

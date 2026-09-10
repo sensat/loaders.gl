@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {TypedArray} from '@loaders.gl/schema';
+import {TypedArray} from '@sensat/loaders-gl-schema';
 
 import {
   STRING_ATTRIBUTE_TYPE,

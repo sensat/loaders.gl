@@ -3,8 +3,8 @@
 // Copyright vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {Tile3DFeatureTable} from '@loaders.gl/3d-tiles';
-import {GL} from '@loaders.gl/math'; // '@math.gl/geometry';
+import {Tile3DFeatureTable} from '@sensat/loaders-gl-3d-tiles';
+import {GL} from '@sensat/loaders-gl-math'; // '@math.gl/geometry';
 
 test('Tile3DFeatureTable#loads from JSON', (t) => {
   // @ts-expect-error

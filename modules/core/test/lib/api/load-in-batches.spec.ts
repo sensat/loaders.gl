@@ -3,15 +3,15 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {loadInBatches, fetchFile, isBrowser} from '@loaders.gl/core';
-import {CSVLoader} from '@loaders.gl/csv';
-import {OBJLoader} from '@loaders.gl/obj';
-import {KMLLoader} from '@loaders.gl/kml';
-import type {ObjectRowTableBatch} from '@loaders.gl/schema';
+import {loadInBatches, fetchFile, isBrowser} from '@sensat/loaders-gl-core';
+import {CSVLoader} from '@sensat/loaders-gl-csv';
+import {OBJLoader} from '@sensat/loaders-gl-obj';
+import {KMLLoader} from '@sensat/loaders-gl-kml';
+import type {ObjectRowTableBatch} from '@sensat/loaders-gl-schema';
 
-const CSV_SAMPLE_VERY_LONG_URL = '@loaders.gl/csv/test/data/sample-very-long.csv';
-const OBJ_ASCII_URL = '@loaders.gl/obj/test/data/bunny.obj';
-const KML_URL = '@loaders.gl/kml/test/data/kml/KML_Samples.kml';
+const CSV_SAMPLE_VERY_LONG_URL = '@sensat/loaders-gl-csv/test/data/sample-very-long.csv';
+const OBJ_ASCII_URL = '@sensat/loaders-gl-obj/test/data/bunny.obj';
+const KML_URL = '@sensat/loaders-gl-kml/test/data/kml/KML_Samples.kml';
 
 test('loadInBatches#FileList', async (t) => {
   if (isBrowser) {

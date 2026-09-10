@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {parse} from '@loaders.gl/core';
-import {OBJLoader} from '@loaders.gl/obj';
+import {parse} from '@sensat/loaders-gl-core';
+import {OBJLoader} from '@sensat/loaders-gl-obj';
 
 const OBJ_URL =
   'https://raw.githubusercontent.com/visgl/loaders.gl/master/modules/obj/test/data/cube.obj';

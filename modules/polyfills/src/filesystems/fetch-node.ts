@@ -4,7 +4,7 @@
 
 import fs from 'fs';
 import {Readable} from 'stream';
-import {resolvePath} from '@loaders.gl/loader-utils';
+import {resolvePath} from '@sensat/loaders-gl-loader-utils';
 import {decompressReadStream} from './stream-utils.node';
 
 const isBoolean = (x) => typeof x === 'boolean';

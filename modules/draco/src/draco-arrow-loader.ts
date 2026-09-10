@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {ArrowTable} from '@loaders.gl/schema';
-import type {LoaderWithParser} from '@loaders.gl/loader-utils';
+import type {ArrowTable} from '@sensat/loaders-gl-schema';
+import type {LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
 import type {DracoLoaderOptions} from './draco-loader';
 import {DracoLoader} from './draco-loader';
-import {convertMeshToTable} from '@loaders.gl/schema-utils';
+import {convertMeshToTable} from '@sensat/loaders-gl-schema-utils';
 
 /**
  * Loader for Draco3D compressed geometries

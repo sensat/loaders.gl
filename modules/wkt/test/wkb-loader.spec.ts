@@ -5,13 +5,13 @@
 /* eslint-disable no-continue */
 
 import test from 'tape-promise/tape';
-import {fetchFile, parseSync} from '@loaders.gl/core';
-import {isWKB} from '@loaders.gl/gis';
-import {WKBLoader} from '@loaders.gl/wkt';
-import {parseTestCases} from '@loaders.gl/gis/test/data/wkt/parse-test-cases';
+import {fetchFile, parseSync} from '@sensat/loaders-gl-core';
+import {isWKB} from '@sensat/loaders-gl-gis';
+import {WKBLoader} from '@sensat/loaders-gl-wkt';
+import {parseTestCases} from '@sensat/loaders-gl-gis/test/data/wkt/parse-test-cases';
 
-const WKB_2D_TEST_CASES = '@loaders.gl/gis/test/data/wkt/wkb-testdata2d.json';
-const WKB_Z_TEST_CASES = '@loaders.gl/gis/test/data/wkt/wkb-testdataZ.json';
+const WKB_2D_TEST_CASES = '@sensat/loaders-gl-gis/test/data/wkt/wkb-testdata2d.json';
+const WKB_Z_TEST_CASES = '@sensat/loaders-gl-gis/test/data/wkt/wkb-testdataZ.json';
 
 test('WKBLoader#2D', async (t) => {
   const response = await fetchFile(WKB_2D_TEST_CASES);

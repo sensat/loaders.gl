@@ -1,5 +1,5 @@
 import test from 'tape';
-// import {encodeRGB565, decodeRGB565} from '@loaders.gl/math';
+// import {encodeRGB565, decodeRGB565} from '@sensat/loaders-gl-math';
 
 test('encodeRGB565/decodeRGB565', (t) => {
   // const color = [255, 128, 30];

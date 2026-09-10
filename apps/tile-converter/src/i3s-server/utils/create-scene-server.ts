@@ -1,4 +1,4 @@
-import {SceneLayer3D} from '@loaders.gl/i3s';
+import {SceneLayer3D} from '@sensat/loaders-gl-i3s';
 import {v4 as uuidv4} from 'uuid';
 
 /**

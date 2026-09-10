@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
 import test from 'tape-promise/tape';
-import {fetchFile, parse, encode} from '@loaders.gl/core';
-// import {getMeshSize} from '@loaders.gl/schema-utils';
-import {DracoWriter, DracoLoader} from '@loaders.gl/draco';
+import {fetchFile, parse, encode} from '@sensat/loaders-gl-core';
+// import {getMeshSize} from '@sensat/loaders-gl-schema-utils';
+import {DracoWriter, DracoLoader} from '@sensat/loaders-gl-draco';
 import {validateMeshCategoryData} from 'test/common/conformance';
 
-const POSITIONS_URL = '@loaders.gl/draco/test/data/raw-attribute-buffers/lidar-positions.bin';
-const COLORS_URL = '@loaders.gl/draco/test/data/raw-attribute-buffers/lidar-colors.bin';
+const POSITIONS_URL = '@sensat/loaders-gl-draco/test/data/raw-attribute-buffers/lidar-positions.bin';
+const COLORS_URL = '@sensat/loaders-gl-draco/test/data/raw-attribute-buffers/lidar-colors.bin';
 
 test('DracoWriter#compressRawBuffers', async (t) => {
   const POSITIONS = await fetchFile(POSITIONS_URL).then((response) => response.arrayBuffer());

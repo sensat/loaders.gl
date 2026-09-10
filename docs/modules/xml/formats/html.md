@@ -1,6 +1,6 @@
 # HTML
 
-- _[`@loaders.gl/xml`](/docs/modules/xml)_
+- _[`@sensat/loaders-gl-xml`](/docs/modules/xml)_
 
 HTML (Hyper Text Markup Language) is a (slightly incompatible) profile of XML.
 

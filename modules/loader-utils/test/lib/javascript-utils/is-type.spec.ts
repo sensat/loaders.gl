@@ -24,7 +24,7 @@ import {
   isWritableDOMStream,
   isWritableNodeStream,
   isWritableStream
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
 
 test('is-type#object checks', (t) => {
   class TestClass {}

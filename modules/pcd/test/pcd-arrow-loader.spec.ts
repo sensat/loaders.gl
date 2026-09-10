@@ -6,11 +6,11 @@
 import test from 'tape-promise/tape';
 import {validateLoader} from 'test/common/conformance';
 
-import {PCDArrowLoader} from '@loaders.gl/pcd';
-import {setLoaderOptions, fetchFile, parse} from '@loaders.gl/core';
+import {PCDArrowLoader} from '@sensat/loaders-gl-pcd';
+import {setLoaderOptions, fetchFile, parse} from '@sensat/loaders-gl-core';
 
-const PCD_ASCII_URL = '@loaders.gl/pcd/test/data/simple-ascii.pcd';
-// const PCD_BINARY_URL = '@loaders.gl/pcd/test/data/Zaghetto.pcd';
+const PCD_ASCII_URL = '@sensat/loaders-gl-pcd/test/data/simple-ascii.pcd';
+// const PCD_BINARY_URL = '@sensat/loaders-gl-pcd/test/data/Zaghetto.pcd';
 
 setLoaderOptions({
   _workerType: 'test'

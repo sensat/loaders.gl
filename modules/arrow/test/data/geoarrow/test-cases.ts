@@ -2,36 +2,36 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {FeatureCollection} from '@loaders.gl/schema';
+import type {FeatureCollection} from '@sensat/loaders-gl-schema';
 
-export const GEOARROW_POINT_FILE = '@loaders.gl/arrow/test/data/geoarrow/point.arrow';
-export const GEOARROW_MULTIPOINT_FILE = '@loaders.gl/arrow/test/data/geoarrow/multipoint.arrow';
-export const GEOARROW_LINE_FILE = '@loaders.gl/arrow/test/data/geoarrow/line.arrow';
-export const GEOARROW_MULTILINE_FILE = '@loaders.gl/arrow/test/data/geoarrow/multiline.arrow';
-export const GEOARROW_POLYGON_FILE = '@loaders.gl/arrow/test/data/geoarrow/polygon.arrow';
-export const GEOARROW_MULTIPOLYGON_FILE = '@loaders.gl/arrow/test/data/geoarrow/multipolygon.arrow';
+export const GEOARROW_POINT_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/point.arrow';
+export const GEOARROW_MULTIPOINT_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/multipoint.arrow';
+export const GEOARROW_LINE_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/line.arrow';
+export const GEOARROW_MULTILINE_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/multiline.arrow';
+export const GEOARROW_POLYGON_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/polygon.arrow';
+export const GEOARROW_MULTIPOLYGON_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/multipolygon.arrow';
 export const GEOARROW_MULTIPOLYGON_HOLE_FILE =
-  '@loaders.gl/arrow/test/data/geoarrow/multipolygon_hole.arrow';
+  '@sensat/loaders-gl-arrow/test/data/geoarrow/multipolygon_hole.arrow';
 
-export const GEOARROW_POINT_WKB_FILE = '@loaders.gl/arrow/test/data/geoarrow/point_wkb.arrow';
-// export const GEOARROW_MULTIPOINT_FILE = '@loaders.gl/arrow/test/data/geoarrow/multipoint_wkb.arrow';
-export const GEOARROW_LINE_WKB_FILE = '@loaders.gl/arrow/test/data/geoarrow/line_wkb.arrow';
-// export const GEOARROW_MULTILINE_FILE = '@loaders.gl/arrow/test/data/geoarrow/multiline_wkb.arrow';
-export const GEOARROW_POLYGON_WKB_FILE = '@loaders.gl/arrow/test/data/geoarrow/polygon_wkb.arrow';
+export const GEOARROW_POINT_WKB_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/point_wkb.arrow';
+// export const GEOARROW_MULTIPOINT_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/multipoint_wkb.arrow';
+export const GEOARROW_LINE_WKB_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/line_wkb.arrow';
+// export const GEOARROW_MULTILINE_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/multiline_wkb.arrow';
+export const GEOARROW_POLYGON_WKB_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/polygon_wkb.arrow';
 export const GEOARROW_MULTIPOLYGON_WKB_FILE =
-  '@loaders.gl/arrow/test/data/geoarrow/multipolygon_wkb.arrow';
+  '@sensat/loaders-gl-arrow/test/data/geoarrow/multipolygon_wkb.arrow';
 export const GEOARROW_MULTIPOLYGON_HOLE_WKB_FILE =
-  '@loaders.gl/arrow/test/data/geoarrow/multipolygon_hole_wkb.arrow';
+  '@sensat/loaders-gl-arrow/test/data/geoarrow/multipolygon_hole_wkb.arrow';
 
-export const GEOARROW_POINT_WKT_FILE = '@loaders.gl/arrow/test/data/geoarrow/point_wkt.arrow';
-// export const GEOARROW_MULTIPOINT_FILE = '@loaders.gl/arrow/test/data/geoarrow/multipoint_wkt.arrow';
-export const GEOARROW_LINE_WKT_FILE = '@loaders.gl/arrow/test/data/geoarrow/line_wkt.arrow';
-// export const GEOARROW_MULTILINE_FILE = '@loaders.gl/arrow/test/data/geoarrow/multiline_wkt.arrow';
-export const GEOARROW_POLYGON_WKT_FILE = '@loaders.gl/arrow/test/data/geoarrow/polygon_wkt.arrow';
+export const GEOARROW_POINT_WKT_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/point_wkt.arrow';
+// export const GEOARROW_MULTIPOINT_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/multipoint_wkt.arrow';
+export const GEOARROW_LINE_WKT_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/line_wkt.arrow';
+// export const GEOARROW_MULTILINE_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/multiline_wkt.arrow';
+export const GEOARROW_POLYGON_WKT_FILE = '@sensat/loaders-gl-arrow/test/data/geoarrow/polygon_wkt.arrow';
 export const GEOARROW_MULTIPOLYGON_WKT_FILE =
-  '@loaders.gl/arrow/test/data/geoarrow/multipolygon_wkt.arrow';
+  '@sensat/loaders-gl-arrow/test/data/geoarrow/multipolygon_wkt.arrow';
 export const GEOARROW_MULTIPOLYGON_HOLE_WKT_FILE =
-  '@loaders.gl/arrow/test/data/geoarrow/multipolygon_hole_wkt.arrow';
+  '@sensat/loaders-gl-arrow/test/data/geoarrow/multipolygon_hole_wkt.arrow';
 
 /** Array containing all encodings */
 export const GEOARROW_ENCODINGS = [

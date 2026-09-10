@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 // Type deduction
-import type {Schema, Field, ArrayType, Table} from '@loaders.gl/schema';
+import type {Schema, Field, ArrayType, Table} from '@sensat/loaders-gl-schema';
 import {getDataTypeFromArray, getDataTypeFromValue} from './data-type';
 
 /**

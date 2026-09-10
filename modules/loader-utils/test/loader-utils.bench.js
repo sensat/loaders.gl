@@ -1,9 +1,9 @@
-import {concatenateArrayBuffersAsync, concatenateArrayBuffers} from '@loaders.gl/loader-utils';
+import {concatenateArrayBuffersAsync, concatenateArrayBuffers} from '@sensat/loaders-gl-loader-utils';
 
 export default async function loaderUtilsBench(suite) {
   const hundredMegabytes = new Array(100).fill(new ArrayBuffer(1e6));
 
-  suite.group('@loaders.gl/loader-utils');
+  suite.group('@sensat/loaders-gl-loader-utils');
 
   const options = {multiplier: 0.1, unit: 'gigabytes'};
 

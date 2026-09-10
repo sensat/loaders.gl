@@ -1,6 +1,6 @@
 # GLB - glTF Binary Format
 
-- _[`@loaders.gl/gltf`](/docs/modules/gltf)_
+- _[`@sensat/loaders-gl-gltf`](/docs/modules/gltf)_
 - _[GLB specification](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#glb-file-format-specification)_
 - _[Wikipedia article](https://en.wikipedia.org/wiki/GlTF#GLB)_
 

@@ -17,8 +17,8 @@ The `ArrowLoader` parses the Apache Arrow columnar table format.
 ## Usage
 
 ```typescript
-import {ArrowLoader} from '@loaders.gl/arrow';
-import {load} from '@loaders.gl/core';
+import {ArrowLoader} from '@sensat/loaders-gl-arrow';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, ArrowLoader, options);
 ```

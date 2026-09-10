@@ -3,7 +3,7 @@
 // Copyright vis.gl contributors
 
 // HELPER ENCODERS
-import {assert} from '@loaders.gl/loader-utils';
+import {assert} from '@sensat/loaders-gl-loader-utils';
 
 export function encode3DTileHeader(tile, dataView, byteOffset) {
   const HEADER_SIZE = 12;

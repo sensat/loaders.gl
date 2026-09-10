@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {ReadableFile} from '@loaders.gl/loader-utils';
+import type {ReadableFile} from '@sensat/loaders-gl-loader-utils';
 import {getReadableFileSize, readRange} from './readable-file-utils';
 
 /** Description of zip signature type */

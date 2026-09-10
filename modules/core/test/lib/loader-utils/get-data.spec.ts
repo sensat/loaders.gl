@@ -7,9 +7,9 @@ import {
   getArrayBufferOrStringFromDataSync,
   getArrayBufferOrStringFromData,
   getAsyncIterableFromData
-} from '@loaders.gl/core/lib/loader-utils/get-data';
+} from '@sensat/loaders-gl-core/lib/loader-utils/get-data';
 
-import {isIterator, JSONLoader} from '@loaders.gl/core';
+import {isIterator, JSONLoader} from '@sensat/loaders-gl-core';
 
 const BinaryLoader = {
   ...JSONLoader,

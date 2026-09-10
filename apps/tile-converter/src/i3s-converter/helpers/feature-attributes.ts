@@ -1,17 +1,17 @@
 /* eslint-disable camelcase */
-import type {FeatureTableJson} from '@loaders.gl/3d-tiles';
-import type {Attribute} from '@loaders.gl/i3s';
+import type {FeatureTableJson} from '@sensat/loaders-gl-3d-tiles';
+import type {Attribute} from '@sensat/loaders-gl-i3s';
 import type {
   GLTFPostprocessed,
   GLTF_EXT_feature_metadata_GLTF,
   GLTF_EXT_feature_metadata_ClassProperty,
   GLTF_EXT_structural_metadata_GLTF,
   GLTF_EXT_structural_metadata_ClassProperty
-} from '@loaders.gl/gltf';
+} from '@sensat/loaders-gl-gltf';
 
 import {AttributeType} from '../types';
 
-import {EXT_FEATURE_METADATA, EXT_STRUCTURAL_METADATA} from '@loaders.gl/gltf';
+import {EXT_FEATURE_METADATA, EXT_STRUCTURAL_METADATA} from '@sensat/loaders-gl-gltf';
 
 /**
  * Takes attributes from property table based on featureIdsMap.

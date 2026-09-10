@@ -29,21 +29,21 @@ There's a convenient [example](http://mapbox.github.io/geojson-vt/debug/) to tes
 ### Install
 
 ```sh
-npm install @loaders.gl/mvt
+npm install @sensat/loaders-gl-mvt
 ```
 
 Or just import via a browser script tag:
 
 ```html
-<script src="https://unpkg.com/@loaders.gl/mvt/dist/dist.min.js"></script>
+<script src="https://unpkg.com/@sensat/loaders-gl-mvt/dist/dist.min.js"></script>
 ```
 
 ### Usage
 
 ```typescript
-import {createDataSource} from '@loaders.gl/core';
-import {TableTileSource} from '@loaders.gl/mvt';
-import {GeoJSONLoader} from '@loaders.gl/json';
+import {createDataSource} from '@sensat/loaders-gl-core';
+import {TableTileSource} from '@sensat/loaders-gl-mvt';
+import {GeoJSONLoader} from '@sensat/loaders-gl-json';
 
 // build an initial index of tiles.,
 const tileSource = createDataSource(url, [TableTileSource], {
@@ -80,8 +80,8 @@ although the defaults are sensible and work well for most use cases.
 | `table.buffer`         | `64`      | Tile buffer on each side                                             |
 
 ```typescript
-import {createDataSource} from '@loaders.gl/core';
-import {TableTileSource} from '@loaders.gl/mvt`
+import {createDataSource} from '@sensat/loaders-gl-core';
+import {TableTileSource} from '@sensat/loaders-gl-mvt`
 const tileSource = createDataSource(parsedGeojson, [TableTileSource], {
 	maxZoom: 14,      // max zoom to preserve detail on; can't be higher than 24
 	tolerance: 3,     // simplification tolerance (higher means simpler)

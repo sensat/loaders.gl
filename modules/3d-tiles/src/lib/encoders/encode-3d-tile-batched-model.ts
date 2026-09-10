@@ -9,7 +9,7 @@ import {
   padToNBytes,
   copyBinaryToDataView,
   copyPaddedStringToDataView
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
 import {MAGIC_ARRAY} from '../constants';
 import {encode3DTileHeader, encode3DTileByteLength} from './helpers/encode-3d-tile-header';
 

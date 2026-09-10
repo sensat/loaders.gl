@@ -1,11 +1,11 @@
 # Overview
 
-The `@loaders.gl/zip` module handles compressing and decompressing of the [ZIP](<https://en.wikipedia.org/wiki/Zip_(file_format)>) and [TAR](<https://en.wikipedia.org/wiki/Tar_(computing)>) format.
+The `@sensat/loaders-gl-zip` module handles compressing and decompressing of the [ZIP](<https://en.wikipedia.org/wiki/Zip_(file_format)>) and [TAR](<https://en.wikipedia.org/wiki/Tar_(computing)>) format.
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/core @loaders.gl/zip
+npm install @sensat/loaders-gl-core @sensat/loaders-gl-zip
 ```
 
 ## Attributions

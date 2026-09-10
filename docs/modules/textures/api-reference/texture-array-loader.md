@@ -17,8 +17,8 @@ A loader for texture arrays described by a JSON manifest.
 ## Usage
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {TextureArrayLoader} from '@loaders.gl/textures';
+import {load} from '@sensat/loaders-gl-core';
+import {TextureArrayLoader} from '@sensat/loaders-gl-textures';
 
 const images = await load('texture-array.image-texture-array.json', TextureArrayLoader);
 ```

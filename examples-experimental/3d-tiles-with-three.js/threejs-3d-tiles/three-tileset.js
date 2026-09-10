@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import * as THREE from 'three';
-import {Tileset3D} from '@loaders.gl/tiles';
+import {Tileset3D} from '@sensat/loaders-gl-tiles';
 import {Plane} from '@math.gl/culling';
 import TileHeader from './tile-header';
 

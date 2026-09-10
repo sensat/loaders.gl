@@ -5,7 +5,7 @@
 import {Quaternion, Vector3, Matrix3, Matrix4, degrees} from '@math.gl/core';
 import {BoundingSphere, OrientedBoundingBox} from '@math.gl/culling';
 import {Ellipsoid} from '@math.gl/geospatial';
-import {assert} from '@loaders.gl/loader-utils';
+import {assert} from '@sensat/loaders-gl-loader-utils';
 
 // const scratchProjectedBoundingSphere = new BoundingSphere();
 

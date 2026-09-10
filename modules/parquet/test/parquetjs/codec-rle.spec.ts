@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {PARQUET_CODECS} from '@loaders.gl/parquet/parquetjs/codecs';
+import {PARQUET_CODECS} from '@sensat/loaders-gl-parquet/parquetjs/codecs';
 
 test('ParquetCodec::RLE#should encode bitpacked values', assert => {
   const buf = PARQUET_CODECS.RLE.encodeValues(

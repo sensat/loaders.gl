@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Schema, TableBatch} from '@loaders.gl/schema';
+import type {Schema, TableBatch} from '@sensat/loaders-gl-schema';
 import {TableBatchAggregator, TableBatchOptions} from './table-batch-aggregator';
 
 const DEFAULT_ROW_COUNT = 100;

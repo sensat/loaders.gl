@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Table, TableBatch, Batch} from '@loaders.gl/schema';
-import type {LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {Table, TableBatch, Batch} from '@sensat/loaders-gl-schema';
+import type {LoaderWithParser, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
 import {parseJSONSync} from './lib/parsers/parse-json';
 import {parseJSONInBatches} from './lib/parsers/parse-json-in-batches';
 

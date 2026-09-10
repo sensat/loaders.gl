@@ -19,15 +19,15 @@ Loader for the [MapLibre Tile (MLT)](/docs/modules/mlt/formats/mlt) geospatial t
 ## Installation
 
 ```bash
-npm install @loaders.gl/mlt
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-mlt
+npm install @sensat/loaders-gl-core
 ```
 
 ## Usage
 
 ```typescript
-import {MLTLoader} from '@loaders.gl/mlt';
-import {load} from '@loaders.gl/core';
+import {MLTLoader} from '@sensat/loaders-gl-mlt';
+import {load} from '@sensat/loaders-gl-core';
 
 const tileFeatures = await load(url, MLTLoader);
 ```
@@ -37,8 +37,8 @@ const tileFeatures = await load(url, MLTLoader);
 By default, `MLTLoader` returns GeoJSON features using local tile coordinates in `[0, 1]` space:
 
 ```typescript
-import {MLTLoader} from '@loaders.gl/mlt';
-import {load} from '@loaders.gl/core';
+import {MLTLoader} from '@sensat/loaders-gl-mlt';
+import {load} from '@sensat/loaders-gl-core';
 
 const geoJSONfeatures = await load(url, MLTLoader);
 ```
@@ -48,8 +48,8 @@ const geoJSONfeatures = await load(url, MLTLoader);
 Set `coordinates: 'wgs84'` and provide the tile index to get longitude / latitude coordinates:
 
 ```typescript
-import {MLTLoader} from '@loaders.gl/mlt';
-import {load} from '@loaders.gl/core';
+import {MLTLoader} from '@sensat/loaders-gl-mlt';
+import {load} from '@sensat/loaders-gl-core';
 
 const geoJSONfeatures = await load(url, MLTLoader, {
   mlt: {

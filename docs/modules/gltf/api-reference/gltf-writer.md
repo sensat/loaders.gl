@@ -13,8 +13,8 @@ The `GLTFWriter` is a writer for glTF scenegraphs.
 ## Usage
 
 ```typescript
-import {GLTFWriter} from '@loaders.gl/gltf';
-import {encodeSync} from '@loaders.gl/core';
+import {GLTFWriter} from '@sensat/loaders-gl-gltf';
+import {encodeSync} from '@sensat/loaders-gl-core';
 
 const arrayBuffer = encodeSync(gltf, GLTFWriter, options);
 ```

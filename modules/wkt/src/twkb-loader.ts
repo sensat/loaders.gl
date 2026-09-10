@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
-import type {BinaryGeometry, Geometry} from '@loaders.gl/schema';
-import {convertTWKBToGeometry, isTWKB} from '@loaders.gl/gis';
+import type {Loader, LoaderWithParser, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
+import type {BinaryGeometry, Geometry} from '@sensat/loaders-gl-schema';
+import {convertTWKBToGeometry, isTWKB} from '@sensat/loaders-gl-gis';
 import {VERSION} from './lib/version';
 
 export type WKBLoaderOptions = LoaderOptions & {

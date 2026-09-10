@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {ChildProcessProxy} from '@loaders.gl/worker-utils';
+import {ChildProcessProxy} from '@sensat/loaders-gl-worker-utils';
 import {CompressedTextureWriterOptions} from '../../compressed-texture-writer';
 
 /**
@@ -13,7 +13,7 @@ import {CompressedTextureWriterOptions} from '../../compressed-texture-writer';
  * in `.ktx` or the CLI rejects it.
  *
  * Note: This is an experimental encoder that shells out to the `texture-compressor` CLI.
- * That CLI is an optional peer rather than a dependency of `@loaders.gl/textures`;
+ * That CLI is an optional peer rather than a dependency of `@sensat/loaders-gl-textures`;
  * applications that use this writer must install it themselves
  * (`npm install --save-dev texture-compressor`). It is never downloaded on demand - if it
  * cannot be resolved locally, this function rejects.

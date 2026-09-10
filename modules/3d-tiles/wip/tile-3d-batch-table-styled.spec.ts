@@ -2,7 +2,7 @@
 // See LICENSE.md and https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md
 
 import test from 'tape-promise/tape';
-import Tile3DBatchTable from '@loaders.gl/3d-tiles/classes/tile-3d-batch-table';
+import Tile3DBatchTable from '@sensat/loaders-gl-3d-tiles/classes/tile-3d-batch-table';
 import {Matrix2, Matrix3, Matrix4} from '@math.gl/core';
 import {loadTileset} from '../utils/load-utils';
 
@@ -12,14 +12,14 @@ import {loadTileset} from '../utils/load-utils';
 // Cesium3DTileStyle,
 // Cesium3DTilesTester,
 // createScene) {_
-const WITH_BATCH_TABLE_URL = '@loaders.gl/3d-tiles/test/data//Batched/BatchedWithBatchTable/tileset.json';
-const WITHOUT_BATCH_TABLE_URL = '@loaders.gl/3d-tiles/test/data//Batched/BatchedWithoutBatchTable/tileset.json';
-const NO_BATCH_IDS_URL = '@loaders.gl/3d-tiles/test/data//Batched/BatchedNoBatchIds/tileset.json';
-const BATCH_TABLE_HIERARCHY_URL = '@loaders.gl/3d-tiles/test/data//Hierarchy/BatchTableHierarchy/tileset.json';
-const BATCH_TABLE_HIERARCHY_BINARY_URL = '@loaders.gl/3d-tiles/test/data//Hierarchy/BatchTableHierarchyBinary/tileset.json';
-const batchTableHierarchyMultipleParentsUrl = '@loaders.gl/3d-tiles/test/data//Hierarchy/BatchTableHierarchyMultipleParents/tileset.json';
-const BATCH_TABLE_HIERARCHY_NO_PARENTS_URL = '@loaders.gl/3d-tiles/test/data//Hierarchy/BatchTableHierarchyNoParents/tileset.json';
-const BATCH_TABLE_HIERARCHY_LEGACY_URL = '@loaders.gl/3d-tiles/test/data//Hierarchy/BatchTableHierarchyLegacy/tileset.json';
+const WITH_BATCH_TABLE_URL = '@sensat/loaders-gl-3d-tiles/test/data//Batched/BatchedWithBatchTable/tileset.json';
+const WITHOUT_BATCH_TABLE_URL = '@sensat/loaders-gl-3d-tiles/test/data//Batched/BatchedWithoutBatchTable/tileset.json';
+const NO_BATCH_IDS_URL = '@sensat/loaders-gl-3d-tiles/test/data//Batched/BatchedNoBatchIds/tileset.json';
+const BATCH_TABLE_HIERARCHY_URL = '@sensat/loaders-gl-3d-tiles/test/data//Hierarchy/BatchTableHierarchy/tileset.json';
+const BATCH_TABLE_HIERARCHY_BINARY_URL = '@sensat/loaders-gl-3d-tiles/test/data//Hierarchy/BatchTableHierarchyBinary/tileset.json';
+const batchTableHierarchyMultipleParentsUrl = '@sensat/loaders-gl-3d-tiles/test/data//Hierarchy/BatchTableHierarchyMultipleParents/tileset.json';
+const BATCH_TABLE_HIERARCHY_NO_PARENTS_URL = '@sensat/loaders-gl-3d-tiles/test/data//Hierarchy/BatchTableHierarchyNoParents/tileset.json';
+const BATCH_TABLE_HIERARCHY_LEGACY_URL = '@sensat/loaders-gl-3d-tiles/test/data//Hierarchy/BatchTableHierarchyLegacy/tileset.json';
 
 // const result = new Color();
 

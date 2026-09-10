@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
+import type {WriterWithEncoder, WriterOptions} from '@sensat/loaders-gl-loader-utils';
 import JSZip, {JSZipFileOptions, JSZipGeneratorOptions} from 'jszip';
 
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.

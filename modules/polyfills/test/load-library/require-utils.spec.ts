@@ -5,7 +5,7 @@
 import test from 'tape-promise/tape';
 import * as fs from 'fs';
 import * as path from 'path';
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 import {requireFromFile, requireFromString} from '../../src/load-library/require-utils.node';
 
 const DIR = path?.dirname?.(import.meta.url)?.replace('file://', '') || '.';

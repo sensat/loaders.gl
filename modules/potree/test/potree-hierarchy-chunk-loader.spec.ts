@@ -1,8 +1,8 @@
 import test from 'tape-promise/tape';
-import {fetchFile, parse} from '@loaders.gl/core';
-import {PotreeHierarchyChunkLoader} from '@loaders.gl/potree';
+import {fetchFile, parse} from '@sensat/loaders-gl-core';
+import {PotreeHierarchyChunkLoader} from '@sensat/loaders-gl-potree';
 
-const POTREE_HIERARCHY_CHUNK_URL = '@loaders.gl/potree/test/data/lion_takanawa/data/r/r.hrc';
+const POTREE_HIERARCHY_CHUNK_URL = '@sensat/loaders-gl-potree/test/data/lion_takanawa/data/r/r.hrc';
 
 test('PotreeHierarchyChunkLoader#parse', async (t) => {
   const response = await fetchFile(POTREE_HIERARCHY_CHUNK_URL);

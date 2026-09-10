@@ -1,4 +1,4 @@
-# @loaders.gl/terrain
+# @sensat/loaders-gl-terrain
 
 [loaders.gl](https://loaders.gl/docs) is a collection of framework-independent 3D and geospatial parsers and encoders.
 
@@ -6,7 +6,7 @@ This module reconstructs mesh surfaces from height map images, e.g. [Mapzen Terr
 
 For documentation please visit the [website](https://loaders.gl).
 
-`@loaders.gl/terrain` uses [MARTINI](https://github.com/mapbox/martini) for mesh reconstruction.
+`@sensat/loaders-gl-terrain` uses [MARTINI](https://github.com/mapbox/martini) for mesh reconstruction.
 
 ISC License
 

@@ -1,5 +1,5 @@
-import type {Tiles3DTileContent} from '@loaders.gl/3d-tiles';
-import type {GLTFAccessorPostprocessed, GLTFNodePostprocessed} from '@loaders.gl/gltf';
+import type {Tiles3DTileContent} from '@sensat/loaders-gl-3d-tiles';
+import type {GLTFAccessorPostprocessed, GLTFNodePostprocessed} from '@sensat/loaders-gl-gltf';
 import {Matrix4, TypedArray, Vector3} from '@math.gl/core';
 import {BoundingSphere, OrientedBoundingBox} from '@math.gl/culling';
 import {Ellipsoid} from '@math.gl/geospatial';

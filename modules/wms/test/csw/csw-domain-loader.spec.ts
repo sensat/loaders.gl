@@ -9,8 +9,8 @@
 import test from 'tape-promise/tape';
 // import {validateLoader} from 'test/common/conformance';
 
-import {CSWDomainLoader} from '@loaders.gl/wms';
-import {parse} from '@loaders.gl/core';
+import {CSWDomainLoader} from '@sensat/loaders-gl-wms';
+import {parse} from '@sensat/loaders-gl-core';
 
 // const CSW_REQUEST_2_0_2 =
 // '<csw:GetDomain xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="CSW" version="2.0.2">' +

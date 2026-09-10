@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {DataType, TypedArray, TypedArrayConstructor, ArrayType} from '@loaders.gl/schema';
+import {DataType, TypedArray, TypedArrayConstructor, ArrayType} from '@sensat/loaders-gl-schema';
 
 /** Deduce column types from values */
 export function getDataTypeFromValue(

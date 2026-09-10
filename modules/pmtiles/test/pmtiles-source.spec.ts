@@ -3,10 +3,10 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {isBrowser, fetchFile} from '@loaders.gl/core';
+import {isBrowser, fetchFile} from '@sensat/loaders-gl-core';
 
 import {PMTILESETS} from './data/tilesets';
-import {PMTilesSource} from '@loaders.gl/pmtiles';
+import {PMTilesSource} from '@sensat/loaders-gl-pmtiles';
 
 test('PMTilesSource#urls', async (t) => {
   if (!isBrowser) {
@@ -48,8 +48,8 @@ test('PMTilesSource#Blobs', async (t) => {
 import test from 'tape-promise/tape';
 import {validateLoader} from 'test/common/conformance';
 
-import {load} from '@loaders.gl/core';
-import {PMTilesLoader} from '@loaders.gl/pmtiles';
+import {load} from '@sensat/loaders-gl-core';
+import {PMTilesLoader} from '@sensat/loaders-gl-pmtiles';
 
 import {PMTILESETS} from './data/tilesets';
 
@@ -69,7 +69,7 @@ test.skip('PMTilesLoader#load', async (t) => {
 /*
 // echo '{"type":"Polygon","coordinates":[[[0,0],[0,1],[1,1],[1,0],[0,0]]]}' | ./tippecanoe -zg -o test_fixture_1.pmtiles
 test('cache getHeader', async (t) => {
-  const source = new TestFileSource('@loaders.gl/pmtiles/test/data/test_fixture_1.pmtiles', '1');
+  const source = new TestFileSource('@sensat/loaders-gl-pmtiles/test/data/test_fixture_1.pmtiles', '1');
   const cache = new SharedPromiseCache();
   const header = await cache.getHeader(source);
   t.strictEqual(header.rootDirectoryOffset, 127);
@@ -96,7 +96,7 @@ test('cache getHeader', async (t) => {
 });
 
 test('cache check against empty', async (t) => {
-  const source = new TestFileSource('@loaders.gl/pmtiles/test/data/empty.pmtiles', '1');
+  const source = new TestFileSource('@sensat/loaders-gl-pmtiles/test/data/empty.pmtiles', '1');
   const cache = new SharedPromiseCache();
   t.rejects(async () => {
     await cache.getHeader(source);
@@ -104,7 +104,7 @@ test('cache check against empty', async (t) => {
 });
 
 test('cache check magic number', async (t) => {
-  const source = new TestFileSource('@loaders.gl/pmtiles/test/data/invalid.pmtiles', '1');
+  const source = new TestFileSource('@sensat/loaders-gl-pmtiles/test/data/invalid.pmtiles', '1');
   const cache = new SharedPromiseCache();
   t.rejects(async () => {
     await cache.getHeader(source);
@@ -112,7 +112,7 @@ test('cache check magic number', async (t) => {
 });
 
 test('cache check future spec version', async (t) => {
-  const source = new TestFileSource('@loaders.gl/pmtiles/test/data/invalid_v4.pmtiles', '1');
+  const source = new TestFileSource('@sensat/loaders-gl-pmtiles/test/data/invalid_v4.pmtiles', '1');
   const cache = new SharedPromiseCache();
   t.rejects(async () => {
     await cache.getHeader(source);
@@ -120,7 +120,7 @@ test('cache check future spec version', async (t) => {
 });
 
 test('cache getDirectory', async (t) => {
-  const source = new TestFileSource('@loaders.gl/pmtiles/test/data/test_fixture_1.pmtiles', '1');
+  const source = new TestFileSource('@sensat/loaders-gl-pmtiles/test/data/test_fixture_1.pmtiles', '1');
 
   let cache = new SharedPromiseCache(6400, false);
   let header = await cache.getHeader(source);
@@ -151,8 +151,8 @@ test('cache getDirectory', async (t) => {
 
 test('multiple sources in a single cache', async (t) => {
   const cache = new SharedPromiseCache();
-  const source1 = new TestFileSource('@loaders.gl/pmtiles/test/data/test_fixture_1.pmtiles', '1');
-  const source2 = new TestFileSource('@loaders.gl/pmtiles/test/data/test_fixture_1.pmtiles', '2');
+  const source1 = new TestFileSource('@sensat/loaders-gl-pmtiles/test/data/test_fixture_1.pmtiles', '1');
+  const source2 = new TestFileSource('@sensat/loaders-gl-pmtiles/test/data/test_fixture_1.pmtiles', '2');
   await cache.getHeader(source1);
   t.strictEqual(cache.cache.size, 2);
   await cache.getHeader(source2);
@@ -161,7 +161,7 @@ test('multiple sources in a single cache', async (t) => {
 
 test('etags are part of key', async (t) => {
   const cache = new SharedPromiseCache(6400, false);
-  const source = new TestFileSource('@loaders.gl/pmtiles/test/data/test_fixture_1.pmtiles', '1');
+  const source = new TestFileSource('@sensat/loaders-gl-pmtiles/test/data/test_fixture_1.pmtiles', '1');
   source.etag = 'etag_1';
   let header = await cache.getHeader(source);
   t.strictEqual(header.etag, 'etag_1');
@@ -186,7 +186,7 @@ test('etags are part of key', async (t) => {
 
 test.skip('soft failure on etag weirdness', async (t) => {
   const cache = new SharedPromiseCache(6400, false);
-  const source = new TestFileSource('@loaders.gl/pmtiles/test/data/test_fixture_1.pmtiles', '1');
+  const source = new TestFileSource('@sensat/loaders-gl-pmtiles/test/data/test_fixture_1.pmtiles', '1');
   source.etag = 'etag_1';
   let header = await cache.getHeader(source);
   t.strictEqual(header.etag, 'etag_1');
@@ -222,7 +222,7 @@ test('cache pruning by byte size', async (t) => {
 });
 
 test('pmtiles get metadata', async (t) => {
-  const source = new TestFileSource('@loaders.gl/pmtiles/test/data/test_fixture_1.pmtiles', '1');
+  const source = new TestFileSource('@sensat/loaders-gl-pmtiles/test/data/test_fixture_1.pmtiles', '1');
   const p = new PMTiles(source);
   const metadata = await p.getMetadata();
   t.ok(metadata.name);
@@ -230,13 +230,13 @@ test('pmtiles get metadata', async (t) => {
 
 // echo '{"type":"Polygon","coordinates":[[[0,0],[0,1],[1,0],[0,0]]]}' | ./tippecanoe -zg -o test_fixture_2.pmtiles
 test('pmtiles handle retries', async (t) => {
-  const source = new TestFileSource('@loaders.gl/pmtiles/test/data/test_fixture_1.pmtiles', '1');
+  const source = new TestFileSource('@sensat/loaders-gl-pmtiles/test/data/test_fixture_1.pmtiles', '1');
   source.etag = '1';
   const p = new PMTiles(source);
   const metadata = await p.getMetadata();
   t.ok(metadata.name);
   source.etag = '2';
-  source.replaceData('@loaders.gl/pmtiles/test/data/test_fixture_2.pmtiles');
+  source.replaceData('@sensat/loaders-gl-pmtiles/test/data/test_fixture_2.pmtiles');
   t.ok(await p.getZxy(0, 0, 0));
 });
 */

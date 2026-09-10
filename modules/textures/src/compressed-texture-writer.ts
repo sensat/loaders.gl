@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
+import type {WriterWithEncoder, WriterOptions} from '@sensat/loaders-gl-loader-utils';
 import {VERSION} from './lib/utils/version';
 import {encodeImageURLToCompressedTextureURL} from './lib/encoders/encode-texture';
 

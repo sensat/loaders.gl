@@ -1,4 +1,4 @@
-import type {ReadableFile} from '@loaders.gl/loader-utils';
+import type {ReadableFile} from '@sensat/loaders-gl-loader-utils';
 import {ZipFileSystem} from './zip-filesystem';
 
 /**

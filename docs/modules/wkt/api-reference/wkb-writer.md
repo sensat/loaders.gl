@@ -23,15 +23,15 @@ Writer for the [Well-known binary][wkb] format for representation of geometry.
 ## Installation
 
 ```bash
-npm install @loaders.gl/wkt
-npm install @loaders.gl/core
+npm install @sensat/loaders-gl-wkt
+npm install @sensat/loaders-gl-core
 ```
 
 ## Usage
 
 ```typescript
-import {WKBWriter} from '@loaders.gl/wkt';
-import {encodeSync} from '@loaders.gl/core';
+import {WKBWriter} from '@sensat/loaders-gl-wkt';
+import {encodeSync} from '@sensat/loaders-gl-core';
 
 const geometry = {
   type: 'Polygon',

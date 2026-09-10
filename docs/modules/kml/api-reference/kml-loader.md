@@ -19,8 +19,8 @@ The `KMLLoader` parses [KML files][kml_wikipedia] into GeoJSON. From Wikipedia:
 ## Usage
 
 ```typescript
-import {KMLLoader} from '@loaders.gl/kml';
-import {load} from '@loaders.gl/core';
+import {KMLLoader} from '@sensat/loaders-gl-kml';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, KMLLoader, options);
 ```
@@ -33,4 +33,4 @@ const data = await load(url, KMLLoader, options);
 
 ## Limitations
 
-- In Node.JS, applications must import `@loaders.gl/polyfills` for the `DOMParser` polyfill.
+- In Node.JS, applications must import `@sensat/loaders-gl-polyfills` for the `DOMParser` polyfill.

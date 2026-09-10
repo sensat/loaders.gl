@@ -1,4 +1,4 @@
-import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {Loader, LoaderWithParser, LoaderOptions} from '@sensat/loaders-gl-loader-utils';
 import type {NetCDFHeader} from './netcdfjs/netcdf-types';
 import {NetCDFReader} from './netcdfjs/netcdf-reader';
 

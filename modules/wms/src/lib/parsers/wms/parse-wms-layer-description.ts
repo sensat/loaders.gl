@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {XMLLoaderOptions} from '@loaders.gl/xml';
-import {XMLLoader} from '@loaders.gl/xml';
+import type {XMLLoaderOptions} from '@sensat/loaders-gl-xml';
+import {XMLLoader} from '@sensat/loaders-gl-xml';
 
 /** Layer description - response to a WMS `DescribeLayer` request  */
 export type WMSLayerDescription = {

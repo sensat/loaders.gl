@@ -4,7 +4,7 @@
 
 import type {Availability, Tile3DBoundingVolume, Subtree} from '../../../types';
 import {Tile3DSubtreeLoader} from '../../../tile-3d-subtree-loader';
-import {load} from '@loaders.gl/core';
+import {load} from '@sensat/loaders-gl-core';
 import {default as log} from '@probe.gl/log';
 
 import {getS2CellIdFromToken, getS2ChildCellId, getS2TokenFromCellId} from '../../utils/s2/index';

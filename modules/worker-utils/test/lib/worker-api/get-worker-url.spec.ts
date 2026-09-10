@@ -3,15 +3,15 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {isBrowser} from '@loaders.gl/core';
-import {NullWorker} from '@loaders.gl/worker-utils';
+import {isBrowser} from '@sensat/loaders-gl-core';
+import {NullWorker} from '@sensat/loaders-gl-worker-utils';
 import {getWorkerURL} from '../../../src/lib/worker-api/get-worker-url';
 
 test('getWorkerURL', (t) => {
   // TODO(ib): version injection issue in babel register
   // t.equals(
   //   getWorkerURL(NullWorker, {}),
-  //   `https://unpkg.com/@loaders.gl/worker-utils@${VERSION}/dist/null-worker.js`,
+  //   `https://unpkg.com/@sensat/loaders-gl-worker-utils@${VERSION}/dist/null-worker.js`,
   //   'worker url with no options'
   // );
 

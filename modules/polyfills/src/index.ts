@@ -30,7 +30,7 @@ export {File_ as File} from './file/install-file-polyfills';
 if (isBrowser) {
   // eslint-disable-next-line no-console
   console.error(
-    'loaders.gl: The @loaders.gl/polyfills should only be used in Node.js environments'
+    'loaders.gl: The @sensat/loaders-gl-polyfills should only be used in Node.js environments'
   );
 }
 
@@ -78,7 +78,7 @@ if (!('btoa' in globalThis) && btoa) {
 }
 
 // NODE IMAGE FUNCTIONS:
-// These are not official polyfills but used by the @loaders.gl/images module if installed
+// These are not official polyfills but used by the @sensat/loaders-gl-images module if installed
 // TODO - is there an appropriate Image API we could polyfill using an adapter?
 
 globalThis.loaders.encodeImageNode = encodeImageNode;

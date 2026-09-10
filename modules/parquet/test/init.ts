@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {preloadCompressions,installBufferPolyfill} from '@loaders.gl/parquet';
+import {preloadCompressions,installBufferPolyfill} from '@sensat/loaders-gl-parquet';
 
 // Import big dependencies
 

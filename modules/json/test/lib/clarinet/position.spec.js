@@ -1,8 +1,8 @@
 import test from 'tape-promise/tape';
 import ClarinetParser from '../../../src/lib/clarinet/clarinet';
-import {fetchFile} from '@loaders.gl/core';
+import {fetchFile} from '@sensat/loaders-gl-core';
 
-const SAMPLE_PATH = '@loaders.gl/json/test/data/clarinet/sample.json';
+const SAMPLE_PATH = '@sensat/loaders-gl-json/test/data/clarinet/sample.json';
 
 test('clarinet#track position', async (t) => {
   const response = await fetchFile(SAMPLE_PATH);

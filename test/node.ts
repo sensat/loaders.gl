@@ -15,6 +15,6 @@ if (typeof process !== 'undefined') {
 // @ts-ignore TS2339: Property does not exist on type 'Global'
 globalThis.nodeVersion = nodeVersion;
 
-import '@loaders.gl/polyfills';
+import '@sensat/loaders-gl-polyfills';
 
 import './modules';

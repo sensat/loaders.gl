@@ -4,8 +4,8 @@
 
 /* eslint-disable no-invalid-this, import/no-extraneous-dependencies */
 import test from 'tape-promise/tape';
-import {isBrowser, makeStream, makeIterator} from '@loaders.gl/core';
-import {concatenateArrayBuffers, concatenateArrayBuffersAsync} from '@loaders.gl/loader-utils';
+import {isBrowser, makeStream, makeIterator} from '@sensat/loaders-gl-core';
+import {concatenateArrayBuffers, concatenateArrayBuffersAsync} from '@sensat/loaders-gl-loader-utils';
 
 test('asyncIteratorToStream#fetch from asyncIteratorStream', async (t) => {
   // TODO - fix for Node.js

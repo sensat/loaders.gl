@@ -1,8 +1,8 @@
 import test from 'tape-promise/tape';
 
-import {load, isBrowser} from '@loaders.gl/core';
-import {ImageLoader} from '@loaders.gl/images';
-import {GIFBuilder} from '@loaders.gl/video';
+import {load, isBrowser} from '@sensat/loaders-gl-core';
+import {ImageLoader} from '@sensat/loaders-gl-images';
+import {GIFBuilder} from '@sensat/loaders-gl-video';
 
 const IMAGE_URLS = [
   'http://i.imgur.com/2OO33vX.jpg',

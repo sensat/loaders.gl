@@ -1,4 +1,4 @@
-# @loaders.gl/arrow
+# @sensat/loaders-gl-arrow
 
 This module contains a table loader for the Apache Arrow format.
 

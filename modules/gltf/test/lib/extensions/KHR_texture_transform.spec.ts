@@ -1,13 +1,13 @@
 /* eslint-disable max-len, camelcase */
 import test from 'tape-promise/tape';
 
-import {parse, fetchFile} from '@loaders.gl/core';
-import {GLTFLoader, postProcessGLTF} from '@loaders.gl/gltf';
+import {parse, fetchFile} from '@sensat/loaders-gl-core';
+import {GLTFLoader, postProcessGLTF} from '@sensat/loaders-gl-gltf';
 import type {GLTFWithBuffers} from '../../../src/lib/types/gltf-types';
 import type {GLTFLoaderOptions} from '../../../src/gltf-loader';
 import {decode as decodeTextureTransform} from '../../../src/lib/extensions/KHR_texture_transform';
 
-const GLTF_BINARY_URL = '@loaders.gl/gltf/test/data/meshopt/BoxTextured_meshopt.glb';
+const GLTF_BINARY_URL = '@sensat/loaders-gl-gltf/test/data/meshopt/BoxTextured_meshopt.glb';
 
 test('GLTFLoader#KHR_texture_transform', async (t) => {
   const response = await fetchFile(GLTF_BINARY_URL);

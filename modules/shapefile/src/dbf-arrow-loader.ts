@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderWithParser, StrictLoaderOptions} from '@loaders.gl/loader-utils';
-import type {ArrowTable, ArrowTableBatch} from '@loaders.gl/schema';
+import type {Loader, LoaderWithParser, StrictLoaderOptions} from '@sensat/loaders-gl-loader-utils';
+import type {ArrowTable, ArrowTableBatch} from '@sensat/loaders-gl-schema';
 import {parseDBF, parseDBFInBatches} from './lib/parsers/parse-dbf-to-arrow';
 import {DBFFormat} from './dbf-format';
 

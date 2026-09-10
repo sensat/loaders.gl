@@ -9,7 +9,7 @@ import type {
   ObjectRowTable,
   ArrayRowTable,
   Feature
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 import {getTableLength} from '../tables/table-accessors';
 
 /**

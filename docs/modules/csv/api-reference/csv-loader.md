@@ -14,8 +14,8 @@ Streaming loader for comma-separated value and [delimiter-separated value](https
 ## Usage
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {CSVLoader} from '@loaders.gl/csv';
+import {load} from '@sensat/loaders-gl-core';
+import {CSVLoader} from '@sensat/loaders-gl-csv';
 
 const data = await load(url, CSVLoader);
 // or
@@ -25,8 +25,8 @@ const data = await load(url, CSVLoader, {csv: options});
 A complication with the CSV format is that CSV files can come with or without an initial header line. While the `CSVLoader` will attempt to detect if the first line is a header, this can fail. If you know the format of the file you can use `options.csv.header` to specify how to handle the first line.
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {CSVLoader} from '@loaders.gl/csv';
+import {load} from '@sensat/loaders-gl-core';
+import {CSVLoader} from '@sensat/loaders-gl-csv';
 
 const data = await load(url_to_csv_with_header, CSVLoader, {csv: {header: true});
 const data = await load(url_to_csv_without_header, CSVLoader, {csv: {header: false});

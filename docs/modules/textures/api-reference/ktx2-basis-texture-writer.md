@@ -21,8 +21,8 @@
 
 ```typescript
 import '@loaders.gl/polyfill'; // only if using under Node
-import {load, encode} from '@loaders.gl/core';
-import {KTX2BasisUniversalTextureWriter} from '@loaders.gl/textures';
+import {load, encode} from '@sensat/loaders-gl-core';
+import {KTX2BasisUniversalTextureWriter} from '@sensat/loaders-gl-textures';
 
 const shannonPNG = 'shannon.png';
 
@@ -47,8 +47,8 @@ https://github.com/KhronosGroup/KTX-Specification/blob/main/ktxspec.adoc
 
 The writer applies BinomialLCC basis universal encoder. The libraries are loaded during runtime from URLs:
 
-- https://unpkg.com/@loaders.gl/textures@${VERSION}/dist/libs/basis_encoder.wasm
-- https://unpkg.com/@loaders.gl/textures@${VERSION}/dist/libs/basis_encoder.js
+- https://unpkg.com/@sensat/loaders-gl-textures@${VERSION}/dist/libs/basis_encoder.wasm
+- https://unpkg.com/@sensat/loaders-gl-textures@${VERSION}/dist/libs/basis_encoder.js
 
 ## Module Overrides
 

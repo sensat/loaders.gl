@@ -2,7 +2,7 @@
 
 ![ogc-logo](../../../images/logos/ogc-logo-60.png)
 
-- _[`@loaders.gl/wkt`](/docs/modules/wkt)_
+- _[`@sensat/loaders-gl-wkt`](/docs/modules/wkt)_
 
 Well-Known Binary (WKB) is a binary version of Well-known Text
 

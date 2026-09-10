@@ -1,13 +1,13 @@
 import test from 'tape-promise/tape';
-import {DATA_ARRAY} from '@loaders.gl/i3s/test/data/test.zip';
-import {localHeaderSignature, getReadableFileSize, readRange} from '@loaders.gl/zip';
+import {DATA_ARRAY} from '@sensat/loaders-gl-i3s/test/data/test.zip';
+import {localHeaderSignature, getReadableFileSize, readRange} from '@sensat/loaders-gl-zip';
 import {
   createReadableFileFromBuffer,
   createReadableFileFromPath,
   createBrowserReadableFile
 } from 'test/utils/readable-files';
 
-const SLPK_URL = '@loaders.gl/i3s/test/data/DA12_subset.slpk';
+const SLPK_URL = '@sensat/loaders-gl-i3s/test/data/DA12_subset.slpk';
 
 test('ReadableFile#BlobFile range reads and stat', async (t) => {
   const readableFile = createBrowserReadableFile(DATA_ARRAY.buffer);

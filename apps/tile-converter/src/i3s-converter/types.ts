@@ -1,10 +1,10 @@
-import {GLTFImagePostprocessed, GLTFNodePostprocessed} from '@loaders.gl/gltf';
+import {GLTFImagePostprocessed, GLTFNodePostprocessed} from '@sensat/loaders-gl-gltf';
 import {
   BoundingVolumes,
   I3SMaterialDefinition,
   MaterialDefinitionInfo,
   TextureDefinitionInfo
-} from '@loaders.gl/i3s';
+} from '@sensat/loaders-gl-i3s';
 import {Matrix4, Vector3} from '@math.gl/core';
 
 /** Converted resources for specific node */

@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {LoaderWithParser} from '@loaders.gl/loader-utils';
-import type {ArrowTable} from '@loaders.gl/schema';
-import {convertMeshToTable} from '@loaders.gl/schema-utils';
+import type {LoaderWithParser} from '@sensat/loaders-gl-loader-utils';
+import type {ArrowTable} from '@sensat/loaders-gl-schema';
+import {convertMeshToTable} from '@sensat/loaders-gl-schema-utils';
 
 import type {LASLoaderOptions} from './las-loader';
 import {LAZPerfLoader} from './lazperf-loader';

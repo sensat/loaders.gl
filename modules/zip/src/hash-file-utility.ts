@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {MD5Hash} from '@loaders.gl/crypto';
-import {concatenateArrayBuffers, concatenateArrayBuffersFromArray} from '@loaders.gl/loader-utils';
-import type {ReadableFile} from '@loaders.gl/loader-utils';
+import {MD5Hash} from '@sensat/loaders-gl-crypto';
+import {concatenateArrayBuffers, concatenateArrayBuffersFromArray} from '@sensat/loaders-gl-loader-utils';
+import type {ReadableFile} from '@sensat/loaders-gl-loader-utils';
 import {ZipCDFileHeader, makeZipCDHeaderIterator} from './parse-zip/cd-file-header';
 
 /**

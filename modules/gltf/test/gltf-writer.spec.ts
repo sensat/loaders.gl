@@ -3,11 +3,11 @@
 import test from 'tape-promise/tape';
 import {validateWriter} from 'test/common/conformance';
 
-import {parse, encodeSync, encode, load} from '@loaders.gl/core';
-import {GLTFLoader, GLTFWriter, GLTFScenegraph, postProcessGLTF} from '@loaders.gl/gltf';
-import {ImageWriter} from '@loaders.gl/images';
+import {parse, encodeSync, encode, load} from '@sensat/loaders-gl-core';
+import {GLTFLoader, GLTFWriter, GLTFScenegraph, postProcessGLTF} from '@sensat/loaders-gl-gltf';
+import {ImageWriter} from '@sensat/loaders-gl-images';
 
-const GLTF_BINARY_URL = '@loaders.gl/gltf/test/data/3d-tiles/143.glb';
+const GLTF_BINARY_URL = '@sensat/loaders-gl-gltf/test/data/3d-tiles/143.glb';
 
 const EXTRA_DATA = {extraData: 1};
 const APP_DATA = {vizData: 2};

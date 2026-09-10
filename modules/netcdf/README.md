@@ -1,4 +1,4 @@
-# @loaders.gl/netcdf
+# @sensat/loaders-gl-netcdf
 
 This module contains a geometry loader for NetCDF.
 

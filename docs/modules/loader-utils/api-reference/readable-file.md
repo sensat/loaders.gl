@@ -9,10 +9,10 @@
 - `NodeFile` (Node.js) – exposes random access reads backed by the local file system without importing `fs` directly in application code.
 - `DataViewReadableFile` (browser & Node.js) – adapts an in-memory `ArrayBuffer`/`DataView` into the `ReadableFile` interface for archive parsing or other buffer-first workflows.
 
-All implementations satisfy the `ReadableFile` interface exported from `@loaders.gl/loader-utils` and support `slice`/`read` helpers for incremental processing of large files.
+All implementations satisfy the `ReadableFile` interface exported from `@sensat/loaders-gl-loader-utils` and support `slice`/`read` helpers for incremental processing of large files.
 
 :::info
-Legacy `FileProvider` classes have been removed from the default `@loaders.gl/loader-utils` exports. Use the `ReadableFile` implementations above instead.
+Legacy `FileProvider` classes have been removed from the default `@sensat/loaders-gl-loader-utils` exports. Use the `ReadableFile` implementations above instead.
 :::
 
 ## Usage
@@ -20,7 +20,7 @@ Legacy `FileProvider` classes have been removed from the default `@loaders.gl/lo
 ### Reading from a URL
 
 ```typescript
-import {HttpFile} from '@loaders.gl/loader-utils';
+import {HttpFile} from '@sensat/loaders-gl-loader-utils';
 
 const file = new HttpFile('https://example.com/archive.3tz');
 const header = await file.slice(0, 1024).arrayBuffer();
@@ -29,7 +29,7 @@ const header = await file.slice(0, 1024).arrayBuffer();
 ### Reading browser `File` drops
 
 ```typescript
-import {BlobFile} from '@loaders.gl/loader-utils';
+import {BlobFile} from '@sensat/loaders-gl-loader-utils';
 
 async function inspectUpload(fileInput: File) {
   const blobFile = new BlobFile(fileInput);
@@ -41,7 +41,7 @@ async function inspectUpload(fileInput: File) {
 ### Reading local files under Node.js
 
 ```typescript
-import {NodeFile} from '@loaders.gl/loader-utils';
+import {NodeFile} from '@sensat/loaders-gl-loader-utils';
 
 const nodeFile = new NodeFile('/data/tileset.slpk');
 const footerBytes = await nodeFile.slice(-4096).arrayBuffer();
@@ -50,7 +50,7 @@ const footerBytes = await nodeFile.slice(-4096).arrayBuffer();
 ### Adapting an `ArrayBuffer`
 
 ```typescript
-import {DataViewReadableFile} from '@loaders.gl/zip';
+import {DataViewReadableFile} from '@sensat/loaders-gl-zip';
 
 const archiveBuffer = await fetch(url).then((response) => response.arrayBuffer());
 const archiveFile = new DataViewReadableFile(new DataView(archiveBuffer));

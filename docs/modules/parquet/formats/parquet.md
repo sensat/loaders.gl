@@ -4,7 +4,7 @@
 &emsp;
 ![apache-logo](../../../images/logos/apache-logo.png)
 
-- _[`@loaders.gl/parquet`](/docs/modules/parquet)_
+- _[`@sensat/loaders-gl-parquet`](/docs/modules/parquet)_
 - _[Parquet](https://parquet.apache.org/docs/file-format/)_
 
 Parquet is a binary columnar format optimized for compact storage on disk.

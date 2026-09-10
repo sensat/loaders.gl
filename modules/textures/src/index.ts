@@ -5,7 +5,7 @@
 import {VERSION} from './lib/utils/version';
 
 // Types
-export type {GPUTextureFormat, TextureFormat} from '@loaders.gl/schema';
+export type {GPUTextureFormat, TextureFormat} from '@sensat/loaders-gl-schema';
 
 // Loaders
 export type {BasisLoaderOptions} from './basis-loader';

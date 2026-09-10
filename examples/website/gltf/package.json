@@ -14,8 +14,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@loaders.gl/core": "4.4.0-alpha.1",
-    "@loaders.gl/gltf": "4.4.0-alpha.1",
+    "@sensat/loaders-gl-core": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-gltf": "4.4.6-sensat.0",
     "@luma.gl/constants": "^9.0.7",
     "@luma.gl/core": "^9.0.7",
     "@luma.gl/gltf": "^9.0.7",

@@ -2,12 +2,12 @@
 
 ![ogc-logo](../../images/logos/ogc-logo-60.png)
 
-The `@loaders.gl/geopackage` module handles the OGC [GeoPackage](https://www.geopackage.org/) format.
+The `@sensat/loaders-gl-geopackage` module handles the OGC [GeoPackage](https://www.geopackage.org/) format.
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/geopackage
+npm install @sensat/loaders-gl-geopackage
 ```
 
 ## Loaders and Writers

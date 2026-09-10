@@ -37,7 +37,7 @@ export function canProcessOnWorker(worker: WorkerObject, options?: WorkerOptions
 /**
  * This function expects that the worker thread sends certain messages,
  * Creating such a worker can be automated if the worker is wrapper by a call to
- * createWorker in @loaders.gl/worker-utils.
+ * createWorker in @sensat/loaders-gl-worker-utils.
  */
 export async function processOnWorker(
   worker: WorkerObject,

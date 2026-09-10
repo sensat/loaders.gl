@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {copyToArrayBuffer, type ReadableFile, type Stat} from '@loaders.gl/loader-utils';
+import {copyToArrayBuffer, type ReadableFile, type Stat} from '@sensat/loaders-gl-loader-utils';
 
 function toBigInt(value: number | bigint): bigint {
   return typeof value === 'bigint' ? value : BigInt(value);

@@ -10,16 +10,16 @@ import type {
   VectorTileSource,
   GetTileParameters,
   GetTileDataParameters
-} from '@loaders.gl/loader-utils';
-import {DataSource} from '@loaders.gl/loader-utils';
-import {ImageLoader, ImageLoaderOptions, getBinaryImageMetadata} from '@loaders.gl/images';
+} from '@sensat/loaders-gl-loader-utils';
+import {DataSource} from '@sensat/loaders-gl-loader-utils';
+import {ImageLoader, ImageLoaderOptions, getBinaryImageMetadata} from '@sensat/loaders-gl-images';
 import {
   MVTLoader,
   MVTLoaderOptions,
   TileJSONLoader,
   TileJSON,
   TileJSONLoaderOptions
-} from '@loaders.gl/mvt';
+} from '@sensat/loaders-gl-mvt';
 import {MVTFormat} from './mvt-format';
 
 /** Properties for a Mapbox Vector Tile Source */

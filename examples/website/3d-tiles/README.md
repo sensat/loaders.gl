@@ -1,4 +1,4 @@
-This is a standalone web app using `@loaders.gl/3d-tiles`.
+This is a standalone web app using `@sensat/loaders-gl-3d-tiles`.
 
 ### Usage
 

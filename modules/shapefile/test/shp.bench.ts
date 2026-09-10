@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {SHPLoader} from '@loaders.gl/shapefile';
-import {parse, parseInBatches, fetchFile} from '@loaders.gl/core';
+import {SHPLoader} from '@sensat/loaders-gl-shapefile';
+import {parse, parseInBatches, fetchFile} from '@sensat/loaders-gl-core';
 
 const DECKGL_DATA_URL = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master';
 const SHAPEFILE_URL = `${DECKGL_DATA_URL}/test-data/shapefile/geo_export_14556060-0002-4a9e-8ef0-03da3e246166.shp`;

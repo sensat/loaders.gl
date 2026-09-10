@@ -1,4 +1,4 @@
-import {JSONLoader, load} from '@loaders.gl/core';
+import {JSONLoader, load} from '@sensat/loaders-gl-core';
 import type {ArcGISWebSceneData, OperationalLayer} from '../../types';
 
 /**

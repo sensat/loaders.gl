@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import type {NumericArray} from '@loaders.gl/loader-utils';
+import type {NumericArray} from '@sensat/loaders-gl-loader-utils';
 import type {
   GLTFAccessorPostprocessed,
   GLTFMeshPrimitivePostprocessed,
@@ -7,10 +7,10 @@ import type {
   GLTF_EXT_feature_metadata_GLTF,
   GLTF_EXT_feature_metadata_Primitive,
   GLTF_EXT_mesh_features
-} from '@loaders.gl/gltf';
-import {EXT_MESH_FEATURES, EXT_FEATURE_METADATA} from '@loaders.gl/gltf';
-import {Tiles3DTileContent} from '@loaders.gl/3d-tiles';
-import {emod} from '@loaders.gl/math';
+} from '@sensat/loaders-gl-gltf';
+import {EXT_MESH_FEATURES, EXT_FEATURE_METADATA} from '@sensat/loaders-gl-gltf';
+import {Tiles3DTileContent} from '@sensat/loaders-gl-3d-tiles';
+import {emod} from '@sensat/loaders-gl-math';
 import {TypedArray} from '@math.gl/core';
 import {TextureImageProperties} from '../types';
 

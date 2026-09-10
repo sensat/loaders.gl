@@ -13,14 +13,14 @@ import type {
   LoaderArrayOptionsType,
   LoaderArrayReturnType,
   StrictLoaderOptions
-} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-loader-utils';
 import {
   parseWithWorker,
   canParseWithWorker,
   mergeOptions,
   isResponse
-} from '@loaders.gl/loader-utils';
-import {assert, validateWorkerVersion} from '@loaders.gl/worker-utils';
+} from '@sensat/loaders-gl-loader-utils';
+import {assert, validateWorkerVersion} from '@sensat/loaders-gl-worker-utils';
 import {isLoaderObject} from '../loader-utils/normalize-loader';
 import {normalizeOptions} from '../loader-utils/option-utils';
 import {getArrayBufferOrStringFromData} from '../loader-utils/get-data';

@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-import {ImageType} from '@loaders.gl/images';
+import {ImageType} from '@sensat/loaders-gl-images';
 import type {GLTF} from './gltf-json-schema';
 
 /** GLTFLoader removes processed extensions from `extensionsUsed` and `extensionsUsed`

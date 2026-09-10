@@ -3,14 +3,14 @@
 // Copyright (c) vis.gl contributors
 
 import test from 'tape-promise/tape';
-import {loadInBatches, isIterator, isAsyncIterable} from '@loaders.gl/core';
-import {CSVArrowLoader} from '@loaders.gl/csv';
+import {loadInBatches, isIterator, isAsyncIterable} from '@sensat/loaders-gl-core';
+import {CSVArrowLoader} from '@sensat/loaders-gl-csv';
 import * as arrow from 'apache-arrow';
 
 // Small CSV Sample Files
-const CSV_NUMBERS_100_URL = '@loaders.gl/csv/test/data/numbers-100.csv';
-const CSV_NUMBERS_10000_URL = '@loaders.gl/csv/test/data/numbers-10000.csv';
-const CSV_INCIDENTS_URL_QUOTES = '@loaders.gl/csv/test/data/sf_incidents-small.csv';
+const CSV_NUMBERS_100_URL = '@sensat/loaders-gl-csv/test/data/numbers-100.csv';
+const CSV_NUMBERS_10000_URL = '@sensat/loaders-gl-csv/test/data/numbers-10000.csv';
+const CSV_INCIDENTS_URL_QUOTES = '@sensat/loaders-gl-csv/test/data/sf_incidents-small.csv';
 
 test('CSVArrowLoader#loadInBatches(numbers-100.csv)', async (t) => {
   const iterator = await loadInBatches(CSV_NUMBERS_100_URL, CSVArrowLoader, {

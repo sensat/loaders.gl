@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
-import {extractLoadLibraryOptions} from '@loaders.gl/worker-utils';
+import type {WriterWithEncoder, WriterOptions} from '@sensat/loaders-gl-loader-utils';
+import {extractLoadLibraryOptions} from '@sensat/loaders-gl-worker-utils';
 import type {DracoMesh} from './lib/draco-types';
 import type {DracoBuildOptions} from './lib/draco-builder';
 import DRACOBuilder from './lib/draco-builder';

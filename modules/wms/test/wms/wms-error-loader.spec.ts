@@ -5,8 +5,8 @@
 import test from 'tape-promise/tape';
 // import {validateLoader} from 'test/common/conformance';
 
-import {WMSErrorLoader} from '@loaders.gl/wms';
-import {parse} from '@loaders.gl/core';
+import {WMSErrorLoader} from '@sensat/loaders-gl-wms';
+import {parse} from '@sensat/loaders-gl-core';
 
 export const ERROR_TEST_CASES: {xml: string; parsed: string}[] = [
   {

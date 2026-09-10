@@ -9,7 +9,7 @@ import type {
   ObjectRowTable,
   ColumnarTable,
   ArrowTable
-} from '@loaders.gl/schema';
+} from '@sensat/loaders-gl-schema';
 import {deduceTableSchema} from '../../schema/deduce-table-schema';
 
 /**

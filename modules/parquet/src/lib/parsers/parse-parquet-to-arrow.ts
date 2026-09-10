@@ -3,9 +3,9 @@
 // Copyright (c) vis.gl contributors
 
 // eslint-disable
-import type {ReadableFile} from '@loaders.gl/loader-utils';
-import type {ArrowTable, ArrowTableBatch, Schema} from '@loaders.gl/schema';
-import {convertArrowToSchema} from '@loaders.gl/schema-utils';
+import type {ReadableFile} from '@sensat/loaders-gl-loader-utils';
+import type {ArrowTable, ArrowTableBatch, Schema} from '@sensat/loaders-gl-schema';
+import {convertArrowToSchema} from '@sensat/loaders-gl-schema-utils';
 
 import type * as parquetWasm from 'parquet-wasm';
 import * as arrow from 'apache-arrow';

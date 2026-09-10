@@ -4,7 +4,7 @@
 
 import test from 'tape-promise/tape';
 
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 
 // const JSON_DATA = [{col1: 22, col2: 'abc'}];
 

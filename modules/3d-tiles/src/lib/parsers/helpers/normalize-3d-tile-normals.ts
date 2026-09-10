@@ -3,7 +3,7 @@
 // Copyright vis.gl contributors
 
 import {Vector3} from '@math.gl/core';
-import {GL, octDecode} from '@loaders.gl/math';
+import {GL, octDecode} from '@sensat/loaders-gl-math';
 import {Tiles3DTileContent} from '../../../types';
 
 const scratchNormal = new Vector3();

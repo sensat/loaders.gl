@@ -4,11 +4,11 @@
 
 /* eslint-disable camelcase */
 import test from 'tape-promise/tape';
-import {BlobFile} from '@loaders.gl/loader-utils';
-import {ParquetReader} from '@loaders.gl/parquet';
-import {fetchFile} from '@loaders.gl/core';
+import {BlobFile} from '@sensat/loaders-gl-loader-utils';
+import {ParquetReader} from '@sensat/loaders-gl-parquet';
+import {fetchFile} from '@sensat/loaders-gl-core';
 
-const FRUITS_URL = '@loaders.gl/parquet/test/data/fruits.parquet';
+const FRUITS_URL = '@sensat/loaders-gl-parquet/test/data/fruits.parquet';
 // const TEST_NUM_ROWS = 1; // 10000;
 // const TEST_VTIME =  Date.now();
 

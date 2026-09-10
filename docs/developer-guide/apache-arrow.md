@@ -12,11 +12,11 @@ To work effectively with in-memory Apache Arrow data, a library is needed, and l
 
 A subset of modules that import the Apache Arrow JS library:
 
-- `@loaders.gl/arrow`
-- `@loaders.gl/geoarrow`
-- `@loaders.gl/parquet`
-- `@loaders.gl/schema`
-- `@loaders.gl/schema-utils`
+- `@sensat/loaders-gl-arrow`
+- `@sensat/loaders-gl-geoarrow`
+- `@sensat/loaders-gl-parquet`
+- `@sensat/loaders-gl-schema`
+- `@sensat/loaders-gl-schema-utils`
 
 ### Apache Arrow JS versions
 
@@ -35,14 +35,14 @@ You may still want to specify `apache-arrow` explicitly in your app to avoid bei
 ### Recommended install pattern
 
 ```bash
-npm install apache-arrow @loaders.gl/core @loaders.gl/arrow
+npm install apache-arrow @sensat/loaders-gl-core @sensat/loaders-gl-arrow
 # plus any other loaders you use
 ```
 
 or:
 
 ```bash
-yarn add apache-arrow @loaders.gl/core @loaders.gl/arrow
+yarn add apache-arrow @sensat/loaders-gl-core @sensat/loaders-gl-arrow
 ```
 
 ### Troubleshooting
@@ -57,30 +57,30 @@ Most package managers have a way to check a dependency:
 
 ```bash
 $ yarn why apache-arrow
-├─ @loaders.gl/arrow@workspace:modules/arrow [c7e01]
+├─ @sensat/loaders-gl-arrow@workspace:modules/arrow [c7e01]
 │  └─ apache-arrow@npm:21.1.0 (via npm:^21.0.0)
 │
-├─ @loaders.gl/arrow@workspace:modules/arrow
+├─ @sensat/loaders-gl-arrow@workspace:modules/arrow
 │  └─ apache-arrow@npm:21.1.0 (via npm:^21.0.0)
 │
-├─ @loaders.gl/geoarrow@workspace:modules/geoarrow [49c26]
+├─ @sensat/loaders-gl-geoarrow@workspace:modules/geoarrow [49c26]
 │  └─ apache-arrow@npm:21.1.0 (via npm:^21.0.0)
 │
-├─ @loaders.gl/geoarrow@workspace:modules/geoarrow [eeaaa]
+├─ @sensat/loaders-gl-geoarrow@workspace:modules/geoarrow [eeaaa]
 │  └─ apache-arrow@npm:21.1.0 (via npm:^21.0.0)
 │
-├─ @loaders.gl/geoarrow@workspace:modules/geoarrow
+├─ @sensat/loaders-gl-geoarrow@workspace:modules/geoarrow
 │  └─ apache-arrow@npm:21.1.0 (via npm:^21.0.0)
 │
-├─ @loaders.gl/schema-utils@workspace:modules/schema-utils [3820d]
+├─ @sensat/loaders-gl-schema-utils@workspace:modules/schema-utils [3820d]
 │  └─ apache-arrow@npm:21.1.0 (via npm:^21.0.0)
 │
-├─ @loaders.gl/schema-utils@workspace:modules/schema-utils [b9e22]
+├─ @sensat/loaders-gl-schema-utils@workspace:modules/schema-utils [b9e22]
 │  └─ apache-arrow@npm:21.1.0 (via npm:^21.0.0)
 │
-├─ @loaders.gl/schema-utils@workspace:modules/schema-utils
+├─ @sensat/loaders-gl-schema-utils@workspace:modules/schema-utils
 │  └─ apache-arrow@npm:21.1.0 (via npm:^21.0.0)
 │
-└─ @loaders.gl/schema@workspace:modules/schema
+└─ @sensat/loaders-gl-schema@workspace:modules/schema
    └─ apache-arrow@npm:21.1.0 (via npm:^21.0.0)
 ```

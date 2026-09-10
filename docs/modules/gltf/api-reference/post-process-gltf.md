@@ -9,7 +9,7 @@ For details see below.
 
 ```typescript
 import {load} from '@loaders.gl.core';
-import {GLTFLoader, postProcessGLTF} from '@loaders.gl/gltf';
+import {GLTFLoader, postProcessGLTF} from '@sensat/loaders-gl-gltf';
 
 const gltfWithBuffers = await load(url, GLTFLoader);
 const processedGLTF = postProcessGLTF(gltfWithBuffers);

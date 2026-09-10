@@ -1,15 +1,16 @@
 {
-  "name": "@loaders.gl/loader-utils",
-  "version": "4.4.6",
+  "name": "@sensat/loaders-gl-loader-utils",
+  "version": "4.4.6-sensat.0",
   "description": "Framework-independent loaders for 3D graphics formats",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/visgl/loaders.gl"
+    "url": "https://github.com/sensat/loaders.gl"
   },
   "keywords": [
     "webgl",
@@ -43,10 +44,9 @@
     "stream": false
   },
   "dependencies": {
-    "@loaders.gl/schema": "4.4.6",
-    "@loaders.gl/worker-utils": "4.4.6",
     "@probe.gl/log": "^4.1.1",
-    "@probe.gl/stats": "^4.1.1"
-  },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+    "@probe.gl/stats": "^4.1.1",
+    "@sensat/loaders-gl-schema": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-worker-utils": "4.4.6-sensat.0"
+  }
 }

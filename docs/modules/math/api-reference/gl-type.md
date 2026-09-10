@@ -17,7 +17,7 @@ Helper functions to work with WebGL data type constants.
 ## Usage
 
 ```typescript
-import {GL, GLType} from '@loaders.gl/math';
+import {GL, GLType} from '@sensat/loaders-gl-math';
 // Returns Int8Array.BYTES_PER_ELEMENT
 var size = GLType.getSizeInBytes(GL.BYTE);
 ```

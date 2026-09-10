@@ -21,8 +21,8 @@ The `GeoArrowLoader` parses Apache Arrow columnar table format files, and looks 
 ## Usage
 
 ```typescript
-import {GeoArrowLoader} from '@loaders.gl/arrow';
-import {load} from '@loaders.gl/core';
+import {GeoArrowLoader} from '@sensat/loaders-gl-arrow';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, GeoArrowLoader, options);
 ```

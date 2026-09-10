@@ -12,8 +12,8 @@ import type {
   MultiLineString,
   LineString,
   Geometry
-} from '@loaders.gl/schema';
-import type {GeoArrowEncoding} from '@loaders.gl/geoarrow';
+} from '@sensat/loaders-gl-schema';
+import type {GeoArrowEncoding} from '@sensat/loaders-gl-geoarrow';
 import {convertWKBToGeometry} from './wkb/convert-wkb-to-geometry';
 import {convertWKTToGeometry} from './wkb/convert-wkt-to-geometry';
 

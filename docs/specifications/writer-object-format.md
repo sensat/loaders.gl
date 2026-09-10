@@ -1,6 +1,6 @@
 # Writer Object
 
-To be compatible with `@loaders.gl/core` functions such as `encode`, writer objects need to conform to the following specification:
+To be compatible with `@sensat/loaders-gl-core` functions such as `encode`, writer objects need to conform to the following specification:
 
 ### Common Fields
 

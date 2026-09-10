@@ -3,11 +3,11 @@ import type {
   Tiles3DTileContent,
   Tiles3DTileJSONPostprocessed,
   Tiles3DTilesetJSONPostprocessed
-} from '@loaders.gl/3d-tiles';
-import {Tiles3DArchive} from '@loaders.gl/3d-tiles';
-import {LoaderWithParser, load} from '@loaders.gl/core';
-import type {ReadableFile} from '@loaders.gl/loader-utils';
-import {HttpFile, NodeFile, isBrowser} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-3d-tiles';
+import {Tiles3DArchive} from '@sensat/loaders-gl-3d-tiles';
+import {LoaderWithParser, load} from '@sensat/loaders-gl-core';
+import type {ReadableFile} from '@sensat/loaders-gl-loader-utils';
+import {HttpFile, NodeFile, isBrowser} from '@sensat/loaders-gl-loader-utils';
 import {
   CD_HEADER_SIGNATURE,
   ZipFileSystem,
@@ -16,7 +16,7 @@ import {
   parseZipLocalFileHeader,
   searchFromTheEnd,
   readRange
-} from '@loaders.gl/zip';
+} from '@sensat/loaders-gl-zip';
 
 /**
  * Load nested 3DTiles tileset. If the sourceTile is not nested tileset - do nothing

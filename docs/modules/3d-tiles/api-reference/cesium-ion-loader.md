@@ -10,8 +10,8 @@ Parse [3D tile](https://github.com/AnalyticalGraphicsInc/3d-tiles) fetched from 
 Load a tileset file from Cesium ion server.
 
 ```typescript
-import {load} from '@loaders.gl/core';
-import {CesiumIonLoader} from '@loaders.gl/3d-tiles';
+import {load} from '@sensat/loaders-gl-core';
+import {CesiumIonLoader} from '@sensat/loaders-gl-3d-tiles';
 import {WebMercatorViewport} from '@deck.gl/core';
 const tilesetUrl = 'https://assets.ion.cesium.com/69380/tileset.json';
 const ION_ACCESS_TOKEN = ''; // your own ion access token

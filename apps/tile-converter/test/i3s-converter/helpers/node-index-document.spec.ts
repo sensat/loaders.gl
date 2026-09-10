@@ -1,5 +1,5 @@
 import test from 'tape-promise/tape';
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 import {NodeIndexDocument} from '../../../src/i3s-converter/helpers/node-index-document';
 import I3SConverter from '../../../src/i3s-converter/i3s-converter';
 import WriteQueue from '../../../src/lib/utils/write-queue';

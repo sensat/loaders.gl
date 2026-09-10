@@ -16,8 +16,8 @@ The loaders.gl streaming architecture is built around ES2018 async iterators rat
 Note: `Stream` input sources is still accepted by loaders.gl functions, however internally processing is done via async iterators and the output of a batched parsing operation is an async iterator that yields "batches" of parsed data.
 
 ```typescript
-import {JSONLoader} from '@loaders.gl/json';
-import {load} from '@loaders.gl/core';
+import {JSONLoader} from '@sensat/loaders-gl-json';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, JSONLoader, {json: options});
 ```
@@ -25,8 +25,8 @@ const data = await load(url, JSONLoader, {json: options});
 The JSONLoader supports streaming JSON parsing, in which case it will yield "batches" of rows from the first array it encounters in the JSON. To e.g. parse a stream of GeoJSON:
 
 ```typescript
-import {GeoJSONLoader} from '@loaders.gl/json';
-import {load} from '@loaders.gl/core';
+import {GeoJSONLoader} from '@sensat/loaders-gl-json';
+import {load} from '@sensat/loaders-gl-core';
 
 const batches = await loadInBatches('geojson.json', GeoJSONLoader);
 
@@ -60,8 +60,8 @@ In addition, note that applications can easily wrap many data types in a `Respon
 Example of using a transform to calculate a cryptographic hash:
 
 ```typescript
-import {loadInBatches} from '@loaders.gl/core';
-import {CRC32HashTransform} from '@loaders.gl/crypto';
+import {loadInBatches} from '@sensat/loaders-gl-core';
+import {CRC32HashTransform} from '@sensat/loaders-gl-crypto';
 
 let hash;
 

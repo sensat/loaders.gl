@@ -2,10 +2,10 @@
 // Only TRIANGLES: 0x0004 and TRIANGLE_STRIP: 0x0005 are supported
 /* eslint-disable camelcase */
 
-import type {LoaderContext} from '@loaders.gl/loader-utils';
-import {sliceArrayBuffer, parseFromContext} from '@loaders.gl/loader-utils';
+import type {LoaderContext} from '@sensat/loaders-gl-loader-utils';
+import {sliceArrayBuffer, parseFromContext} from '@sensat/loaders-gl-loader-utils';
 
-import {DracoLoader, DracoLoaderOptions} from '@loaders.gl/draco';
+import {DracoLoader, DracoLoaderOptions} from '@sensat/loaders-gl-draco';
 
 import type {
   GLTF,

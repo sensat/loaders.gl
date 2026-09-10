@@ -1,8 +1,8 @@
 /* eslint-disable max-len, camelcase */
 import test from 'tape-promise/tape';
 
-import type {GLTFWithBuffers, GLTFPostprocessed} from '@loaders.gl/gltf';
-import {postProcessGLTF} from '@loaders.gl/gltf';
+import type {GLTFWithBuffers, GLTFPostprocessed} from '@sensat/loaders-gl-gltf';
+import {postProcessGLTF} from '@sensat/loaders-gl-gltf';
 
 const TEST_CASES: {name: string; input: GLTFWithBuffers; output: Partial<GLTFPostprocessed>}[] = [
   {

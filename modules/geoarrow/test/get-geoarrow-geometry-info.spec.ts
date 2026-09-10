@@ -5,7 +5,7 @@
 import test from 'tape-promise/tape';
 import * as arrow from 'apache-arrow';
 
-import {getGeoArrowGeometryInfo} from '@loaders.gl/geoarrow';
+import {getGeoArrowGeometryInfo} from '@sensat/loaders-gl-geoarrow';
 import {GeoArrowGeometryInfo} from '../src/get-geoarrow-geometry-info';
 
 // fix a bug that map bounds are not updated correctly from arrow samples

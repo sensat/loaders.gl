@@ -8,7 +8,7 @@
 import {Vector3, Matrix4} from '@math.gl/core';
 import {CullingVolume} from '@math.gl/culling';
 
-import {load} from '@loaders.gl/core';
+import {load} from '@sensat/loaders-gl-core';
 
 // Note: circular dependency
 import type {Tileset3D} from './tileset-3d';
@@ -118,7 +118,10 @@ export class Tile3D {
   _initialTransform: Matrix4 = new Matrix4();
 
   // Used by traverser, cannot be marked private
-  _priority: number = 0;
+  _loadPriority: number = 0;
+  _displayPriority: number = 0;
+  /** ID of the immediate REPLACE ancestor this tile supersedes. */
+  _replacedTileId?: string;
   _selectedFrame: number = 0;
   _requestedFrame: number = 0;
   _selectionDepth: number = 0;
@@ -312,7 +315,7 @@ export class Tile3D {
    * Tiles are prioritized by screen space error.
    */
   // eslint-disable-next-line complexity
-  _getPriority() {
+  _getLoadPriority() {
     const traverser = this.tileset._traverser;
     const {skipLevelOfDetail} = traverser.options;
 
@@ -335,6 +338,18 @@ export class Tile3D {
     if (this.contentState === TILE_CONTENT_STATE.UNLOADED) {
       return -1;
     }
+
+    return this._getDisplayPriority();
+  }
+
+  _getDisplayPriority() {
+    if (this.tileset.options.displayPriorityFunc) {
+      return this.tileset.options.displayPriorityFunc(this);
+    }
+
+    const traverser = this.tileset._traverser;
+    const {skipLevelOfDetail} = traverser.options;
+    const maySkipTile = this.refine === TILE_REFINEMENT.ADD || skipLevelOfDetail;
 
     // Based on the priority function `getPriorityReverseScreenSpaceError` in CesiumJS. Scheduling priority is based on the parent's screen space error when possible.
     const parent = this.parent;
@@ -374,7 +389,7 @@ export class Tile3D {
 
     const requestToken = await this.tileset._requestScheduler.scheduleRequest(
       this.id,
-      this._getPriority.bind(this)
+      this._getLoadPriority.bind(this)
     );
 
     if (!requestToken) {
@@ -677,7 +692,8 @@ export class Tile3D {
     this._selectedFrame = 0;
     this._requestedFrame = 0;
 
-    this._priority = 0.0;
+    this._loadPriority = 0.0;
+    this._displayPriority = 0.0;
   }
 
   _getRefine(refine) {

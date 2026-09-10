@@ -1,9 +1,9 @@
 // @ts-nocheck
 import test from 'tape-promise/tape';
-import {fetchFile} from '@loaders.gl/core';
+import {fetchFile} from '@sensat/loaders-gl-core';
 import Pbf from 'pbf';
-import VectorTile from '@loaders.gl/mvt/lib/mapbox-vector-tile-js/vector-tile';
-import {fromGeojsonVt} from '@loaders.gl/mvt/lib/mapbox-vt-pbf/to-vector-tile';
+import VectorTile from '@sensat/loaders-gl-mvt/lib/mapbox-vector-tile-js/vector-tile';
+import {fromGeojsonVt} from '@sensat/loaders-gl-mvt/lib/mapbox-vt-pbf/to-vector-tile';
 import geojsonVt from 'geojson-vt';
 import GeoJsonEquality from 'geojson-equality';
 
@@ -130,7 +130,7 @@ test('id encoding', (t) => {
 });
 
 test('accept geojson-vt options https://github.com/mapbox/vt-pbf/pull/21', async (t) => {
-  const RECTANGLE_URL = '@loaders.gl/mvt/test/data/mapbox-vt-pbf-fixtures/rectangle.geojson';
+  const RECTANGLE_URL = '@sensat/loaders-gl-mvt/test/data/mapbox-vt-pbf-fixtures/rectangle.geojson';
   const response = await fetchFile(RECTANGLE_URL);
   const orig = await response.json();
 

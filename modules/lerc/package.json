@@ -1,15 +1,16 @@
 {
-  "name": "@loaders.gl/lerc",
-  "version": "4.4.6",
+  "name": "@sensat/loaders-gl-lerc",
+  "version": "4.4.6-sensat.0",
   "description": "Framework-independent loader for LERC (Limited Error Raster Compression) files",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/visgl/loaders.gl"
+    "url": "https://github.com/sensat/loaders.gl"
   },
   "keywords": [
     "webgl",
@@ -44,9 +45,8 @@
     "build-worker": "esbuild src/workers/lerc-worker.ts --bundle --outfile=dist/lerc-worker.js --define:__VERSION__=\\\"$npm_package_version\\\" --external:url --external:fs --external:path"
   },
   "dependencies": {
-    "@loaders.gl/loader-utils": "4.4.6",
-    "@loaders.gl/schema": "4.4.6",
+    "@sensat/loaders-gl-loader-utils": "4.4.6-sensat.0",
+    "@sensat/loaders-gl-schema": "4.4.6-sensat.0",
     "lerc": "^4.0.4"
-  },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+  }
 }

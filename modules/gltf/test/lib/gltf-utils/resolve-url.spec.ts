@@ -1,6 +1,6 @@
 import test from 'tape-promise/tape';
 // @ts-expect-error
-import {resolveUrl} from '@loaders.gl/gltf/lib/gltf-utils/resolve-url';
+import {resolveUrl} from '@sensat/loaders-gl-gltf/lib/gltf-utils/resolve-url';
 
 test('resolveUrl#resolves relative urls against document urls', (t) => {
   t.equal(

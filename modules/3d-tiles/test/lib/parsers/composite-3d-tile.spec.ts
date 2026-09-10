@@ -6,15 +6,15 @@
 // See LICENSE.md and https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md
 
 import test from 'tape-promise/tape';
-import {parse, parseSync, encodeSync} from '@loaders.gl/core';
-import {Tiles3DLoader, Tile3DWriter, TILE3D_TYPE} from '@loaders.gl/3d-tiles';
+import {parse, parseSync, encodeSync} from '@sensat/loaders-gl-core';
+import {Tiles3DLoader, Tile3DWriter, TILE3D_TYPE} from '@sensat/loaders-gl-3d-tiles';
 import {loadRootTileFromTileset} from '../utils/load-utils';
 
-const COMPOSITE_URL = '@loaders.gl/3d-tiles/test/data/CesiumJS/Composite/Composite/tileset.json';
+const COMPOSITE_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Composite/Composite/tileset.json';
 const COMPOSITE_OF_COMPOSITE_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Composite/CompositeOfComposite/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Composite/CompositeOfComposite/tileset.json';
 const COMPOSITE_OF_INSTANCED_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Composite/CompositeOfInstanced/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Composite/CompositeOfInstanced/tileset.json';
 
 test('composite tile#invalid version', (t) => {
   const TILE = {

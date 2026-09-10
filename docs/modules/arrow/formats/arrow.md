@@ -4,7 +4,7 @@
 &emsp;
 ![apache-logo](../../../images/logos/apache-logo.png)
 
-- _[`@loaders.gl/arrow`](/docs/modules/arrow)_ - loaders.gl implementation
+- _[`@sensat/loaders-gl-arrow`](/docs/modules/arrow)_ - loaders.gl implementation
 - _[Apache Arrow](https://arrow.apache.org/)_ - A specification for large in-memory columnar data.
 - _[ArrowJS](https://arrow.apache.org/docs/js)_ - official documentation on ArrowJS API.
 - _[ArrowJS](/docs/arrowjs)_ - loaders.gl documentation on ArrowJS API.

@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import type {Readable} from 'stream';
-import {isBrowser} from '@loaders.gl/loader-utils';
+import {isBrowser} from '@sensat/loaders-gl-loader-utils';
 
 export type StreamIteratorOptions = {
   _streamReadAhead?: boolean;

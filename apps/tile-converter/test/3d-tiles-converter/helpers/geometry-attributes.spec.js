@@ -1,5 +1,5 @@
 import test from 'tape-promise/tape';
-import {isBrowser} from '@loaders.gl/core';
+import {isBrowser} from '@sensat/loaders-gl-core';
 import {generateAttributes} from '../../../src/i3s-converter/helpers/geometry-attributes';
 
 test('tile-converter(3d-tiles)#geometry-attributes - should return the same attributes with faceRange from 0 to triangleCount - 1 and 0 feature id', async (t) => {

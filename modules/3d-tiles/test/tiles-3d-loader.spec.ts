@@ -6,28 +6,28 @@
 // See LICENSE.md and https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md
 
 import test from 'tape-promise/tape';
-import {parse, fetchFile, load, isBrowser} from '@loaders.gl/core';
-import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
-import {DracoLoader} from '@loaders.gl/draco';
+import {parse, fetchFile, load, isBrowser} from '@sensat/loaders-gl-core';
+import {Tiles3DLoader} from '@sensat/loaders-gl-3d-tiles';
+import {DracoLoader} from '@sensat/loaders-gl-draco';
 
-const TILE_B3DM_WITH_DRACO_URL = '@loaders.gl/3d-tiles/test/data/143.b3dm';
+const TILE_B3DM_WITH_DRACO_URL = '@sensat/loaders-gl-3d-tiles/test/data/143.b3dm';
 
-const TILESET_URL = '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedColors/tileset.json';
+const TILESET_URL = '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedColors/tileset.json';
 const ACTUAL_B3DM =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedWithVertexColors/batchedWithVertexColors.b3dm';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedWithVertexColors/batchedWithVertexColors.b3dm';
 const DEPRECATED_B3DM_1 =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedDeprecated1/batchedDeprecated1.b3dm';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedDeprecated1/batchedDeprecated1.b3dm';
 const DEPRECATED_B3DM_2 =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Batched/BatchedDeprecated2/batchedDeprecated2.b3dm';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Batched/BatchedDeprecated2/batchedDeprecated2.b3dm';
 const GLTF_CONTENT_TILESET_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/VNext/agi-ktx2/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/VNext/agi-ktx2/tileset.json';
 
 const IMPLICIT_OCTREE_TILESET_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/SparseOctree/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/SparseOctree/tileset.json';
 const IMPLICIT_FULL_AVAILABLE_QUADTREE_TILESET_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/FullQuadtree/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/FullQuadtree/tileset.json';
 const IMPLICIT_QUADTREE_TILESET_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/BasicExample/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/BasicExample/tileset.json';
 
 function checkRegionBoundingBox(t, tile) {
   if (tile.children.length) {

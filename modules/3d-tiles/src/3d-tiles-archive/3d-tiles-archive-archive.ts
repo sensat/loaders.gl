@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import type {ReadableFile} from '@loaders.gl/loader-utils';
-import {MD5Hash} from '@loaders.gl/crypto';
-import {DeflateCompression, NoCompression} from '@loaders.gl/compression';
-import {IndexedArchive, parseZipLocalFileHeader, readRange} from '@loaders.gl/zip';
+import type {ReadableFile} from '@sensat/loaders-gl-loader-utils';
+import {MD5Hash} from '@sensat/loaders-gl-crypto';
+import {DeflateCompression, NoCompression} from '@sensat/loaders-gl-compression';
+import {IndexedArchive, parseZipLocalFileHeader, readRange} from '@sensat/loaders-gl-zip';
 
 type CompressionHandler = (compressedFile: ArrayBuffer) => Promise<ArrayBuffer>;
 

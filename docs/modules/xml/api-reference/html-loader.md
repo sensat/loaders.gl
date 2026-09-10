@@ -30,8 +30,8 @@ The `HTMLLoader` parses HTML-encoded data.
 ## Usage
 
 ```typescript
-import {HTMLLoader} from '@loaders.gl/xml';
-import {load} from '@loaders.gl/core';
+import {HTMLLoader} from '@sensat/loaders-gl-xml';
+import {load} from '@sensat/loaders-gl-core';
 
 const data = await load(url, HTMLLoader, options);
 ```

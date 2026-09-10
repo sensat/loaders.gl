@@ -14,8 +14,8 @@ import {
   // LZOCompression,
   LZ4Compression,
   ZstdCompression
-} from '@loaders.gl/compression';
-import {registerJSModules} from '@loaders.gl/loader-utils';
+} from '@sensat/loaders-gl-compression';
+import {registerJSModules} from '@sensat/loaders-gl-loader-utils';
 
 import {ParquetCompression} from './schema/declare';
 

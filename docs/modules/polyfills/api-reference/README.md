@@ -1,22 +1,22 @@
 # Overview
 
-The `@loaders.gl/polyfills` module installs support for Node.js. This module should be imported before you call any loaders.gl functionality under Node.js
+The `@sensat/loaders-gl-polyfills` module installs support for Node.js. This module should be imported before you call any loaders.gl functionality under Node.js
 
 loaders.gl is based on the HTML5 API provided by modern, evergreen browsers.
 
 ## Installation
 
 ```bash
-npm install @loaders.gl/polyfills
+npm install @sensat/loaders-gl-polyfills
 ```
 
 ## Usage
 
-Just import `@loaders.gl/polyfills` before you start using other loaders.gl modules.
+Just import `@sensat/loaders-gl-polyfills` before you start using other loaders.gl modules.
 
 ```typescript
-import '@loaders.gl/polyfills';
-import '@loaders.gl/core';
+import '@sensat/loaders-gl-polyfills';
+import '@sensat/loaders-gl-core';
 ```
 
 ## Features
@@ -34,11 +34,11 @@ The polyfills module installs the following capabilities.
 
 ## ReadableFile utilities
 
-`@loaders.gl/loader-utils` exports `NodeFile` and `NodeFilesystem` wrappers that are installed by this polyfill package. They mirror the browser `HttpFile`/`BlobFile` implementations, exposing a consistent `ReadableFile` interface for local and remote assets without bundling Node built-ins directly into application code.
+`@sensat/loaders-gl-loader-utils` exports `NodeFile` and `NodeFilesystem` wrappers that are installed by this polyfill package. They mirror the browser `HttpFile`/`BlobFile` implementations, exposing a consistent `ReadableFile` interface for local and remote assets without bundling Node built-ins directly into application code.
 
 ## Deprecated polyfills
 
-Before Node v18, `fetch` needed to be polyfilled. The `@loaders.gl/polyfills` module still conditionally installs a fetch polyfill on Node 16, but this is expected to be removed in next major release.
+Before Node v18, `fetch` needed to be polyfilled. The `@sensat/loaders-gl-polyfills` module still conditionally installs a fetch polyfill on Node 16, but this is expected to be removed in next major release.
 
 ### fetch Polyfill
 

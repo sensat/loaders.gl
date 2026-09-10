@@ -5,19 +5,19 @@
 /* eslint-disable camelcase */
 // @ts-nocheck
 import test from 'tape-promise/tape';
-import Tile3DBatchTableParser from '@loaders.gl/3d-tiles/classes/tile-3d-batch-table-parser';
+import Tile3DBatchTableParser from '@sensat/loaders-gl-3d-tiles/classes/tile-3d-batch-table-parser';
 import {loadTileset} from '../utils/load-utils';
 
 const BATCH_TABLE_HIERARCHY_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Hierarchy/BatchTableHierarchy/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Hierarchy/BatchTableHierarchy/tileset.json';
 const BATCH_TABLE_HIERARCHY_BINARY_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Hierarchy/BatchTableHierarchyBinary/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Hierarchy/BatchTableHierarchyBinary/tileset.json';
 const BATCH_TABLE_HIERARCHY_MULTIPLE_PARENTS_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Hierarchy/BatchTableHierarchyMultipleParents/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Hierarchy/BatchTableHierarchyMultipleParents/tileset.json';
 const BATCH_TABLE_HIERARCHY_NO_PARENTS_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Hierarchy/BatchTableHierarchyNoParents/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Hierarchy/BatchTableHierarchyNoParents/tileset.json';
 const BATCH_TABLE_HIERARCHY_LEGACY_URL =
-  '@loaders.gl/3d-tiles/test/data/CesiumJS/Hierarchy/BatchTableHierarchyLegacy/tileset.json';
+  '@sensat/loaders-gl-3d-tiles/test/data/CesiumJS/Hierarchy/BatchTableHierarchyLegacy/tileset.json';
 
 // const result = new Color();
 

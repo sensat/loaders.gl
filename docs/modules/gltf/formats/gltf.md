@@ -1,6 +1,6 @@
 # glTF - gl Transfer Format
 
-- _[`@loaders.gl/gltf`](/docs/modules/gltf)_
+- _[`@sensat/loaders-gl-gltf`](/docs/modules/gltf)_
 - _[glTF specification](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html)_
 - _[Wikipedia article](https://en.wikipedia.org/wiki/GlTF)_
 
@@ -26,7 +26,7 @@ A glTF file uses one of two possible file extensions: .gltf (JSON/ASCII) or .glb
 
 glTF extensions can be present in glTF files, and will be present in the parsed JSON. glTF extensions can be supported by applications by inspecting the `extensions` fields inside glTF objects, and it is up to each application to handle or ignore them.
 
-loaders.gl aims to provide support for glTF extensions that can be handled completely or partially during loading, and article describes glTF extensions that are fully or partially processed by the `@loaders.gl/gltf` classes.
+loaders.gl aims to provide support for glTF extensions that can be handled completely or partially during loading, and article describes glTF extensions that are fully or partially processed by the `@sensat/loaders-gl-gltf` classes.
 
 Note that many glTF extensions affect aspects that are firmly outside of the scope of loaders.gl (e.g. rendering), and no attempt is made to process those extensions in loaders.gl.
 

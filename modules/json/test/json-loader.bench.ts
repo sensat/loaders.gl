@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {JSONLoader} from '@loaders.gl/json';
-import {load, loadInBatches} from '@loaders.gl/core';
+import {JSONLoader} from '@sensat/loaders-gl-json';
+import {load, loadInBatches} from '@sensat/loaders-gl-core';
 
 import clarinetBench from './lib/clarinet/clarinet.bench';
 
-const GEOJSON_URL = '@loaders.gl/json/test/data/geojson-big.json';
+const GEOJSON_URL = '@sensat/loaders-gl-json/test/data/geojson-big.json';
 
 export default async function jsonLoaderBench(suite) {
   suite.group('JSONLoader');
