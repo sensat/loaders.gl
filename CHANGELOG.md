@@ -2,6 +2,35 @@
 
 ## v4.4
 
+### v4.4.6
+
+- fix(textures): make texture-compressor an optional peer dependency; applications using the experimental `CompressedTextureWriter` must install it explicitly
+
+### v4.4.5
+
+- feat(gltf): support KHR_meshopt_compression (#3617)
+- feat(gltf): normalize LINE_LOOP and TRIANGLE_FAN primitives (#3619)
+
+### v4.4.4
+
+- chore(kml): update xmldom to 0.8.12 (#3478)
+- fix(schema-utils): declare @math.gl/types explicitly (#3479)
+- fix(mvt): declare schema-utils dependency (#3481)
+- fix(3d-tiles): support single-level implicit tilesets (#3482)
+- fix(json): emit only complete streaming elements (#3480)
+- fix(gltf): resolve Basis formats before workers (#3483)
+
+### v4.4.3
+
+- fix(i3s): Use string coordinate system constants for deck.gl 9.3+ compatibility (#3450)
+
+### v4.4.2
+
+- fix(geoparquet): restore GeoJSON output (#3422)
+
+### v4.4.1
+
+- Fix peerDependencies specifiers
 
 ### v4.4.0
 
