@@ -126,14 +126,12 @@ export class TileSourceLayer extends CompositeLayer<TileSourceLayerProps> {
 
     if (this.sourceSupportsMVTLayer()) {
       // TODO - Currently only TileSource that supports CRS override is TableTileSource
-      // @ts-expect-error
-      tileSource.props.coordinates = 'local';
+      tileSource.options.table.coordinates = 'local';
       return this.renderMVTLayer();
     }
 
     // TODO - Currently only TileSource that supports CRS override is TableTileSource
-    // @ts-expect-error
-    tileSource.props.coordinates = 'wgs84';
+    tileSource.options.table.coordinates = 'wgs84';
     return this.renderTileLayer();
   }
 
@@ -249,6 +247,7 @@ function renderSubLayers(
 
   switch (tileSource.mimeType) {
     case 'application/vnd.mapbox-vector-tile':
+    case 'application/vnd.maplibre-tile':
       layers.push(
         new GeoJsonLayer({
           id: `${props.id}-geojson`,

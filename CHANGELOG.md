@@ -1,28 +1,179 @@
 # CHANGELOG for loaders.gl
 
-## v4.3.2
+## v4.4
 
+
+### v4.4.0
+
+- Official publish
+
+### v4.4.0-alpha.19
+
+- [Feat] Add @loaders.gl/mlt — MapLibre Tile format support (#3315)
+- feat(textures) Add composite texture loaders (#3328)
+- b388320bd chore(textures): Revert constant renames (#3337)
+- 5dd3a550c feat(textures): New HDR format loader (#3327)
+- dd6e393d7 fix(textures): Fix format strings, serialize basis transcoding. (#3329)
+
+### v4.4.0-alpha.18
+
+- chore: Clean up library load options (#3320)
+
+### v4.4.0-alpha.17 
+
+- chore: update package.json "browser" fields (#3318)
+- fix(zip): Handle directories better (#3304)
+- feat(textures): Add WebGPU textureFormat field (#3317)
+- chore: Update dev tools config imports (#3279)
+
+### v4.4.0-alpha.16
+
+- fix(tiles): Extract rootNode.matrix into cartesianModelMatrix (#3314)
+
+### v4.4.0-alpha.15
+
+- Fix(tiles): Remove rendering flicker by holding refined tile (#3311)
+
+### v4.4.0-alpha.14
+
+- fix(parquet): Types to fix parquet module build (#3305)
+- fix(las): Pass correct params in LAZLoader.readData (#3297)
+- chore: bump probe.gl (#3298)
+- chore: TypeScript 5.9, @types/node 25, yarn lock refresh (#3301)
+- fix(loader-utils): Avoid option warnings unless log level is increased (#3299)
+- feat(arrow): Support Apache Arrow JS v21 (#3302)
+
+### v4.4.0-alpha.13
+
+- chore(deps): bump fast-xml-parser from 4.5.0 to 5.3.6 (#3295)
+- fix(tiles): Refine empty tiles (#3293)
+
+### v4.4.0-alpha.12
+
+- fix(las): Explicitly copy wasm files for npm (#3288)
+
+### v4.4.0-alpha.11
+
+- chore(las): package WASM using copy-libs (#3287)
+
+### v4.4.0-alpha.10
+
+- chore: mark geoarrow package as public (gis dependency) (#3286)
+
+### v4.4.0-alpha.9
+
+### v4.4.0-alpha.8
+
+### v4.4.0-alpha.7
+
+### v4.4.0-alpha.6
+
+- feat(loader-utils): RequestScheduler.setProps (#3280)
+
+### v4.4.0-alpha.5
+
+- Make `@loaders.gl/zarr` and `@loaders.gl/geoarrow` libraries private
+
+### v4.4.0-alpha.4
+
+- Make `@loaders.gl/graph` and `@loaders.gl/traces` libraries private
+
+### v4.4.0-alpha.3
+
+- Enable fetchNode gzip decompression test (#3267)
+- feat: Upgrade to handle ArrayBufferLike (#3271)
+- fix/pcd sizesum calc Jclaessens97  (#3270)
+- Merge branch 'weldonji-remove-lzo-wasm-dependency'
+- chore(wkb): Re-enable TWKB/WKB geometry tests (#3268)
+- fix(gltf): KHR_texture_transform - Avoid overwriting shared texcoord buffer views (#3255)
+- docs: v4.4 updates (#3265)
+- Merge branch 'rddesmond-dbf-sidecar-options'
+- feat(loader-utils): Export is-type helpers (#3258)
+- feat: LoaderOptions.core - improved loader type safety (#3112)
+- chore: Separate app build and tests tile-converter (#3264)
+- feat(json): JSONPath improvements, error messages (#3259)
+- feat: Add traces and graphs module scaffolds (#3253)
+- chore(deps): bump @babel/runtime from 7.25.7 to 7.28.4 (#3263)
+- chore(tile-converter): Move tile-converter from modules/ to apps/ (#3261)
+- docs(json) Clarify JSONLoader streaming semantics (#3257)
+- chore(crypto)  make md5 wasm decoder Buffer independent (#3256)
+- fix(json): GeoJSON batch option merging (#3254)
+- chore: Upgrade to @vis.gl/dev-tools@1.0 (#3252)
+- docs(csv): CSVLoader options documentation (#3248)
+- Fix(terrain): quantized mesh skirt height docs (#3249)
+- docs(core): registerLoaders deprecation notice (#3250)
+- chore: Add worker bundles to package exports (#3251)
+- feat(mvt): Experimental MVTWriter  (#3164)
+- chore: Migrate to ArrayBufferLike (#3235)
+- Move shapefile whats-new note to v4.4 (#3246)
+- docs: Fix typos and table formatting (#3226)
+- Add ReadableFile coverage for archives (#3241)
+- docs: upgrade docusaurus to 3.9.2 (#3240)
+- chore: Standardize on ReadableFile (#3237)
+- Handle child process module lazily (#3230)
+- chore: Adjust CI matrix to run full suite only on Node 24 (#3234)
+- chore: Add Yarn cache to test workflows (#3233)
+- chore: Split out website-build job in CI (#3232)
+- chore: Run CI on node 24,22,20 (#3231)
+- chore: bump vite to 7.2.7 (#3228)
+- Upgrade example apps to React 19.2.3 (#3229)
+- chore: Move loaders.gl from volta to corepack (#3227)
+- Update parquet.md (#3183)
+- Fixes typo in PMTiles API Reference doc (#3216)
+- Update options shape (#3214)
+- Pass options to DBF sidecar loader
+- Remove lzo-wasm dependency and references
+- chore: Fix CI (#3177)
+- chore(deps-dev): bump next in /examples/get-started/bundle-with-nextjs (#3175)
+- chore(deps): bump nanoid from 3.3.7 to 3.3.8 (#3173)
+- chore(deps): bump cross-spawn in /test/apps/typescript-test (#3166)
+- feat(las): Enable both laz-perf and laz-rs-wasm for comparison and benchmarking. (#3168)
+- feat(las): Use laz-rs-wasm to support laz 1.4 (#3165)
+- chore(test): Add license headers (#3169)
+- feat(potree): render all nodes (#3162)
+
+### v4.4.0-alpha.2
+
+- Hofix to remove not existing version (#3163)
+
+### v4.4.0-alpha.1
+
+- fix(loader-utils): ReadableFile implementation to match the interface (#3157)
+- feat(geoarrow): Add support for Arrow meshes (#3159)
+- feat: Arrow loaders for Pointcloud / Mesh formats (#3158)
+- feat(pcd): PCDArrowLoader (#3156)
+- feat(geoarrow): New module for geoarrow processing (#3149)
+- chore(docs): Update tile-converter.md (#3084)
+- fix(i3s): Fix for statistics/summary
+- Make @types/brotli also optional (#3152)
 - fix(i3s): fix for /sublayers paths (#3150)
-
-## v4.3.1
-
+- chore(i3s): Montreal example (#3089)
+- chore(gis): Clean up API and extract common helpers (#3147)
+- chore(parquet): Make parquet WASM loader into the primary loader (#3121)
+- feat(mvt): non-nested parser now extract geometry columns (#3146)
+- feat(mvt): Flatten MVT parser logic (#3145)
+- feat(shapefile): DBFArrowLoader (#3142)
+- feat(csv): papaparse cleanup (#3143)
+- feat(loader-utils): New Format type (#3141)
 - Returning --slpk for backward compatibility (#3138)
+- docs: Fix website, upgrade to docusaurus 3.5 (#3139)
+- feat(csv): CSVArrowLoader (#3135)
+- docs: Initial v4.4 docs (#3120)
+- chore: Change versions to 4.4.0-alpha.0 (#3136)
 - docs: Final 4.3 release docs (#3134)
-- chore: Update dependencies to ^4.3.0 (#3133)
-
-## v4.3
-
-### v4.3.0-beta.3
-
 - Whats new updated (#3131)
-- fix(wms): createImageSource back-compatibility fix (#3132)
-
-### v4.3.0-beta.2
-
-- fix(wms): Export deprecated type (#3130)
-
-### v4.3.0-beta.1
-
+- fix(3d-tiles): getIonAssetMetadata struct changed (options.url) (#3128)
+- chore(gis): Move WKT/WKB parsing into gis module (#3126)
+- chore: draft potree example application (#3116)
+- chore(schema-utils): Consolidate arrow table handling in schema-utils (#3119)
+- chore(gis): Move geoarrow parsing to gis module (#3118)
+- chore(gis): Move WKT parsing into gis module (#3117)
+- chore(schema): Add arrow dependency to schema module (#3115)
+- feat(schema-utils): Separate out utils from the schema module (#3114)
+- chore: Bump to apache-arrow@17 (#3113)
+- feat(core): Improve typing and naming for DataSources (#3104)
+- chore: Reduce comments in test logs (#3109)
+- chore: Bump versions to 5.0.0-alpha.0 (#3111)
 - chore(arrow): table conversion (#3108)
 - chore(CSV): Convert parser to typescript (#3107)
 - fix(parquet): More robust Buffer polyfill export (#3105)
@@ -39,6 +190,14 @@
 - chore(deps): bump fast-xml-parser from 4.2.7 to 4.5.0 in /website (#3083)
 - chore(deps): bump webpack from 5.89.0 to 5.94.0 in /website (#3078)
 - chore(deps): bump micromatch in /test/apps/typescript-test (#3067)
+
+## v4.3
+
+See `4.3-release` branch for additional CHANGELOGS
+
+### v4.3.0-beta.1
+
+- feat(gltf): extensions, encoding feature metadata (#2972)
 
 ### v4.3.0-alpha.8
 
@@ -148,14 +307,6 @@
 
 ## v4.2
 
-### v4.2.2
-
-- fix(i3s): slpk full path on Windows (#3011)
-
-### v4.2.1
-
-- fix(tile-converter): failing i3s-server (#2980)
-
 ### v4.2.0
 
 ### v4.2.0-beta.2
@@ -244,10 +395,6 @@
 - feat(tile-converter): add conversion resume (#2869)
 
 ## v4.1
-
-### v4.1.1
-
-- fix(flatgeobuf): Add missing index files (#2884)
 
 ### v4.1.0
 
@@ -347,11 +494,6 @@
 - chore(arrow): Support WKT and WKB geoarrow encodings (v4.1) (#2798)
 
 ## v4.0
-
-### v4.0.5
-
-- fix(tile-converter): 3d-tiles converter freezes in the end (#2877)
-- Convert GetImageParameters to WMSGetMapParameters (#2799)
 
 ### v4.0.4
 

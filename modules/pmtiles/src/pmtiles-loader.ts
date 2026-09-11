@@ -7,10 +7,11 @@ import {BlobFile} from '@loaders.gl/loader-utils';
 import {VERSION} from './lib/version';
 
 import {VectorSourceInfo, ImageSourceInfo} from './source-info';
-import {PMTilesTileSource, PMTilesTileSourceProps} from './pmtiles-source';
+import {PMTilesTileSource, PMTilesSourceOptions} from './pmtiles-source';
+import {PMTilesFormat} from './pmtiles-format';
 
 export type PMTilesLoaderOptions = LoaderOptions & {
-  pmtiles?: PMTilesTileSourceProps['pmtiles'];
+  pmtiles?: PMTilesSourceOptions['pmtiles'];
 };
 
 /**
@@ -19,13 +20,8 @@ export type PMTilesLoaderOptions = LoaderOptions & {
  * @note For actual access to the tile data, use the PMTilesSource class.
  */
 export const PMTilesLoader = {
-  name: 'PMTiles',
-  id: 'pmtiles',
-  module: 'pmtiles',
+  ...PMTilesFormat,
   version: VERSION,
-  extensions: ['pmtiles'],
-  mimeTypes: ['application/octet-stream'],
-  tests: ['PMTiles'],
   options: {
     pmtiles: {}
   },

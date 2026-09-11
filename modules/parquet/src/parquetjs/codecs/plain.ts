@@ -1,4 +1,9 @@
-// Forked from https://github.com/kbajalc/parquets under MIT license (Copyright (c) 2017 ironSource Ltd.)
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+// Copyright (c) 2017 ironSource Ltd.
+// Forked from https://github.com/kbajalc/parquets under MIT license
+
 /* eslint-disable camelcase */
 import type {PrimitiveType} from '../schema/declare';
 import type {CursorBuffer, ParquetCodecOptions} from './declare';
@@ -64,7 +69,7 @@ function encodeValues_BOOLEAN(values: boolean[]): Buffer {
   buf.fill(0);
   for (let i = 0; i < values.length; i++) {
     if (values[i]) {
-      buf[Math.floor(i / 8)] |= 1 << i % 8;
+      buf[Math.floor(i / 8)] |= 1 << (i % 8);
     }
   }
   return buf;
@@ -74,7 +79,7 @@ function decodeValues_BOOLEAN(cursor: CursorBuffer, count: number): boolean[] {
   const values: boolean[] = [];
   for (let i = 0; i < count; i++) {
     const b = cursor.buffer[cursor.offset + Math.floor(i / 8)];
-    values.push((b & (1 << i % 8)) > 0);
+    values.push((b & (1 << (i % 8))) > 0);
   }
   cursor.offset += Math.ceil(count / 8);
   return values;
@@ -189,7 +194,7 @@ function encodeValues_BYTE_ARRAY(values: Buffer[]): Buffer {
   let buf_pos = 0;
   for (let i = 0; i < values.length; i++) {
     buf.writeUInt32LE(values[i].length, buf_pos);
-    values[i].copy(buf, buf_pos + 4);
+    values[i].copy(buf as Uint8Array, buf_pos + 4);
     buf_pos += 4 + values[i].length;
   }
   return buf;
@@ -217,7 +222,7 @@ function encodeValues_FIXED_LEN_BYTE_ARRAY(values: Buffer[], opts: ParquetCodecO
       throw new Error(`invalid value for FIXED_LEN_BYTE_ARRAY: ${values[i]}`);
     }
   }
-  return Buffer.concat(values);
+  return Buffer.concat(values as Uint8Array[]);
 }
 
 function decodeValues_FIXED_LEN_BYTE_ARRAY(

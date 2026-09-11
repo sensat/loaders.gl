@@ -1,4 +1,8 @@
-// Forked from https://github.com/kbajalc/parquets under MIT license (Copyright (c) 2017 ironSource Ltd.)
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+// Copyright (c) 2017 ironSource Ltd.
+// Forked from https://github.com/kbajalc/parquets under MIT license
 
 import type {PrimitiveType} from '../schema/declare';
 import type {CursorBuffer, ParquetCodecOptions} from './declare';
@@ -36,7 +40,7 @@ export function encodeValues(
     if (repeats === 0 && run.length % 8 === 0 && values[i] === values[i + 1]) {
       // If we have any data in runs we need to encode them
       if (run.length) {
-        buf = Buffer.concat([buf, encodeRunBitpacked(run, opts)]);
+        buf = Buffer.concat([buf, encodeRunBitpacked(run, opts)] as Uint8Array[]);
         run = [];
       }
       repeats = 1;
@@ -45,7 +49,7 @@ export function encodeValues(
     } else {
       // If values changes we need to post any previous repeated values
       if (repeats) {
-        buf = Buffer.concat([buf, encodeRunRepeated(values[i - 1], repeats, opts)]);
+        buf = Buffer.concat([buf, encodeRunRepeated(values[i - 1], repeats, opts)] as Uint8Array[]);
         repeats = 0;
       }
       run.push(values[i]);
@@ -53,9 +57,12 @@ export function encodeValues(
   }
 
   if (repeats) {
-    buf = Buffer.concat([buf, encodeRunRepeated(values[values.length - 1], repeats, opts)]);
+    buf = Buffer.concat([
+      buf,
+      encodeRunRepeated(values[values.length - 1], repeats, opts)
+    ] as Uint8Array[]);
   } else if (run.length) {
-    buf = Buffer.concat([buf, encodeRunBitpacked(run, opts)]);
+    buf = Buffer.concat([buf, encodeRunBitpacked(run, opts)] as Uint8Array[]);
   }
 
   if (opts.disableEnvelope) {
@@ -66,7 +73,7 @@ export function encodeValues(
 
   // @ts-ignore buffer polyfill
   envelope.writeUInt32LE(buf.length, undefined);
-  buf.copy(envelope, 4);
+  buf.copy(envelope as Uint8Array, 4);
 
   return envelope;
 }
@@ -127,8 +134,8 @@ function decodeRunBitpacked(
   // tslint:disable-next-line:prefer-array-literal
   const values = new Array(count).fill(0);
   for (let b = 0; b < bitWidth * count; b++) {
-    if (cursor.buffer[cursor.offset + Math.floor(b / 8)] & (1 << b % 8)) {
-      values[Math.floor(b / bitWidth)] |= 1 << b % bitWidth;
+    if (cursor.buffer[cursor.offset + Math.floor(b / 8)] & (1 << (b % 8))) {
+      values[Math.floor(b / bitWidth)] |= 1 << (b % bitWidth);
     }
   }
 
@@ -166,12 +173,15 @@ function encodeRunBitpacked(values: number[], opts: ParquetCodecOptions): Buffer
 
   const buf = Buffer.alloc(Math.ceil(bitWidth * (values.length / 8)));
   for (let b = 0; b < bitWidth * values.length; b++) {
-    if ((values[Math.floor(b / bitWidth)] & (1 << b % bitWidth)) > 0) {
-      buf[Math.floor(b / 8)] |= 1 << b % 8;
+    if ((values[Math.floor(b / bitWidth)] & (1 << (b % bitWidth))) > 0) {
+      buf[Math.floor(b / 8)] |= 1 << (b % 8);
     }
   }
 
-  return Buffer.concat([Buffer.from(varint.encode(((values.length / 8) << 1) | 1)), buf]);
+  return Buffer.concat([
+    Buffer.from(varint.encode(((values.length / 8) << 1) | 1)),
+    buf
+  ] as Uint8Array[]);
 }
 
 function encodeRunRepeated(value: number, count: number, opts: ParquetCodecOptions): Buffer {
@@ -186,5 +196,5 @@ function encodeRunRepeated(value: number, count: number, opts: ParquetCodecOptio
     value >> 8; //  TODO - this looks wrong
   }
 
-  return Buffer.concat([Buffer.from(varint.encode(count << 1)), buf]);
+  return Buffer.concat([Buffer.from(varint.encode(count << 1)), buf] as Uint8Array[]);
 }

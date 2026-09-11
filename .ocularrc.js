@@ -1,4 +1,4 @@
-/** @typedef {import('ocular-dev-tools').OcularConfig} OcularConfig */
+/** @typedef {import('@vis.gl/dev-tools').OcularConfig} OcularConfig */
 
 import {dirname, join} from 'path';
 import {fileURLToPath} from 'url';
@@ -12,18 +12,21 @@ const config = {
   babel: false,
 
   lint: {
-    paths: ['modules', 'dev-docs', 'docs', 'test'], //, 'examples'],
+    paths: ['modules', 'apps', 'dev-docs', 'docs', 'test'], //, 'examples'],
     extensions: ['js', 'jsx', 'cjs', 'mjs', 'ts', 'tsx', 'md'] // , 'mdx'],
-    // extensions: ['js', 'jsx', 'mjs', 'ts', 'tsx', 'md']
   },
 
-  typescript: {
-    project: 'tsconfig.build.json'
-  },
+  // typescript: {
+  //   project: 'tsconfig.build.json'
+  // },
 
   aliases: {
     // TEST
     test: testDir
+  },
+
+  nodeAliases: {
+    '@maplibre/mlt': join(packageRoot, 'modules/mlt/src/libs/mlt-decoder.cjs')
   },
 
   coverage: {

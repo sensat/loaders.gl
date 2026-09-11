@@ -1,6 +1,11 @@
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
 // LASER (LAS) FILE FORMAT
 import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
 import type {LASMesh} from './lib/las-types';
+import {LASFormat} from './las-format';
 
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
@@ -20,22 +25,15 @@ export type LASLoaderOptions = LoaderOptions & {
 
 /**
  * Loader for the LAS (LASer) point cloud format
- * @note Does not support LAS v1.4
  */
-export const LASLoader = {
+export const LASWorkerLoader = {
+  ...LASFormat,
+
   dataType: null as unknown as LASMesh,
   batchType: null as never,
 
-  name: 'LAS',
-  id: 'las',
-  module: 'las',
   version: VERSION,
   worker: true,
-  extensions: ['las', 'laz'], // LAZ is the "compressed" flavor of LAS,
-  mimeTypes: ['application/octet-stream'], // TODO - text version?
-  text: true,
-  binary: true,
-  tests: ['LAS'],
   options: {
     las: {
       shape: 'mesh',

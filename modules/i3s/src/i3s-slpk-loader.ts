@@ -3,7 +3,7 @@
 // Copyright vis.gl contributors
 
 import type {LoaderOptions, LoaderWithParser} from '@loaders.gl/loader-utils';
-import {DataViewFile} from '@loaders.gl/loader-utils';
+import {DataViewReadableFile} from '@loaders.gl/zip';
 import {parseSLPKArchive} from './lib/parsers/parse-slpk/parse-slpk';
 
 // __VERSION__ is injected by babel-plugin-version-inline
@@ -35,9 +35,14 @@ export const SLPKLoader = {
   version: VERSION,
   mimeTypes: ['application/octet-stream'],
   extensions: ['slpk'],
-  options: {},
+  options: {
+    slpk: {
+      path: '',
+      pathMode: undefined
+    }
+  },
   parse: async (data: ArrayBuffer, options: SLPKLoaderOptions = {}): Promise<ArrayBuffer> => {
-    const archive = await parseSLPKArchive(new DataViewFile(new DataView(data)));
+    const archive = await parseSLPKArchive(new DataViewReadableFile(new DataView(data)));
     return archive.getFile(options.slpk?.path ?? '', options.slpk?.pathMode);
   }
 } as const satisfies LoaderWithParser<ArrayBuffer, never, SLPKLoaderOptions>;

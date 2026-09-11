@@ -3,19 +3,22 @@
 // Copyright (c) vis.gl contributors
 
 import type {TableBatch} from '@loaders.gl/schema';
-import {TableBatchBuilder} from '@loaders.gl/schema';
+import {TableBatchBuilder} from '@loaders.gl/schema-utils';
 import {
   LoaderOptions,
   makeLineIterator,
   makeNumberedLineIterator,
-  makeTextDecoderIterator
+  makeTextDecoderIterator,
+  toArrayBufferIterator
 } from '@loaders.gl/loader-utils';
 
 export async function* parseNDJSONInBatches(
-  binaryAsyncIterator: AsyncIterable<ArrayBuffer> | Iterable<ArrayBuffer>,
+  binaryAsyncIterator:
+    | AsyncIterable<ArrayBufferLike | ArrayBufferView>
+    | Iterable<ArrayBufferLike | ArrayBufferView>,
   options?: LoaderOptions
 ): AsyncIterable<TableBatch> {
-  const textIterator = makeTextDecoderIterator(binaryAsyncIterator);
+  const textIterator = makeTextDecoderIterator(toArrayBufferIterator(binaryAsyncIterator));
   const lineIterator = makeLineIterator(textIterator);
   const numberedLineIterator = makeNumberedLineIterator(lineIterator);
 
@@ -23,7 +26,7 @@ export async function* parseNDJSONInBatches(
   const shape = 'row-table';
   // @ts-ignore
   const tableBatchBuilder = new TableBatchBuilder(schema, {
-    ...options,
+    ...(options?.core || options),
     shape
   });
 

@@ -2,14 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import type {
-  FlatFeature,
-  Feature,
-  GeojsonGeometryInfo,
-  GeoJSONTable,
-  BinaryFeatureCollection
-} from '@loaders.gl/schema';
-import {flatGeojsonToBinary} from '@loaders.gl/gis';
+import type {FlatFeature, Feature, GeoJSONTable, BinaryFeatureCollection} from '@loaders.gl/schema';
+import {flatGeojsonToBinary, GeojsonGeometryInfo} from '@loaders.gl/gis';
 import {log} from '@loaders.gl/loader-utils';
 import Protobuf from 'pbf';
 
@@ -30,7 +24,9 @@ export function parseMVT(arrayBuffer: ArrayBuffer, options?: MVTLoaderOptions) {
   const mvtOptions = checkOptions(options);
 
   const shape: string | undefined =
-    options?.gis?.format || options?.mvt?.shape || (options?.shape as string);
+    (options?.gis as {format?: string} | undefined)?.format ||
+    options?.mvt?.shape ||
+    (options as {shape?: string} | undefined)?.shape;
   switch (shape) {
     case 'columnar-table': // binary + some JS arrays
       return {shape: 'columnar-table', data: parseToBinary(arrayBuffer, mvtOptions)};

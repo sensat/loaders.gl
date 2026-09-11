@@ -17,18 +17,18 @@
     "@deck.gl/layers": "^9.0.1",
     "@deck.gl/mesh-layers": "^9.0.1",
     "@deck.gl/react": "^9.0.1",
-    "@loaders.gl/core": "^4.3.0",
-    "@loaders.gl/wms": "^4.3.0",
+    "@loaders.gl/core": "4.4.0-alpha.1",
+    "@loaders.gl/wms": "4.4.0-alpha.1",
     "@monaco-editor/react": "^4.5.0",
     "mapbox-gl": "npm:empty-npm-package@1.0.0",
     "maplibre-gl": "^2.4.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
     "react-map-gl": "^7.0.0",
     "styled-components": "^4.2.0"
   },
   "devDependencies": {
     "typescript": "^5.0.0",
-    "vite": "^5.0.0"
+    "vite": "^7.2.7"
   }
 }

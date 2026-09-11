@@ -4,12 +4,14 @@
   "license": "MIT",
   "type": "module",
   "private": true,
+  "packageManager": "yarn@4.12.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/sensat/loaders.gl"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
   },
   "keywords": [
     "webgl",
@@ -24,20 +26,31 @@
     "KML"
   ],
   "workspaces": [
-    "modules/*"
+    "modules/*",
+    "apps/*",
+    "examples",
+    "website"
   ],
+  "engines": {
+    "node": ">=20.18.0"
+  },
   "scripts": {
     "bootstrap": "ocular-bootstrap",
     "postinstall": "echo postinstall",
     "start": "echo 'Please see loaders.gl website for how to run examples' && open https://loaders.gl/docs",
     "clean": "ocular-clean",
     "tsclean": "find . -name tsconfig.tsbuildinfo -exec rm {} \\;",
-    "build": "ocular-clean && ocular-build && lerna run pre-build",
+    "build": "yarn build-modules",
+    "build-modules": "ocular-clean && ocular-build && npx lerna run pre-build",
+    "build-apps": "node ./scripts/run-app-commands.mjs build",
+    "build-workers": "npx lerna run pre-build",
     "cover": "ocular-test cover",
     "lint": "ocular-lint",
-    "publish-beta": "ocular-publish beta",
-    "publish-prod": "ocular-publish prod",
-    "test": "ocular-test",
+    "publish-beta": "ocular-publish version-only-beta",
+    "publish-prod": "ocular-publish version-only-prod",
+    "test": "yarn test-modules",
+    "test-modules": "ocular-test",
+    "test-apps": "node ./scripts/run-app-commands.mjs test",
     "test-node": "ocular-test node",
     "test-cover": "ocular-test cover",
     "test-website": "cd website && yarn && yarn build && cd ..",
@@ -47,10 +60,12 @@
     "metrics": "./scripts/metrics.sh && ocular-metrics"
   },
   "devDependencies": {
-    "@probe.gl/bench": "^4.0.2",
-    "@probe.gl/test-utils": "^4.0.2",
+    "@probe.gl/bench": "^4.1.1",
+    "@probe.gl/test-utils": "^4.1.1",
+    "@types/node": "^25.3.0",
     "@types/tape-promise": "^4.0.1",
-    "ocular-dev-tools": "2.0.0-alpha.35",
+    "@vis.gl/dev-tools": "^1.0.0",
+    "@vis.gl/ts-plugins": "^1.0.0",
     "pre-commit": "^1.2.2",
     "pre-push": "^0.1.1",
     "puppeteer": "^23.4.0",
@@ -63,11 +78,19 @@
     "apache-arrow version should be aligned with parquet-wasm version"
   ],
   "resolutions": {
-    "apache-arrow": "^15.0.0",
-    "typescript": "^5.3.0"
-  },
-  "volta": {
-    "node": "20.16.0",
-    "yarn": "4.4.1"
+    "apache-arrow": "^21.0.0",
+    "typescript": "^5.6.0",
+    "@loaders.gl/core": "^4.4.0-alpha.1",
+    "@loaders.gl/draco": "^4.4.0-alpha.1",
+    "@loaders.gl/geopackage": "^4.4.0-alpha.1",
+    "@loaders.gl/i3s": "^4.4.0-alpha.1",
+    "@loaders.gl/las": "^4.4.0-alpha.1",
+    "@loaders.gl/loader-utils": "^4.4.0-alpha.1",
+    "@loaders.gl/obj": "^4.4.0-alpha.1",
+    "@loaders.gl/ply": "^4.4.0-alpha.1",
+    "@loaders.gl/schema": "^4.4.0-alpha.1",
+    "@loaders.gl/schema-utils": "^4.4.0-alpha.1",
+    "@loaders.gl/textures": "^4.4.0-alpha.1",
+    "@loaders.gl/wms": "^4.4.0-alpha.1"
   }
 }

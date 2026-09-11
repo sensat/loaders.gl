@@ -1,4 +1,9 @@
-// Forked from https://github.com/kbajalc/parquets under MIT license (Copyright (c) 2017 ironSource Ltd.)
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+// Copyright (c) 2017 ironSource Ltd.
+// Forked from https://github.com/kbajalc/parquets under MIT license
+
 import {
   ParquetCodec,
   ParquetColumnChunk,
@@ -419,7 +424,7 @@ async function decodeDictionaryPage(
 ): Promise<(string | ArrayBuffer)[]> {
   const cursorEnd = cursor.offset + pageHeader.compressed_page_size;
 
-  let dictCursor = {
+  let dictCursor: CursorBuffer = {
     offset: 0,
     buffer: cursor.buffer.slice(cursor.offset, cursorEnd),
     size: cursorEnd - cursor.offset
@@ -470,7 +475,7 @@ function preserveBinary(d: any): ArrayBuffer | ArrayBufferView | string {
   }
   // Convert to ArrayBuffer
   if (Buffer.isBuffer(d)) {
-    return d.buffer.slice(d.byteOffset, d.byteLength);
+    return new Uint8Array(d.buffer, d.byteOffset, d.byteLength).slice().buffer;
   }
   return d.toString();
 }

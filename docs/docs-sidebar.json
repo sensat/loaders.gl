@@ -47,6 +47,8 @@
           "modules/kml/api-reference/kml-loader",
           "modules/kml/api-reference/tcx-loader",
           "modules/las/api-reference/las-loader",
+          "modules/mlt/api-reference/mlt-loader",
+          "modules/mlt/api-reference/mlt-source",
           "modules/mvt/api-reference/mvt-loader",
           "modules/mvt/api-reference/tilejson-loader",
           "modules/obj/api-reference/obj-loader",
@@ -59,6 +61,7 @@
           "modules/textures/api-reference/basis-loader",
           "modules/textures/api-reference/compressed-texture-loader",
           "modules/textures/api-reference/crunch-loader",
+          "modules/textures/api-reference/radiance-hdr-loader",
           "modules/textures/api-reference/npy-loader",
           "modules/video/api-reference/video-loader",
           "modules/wkt/api-reference/wkt-loader",
@@ -81,6 +84,7 @@
           "modules/gltf/api-reference/glb-writer",
           "modules/images/api-reference/image-writer",
           "modules/json/api-reference/geojson-writer",
+          "modules/mvt/api-reference/mvt-writer",
           "modules/textures/api-reference/compressed-texture-writer",
           "modules/textures/api-reference/ktx2-basis-texture-writer",
           "modules/wkt/api-reference/wkt-writer",
@@ -98,8 +102,9 @@
           "modules/pmtiles/api-reference/pmtiles-source",
           "modules/mvt/api-reference/mvt-source",
           "modules/mvt/api-reference/table-tile-source",
-          "modules/wms/api-reference/csw-service",
-          "modules/wms/api-reference/wms-service"
+          "modules/mlt/api-reference/mlt-source",
+          "modules/wms/api-reference/csw-source",
+          "modules/wms/api-reference/wms-source"
         ]
       }
     ]
@@ -127,13 +132,20 @@
       "modules/kml/formats/gpx",
       "modules/kml/formats/tcx",
       "modules/las/formats/las",
+      "modules/mlt/formats/mlt",
       "modules/mvt/formats/mvt",
       "modules/mvt/formats/tilejson",
       "modules/parquet/formats/parquet",
       "modules/parquet/formats/geoparquet",
       "modules/pmtiles/formats/pmtiles",
       "modules/shapefile/formats/shapefile",
+      "modules/textures/formats/basis",
       "modules/textures/formats/compressed-textures",
+      "modules/textures/formats/crunch",
+      "modules/textures/formats/dds",
+      "modules/textures/formats/hdr",
+      "modules/textures/formats/ktx",
+      "modules/textures/formats/pvr",
       "modules/wms/formats/csw",
       "modules/wms/formats/wms",
       "modules/wms/formats/wmts",
@@ -169,6 +181,7 @@
         "label": "Advanced Topics",
         "items": [
           "developer-guide/dependencies",
+          "developer-guide/apache-arrow",
           "developer-guide/creating-loaders-and-writers",
           "developer-guide/composite-loaders",
           "developer-guide/error-handling",
@@ -239,6 +252,7 @@
         "label": "@loaders.gl/loader-utils",
         "items": [
           "modules/loader-utils/README",
+          "modules/loader-utils/api-reference/readable-file",
           "modules/loader-utils/api-reference/request-scheduler",
           "modules/loader-utils/api-reference/parse-with-context"
         ]
@@ -312,6 +326,11 @@
       },
       {
         "type": "category",
+        "label": "@loaders.gl/graphs",
+        "items": ["modules/graphs/README"]
+      },
+      {
+        "type": "category",
         "label": "@loaders.gl/i3s",
         "items": ["modules/i3s/README"]
       },
@@ -348,6 +367,11 @@
         "type": "category",
         "label": "@loaders.gl/mvt",
         "items": ["modules/mvt/README"]
+      },
+      {
+        "type": "category",
+        "label": "@loaders.gl/mlt",
+        "items": ["modules/mlt/README"]
       },
       {
         "type": "category",
@@ -413,10 +437,17 @@
         "label": "@loaders.gl/textures",
         "items": [
           "modules/textures/README",
-          "modules/textures/api-reference/load-image",
-          "modules/textures/api-reference/load-image-array",
-          "modules/textures/api-reference/load-image-cube"
+          "modules/textures/api-reference/radiance-hdr-loader",
+          "modules/textures/api-reference/texture-loader",
+          "modules/textures/api-reference/texture-array-loader",
+          "modules/textures/api-reference/texture-cube-loader",
+          "modules/textures/api-reference/texture-cube-array-loader"
         ]
+      },
+      {
+        "type": "category",
+        "label": "@loaders.gl/traces",
+        "items": ["modules/traces/README"]
       },
       {
         "type": "category",
