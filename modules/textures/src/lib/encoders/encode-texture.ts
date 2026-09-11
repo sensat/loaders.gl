@@ -28,9 +28,11 @@ export async function encodeImageURLToCompressedTextureURL(
   // prettier-ignore
   const args = [
     // Note: our actual executable is `npx`, so `texture-compressor` is an argument.
-    // `--no` prevents npx from silently downloading the optional CLI at runtime.
+    // `--no` prevents npx from silently downloading the CLI at runtime: it must already
+    // be installed by the application.
     '--no',
-    // `--` keeps npm from parsing the compressor flags as its own config.
+    // `--` is required: without it npm parses the flags below as its own config
+    // instead of forwarding them to the CLI.
     '--',
     'texture-compressor',
     '--type', 's3tc',

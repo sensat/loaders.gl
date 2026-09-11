@@ -1,5 +1,17 @@
 # Upgrade Guide
 
+## Upgrading to v4.5
+
+v4.5 is additive. Existing loaders and defaults continue to work unchanged, except for the explicit installation requirement for the experimental texture writer noted below.
+
+**@loaders.gl/splats**
+
+- SPZ decoding requires an application-provided `zstd-codec` module passed through `options.modules`. RAD gzip chunks are decompressed internally and do not require `zstd-codec`.
+
+**@loaders.gl/textures**
+
+- `@loaders.gl/textures` no longer installs the deprecated `texture-compressor` package for every consumer. Applications that use the experimental `CompressedTextureWriter` must install `texture-compressor` explicitly. The CLI is invoked with `npx --no`, so it is never downloaded on demand; all other loaders and writers are unaffected.
+
 ## Upgrading to v4.4
 
 **@loaders.gl/textures**
