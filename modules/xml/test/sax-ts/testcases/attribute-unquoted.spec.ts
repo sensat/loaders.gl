@@ -1,8 +1,13 @@
-// SPDX-License-Identifier: ISC
-import {test} from 'vitest';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+// Forked from sax-ts & sax under ISC license
+
+import test from 'tape-promise/tape';
 import {testSax} from '../utils/test-utils';
-test('SAXParser#attribute-unquoted', () => {
-  testSax({
+
+test('SAXParser#attribute-unquoted', (t) => {
+  testSax(t, {
     expect: [
       ['opentagstart', {name: 'ROOT', attributes: {}, ns: {}}],
       [
@@ -47,4 +52,6 @@ test('SAXParser#attribute-unquoted', () => {
     .write('<root length=12')
     .write('345></root>')
     .close();
+
+  t.end();
 });

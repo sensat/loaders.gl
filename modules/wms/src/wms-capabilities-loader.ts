@@ -2,11 +2,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader} from '@loaders.gl/loader-utils';
+import type {LoaderWithParser} from '@loaders.gl/loader-utils';
 import type {XMLLoaderOptions} from '@loaders.gl/xml';
-import type {WMSCapabilities} from './lib/parsers/wms/parse-wms-capabilities';
+import {WMSCapabilities, parseWMSCapabilities} from './lib/parsers/wms/parse-wms-capabilities';
 
-import {WMSCapabilitiesFormat} from './wms-format';
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
@@ -32,15 +31,10 @@ export type WMSCapabilitiesLoaderOptions = XMLLoaderOptions & {
   };
 };
 
-/** Preloads the parser-bearing WMS capabilities loader implementation. */
-async function preload() {
-  const {WMSCapabilitiesLoaderWithParser} = await import('./wms-capabilities-loader-with-parser');
-  return WMSCapabilitiesLoaderWithParser;
-}
-
-/** Metadata-only loader for the response to the WMS GetCapability request. */
+/**
+ * Loader for the response to the WMS GetCapability request
+ */
 export const WMSCapabilitiesLoader = {
-  ...WMSCapabilitiesFormat,
   dataType: null as unknown as WMSCapabilities,
   batchType: null as never,
 
@@ -50,17 +44,19 @@ export const WMSCapabilitiesLoader = {
   module: 'wms',
   version: VERSION,
   worker: false,
-  encoding: 'xml',
-  format: 'wms-capabilities',
-  text: true,
   extensions: ['xml'],
   mimeTypes: ['application/vnd.ogc.wms_xml', 'application/xml', 'text/xml'],
   testText: testXMLFile,
   options: {
     wms: {}
   },
-  preload
-} as const satisfies Loader<WMSCapabilities, never, WMSCapabilitiesLoaderOptions>;
+  parse: async (arrayBuffer: ArrayBuffer, options?: WMSCapabilitiesLoaderOptions) =>
+    // TODO pass in XML options
+    parseWMSCapabilities(new TextDecoder().decode(arrayBuffer), options?.wms),
+  parseTextSync: (text: string, options?: WMSCapabilitiesLoaderOptions) =>
+    // TODO pass in XML options
+    parseWMSCapabilities(text, options?.wms)
+} as const satisfies LoaderWithParser<WMSCapabilities, never, WMSCapabilitiesLoaderOptions>;
 
 function testXMLFile(text: string): boolean {
   // TODO - There could be space first.

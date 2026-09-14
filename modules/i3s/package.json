@@ -1,6 +1,6 @@
 {
   "name": "@loaders.gl/i3s",
-  "version": "5.0.0-alpha.5",
+  "version": "4.3.3",
   "description": "i3s .",
   "license": "MIT",
   "type": "module",
@@ -26,39 +26,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    },
-    "./i3s-zod-schema": {
-      "types": "./dist/i3s-zod-schema.d.ts",
-      "import": "./dist/i3s-zod-schema.js",
-      "require": "./dist/i3s-zod-schema.cjs"
-    },
-    "./bundled": {
-      "types": "./dist/bundled.d.ts",
-      "import": "./dist/bundled.js"
-    },
-    "./unbundled": {
-      "types": "./dist/unbundled.d.ts",
-      "import": "./dist/unbundled.js"
-    },
-    "./i3s-lepcc-loader": {
-      "types": "./dist/i3s-lepcc-loader.d.ts",
-      "import": "./dist/i3s-lepcc-loader.js"
-    },
-    "./i3s-content-worker.js": {
-      "import": "./dist/i3s-content-worker.js"
-    },
-    "./i3s-content-worker-node.js": {
-      "import": "./dist/i3s-content-worker-node.js"
-    },
-    "./i3s-lepcc-worker.js": {
-      "import": "./dist/i3s-lepcc-worker.js"
-    },
-    "./i3s-lepcc-worker-node.js": {
-      "import": "./dist/i3s-lepcc-worker-node.js"
-    },
-    "./i3s-scene-layer.schema.json": "./dist/i3s-scene-layer.schema.json",
-    "./i3s-node-page.schema.json": "./dist/i3s-node-page.schema.json",
-    "./i3s-point-cloud-scene-layer.schema.json": "./dist/i3s-point-cloud-scene-layer.schema.json"
+    }
   },
   "sideEffects": false,
   "files": [
@@ -67,35 +35,29 @@
     "README.md"
   ],
   "scripts": {
-    "pre-build": "npm run generate-json-schema && npm run build-bundle && npm run build-bundle-dev && npm run build-worker && npm run build-worker-node && npm run build-lepcc-worker && npm run build-lepcc-worker-node",
-    "generate-json-schema": "node ../../scripts/generate-json-schema.mjs --schema ./dist/i3s-zod-schema.js --export I3SSceneLayerSchema --output ./dist/i3s-scene-layer.schema.json --id https://unpkg.com/@loaders.gl/i3s/i3s-scene-layer.schema.json --title 'loaders.gl I3S scene layer metadata' && node ../../scripts/generate-json-schema.mjs --schema ./dist/i3s-zod-schema.js --export I3SNodePageSchema --output ./dist/i3s-node-page.schema.json --id https://unpkg.com/@loaders.gl/i3s/i3s-node-page.schema.json --title 'loaders.gl I3S node page' && node ../../scripts/generate-json-schema.mjs --schema ./dist/i3s-zod-schema.js --export I3SPointCloudSceneLayerSchema --output ./dist/i3s-point-cloud-scene-layer.schema.json --id https://unpkg.com/@loaders.gl/i3s/i3s-point-cloud-scene-layer.schema.json --title 'loaders.gl I3S Point Cloud scene layer metadata'",
+    "pre-build": "npm run build-bundle && npm run build-bundle-dev && npm run build-worker && npm run build-worker-node",
     "build-bundle": "ocular-bundle ./bundle.ts --output=dist/dist.min.js",
     "build-bundle-dev": "ocular-bundle ./bundle.ts --env=dev --output=dist/dist.dev.js",
     "build-worker": "esbuild src/workers/i3s-content-worker.ts --outfile=dist/i3s-content-worker.js --target=esnext --bundle --define:__VERSION__=\\\"$npm_package_version\\\"",
-    "build-worker-node": "esbuild src/workers/i3s-content-worker-node.ts --outfile=dist/i3s-content-worker-node.js --platform=node --target=node16 --minify --bundle --sourcemap --define:__VERSION__=\\\"$npm_package_version\\\"",
-    "build-lepcc-worker": "esbuild src/workers/i3s-lepcc-worker.ts --outfile=dist/i3s-lepcc-worker.js --target=esnext --bundle --define:__VERSION__=\\\"$npm_package_version\\\"",
-    "build-lepcc-worker-node": "esbuild src/workers/i3s-lepcc-worker-node.ts --outfile=dist/i3s-lepcc-worker-node.js --platform=node --target=node16 --bundle --sourcemap --define:__VERSION__=\\\"$npm_package_version\\\""
+    "build-worker-node": "esbuild src/workers/i3s-content-worker-node.ts --outfile=dist/i3s-content-worker-node.js --platform=node --target=node16 --minify --bundle --sourcemap --define:__VERSION__=\\\"$npm_package_version\\\""
   },
   "dependencies": {
-    "@loaders.gl/compression": "5.0.0-alpha.5",
-    "@loaders.gl/crypto": "5.0.0-alpha.5",
-    "@loaders.gl/draco": "5.0.0-alpha.5",
-    "@loaders.gl/images": "5.0.0-alpha.5",
-    "@loaders.gl/loader-utils": "5.0.0-alpha.5",
-    "@loaders.gl/schema": "5.0.0-alpha.5",
-    "@loaders.gl/schema-utils": "5.0.0-alpha.5",
-    "@loaders.gl/textures": "5.0.0-alpha.5",
-    "@loaders.gl/tiles": "5.0.0-alpha.5",
-    "@loaders.gl/zip": "5.0.0-alpha.5",
-    "@math.gl/core": "5.0.0-alpha.5",
-    "@math.gl/crs": "5.0.0-alpha.5",
-    "@math.gl/culling": "5.0.0-alpha.5",
-    "@math.gl/geometry-utils": "5.0.0-alpha.5",
-    "@math.gl/geospatial": "5.0.0-alpha.5",
-    "zod": "^4.1.12"
+    "@loaders.gl/compression": "4.3.3",
+    "@loaders.gl/crypto": "4.3.3",
+    "@loaders.gl/draco": "4.3.3",
+    "@loaders.gl/images": "4.3.3",
+    "@loaders.gl/loader-utils": "4.3.3",
+    "@loaders.gl/math": "4.3.3",
+    "@loaders.gl/schema": "4.3.3",
+    "@loaders.gl/textures": "4.3.3",
+    "@loaders.gl/tiles": "4.3.3",
+    "@loaders.gl/zip": "4.3.3",
+    "@math.gl/core": "^4.1.0",
+    "@math.gl/culling": "^4.1.0",
+    "@math.gl/geospatial": "^4.1.0"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "~5.0.0-alpha.0"
+    "@loaders.gl/core": "^4.3.0"
   },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+  "gitHead": "3213679d79e6ff2814d48fd3337acfa446c74099"
 }

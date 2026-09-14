@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import {expect, it} from 'vitest';
+import {it, expect} from 'test/utils/expect-assertions';
 
 import ConditionsExpression from '@loaders,gl/3d-tiles/styles/condition-expression';
 import {Cartesian4} from '@math.gl/core';

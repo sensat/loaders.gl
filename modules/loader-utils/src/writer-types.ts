@@ -2,50 +2,33 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Format} from './format-types';
-
 // WRITERS
 
 /** Options for writers */
 export type WriterOptions = {
-  core?: {
-    /** worker source. If is set will be used instead of loading worker from the Internet */
-    source?: string | null;
+  /** worker source. If is set will be used instead of loading worker from the Internet */
+  source?: string | null;
 
-    // module loading
-
-    /** Force to load WASM libraries from local file system in NodeJS or from loaders.gl CDN in a web browser */
-    useLocalLibraries?: boolean;
-    /** Whether to use workers under Node.js (experimental) */
-    _nodeWorkers?: boolean;
-    /** Set to `false` to disable workers */
-    worker?: boolean;
-    log?: any;
-  };
+  // module loading
 
   /** Any additional JS libraries */
   modules?: Record<string, any>;
+  /** Force to load WASM libraries from local file system in NodeJS or from loaders.gl CDN in a web browser */
+  useLocalLibraries?: boolean;
 
   /** writer-specific options */
-  [writerId: string]: Record<string, unknown> | undefined;
+  [writerId: string]: any;
 };
 
 /**
  * A writer definition that can be used with `@loaders.gl/core` functions
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type Writer<DataT = unknown, BatchT = unknown, WriterOptionsT = WriterOptions> = Format & {
+export type Writer<DataT = unknown, BatchT = unknown, WriterOptionsT = WriterOptions> = {
   /** The result type of this loader  */
   dataType?: DataT;
   /** The batched result type of this loader  */
   batchType?: BatchT;
-  /** Version should be injected by build tools */
-  version: string;
-  /** A boolean, or a URL */
-  worker?: string | boolean;
-  // end Worker
-  options: WriterOptionsT;
-  deprecatedOptions?: Record<string, string>;
 
   /** Human readable name */
   name: string;
@@ -53,16 +36,27 @@ export type Writer<DataT = unknown, BatchT = unknown, WriterOptionsT = WriterOpt
   id: string;
   /** module is used to generate worker threads, need to be the module directory name */
   module: string;
+  /** Version should be injected by build tools */
+  version: string;
+  /** A boolean, or a URL */
+  worker?: string | boolean;
+  // end Worker
+
   /** Which category does this loader belong to */
   category?: string;
   /** File extensions that are potential matches with this loader. */
   extensions: string[];
   /** MIMETypes that indicate a match with this loader. @note Some MIMETypes are generic and supported by many loaders */
   mimeTypes?: string[];
+
   /** Is the input of this loader binary */
   binary?: boolean;
   /** Is the input of this loader text */
   text?: boolean;
+
+  /** Default options for this writer */
+  options: WriterOptionsT;
+  deprecatedOptions?: Record<string, string>;
 };
 
 /**

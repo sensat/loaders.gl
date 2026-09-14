@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 export function bufferToArrayBuffer(buffer) {
   // TODO - per docs we should just be able to call buffer.buffer, but there are issues
   if (Buffer.isBuffer(buffer)) {

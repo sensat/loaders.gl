@@ -1,19 +1,16 @@
-// SPDX-License-Identifier: Apache-2.0
-
-// A set of typescript types manually adapted from the Draco 1.5.7 web IDL.
+// A set of typescript types manually adapted from the Draco web IDL
 // Draco JS is a bit tricky to work with due to the C++ emscripten code base
 // sparse documentation, so these types provide an extra safety net.
 
-// Typescript defs adapted from the release-pinned draco3d emscripten IDL:
-// https://raw.githubusercontent.com/google/draco/8786740086a9f4d83f44aa83badfbea4dce7a1b5/src/draco/javascript/emscripten/draco_web_decoder.idl
-// https://raw.githubusercontent.com/google/draco/8786740086a9f4d83f44aa83badfbea4dce7a1b5/src/draco/javascript/emscripten/draco_web_encoder.idl
+// Typescript defs adapted from draco3d emscripten IDL
+// https://raw.githubusercontent.com/google/draco/master/src/draco/javascript/emscripten/draco_web_decoder.idl
 // Interface exposed to emscripten's WebIDL Binder.
 // http://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/WebIDL-Binder.html
 
 /* eslint-disable camelcase */
 
-/** Byte offset into Draco's WebAssembly memory. */
-type VoidPtr = number;
+/** Draco3D untyped memory pointer */
+type VoidPtr = any;
 
 // DRACO WEB DECODER IDL
 
@@ -210,14 +207,9 @@ export declare class MetadataQuerier {
 export declare class Decoder {
   constructor();
 
-  GetEncodedGeometryType(data: Int8Array): draco_EncodedGeometryType;
+  GetEncodedGeometryType(in_buffer: DecoderBuffer): draco_EncodedGeometryType;
 
-  DecodeArrayToPointCloud(data: Int8Array, data_size: number, out_point_cloud: PointCloud): Status;
-  DecodeArrayToMesh(data: Int8Array, data_size: number, out_mesh: Mesh): Status;
-
-  /** @deprecated Use `DecodeArrayToPointCloud`. */
   DecodeBufferToPointCloud(in_buffer: DecoderBuffer, out_point_cloud: PointCloud): Status;
-  /** @deprecated Use `DecodeArrayToMesh`. */
   DecodeBufferToMesh(in_buffer: DecoderBuffer, out_mesh: Mesh): Status;
 
   GetAttributeId(pc: PointCloud, type: draco_GeometryAttribute_Type): number;
@@ -366,13 +358,12 @@ export declare class PointCloudBuilder {
 
   AddMetadata(pc: PointCloud, metadata: Metadata): boolean;
   SetMetadataForAttribute(pc: PointCloud, attribute_id: number, metadata: Metadata);
-  SetNormalizedFlagForAttribute(pc: PointCloud, attribute_id: number, normalized: boolean): boolean;
 }
 
 /** Draco3D mesh builder */
 export declare class MeshBuilder extends PointCloudBuilder {
   constructor();
-  AddFacesToMesh(mesh: Mesh, num_faces: number, faces: Uint16Array | Uint32Array): boolean;
+  AddFacesToMesh(mesh: Mesh, num_faces: number, faces: number[]): boolean;
 }
 
 /** Draco3D encoder */
@@ -406,7 +397,8 @@ export declare class Encoder {
 
 /** Draco3D expert encoder */
 export declare class ExpertEncoder {
-  constructor(pointCloud: PointCloud);
+  constructor();
+  ExpertEncoder(pc: PointCloud): void;
   SetEncodingMethod(method: number): void;
   SetAttributeQuantization(att_id: number, quantization_bits: number);
   SetAttributeExplicitQuantization(
@@ -444,9 +436,6 @@ export interface Draco3D {
   readonly TEX_COORD: draco_GeometryAttribute_Type;
   readonly GENERIC: draco_GeometryAttribute_Type;
 
-  readonly MESH_SEQUENTIAL_ENCODING: number;
-  readonly MESH_EDGEBREAKER_ENCODING: number;
-
   // enum draco_DataType
   readonly DT_INVALID: draco_DataType;
   readonly DT_INT8: draco_DataType;
@@ -467,7 +456,6 @@ export interface Draco3D {
   readonly Metadata: typeof Metadata;
 
   readonly Encoder: typeof Encoder;
-  readonly ExpertEncoder: typeof ExpertEncoder;
   readonly MeshBuilder: typeof MeshBuilder;
   readonly MetadataBuilder: typeof MetadataBuilder;
 
@@ -484,15 +472,14 @@ export interface Draco3D {
   readonly DracoUInt32Array: typeof DracoUInt32Array;
 
   readonly AttributeQuantizationTransform: typeof AttributeQuantizationTransform;
-  readonly AttributeOctahedronTransform: typeof AttributeOctahedronTransform;
 
   // createEncoderModule(): Encoder;
   // createDecoderModule(): Decoder;
-  destroy(resource: object): void;
+  destroy(resource: any): void;
   _malloc(byteLength: number): number;
   _free(ptr: number): void;
 
-  HEAPU8: {
+  HEAPF32: {
     buffer: ArrayBuffer;
   };
 }

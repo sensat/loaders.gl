@@ -3,7 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import type {XMLLoaderOptions} from '@loaders.gl/xml';
-import {parseXMLTextSync} from '../xml/parse-xml-text';
+import {XMLLoader} from '@loaders.gl/xml';
 
 /** Layer description - response to a WMS `DescribeLayer` request  */
 export type WMSLayerDescription = {
@@ -18,7 +18,7 @@ export function parseWMSLayerDescription(
   text: string,
   options?: XMLLoaderOptions
 ): WMSLayerDescription {
-  const parsedXML = parseXMLTextSync(text, options);
+  const parsedXML = XMLLoader.parseTextSync?.(text, options);
   // TODO - implement parser
   return parsedXML as unknown as WMSLayerDescription;
 }

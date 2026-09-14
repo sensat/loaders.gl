@@ -1,110 +1,12 @@
----
-title: WMS format
-description: Request georeferenced map images and service metadata through the OGC Web Map Service protocol.
-hide_title: true
-page_style: designed
----
+# WMS - Web Map Service
 
-import {WmsDocsTabs} from '@site/src/components/docs/wms-docs-tabs';
-import {ServiceSourceGraphic} from '@site/src/components/docs/service-source-graphic';
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocLiveExample} from '@site/src/components/docs/doc-live-example';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
-import {ClientExample} from '@site/src/components';
-
-<DocPageHeader
-  eyebrow="OGC map-image service"
-  title="WMS"
-  description="WMS exposes georeferenced map images through capabilities, layer, style, dimension, and CRS parameters. loaders.gl keeps service discovery and image retrieval in a source API suitable for browser maps."
-  tone="mint"
-  logos={[{alt: 'Open Geospatial Consortium', src: '/images/format-logos/ogc-logo-transparent.png'}]}
-  meta={['WMS 1.3.0', 'GetCapabilities', 'GetMap and feature info']}
-  links={[
-    {label: 'WMS module', to: '/docs/modules/wms'},
-    {label: 'WMTS format', to: '/docs/modules/wms/formats/wmts'}
-  ]}
-/>
-
-<DocLiveExample label="WMS map service example" height="440px">
-  <ClientExample kind="wms" format="WMS" />
-</DocLiveExample>
-
-<WmsDocsTabs active="wms" />
-
-<ServiceSourceGraphic kind="ogc" />
-
-<DocOrientation
-  eyebrow="The service sequence"
-  title="Discover the layer. Request the image. Keep CRS explicit."
-  description="A WMS client first learns what the service advertises, then selects layers, styles, dimensions, and a coordinate reference for each map request."
-  tone="mint"
-  items={[
-    {label: 'Discover', value: 'Capabilities, layers, CRS, and dimensions'},
-    {label: 'Request', value: 'GetMap image with bounds and size'},
-    {label: 'Inspect', value: 'Feature info and legend operations'},
-    {label: 'Render', value: 'SourceLayer-compatible image tiles'}
-  ]}
-/>
+![ogc-logo](../../../images/logos/ogc-logo-60.png)
 
 - _[`@loaders.gl/wms`](/docs/modules/wms)_
 - _[Wikipedia article](https://en.wikipedia.org/wiki/Web_Map_Service)_
 - _[OGC Specification](https://raw.githubusercontent.com/visgl/deck.gl-data/master/specifications/wms/06-042_OpenGIS_Web_Map_Service_WMS_Implementation_Specification.pdf) (PDF)_
 
 WMS (Web Map Service) is a protocol for serving geo-referenced **map images** over the internet. WMS was standardized in 1999 by the OGC (Open Geospatial Consortium).
-
-<ReferenceBoundary
-  title="WMS operations and source behavior"
-  description="The sections below cover supported protocol operations, quick start usage, CRS handling, dimensions, authentication, and rendering integration."
-  tone="mint"
-/>
-
-## Feature support
-
-| Capability | Support | API and behavior |
-| --- | --- | --- |
-| WMS 1.3.0 | Supported | Default protocol version with specification-correct axis order |
-| WMS 1.1.1 | Supported | Version-specific `SRS` and longitude/latitude request handling |
-| `GetCapabilities` | Supported | Parsed and normalized service, request, layer, CRS, extent, and dimension metadata |
-| `GetMap` | Supported | `getImage()` and `getMap()` return decoded image data |
-| `GetFeatureInfo` | Supported | Parsed feature information or raw text output |
-| `DescribeLayer` | Supported | Parses layer descriptions when the server advertises the operation |
-| `GetLegendGraphic` | Supported | Returns a decoded legend image |
-| Service exceptions | Supported | OGC XML errors are parsed and reported as request failures |
-| Layer hierarchy and inheritance | Supported | Parent metadata is inherited by renderable child layers |
-| Time, elevation, and custom dimensions | Supported | Standard and vendor parameters are forwarded |
-| CRS normalization and axis order | Supported | Handles the WMS 1.3.0 `EPSG:4326` axis-order change |
-| Server-side styling | Pass through | Named styles and vendor parameters are sent to the service |
-| Authentication | Supported | Standard fetch headers, credentials, proxies, and URL parameters |
-| deck.gl rendering | First class | Pass `WMSSourceLoader` to `SourceLayer` |
-
-## Quick start
-
-```ts
-import {createDataSource} from '@loaders.gl/core';
-import {WMSSourceLoader} from '@loaders.gl/wms';
-
-const source = createDataSource(wmsUrl, [WMSSourceLoader], {
-  wms: {
-    wmsParameters: {
-      version: '1.3.0',
-      layers: ['workspace:land-cover'],
-      transparent: true
-    }
-  }
-});
-
-const metadata = await source.getMetadata();
-const image = await source.getImage({
-  layers: ['workspace:land-cover'],
-  boundingBox: [[-10, 40], [10, 50]],
-  crs: 'CRS:84',
-  width: 1024,
-  height: 512
-});
-```
-
-The generic `ImageSource` API is the shortest path for rendering. Protocol-specific methods remain
-available for feature information, legends, URL generation, and advanced WMS controls.
 
 ## Characteristics
 
@@ -257,10 +159,10 @@ The WMS standard specifies protocol defined as a number of "request types" that 
 | **WMS Request**    | **loaders.gl support**                         | **Description**                                                                                                                                                                                                        |
 | ------------------ | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `GetCapabilities`  | [`WMSCapabilitiesLoader`][capabilities_loader] | Returns WMS metadata (such as map image format and WMS version compatibility) and the available layers (map bounding box, coordinate reference systems, URI of the data and whether the layer is mostly opaque or not) |
-| `GetMap`           | [`ImageBitmapLoader`][image_bitmap_loader]     | returns a map image. Parameters include: width and height of the map, coordinate reference system, rendering style, image format                                                                                       |
+| `GetMap`           | `ImageLoader`][image_loader]                   | returns a map image. Parameters include: width and height of the map, coordinate reference system, rendering style, image format                                                                                       |
 | `GetFeatureInfo`   | `WMSFeatureInfoLoader`][feature_info_loader]   | if a layer is marked as 'queryable' then you can request data about a coordinate of the map image.                                                                                                                     |
 | `DescribeLayer`    |                                                | gets feature types of the specified layer or layers, which can be further described using WFS or WCS requests. (Styled Layer Descriptor (SLD) Profile of WMS).                                                         |
-| `GetLegendGraphic` | [`ImageBitmapLoader`][image_bitmap_loader]     | An image of the map's legend, giving a visual guide to map elements.                                                                                                                                                   |
+| `GetLegendGraphic` | `ImageLoader`][image_loader]                   | An image of the map's legend, giving a visual guide to map elements.                                                                                                                                                   |
 | Exceptions         | `WMSErrorLoader`                               | Parses an XML encoded WMS error response from any malformed request.                                                                                                                                                   |
 
 Remarks:
@@ -270,7 +172,7 @@ Remarks:
 
 [capabilities_loader]: /docs/modules/wms/api-reference/wms-capabilities-loader
 [feature_info_loader]: /docs/modules/wms/api-reference/wms-feature-info-loader
-[image_bitmap_loader]: /docs/modules/images/api-reference/image-bitmap-loader
+[image_loader]: /docs/modules/images/api-reference/image-loader
 
 ## Coordinate Reference Systems
 
@@ -284,6 +186,7 @@ Version 1.3.0 of the WMS standard was released in January 2004
 
 - Use `CRS` instead of `SRS` parameter for 1.3.0
 - The order of parameters for BBOX (in v1.3.0 only) depends on whether the CRS definition has flipped axes. You will see this in the `GetCapabilities` request at 1.3.0 - the response should show the flipped axes.
+
   - `BBOX=xmin,ymin,xmax,ymax NON-FLIPPED`
   - `BBOX=ymin,xmin,ymax,xmax FLIPPED`
   - `EPSG:4326` needs to have flipped axes. `4326 1 WGS 84 Latitude North Longitude East`

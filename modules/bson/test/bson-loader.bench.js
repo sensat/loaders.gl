@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 import {BSONLoader} from '@loaders.gl/bson';
 import {load} from '@loaders.gl/core';
 

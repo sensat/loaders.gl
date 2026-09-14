@@ -1,21 +1,40 @@
-import {expect, test} from 'vitest';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
+import test from 'tape-promise/tape';
 import {load} from '@loaders.gl/core';
 import {BSONLoader} from '@loaders.gl/bson';
 // import corruptScenarios from './data/js-bson/corrupt';
+
 const TAGS_BSON_URL = '@loaders.gl/bson/test/data/js-bson/mongodump.airpair.tags.bson';
 const MINI_BSON_URL = '@loaders.gl/bson/test/data/js-bson/test.bson';
-test('BSONLoader#load(test.bson)', async () => {
+
+test('BSONLoader#load(test.bson)', async (t) => {
   const data = await load(MINI_BSON_URL, BSONLoader);
   // t.comment(JSON.stringify(data));
-  expect(data, 'Data received').toBeTruthy();
+  t.ok(data, 'Data received');
+  t.end();
 });
-test('BSONLoader#load(mongodump.airpair.tags.bson)', async () => {
-  await expect(load(TAGS_BSON_URL, BSONLoader)).rejects.toThrow(
-    /detected a concatenated BSON dump with 50 documents/
-  );
+
+// This seems to be a corrupt test file?
+test.skip('BSONLoader#load(mongodump.airpair.tags.bson)', async (t) => {
+  const data = await load(TAGS_BSON_URL, BSONLoader);
+  t.ok(data, 'data received');
+  t.end();
 });
-test('BSONLoader#load(mongodump.airpair.tags.bson, concatenatedDocuments=first)', async () => {
-  const data = await load(TAGS_BSON_URL, BSONLoader, {bson: {concatenatedDocuments: 'first'}});
-  expect(data._id.toString()).toBe('514825fa2a26ea0200000006');
-  expect(String(data.desc).includes('Android'), 'loads first document contents').toBeTruthy();
-});
+
+// TODO - skip because of Node.js Bbuffer dependency
+// test('BSON Compliance - corrupt scenarios', async (t) => {
+//   for (let i = 0; i < corruptScenarios.documents.length; i++) {
+//     const doc = corruptScenarios.documents[i];
+//     if (!doc.skip) {
+//       // Create a buffer containing the payload
+//       const buffer = Buffer.from(doc.encoded, 'hex');
+//       // Attempt to deserialize
+//       t.throws(() => parseSync(buffer, BSONLoader), `Throws ${doc.error}`);
+//     }
+//   }
+
+//   t.end();
+// });

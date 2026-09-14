@@ -16,7 +16,8 @@ const getAliases = async (frameworkName, frameworkRootDir) => {
 export default defineConfig(async () => {
   const {default: stdLibBrowser} = await import('node-stdlib-browser');
   return {
-    resolve: {extensions: ['.ts', '.tsx', '.mjs', '.js', '.jsx', '.json'], alias: {
+    resolve: {
+      alias: {
         ...(await getAliases('@loaders.gl', `${__dirname}/../../..`)),
         fs: stdLibBrowser.fs,
         path: stdLibBrowser.path,

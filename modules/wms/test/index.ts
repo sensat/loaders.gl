@@ -7,7 +7,6 @@
 import './csw/csw-capabilities-loader.spec';
 import './csw/csw-domain-loader.spec';
 import './csw/csw-records-loader.spec';
-import './csw/csw-source.spec';
 
 // WMS - Web Map Service
 
@@ -19,10 +18,11 @@ import './wms/wms-layer-description-loader.spec';
 
 // WMS - Web Map Tile Service
 
+import './wmts/wmts-capabilities-loader.spec';
+
 // WMS - Web Feature Service
 
 import './wfs/wfs-capabilities-loader.spec';
-import './wfs/wfs-source.spec';
 
 // GML - Geographic Markup Language
 
@@ -30,6 +30,5 @@ import './gml/gml-loader.spec';
 
 // Services
 
-import './wms/wms-source.spec';
-import './service-capabilities.spec';
-import './ogc-api-source.spec';
+import './services/wms-service.spec';
+// import './services/arcgis-server.spec';

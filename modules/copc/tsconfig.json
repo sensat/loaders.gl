@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.module.json",
   "include": ["src/**/*"],
   "exclude": ["node_modules"],
   "compilerOptions": {
@@ -9,9 +9,7 @@
   },
   "references": [
     {"path": "../loader-utils"},
-    {"path": "../las"},
     {"path": "../schema"},
-    {"path": "../schema-utils"},
     {"path": "../images"}
   ]
 }

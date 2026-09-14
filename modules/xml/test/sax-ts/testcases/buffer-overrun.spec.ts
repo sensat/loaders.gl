@@ -1,8 +1,13 @@
-// SPDX-License-Identifier: ISC
-import {test} from 'vitest';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+// Forked from sax-ts & sax under ISC license
+
+import test from 'tape-promise/tape';
 import {testSax} from '../utils/test-utils';
-test('SAXParser#buffer-overrun', () => {
-  testSax({
+
+test('SAXParser#buffer-overrun', (t) => {
+  testSax(t, {
     saxOptions: {
       MAX_BUFFER_LENGTH: 5
     },
@@ -36,4 +41,6 @@ test('SAXParser#buffer-overrun', () => {
     .write('yo')
     .write('</abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ>')
     .close();
+
+  t.end();
 });

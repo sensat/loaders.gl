@@ -2,35 +2,29 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {CRSIdentifier} from '@math.gl/crs';
+import type {DataSourceProps} from './data-source';
+import {DataSource} from './data-source';
 
 /**
  * Props for a TileSource
  */
-export type TileSourceProps = {};
+export type TileSourceProps = DataSourceProps;
 
 /**
  * MapTileSource - data sources that allow data to be queried by (geospatial) extents
  * @note
  * - If geospatial, bounding box is expected to be in web mercator coordinates
  */
-export interface TileSource {
-  /** MIME type of decoded tile payloads, when known. */
-  readonly mimeType?: string | null;
-  /** Whether decoded vector coordinates are local to each tile. */
-  readonly localCoordinates?: boolean;
+export interface TileSource<
+  PropsT extends TileSourceProps = TileSourceProps,
+  MetadataT extends TileSourceMetadata = TileSourceMetadata
+> extends DataSource<PropsT> {
   // extends DataSource {
-  getMetadata(): Promise<TileSourceMetadata>;
+  getMetadata(): Promise<MetadataT>;
   /** Flat parameters */
   getTile(parameters: GetTileParameters): Promise<unknown | null>;
-  /** Flat parameters, batched */
-  getTileBatch?(parameters: readonly GetTileParameters[]): readonly Promise<unknown | null>[];
   /** deck.gl compatibility: TileLayer and MTVLayer */
   getTileData(parameters: GetTileDataParameters): Promise<unknown | null>;
-  /** deck.gl compatibility: batched tile data */
-  getTileDataBatch?(
-    parameters: readonly GetTileDataParameters[]
-  ): readonly Promise<unknown | null>[];
 }
 
 // HELPER TYPES
@@ -57,31 +51,15 @@ export type TileSourceMetadata = {
   maxZoom?: number;
   /** Bounding box of tiles in this tileset `[[w, s], [e, n]]`  */
   boundingBox?: [min: [x: number, y: number], max: [x: number, y: number]];
-  /** Advertised tile grid, when the service exposes matrix or level metadata. */
-  tileGrid?: TileGrid;
 
   /** Layer information */
   layer?: {
     name: string;
     title?: string;
-    srs?: CRSIdentifier[];
+    srs?: string[];
     boundingBox?: [number, number, number, number];
     layers: TileSourceLayer[];
   };
-};
-
-/** Normalized tile matrix information shared by WMTS and vendor tile services. */
-export type TileGrid = {
-  /** Coordinate reference system used by the grid. */
-  crs?: CRSIdentifier;
-  /** Tile width and height in pixels. */
-  tileSize?: [number, number];
-  /** Top-left origin in grid coordinates. */
-  origin?: [number, number];
-  /** Matrix identifiers in zoom order. */
-  matrixIds?: string[];
-  /** Matrix width and height in tile units in zoom order. */
-  matrixSizes?: Array<[number, number]>;
 };
 
 /**
@@ -90,7 +68,7 @@ export type TileGrid = {
 export type TileSourceLayer = {
   name: string;
   title?: string;
-  srs?: CRSIdentifier[];
+  srs?: string[];
   boundingBox?: [number, number, number, number];
   layers: TileSourceLayer[];
 };
@@ -106,15 +84,13 @@ export type GetTileParameters = {
   /** tile y coordinate */
   y: number;
   /** Coordinate reference system for the tile */
-  crs?: CRSIdentifier;
+  crs?: string;
   /** Layers to render */
   layers?: string | string[];
   /** Styling */
   styles?: unknown;
   /** requested format for the return image (in case of bitmap tiles) */
   format?: 'image/png';
-  /** Abort signal for canceling metadata, range, and tile-content requests. */
-  signal?: AbortSignal;
 };
 
 /** deck.gl compatibility: parameters for TileSource.getTileData() */
@@ -130,8 +106,6 @@ export type GetTileDataParameters = {
   signal?: AbortSignal;
   userData?: Record<string, any>;
 };
-
-export type GetTileDataBatchResult<T = unknown> = readonly Promise<T | null>[];
 
 /** deck.gl compatibility: bounding box */
 export type TileBoundingBox = NonGeoBoundingBox | GeoBoundingBox;

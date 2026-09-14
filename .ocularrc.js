@@ -1,9 +1,10 @@
-/** @typedef {import('@vis.gl/dev-tools').OcularConfig} OcularConfig */
+/** @typedef {import('ocular-dev-tools').OcularConfig} OcularConfig */
 
 import {dirname, join} from 'path';
 import {fileURLToPath} from 'url';
 
 const packageRoot = dirname(fileURLToPath(import.meta.url));
+const devModules = join(packageRoot, 'dev-modules');
 const testDir = join(packageRoot, 'test');
 
 /** @type {OcularConfig} */
@@ -11,21 +12,22 @@ const config = {
   babel: false,
 
   lint: {
-    paths: ['modules', 'apps', 'dev-docs', 'docs', 'test'], //, 'examples'],
+    paths: ['modules', 'dev-docs', 'docs', 'test'], //, 'examples'],
     extensions: ['js', 'jsx', 'cjs', 'mjs', 'ts', 'tsx', 'md'] // , 'mdx'],
+    // extensions: ['js', 'jsx', 'mjs', 'ts', 'tsx', 'md']
   },
 
-  // typescript: {
-  //   project: 'tsconfig.build.json'
-  // },
+  typescript: {
+    project: 'tsconfig.build.json'
+  },
 
   aliases: {
     // TEST
     test: testDir
   },
 
-  nodeAliases: {
-    '@maplibre/mlt': join(packageRoot, 'modules/mlt/src/libs/mlt-decoder.cjs')
+  coverage: {
+    test: 'browser'
   },
 
   bundle: {
@@ -39,8 +41,19 @@ const config = {
   },
 
   entry: {
+    test: 'test/node.ts',
+    'test-browser': 'test/browser.ts',
+    bench: 'test/bench/node.js',
+    'bench-browser': 'test/bench/browser.js',
     size: 'test/size/import-nothing.js'
   }
+  // entry: {
+  //   test: 'test/index.ts',
+  //   'test-browser': 'test/browser.ts',
+  //   bench: 'test/bench/index.js',
+  //   'bench-browser': 'test/bench/browser.js',
+  //   size: 'test/size/import-nothing.js'
+  // }
 };
 
 export default config;

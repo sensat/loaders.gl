@@ -1,182 +1,172 @@
----
-title: Table
-description: Work with chunked, typed columns as one logical Apache Arrow table.
-hide_title: true
-page_style: designed
----
+# Table
 
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
+> This documentation reflects Arrow JS v4.0. Needs to be updated for the new Arrow API in v9.0 +.
 
-<DocPageHeader
-  eyebrow="Arrow JS API · container"
-  title="The table is the application-facing container."
-  description="Table combines one or more record-batch chunks into a logical set of named, typed columns. Use it for ordinary multi-column Arrow data, then choose rows, vectors, or batches for the next operation."
-  tone="cyan"
-  meta={['Chunked columns', 'Rows and vectors', 'Apache Arrow JS v21+']}
-  links={[
-    {label: 'Arrow JS guide', to: '/docs/arrowjs'},
-    {label: 'RecordBatch', to: '/docs/arrowjs/api-reference/record-batch'},
-    {label: 'Vector', to: '/docs/arrowjs/api-reference/vector'}
-  ]}
-/>
-
-<DocOrientation
-  eyebrow="The Table model"
-  title="One logical table, many physical batches."
-  description="A Table keeps the schema and row count stable while allowing data to arrive or remain stored in record-batch chunks. This is the useful boundary between IPC, loaders, scans, and application code."
-  tone="cyan"
-  items={[
-    {label: 'Schema', value: 'Names and types shared by the table columns'},
-    {label: 'Batches', value: 'Row-aligned RecordBatch chunks'},
-    {label: 'Access', value: 'Rows, child vectors, slices, and iteration'},
-    {label: 'Scale', value: 'Chunking without changing the logical table shape'}
-  ]}
-/>
-
-<ReferenceBoundary
-  title="Table reference"
-  description="The sections below document construction, members, row and column access, slicing, iteration, and serialization-related behavior."
-  tone="cyan"
-/>
-
-:::info
-This page is aligned to Apache Arrow JS v21.x (`apache-arrow`).
-:::
-
-A logical table as a sequence of record-batch chunks.
+Logical table as sequence of chunked arrays
 
 ## Overview
 
-`Table` is the row-oriented container in Arrow JS and the recommended way to handle multi-column, multi-row Arrow data in memory.
+The JavaScript `Table` class is not part of the Apache Arrow specification as such, but is rather a tool to allow you to work with multiple record batches and array pieces as a single logical dataset.
+
+As a relevant example, we may receive multiple small record batches in a socket stream, then need to concatenate them into contiguous memory for use in NumPy or pandas. The Table object makes this efficient without requiring additional memory copying.
+
+A Table’s columns are instances of `Column`, which is a container for one or more arrays of the same type.
 
 ## Usage
 
-```ts
-import {makeTable, tableFromArrays, Table} from 'apache-arrow';
+`Table.new()` accepts an `Object` of `Columns` or `Vectors`, where the keys will be used as the field names for the `Schema`:
 
-const table = makeTable({
-  a: new Int32Array([1, 2, 3]),
-  b: ['x', 'y', 'z']
-});
-
-const fromArrays = tableFromArrays({
-  a: [1, 2, 3],
-  b: ['x', 'y', 'z']
-});
-
-console.log(Table !== undefined, table.numRows, table.numCols);
+```typescript
+const i32s = Int32Vector.from([1, 2, 3]);
+const f32s = Float32Vector.from([0.1, 0.2, 0.3]);
+const table = Table.new({i32: i32s, f32: f32s});
+assert(table.schema.fields[0].name === 'i32');
 ```
+
+It also accepts a a list of Vectors with an optional list of names or
+Fields for the resulting Schema. If the list is omitted or a name is
+missing, the numeric index of each Vector will be used as the name:
+
+```ts
+const i32s = Int32Vector.from([1, 2, 3]);
+const f32s = Float32Vector.from([0.1, 0.2, 0.3]);
+const table = Table.new([i32s, f32s], ['i32']);
+assert(table.schema.fields[0].name === 'i32');
+assert(table.schema.fields[1].name === '1');
+```
+
+If the supplied arguments are `Column` instances, `Table.new` will infer the `Schema` from the `Column`s:
+
+```ts
+const i32s = Column.new('i32', Int32Vector.from([1, 2, 3]));
+const f32s = Column.new('f32', Float32Vector.from([0.1, 0.2, 0.3]));
+const table = Table.new(i32s, f32s);
+assert(table.schema.fields[0].name === 'i32');
+assert(table.schema.fields[1].name === 'f32');
+```
+
+If the supplied Vector or Column lengths are unequal, `Table.new` will
+extend the lengths of the shorter Columns, allocating additional bytes
+to represent the additional null slots. The memory required to allocate
+these additional bitmaps can be computed as:
+
+```ts
+let additionalBytes = 0;
+for (let vec in shorter_vectors) {
+  additionalBytes += ((longestLength - vec.length + 63) & ~63) >> 3;
+}
+```
+
+For example, an additional null bitmap for one million null values would require `125,000` bytes (`((1e6 + 63) & ~63) >> 3`), or approx. `0.11MiB`
+
+## Inheritance
+
+`Table` extends Chunked
+
+## Static Methods
+
+### Table.empty() : Table
+
+Creates an empty table
+
+### Table.from() : Table
+
+Creates an empty table
+
+### Table.from(source: RecordBatchReader): Table
+
+### Table.from(source: `Promise<RecordBatchReader>`): `Promise<Table>`
+
+### Table.from(source?: any) : Table
+
+### Table.fromAsync(source: import('./ipc/reader').FromArgs): `Promise<Table>`
+
+### Table.fromVectors(vectors: any[], names?: String[]) : Table
+
+### Table.fromStruct(struct: Vector) : Table
+
+### Table.new(columns: Object)
+
+### Table.new(...columns)
+
+### Table.new(vectors: Vector[], names: String[])
+
+Type safe constructors. Functionally equivalent to calling `new Table()` with the same arguments, however if using Typescript using the `new` method instead will ensure that types inferred from the arguments "flow through" into the return Table type.
 
 ## Members
 
-### `schema: Schema` (readonly)
+### schema (readonly)
 
-Table schema.
+The `Schema` of this table.
 
-### `batches: RecordBatch[]` (readonly)
+### length : Number (readonly)
 
-List of logical table chunks.
+The number of rows in this table.
 
-### `data: Data<Struct>[]` (readonly)
+TBD: this does not consider filters
 
-Convenience getter for backing `Data` chunks.
+### chunks : RecordBatch[] \(readonly)
 
-### `numCols: number` (readonly)
+The list of chunks in this table.
 
-Number of columns.
+### numCols : Number (readonly)
 
-### `numRows: number` (readonly)
-
-Total row count across chunks.
-
-### `nullCount: number` (readonly)
-
-Total number of null rows.
-
-## Constructors
-
-`Table` has multiple constructor forms.
-
-- `new Table()`
-- `new Table(...batches: RecordBatch[])`
-- `new Table(...columns: Vector[])`
-- `new Table(schema: Schema, ...columns: Vector[])`
-- `new Table(schema: Schema, data?: RecordBatch | RecordBatch[])`
-
-Use `makeTable` for typed array convenience and `tableFromArrays` for mixed JS arrays + typed arrays.
+The number of columns in this table.
 
 ## Methods
 
-### `isValid(index: number): boolean`
+### constructor(batches: RecordBatch[])
 
-Returns whether row at `index` is non-null.
+The schema will be inferred from the record batches.
 
-### `get(index: number): Struct<T> | null`
+### constructor(...batches: RecordBatch[])
 
-Returns the row value at `index`.
+The schema will be inferred from the record batches.
 
-### `at(index: number): Struct<T> | null`
+### constructor(schema: Schema, batches: RecordBatch[])
 
-Returns the row value at `index`, supporting negative indexes.
+### constructor(schema: Schema, ...batches: RecordBatch[])
 
-### `set(index: number, value: Struct<T>['TValue'] | null): void`
+### constructor(...args: any[])
 
-Writes a row value at `index`.
+Create a new `Table` from a collection of `Columns` or `Vectors`, with an optional list of names or `Fields`.
 
-### `indexOf(element: Struct<T>, offset?: number): number`
+TBD
 
-Finds the first row equal to `element`, starting from optional `offset`.
+### clone(chunks?:)
 
-### `[Symbol.iterator](): IterableIterator<any>`
+Returns a new copy of this table.
 
-Iterates table rows.
+### getColumnAt(index: number): Column | null
 
-### `toArray(): any[]`
+Gets a column by index.
 
-Converts rows to a standard array.
+### getColumn(name: String): Column | null
 
-### `toString(): string`
+Gets a column by name
 
-Returns a string summary for debugging.
+### getColumnIndex(name: String) : Number | null
 
-### `concat(...others: Table<T>[]): Table<T>`
+Returns the index of the column with name `name`.
 
-Concatenates same-schema tables and returns a new table.
+### getChildAt(index: number): Column | null
 
-### `slice(begin?: number, end?: number): Table<T>`
+TBD
 
-Returns a zero-copy row slice using `[begin, end)`.
+### serialize(encoding = 'binary', stream = true) : Uint8Array
 
-### `getChild(name: keyof T): Vector | null`
+Returns a `Uint8Array` that contains an encoding of all the data in the table.
 
-Gets a child vector by name.
+Note: Passing the returned data back into `Table.from()` creates a "deep clone" of the table.
 
-### `getChildAt(index: number): Vector | null`
+### count(): number
 
-Gets a child vector by index.
+TBD - Returns the number of elements.
 
-### `setChild(name: keyof T, child: Vector): Table`
+### select(...columnNames: string[]) : Table
 
-Returns a new table with the named child replaced.
+Returns a new Table with the specified subset of columns, in the specified order.
 
-### `setChildAt(index: number, child?: Vector | null): Table`
+### countBy(name : Col | String) : Table
 
-Returns a new table with child vector at `index` replaced.
-
-### `select<K extends keyof T = any>(columnNames: K[]): Table<{ [P in K]: T[P] }>`
-
-Returns a table including only selected column names.
-
-### `selectAt<K extends T = any>(columnIndices: number[]): Table<{ [P in keyof K]: K[P] }>`
-
-Returns a table including only selected column indices.
-
-### `assign<R extends TypeMap = any>(other: Table<R>): Table<T & R>`
-
-Returns a merged schema/data table with `other` appended row-wise.
-
-## Notes
-
-- The `Table` API no longer exposes `count` or `countBy` methods in v21.
-- Legacy `getColumn` / `getColumnAt` and `length`-only helpers are replaced by `getChild`/`getChildAt` and `numRows`.
+Returns a new Table that contains two columns (`values` and `counts`).

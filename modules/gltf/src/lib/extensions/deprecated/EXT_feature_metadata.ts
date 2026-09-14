@@ -1,10 +1,5 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 /* eslint-disable camelcase */
-import type {GLTFMeshPrimitive, GLTFTextureInfoMetadata} from '../../types/gltf-json-schema';
-import type {GLTFWithBuffers} from '../../types/gltf-types';
+import type {GLTF, GLTFTextureInfoMetadata} from '../../types/gltf-json-schema';
 import type {
   GLTF_EXT_feature_metadata_Class,
   GLTF_EXT_feature_metadata_ClassProperty,
@@ -16,7 +11,8 @@ import type {
   GLTF_EXT_feature_metadata_Schema
 } from '../../types/gltf-ext-feature-metadata-schema';
 import type {BigTypedArray, TypedArray} from '@loaders.gl/schema';
-import {GLTFIterator} from '../../api/gltf-iterator';
+import {GLTFScenegraph} from '../../api/gltf-scenegraph';
+import {GLTFMeshPrimitive} from '../../types/gltf-json-schema';
 import {GLTFLoaderOptions} from '../../../gltf-loader';
 import {
   convertRawBufferToMetadataArray,
@@ -34,9 +30,9 @@ import {
 const EXT_FEATURE_METADATA_NAME = 'EXT_feature_metadata';
 export const name = EXT_FEATURE_METADATA_NAME;
 
-export async function decode(gltfData: GLTFWithBuffers, options: GLTFLoaderOptions): Promise<void> {
-  const iterator = new GLTFIterator(gltfData);
-  decodeExtFeatureMetadata(iterator, options);
+export async function decode(gltfData: {json: GLTF}, options: GLTFLoaderOptions): Promise<void> {
+  const scenegraph = new GLTFScenegraph(gltfData);
+  decodeExtFeatureMetadata(scenegraph, options);
 }
 
 /**
@@ -44,23 +40,23 @@ export async function decode(gltfData: GLTFWithBuffers, options: GLTFLoaderOptio
  * @param scenegraph - Instance of the class for structured access to GLTF data.
  * @param options - GLTFLoader options.
  */
-function decodeExtFeatureMetadata(iterator: GLTFIterator, options: GLTFLoaderOptions): void {
+function decodeExtFeatureMetadata(scenegraph: GLTFScenegraph, options: GLTFLoaderOptions): void {
   // Decoding metadata involves buffers processing.
   // So, if buffers have not been loaded, there is no reason to process metadata.
   if (!options.gltf?.loadBuffers) {
     return;
   }
-  const extension =
-    iterator.getExtension<GLTF_EXT_feature_metadata_GLTF>(EXT_FEATURE_METADATA_NAME);
+  const extension: GLTF_EXT_feature_metadata_GLTF | null =
+    scenegraph.getExtension(EXT_FEATURE_METADATA_NAME);
   if (!extension) {
     return;
   }
 
   if (options.gltf?.loadImages) {
-    decodePropertyTextures(iterator, extension);
+    decodePropertyTextures(scenegraph, extension);
   }
 
-  decodePropertyTables(iterator, extension);
+  decodePropertyTables(scenegraph, extension);
 }
 
 /**
@@ -69,7 +65,7 @@ function decodeExtFeatureMetadata(iterator: GLTFIterator, options: GLTFLoaderOpt
  * @param extension - Top-level extension.
  */
 function decodePropertyTextures(
-  iterator: GLTFIterator,
+  scenegraph: GLTFScenegraph,
   extension: GLTF_EXT_feature_metadata_GLTF
 ): void {
   const schema = extension.schema;
@@ -85,7 +81,7 @@ function decodePropertyTextures(
       const featureTexture = findFeatureTextureByClass(featureTextures, schemaName);
 
       if (featureTexture) {
-        handleFeatureTextureProperties(iterator, featureTexture, schemaClass);
+        handleFeatureTextureProperties(scenegraph, featureTexture, schemaClass);
       }
     }
   }
@@ -97,7 +93,7 @@ function decodePropertyTextures(
  * @param extension - Top-level extension.
  */
 function decodePropertyTables(
-  iterator: GLTFIterator,
+  scenegraph: GLTFScenegraph,
   extension: GLTF_EXT_feature_metadata_GLTF
 ): void {
   const schema = extension.schema;
@@ -110,7 +106,7 @@ function decodePropertyTables(
     for (const schemaName in schemaClasses) {
       const propertyTable = findPropertyTableByClass(propertyTables, schemaName);
       if (propertyTable) {
-        processPropertyTable(iterator, schema, propertyTable);
+        processPropertyTable(scenegraph, schema, propertyTable);
       }
     }
   }
@@ -158,7 +154,7 @@ function findFeatureTextureByClass(
  * @param propertyTable - propertyTable definition taken from the top-level extension.
  */
 function processPropertyTable(
-  iterator: GLTFIterator,
+  scenegraph: GLTFScenegraph,
   schema: GLTF_EXT_feature_metadata_Schema,
   propertyTable: GLTF_EXT_feature_metadata_FeatureTable
 ): void {
@@ -185,7 +181,7 @@ function processPropertyTable(
     if (propertyTableProperty) {
       // Getting all elements (`numberOfElements`) of the array in the `propertyTableProperty`
       const data = getPropertyDataFromBinarySource(
-        iterator,
+        scenegraph,
         schema,
         classProperty,
         numberOfElements,
@@ -204,7 +200,7 @@ function processPropertyTable(
  * @param schemaClass
  */
 function handleFeatureTextureProperties(
-  iterator: GLTFIterator,
+  scenegraph: GLTFScenegraph,
   featureTexture: GLTF_EXT_feature_metadata_FeatureTexture,
   schemaClass: GLTF_EXT_feature_metadata_Class
 ): void {
@@ -214,7 +210,7 @@ function handleFeatureTextureProperties(
     const featureTextureProperty = featureTexture?.properties?.[propertyName];
 
     if (featureTextureProperty) {
-      const data = getPropertyDataFromTexture(iterator, featureTextureProperty, attributeName);
+      const data = getPropertyDataFromTexture(scenegraph, featureTextureProperty, attributeName);
       featureTextureProperty.data = data;
     }
   }
@@ -228,7 +224,7 @@ function handleFeatureTextureProperties(
  * @param featureTableProperty
  */
 function getPropertyDataFromBinarySource(
-  iterator: GLTFIterator,
+  scenegraph: GLTFScenegraph,
   schema: GLTF_EXT_feature_metadata_Schema,
   classProperty: GLTF_EXT_feature_metadata_ClassProperty,
   numberOfFeatures: number,
@@ -236,16 +232,16 @@ function getPropertyDataFromBinarySource(
 ): string[] | BigTypedArray | string[][] | BigTypedArray[] {
   let data: string[] | BigTypedArray | string[][] | BigTypedArray[] = [];
   const bufferView = featureTableProperty.bufferView;
-  const dataArray: Uint8Array = iterator.getTypedArrayForBufferView(bufferView);
+  const dataArray: Uint8Array = scenegraph.getTypedArrayForBufferView(bufferView);
 
   const arrayOffsets = getArrayOffsetsForProperty(
-    iterator,
+    scenegraph,
     classProperty,
     featureTableProperty,
     numberOfFeatures
   );
   const stringOffsets = getStringOffsetsForProperty(
-    iterator,
+    scenegraph,
     classProperty,
     featureTableProperty,
     numberOfFeatures
@@ -270,7 +266,7 @@ function getPropertyDataFromBinarySource(
  * @see https://github.com/CesiumGS/glTF/blob/2976f1183343a47a29e4059a70961371cd2fcee8/extensions/2.0/Vendor/EXT_structural_metadata/schema/propertyTable.property.schema.json#L21
  */
 function getArrayOffsetsForProperty(
-  iterator: GLTFIterator,
+  scenegraph: GLTFScenegraph,
   classProperty: GLTF_EXT_feature_metadata_ClassProperty,
   propertyTableProperty: GLTF_EXT_feature_metadata_FeatureTableProperty,
   numberOfElements: number
@@ -289,7 +285,7 @@ function getArrayOffsetsForProperty(
   ) {
     // Data are in a VARIABLE-length array
     return getOffsetsForProperty(
-      iterator,
+      scenegraph,
       propertyTableProperty.arrayOffsetBufferView,
       propertyTableProperty.offsetType || 'UINT32', // offsetType is used both for stringOffsetBufferView and arrayOffsetBufferView
       numberOfElements
@@ -308,7 +304,7 @@ function getArrayOffsetsForProperty(
  * @see https://github.com/CesiumGS/glTF/blob/c38f7f37e894004353c15cd0481bc5b7381ce841/extensions/2.0/Vendor/EXT_feature_metadata/schema/featureTable.property.schema.json#L50C10-L50C32
  */
 function getStringOffsetsForProperty(
-  iterator: GLTFIterator,
+  scenegraph: GLTFScenegraph,
   classProperty: GLTF_EXT_feature_metadata_ClassProperty,
   propertyTableProperty: GLTF_EXT_feature_metadata_FeatureTableProperty,
   numberOfElements: number
@@ -318,7 +314,7 @@ function getStringOffsetsForProperty(
   ) {
     // Data are in a FIXED-length array
     return getOffsetsForProperty(
-      iterator,
+      scenegraph,
       propertyTableProperty.stringOffsetBufferView,
       propertyTableProperty.offsetType || 'UINT32', // offsetType is used both for stringOffsetBufferView and arrayOffsetBufferView
       numberOfElements
@@ -414,11 +410,11 @@ function getPropertyDataNumeric(
  * @returns Feature texture data
  */
 function getPropertyDataFromTexture(
-  iterator: GLTFIterator,
+  scenegraph: GLTFScenegraph,
   featureTextureProperty: GLTF_EXT_feature_metadata_TextureAccessor,
   attributeName: string
 ): number[] {
-  const json = iterator.data;
+  const json = scenegraph.gltf.json;
   if (!json.meshes) {
     return [];
   }
@@ -426,7 +422,7 @@ function getPropertyDataFromTexture(
   for (const mesh of json.meshes) {
     for (const primitive of mesh.primitives) {
       processPrimitiveTextures(
-        iterator,
+        scenegraph,
         attributeName,
         featureTextureProperty,
         featureTextureTable,
@@ -446,7 +442,7 @@ function getPropertyDataFromTexture(
  * @param primitive
  */
 function processPrimitiveTextures(
-  iterator: GLTFIterator,
+  scenegraph: GLTFScenegraph,
   attributeName: string,
   featureTextureProperty: GLTF_EXT_feature_metadata_TextureAccessor,
   featureTextureTable: number[],
@@ -457,7 +453,7 @@ function processPrimitiveTextures(
     ...featureTextureProperty.texture
   };
   const propertyData: number[] | null = getPrimitiveTextureData(
-    iterator,
+    scenegraph,
     textureInfoTopLevel,
     primitive
   );
@@ -465,7 +461,7 @@ function processPrimitiveTextures(
     return;
   }
   primitivePropertyDataToAttributes(
-    iterator,
+    scenegraph,
     attributeName,
     propertyData,
     featureTextureTable,

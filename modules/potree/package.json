@@ -1,6 +1,6 @@
 {
   "name": "@loaders.gl/potree",
-  "version": "5.0.0-alpha.5",
+  "version": "4.3.3",
   "description": "potree loaders for large point clouds.",
   "license": "MIT",
   "type": "module",
@@ -30,21 +30,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    },
-    "./potree-metadata-schema": {
-      "types": "./dist/potree-metadata-schema.d.ts",
-      "import": "./dist/potree-metadata-schema.js",
-      "require": "./dist/potree-metadata-schema.cjs"
-    },
-    "./unbundled": {
-      "types": "./dist/unbundled.d.ts",
-      "import": "./dist/unbundled.js"
-    },
-    "./bundled": {
-      "types": "./dist/bundled.d.ts",
-      "import": "./dist/bundled.js"
-    },
-    "./potree-metadata.schema.json": "./dist/potree-metadata.schema.json"
+    }
   },
   "sideEffects": false,
   "files": [
@@ -53,24 +39,18 @@
     "README.md"
   ],
   "scripts": {
-    "pre-build": "npm run generate-json-schema && npm run build-bundle && npm run build-bundle-dev",
-    "generate-json-schema": "node ../../scripts/generate-json-schema.mjs --schema ./dist/potree-metadata-schema.js --export PotreeMetadataSchema --output ./dist/potree-metadata.schema.json --id https://unpkg.com/@loaders.gl/potree/potree-metadata.schema.json --title 'Potree 1.x cloud.js metadata'",
+    "pre-build": "npm run build-bundle && npm run build-bundle-dev",
     "build-bundle": "ocular-bundle ./bundle.ts --output=dist/dist.min.js",
     "build-bundle-dev": "ocular-bundle ./bundle.ts --env=dev --output=dist/dist.dev.js"
   },
   "dependencies": {
-    "@loaders.gl/gis": "5.0.0-alpha.5",
-    "@loaders.gl/las": "5.0.0-alpha.5",
-    "@loaders.gl/schema": "5.0.0-alpha.5",
-    "@loaders.gl/schema-utils": "5.0.0-alpha.5",
-    "@math.gl/core": "5.0.0-alpha.5",
-    "@math.gl/crs": "5.0.0-alpha.5",
-    "@math.gl/geometry-utils": "5.0.0-alpha.5",
-    "@math.gl/proj4": "5.0.0-alpha.5",
-    "zod": "^4.1.12"
+    "@loaders.gl/las": "4.3.3",
+    "@loaders.gl/math": "4.3.3",
+    "@loaders.gl/schema": "4.3.3",
+    "@math.gl/core": "^4.1.0"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "~5.0.0-alpha.0"
+    "@loaders.gl/core": "^4.3.0"
   },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+  "gitHead": "3213679d79e6ff2814d48fd3337acfa446c74099"
 }

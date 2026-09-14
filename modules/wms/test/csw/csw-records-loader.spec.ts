@@ -2,10 +2,16 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {expect, test} from 'vitest';
+// Forked from https://github.com/chrelad/openlayers/blob/master/tests/Format/
+// under OpenLayers license (only used for test cases)
+// See README.md in `./data` directory for full license text copy.
+
+import test from 'tape-promise/tape';
 // import {validateLoader} from 'test/common/conformance';
+
 import {CSWRecordsLoader} from '@loaders.gl/wms';
 import {parse} from '@loaders.gl/core';
+
 // const CSW_REQUEST_2_0_2 =
 // '<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="CSW" version="2.0.2" resultType="results" startPosition="10" maxRecords="20">' +
 //   '<csw:Query typeNames="csw:Record">' +
@@ -20,6 +26,7 @@ import {parse} from '@loaders.gl/core';
 //     '</csw:Constraint>' +
 //   '</csw:Query>' +
 // '</csw:GetRecords>';
+
 const CSW_RESPONSE_2_0_2 =
   '<?xml version="1.0" encoding="UTF-8"?>' +
   '<csw:GetRecordsResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">' +
@@ -47,30 +54,45 @@ const CSW_RESPONSE_2_0_2 =
   '</csw:BriefRecord>' +
   '</csw:SearchResults>' +
   '</csw:GetRecordsResponse>';
-test('CSWGetRecordsLoader', async () => {
+test('CSWGetRecordsLoader', async (t) => {
   const cswRecords = await parse(CSW_RESPONSE_2_0_2, CSWRecordsLoader);
-  // t.comment(JSON.stringify(cswRecords));
+  t.comment(JSON.stringify(cswRecords));
+
   const searchStatus = cswRecords.searchStatus;
   const searchResults = cswRecords.searchResults;
   const records = cswRecords.records;
+
   // test getRecordsResponse object
-  expect(searchStatus, 'object contains SearchStatus property').toBeTruthy();
-  expect(searchResults, 'object contains SearchResults property').toBeTruthy();
-  expect(records, 'object contains records property').toBeTruthy();
+  t.ok(searchStatus, 'object contains SearchStatus property');
+  t.ok(searchResults, 'object contains SearchResults property');
+  t.ok(records, 'object contains records property');
+
   // test SearchResults attributes
-  expect(
+  t.equal(
     searchResults.numberOfRecordsMatched,
+    10,
     'check value for SearchResults.numberOfRecordsMatched'
-  ).toBe(10);
-  expect(
+  );
+  t.equal(
     searchResults.numberOfRecordsReturned,
+    2,
     'check value for SearchResults.numberOfRecordsReturned'
-  ).toBe(2);
-  expect(searchResults.elementSet, 'check value for SearchResults.elementSet').toBe('brief');
-  expect(searchResults.nextRecord, 'check value for SearchResults.nextRecord').toBe(3);
+  );
+  t.equal(searchResults.elementSet, 'brief', 'check value for SearchResults.elementSet');
+  t.equal(searchResults.nextRecord, 3, 'check value for SearchResults.nextRecord');
+
   // test records
-  expect(records.length, 'object contains 10 records').toBe(2);
+  t.equal(records.length, 2, 'object contains 10 records');
   const testRecord = records[0];
   // t.equal(testRecord.type, "BriefRecord", "check value for record.type");
-  expect(testRecord.title, 'check value for record.title').toBe('Sample title');
+  t.equal(testRecord.title, 'Sample title', 'check value for record.title');
+
+  // test bbox  TODO
+  // t.equal(testRecord.boundingBoxes.length, 2, "object contains 2 BoundingBoxes");
+  // const bbox = testRecord.boundingBoxes[0];
+  // t.ok(bbox, "object contains BoundingBox properties");
+  // t.equal(bbox.crs, "::Lambert Azimuthal Projection", "check value for BoundingBox.crs");
+  // t.equal(bbox.value, [156, -3, 37, 83], "check value for record.BoundingBox");
+
+  t.end();
 });

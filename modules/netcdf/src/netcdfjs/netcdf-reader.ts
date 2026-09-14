@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: MIT
-
 import {IOBuffer} from '../iobuffer/iobuffer';
 import type {
   NetCDFHeader,
@@ -89,7 +87,7 @@ export class NetCDFReader {
    * @return
    */
   attributeExists(attributeName: string): boolean {
-    const attribute = this.attributes.find(val => val.name === attributeName);
+    const attribute = this.attributes.find((val) => val.name === attributeName);
     return attribute !== undefined;
   }
 
@@ -99,7 +97,7 @@ export class NetCDFReader {
    * @return Value of the attributeName or null
    */
   getAttribute(attributeName: string): string | null {
-    const attribute = this.attributes.find(val => val.name === attributeName);
+    const attribute = this.attributes.find((val) => val.name === attributeName);
     if (attribute) return attribute.value;
     return null;
   }
@@ -159,7 +157,7 @@ export class NetCDFReader {
 
     if (variable.record) {
       // record variable case
-      return readRecord(this.buffer, variable, this.header.recordDimension, this.header.dimensions);
+      return readRecord(this.buffer, variable, this.header.recordDimension);
     }
     // non-record variable case
     return readNonRecord(this.buffer, variable);
@@ -186,7 +184,7 @@ export class NetCDFReader {
       variable.value = this.getDataVariable(variable);
       let stringify = JSON.stringify(variable.value);
       if (stringify.length > 50) stringify = stringify.substring(0, 50);
-      if (!Number.isNaN(variable.value.length)) {
+      if (!isNaN(variable.value.length)) {
         stringify += ` (length: ${variable.value.length})`;
       }
       result.push(`  ${variable.name.padEnd(30)} = ${stringify}`);

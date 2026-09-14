@@ -1,8 +1,13 @@
-// SPDX-License-Identifier: ISC
-import {test} from 'vitest';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+// Forked from sax-ts & sax under ISC license
+
+import test from 'tape-promise/tape';
 import {testSax} from '../utils/test-utils';
-test('SAXParser#issue-86', () => {
-  testSax({
+
+test('SAXParser#issue-86', (t) => {
+  testSax(t, {
     xml: '<root>abc</root>de<f',
     expect: [
       [
@@ -28,7 +33,8 @@ test('SAXParser#issue-86', () => {
       strict: false
     }
   });
-  testSax({
+
+  testSax(t, {
     xml: '<root>abc</root>de<f',
     expect: [
       [
@@ -58,4 +64,6 @@ test('SAXParser#issue-86', () => {
       strict: true
     }
   });
+
+  t.end();
 });

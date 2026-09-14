@@ -1,47 +1,53 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
-import type {Loader, StrictLoaderOptions} from '@loaders.gl/loader-utils';
+import type {LoaderOptions, LoaderWithParser} from '@loaders.gl/loader-utils';
 import type {ImageType} from './types';
+// import type { ImageType } from '@loaders.gl/schema';
 import {VERSION} from './lib/utils/version';
-import {ImageFormat} from './image-format';
+import {parseImage} from './lib/parsers/parse-image';
+import {getBinaryImageMetadata} from './lib/category-api/binary-image-api';
 
-/**
- * @deprecated in v4.4. Use `ImageBitmapLoaderOptions` for new code.
- */
-export type ImageLoaderOptions = StrictLoaderOptions & {
+const EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'ico', 'svg', 'avif'];
+const MIME_TYPES = [
+  'image/png',
+  'image/jpeg',
+  'image/gif',
+  'image/webp',
+  'image/avif',
+  'image/bmp',
+  'image/vnd.microsoft.icon',
+  'image/svg+xml'
+];
+
+export type ImageLoaderOptions = LoaderOptions & {
   image?: {
     type?: 'auto' | 'data' | 'imagebitmap' | 'image';
     decode?: boolean;
   };
-  imagebitmap?: ImageBitmapOptions & Record<string, unknown>;
+  imagebitmap?: ImageBitmapOptions;
 };
 
 const DEFAULT_IMAGE_LOADER_OPTIONS: ImageLoaderOptions = {
   image: {
     type: 'auto',
-    decode: true
+    decode: true // if format is HTML
   }
   // imagebitmap: {} - passes (platform dependent) parameters to ImageBitmap constructor
 };
 
 /**
- * @deprecated in v4.4. Use `ImageBitmapLoader` for a pure `ImageBitmap` return type.
- *
- * Metadata-only loader for platform-specific image types.
+ * Loads a platform-specific image type
+ * Note: This type can be used as input data to WebGL texture creation
  */
-async function preload() {
-  const {ImageLoaderWithParser} = await import('./image-loader-with-parser');
-  return ImageLoaderWithParser;
-}
-
 export const ImageLoader = {
   dataType: null as unknown as ImageType,
   batchType: null as never,
-  ...ImageFormat,
+  id: 'image',
+  module: 'images',
+  name: 'Images',
   version: VERSION,
+  mimeTypes: MIME_TYPES,
+  extensions: EXTENSIONS,
+  parse: parseImage,
   // TODO: byteOffset, byteLength;
-  options: DEFAULT_IMAGE_LOADER_OPTIONS,
-  preload
-} as const satisfies Loader<ImageType, never, ImageLoaderOptions>;
+  tests: [(arrayBuffer) => Boolean(getBinaryImageMetadata(new DataView(arrayBuffer)))],
+  options: DEFAULT_IMAGE_LOADER_OPTIONS
+} as const satisfies LoaderWithParser<ImageType, never, ImageLoaderOptions>;

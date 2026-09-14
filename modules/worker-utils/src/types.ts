@@ -17,36 +17,17 @@ export type WorkerOptions = {
   [key: string]: any; // TODO
 };
 
-/**
- * Creates a fresh browser Worker instance for a worker descriptor.
- *
- * Returning `null` delegates to the existing URL-based worker resolution. This lets packages
- * expose bundler-resolved module workers without removing classic worker or CDN support.
- */
-export type LoadWorker = () => Worker | null;
-
 export type WorkerContext = {
   process?: Process;
   processInBatches?: ProcessInBatches;
 };
 
-/** Serializable context sent with a single worker job. */
-export type WorkerJobContext = {
-  [key: string]: any;
-};
-
-export type Process = (
-  data: any,
-  options?: {[key: string]: any},
-  context?: WorkerContext,
-  jobContext?: WorkerJobContext
-) => any;
+export type Process = (data: any, options?: {[key: string]: any}, context?: WorkerContext) => any;
 
 export type ProcessInBatches = (
   iterator: AsyncIterable<any> | Iterable<any>,
   options?: {[key: string]: any},
-  context?: WorkerContext,
-  jobContext?: WorkerJobContext
+  context?: WorkerContext
 ) => AsyncIterable<any>;
 
 /**
@@ -58,12 +39,6 @@ export type WorkerObject = {
   module: string;
   version: string;
   worker?: string | boolean;
-  /** Browser worker filename when it differs from the worker id. */
-  workerFile?: string;
-  /** Creates a built-in browser worker, typically using `type: 'module'`. */
-  loadWorker?: LoadWorker;
-  /** Optional Node.js-specific worker filename (for example a `.cjs` asset). */
-  workerNode?: string;
   options: {[key: string]: any};
   deprecatedOptions?: object;
 
@@ -75,37 +50,32 @@ export type WorkerObject = {
   PROTOCOL
 
   Main thread                                     worker
-               => process-in-batches
+               => process-batches-start
 
-               <= input-request
-               => input-batch
-               <= output-batch
-               => output-ack
+               => process-batches-input-batch
+               <= process-batches-output-batch
                   ... // repeat
 
-              => input-done
-              <= done
+              => process-batches-input-done
+              <= process-batches-result
 
                  // or
 
-              <= error
+              <= process-batches-error
  */
 export type WorkerMessageType =
-  | 'preload'
   | 'process'
   | 'done'
   | 'error'
   | 'process-in-batches'
-  | 'input-request'
   | 'input-batch'
   | 'input-done'
-  | 'output-batch'
-  | 'output-ack';
+  | 'output-batch';
 
 export type WorkerMessagePayload = {
   id?: number;
   options?: {[key: string]: any};
-  context?: WorkerJobContext;
+  context?: {[key: string]: any};
   input?: any; // Transferable;
   result?: any; // Transferable
   error?: string;

@@ -1,4 +1,4 @@
-# @loaders.gl/i3s
+# @loaders.gl/i3s (Experimental)
 
 This module contains a loader for [i3s](https://github.com/Esri/i3s-spec) (Indexed SceneLayers).
 

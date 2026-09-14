@@ -3,11 +3,11 @@
 // Copyright (c) vis.gl contributors
 // Forked from sax-ts & sax under ISC license
 
-import {expect} from 'vitest';
+import type {Test} from 'tape-promise/tape';
 import {SAXParser, SAXParserOptions} from '@loaders.gl/xml';
 
 type TestSAXParams = {
-  xml?: string | {toString(): string};
+  xml?: string | Buffer;
   expect: any[];
   saxOptions?: SAXParserOptions;
 };
@@ -16,31 +16,40 @@ type TestSAXParams = {
 // if the options contains an xml string, it'll be written and the parser closed.
 // otherwise, it's assumed that the test will write and close.
 
-export function testSax(options: TestSAXParams): SAXParser {
+export function testSax(t: Test, options: TestSAXParams): SAXParser {
   const xml = options.xml;
-  const expectedEvents = options.expect;
+  const expect = options.expect;
 
   let e = 0;
   function onevent(n, ev, parser) {
+    t.comment(`event on${ev} (vs ${expect[e]})`);
+
     // Ignore ready
     // In sax-ts the Parser is instantiated (onready) before handlers are assigned
     if (e === 0 && ev === 'ready') {
       return;
     }
-    if (e >= expectedEvents.length && (ev === 'end' || ev === 'ready')) {
+    if (e >= expect.length && (ev === 'end' || ev === 'ready')) {
       return;
     }
 
-    expect(e, `unexpected ${ev} event`).toBeLessThan(expectedEvents.length);
+    t.ok(e < expect.length, 'no unexpected events');
 
-    const expectedEvent = expectedEvents[e];
-    expect(expectedEvent, `expected event ${e} is defined`).toBeTruthy();
+    if (!expect[e]) {
+      t.fail('did not expect this event');
+      // , {
+      //   event: ev,
+      //   expect: expect,
+      //   data: n,
+      // });
+      return;
+    }
 
-    expect(ev, `event ${e} name`).toBe(expectedEvent[0]);
+    t.equal(ev, expect[e][0], expect[e][0]);
     if (ev === 'error') {
-      expect(n.message, `event ${e} error`).toBe(expectedEvent[1]);
+      t.equal(n.message, expect[e][1], expect[e][1]);
     } else {
-      expect(n, `event ${e} data`).toEqual(expectedEvent[1]);
+      t.deepEqual(n, expect[e][1], expect[e][1]);
     }
     e++;
     if (ev === 'error') {

@@ -2,20 +2,53 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-export type {TerrainLoaderOptions} from './terrain-loader';
-export type {QuantizedMeshLoaderOptions} from './quantized-mesh-loader';
+import type {LoaderContext, LoaderWithParser} from '@loaders.gl/loader-utils';
+import {parseFromContext} from '@loaders.gl/loader-utils';
+import {parseQuantizedMesh} from './lib/parse-quantized-mesh';
+import {TerrainOptions, makeTerrainMeshFromImage} from './lib/parse-terrain';
 
-export {TerrainFormat, QuantizedMeshFormat} from './terrain-format';
-export {TerrainLoader} from './terrain-loader';
+import {TerrainLoader as TerrainWorkerLoader, TerrainLoaderOptions} from './terrain-loader';
+import {
+  QuantizedMeshLoader as QuantizedMeshWorkerLoader,
+  QuantizedMeshLoaderOptions
+} from './quantized-mesh-loader';
 
-export {parseTerrain} from './terrain-loader-with-parser';
-export {QuantizedMeshLoader} from './quantized-mesh-loader';
+// TerrainLoader
 
-export type {QuantizedMeshWriterOptions} from './quantized-mesh-writer';
-export {QuantizedMeshWriter} from './quantized-mesh-writer';
+export {TerrainWorkerLoader};
 
-// DEPRECATED EXPORTS
-/** @deprecated Use TerrainLoader. */
-export {TerrainLoader as TerrainWorkerLoader} from './terrain-loader';
-/** @deprecated Use QuantizedMeshLoader. */
-export {QuantizedMeshLoader as QuantizedMeshWorkerLoader} from './quantized-mesh-loader';
+export const TerrainLoader = {
+  ...TerrainWorkerLoader,
+  parse: parseTerrain
+} as const satisfies LoaderWithParser<any, never, TerrainLoaderOptions>;
+
+export async function parseTerrain(
+  arrayBuffer: ArrayBuffer,
+  options?: TerrainLoaderOptions,
+  context?: LoaderContext
+) {
+  const loadImageOptions = {
+    ...options,
+    mimeType: 'application/x.image',
+    image: {...options?.image, type: 'data'}
+  };
+  const image = await parseFromContext(arrayBuffer, [], loadImageOptions, context!);
+  // Extend function to support additional mesh generation options (square grid or delatin)
+  const terrainOptions = {...TerrainLoader.options.terrain, ...options?.terrain} as TerrainOptions;
+  // @ts-expect-error sort out image typing asap
+  return makeTerrainMeshFromImage(image, terrainOptions);
+}
+
+// QuantizedMeshLoader
+
+export {QuantizedMeshWorkerLoader};
+
+/**
+ * Loader for quantized meshes
+ */
+export const QuantizedMeshLoader = {
+  ...QuantizedMeshWorkerLoader,
+  parseSync: (arrayBuffer, options) => parseQuantizedMesh(arrayBuffer, options?.['quantized-mesh']),
+  parse: async (arrayBuffer, options) =>
+    parseQuantizedMesh(arrayBuffer, options?.['quantized-mesh'])
+} as const satisfies LoaderWithParser<any, never, QuantizedMeshLoaderOptions>;

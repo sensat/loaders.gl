@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import {GLType} from '@math.gl/geometry-utils';
+import {GLType} from '@loaders.gl/math'; // '@math.gl/geometry';
 import {assert} from '@loaders.gl/loader-utils';
 
 const COMPONENTS_PER_ATTRIBUTE = {
@@ -16,7 +16,7 @@ const COMPONENTS_PER_ATTRIBUTE = {
 };
 
 // TODO - could just return typed array views...
-// biome-ignore format: preserve intentional fixture layout
+// prettier-ignore
 const UNPACKER = {
   SCALAR: (values, i) => values[i],
   VEC2: (values, i) => [values[2 * i + 0], values[2 * i + 1]],

@@ -1,65 +1,61 @@
-import {expect, test} from 'vitest';
+/* eslint-disable max-len */
+import test from 'tape-promise/tape';
 import {validateLoader, validateMeshCategoryData} from 'test/common/conformance';
+
 import {DracoLoader, DracoWorkerLoader} from '@loaders.gl/draco';
-import {setLoaderOptions, load, isBrowser} from '@loaders.gl/core';
+import {setLoaderOptions, load} from '@loaders.gl/core';
 import draco3d from 'draco3d';
+
 const BUNNY_DRC_URL = '@loaders.gl/draco/test/data/bunny.drc';
 const CESIUM_TILE_URL = '@loaders.gl/draco/test/data/cesium-tile.drc';
+
 setLoaderOptions({
   _workerType: 'test'
 });
-test('DracoLoader#loader conformance', () => {
-  validateLoader(DracoLoader, 'DracoLoader');
-  validateLoader(DracoWorkerLoader, 'DracoWorkerLoader');
+
+test('DracoLoader#loader conformance', (t) => {
+  validateLoader(t, DracoLoader, 'DracoLoader');
+  validateLoader(t, DracoWorkerLoader, 'DracoWorkerLoader');
+  t.end();
 });
-test('DracoLoader#parse(mainthread)', async () => {
-  if (skipBrowserDracoWasmTest()) {
-    return;
-  }
+
+test('DracoLoader#parse(mainthread)', async (t) => {
+  const data = await load(BUNNY_DRC_URL, DracoLoader, {worker: false});
+  validateMeshCategoryData(t, data);
+  t.equal(data.attributes.POSITION.value.length, 104502, 'POSITION attribute was found');
+  t.ok(data.schema, 'Has arrow-like schema');
+  t.end();
+});
+
+test('DracoLoader#draco3d npm package', async (t) => {
   const data = await load(BUNNY_DRC_URL, DracoLoader, {
-    core: {worker: false}
+    worker: false,
+    modules: {
+      draco3d
+    }
   });
-  validateMeshCategoryData(data);
-  expect(data.attributes.POSITION.value.length, 'POSITION attribute was found').toBe(104502);
-  expect(data.schema, 'Has arrow-like schema').toBeTruthy();
+  validateMeshCategoryData(t, data);
+  t.equal(data.attributes.POSITION.value.length, 104502, 'POSITION attribute was found');
+  t.end();
 });
-test('DracoLoader#draco3d npm package', async () => {
-  if (skipBrowserDracoWasmTest()) {
-    return;
-  }
-  const data = await load(BUNNY_DRC_URL, DracoLoader, {
-    core: {worker: false},
-    modules: {draco3d}
-  });
-  validateMeshCategoryData(data);
-  expect(data.attributes.POSITION.value.length, 'POSITION attribute was found').toBe(104502);
-});
-test('DracoLoader#JavaScript fallback decoder', async () => {
-  const data = await load(BUNNY_DRC_URL, DracoLoader, {
-    core: {worker: false},
-    useLocalLibraries: true,
-    draco: {backend: 'javascript'}
-  });
-  validateMeshCategoryData(data);
-  expect(data.attributes.POSITION.value.length, 'POSITION attribute was found').toBe(104502);
-});
-test('DracoLoader#parse custom attributes(mainthread)', async () => {
-  if (skipBrowserDracoWasmTest()) {
-    return;
-  }
+
+test('DracoLoader#parse custom attributes(mainthread)', async (t) => {
   let data = await load(CESIUM_TILE_URL, DracoLoader, {
-    core: {worker: false}
+    worker: false
   });
-  expect(
+  t.equal(
     data.attributes.CUSTOM_ATTRIBUTE_2.value.length,
+    173210,
     'Custom (Intensity) attribute was found'
-  ).toBe(173210);
-  expect(
+  );
+  t.equal(
     data.attributes.CUSTOM_ATTRIBUTE_3.value.length,
+    173210,
     'Custom (Classification) attribute was found'
-  ).toBe(173210);
+  );
+
   data = await load(CESIUM_TILE_URL, DracoLoader, {
-    core: {worker: false},
+    worker: false,
     draco: {
       extraAttributes: {
         Intensity: 2,
@@ -67,23 +63,20 @@ test('DracoLoader#parse custom attributes(mainthread)', async () => {
       }
     }
   });
-  expect(data.attributes.Intensity.value.length, 'Intensity attribute was found').toBe(173210);
-  expect(data.attributes.Classification.value.length, 'Classification attribute was found').toBe(
-    173210
+  t.equal(data.attributes.Intensity.value.length, 173210, 'Intensity attribute was found');
+  t.equal(
+    data.attributes.Classification.value.length,
+    173210,
+    'Classification attribute was found'
   );
+
+  t.end();
 });
-/**
- * Skips Draco tests that depend on direct WASM module initialization in browser runs.
- */
-function skipBrowserDracoWasmTest() {
-  if (isBrowser) {
-    console.log('Skipping Draco WASM main-thread test in browser');
-    return true;
-  }
-  return false;
-}
-test('DracoWorkerLoader#parse', async () => {
+
+test('DracoWorkerLoader#parse', async (t) => {
   const data = await load(BUNNY_DRC_URL, DracoWorkerLoader, {_nodeWorkers: true});
-  validateMeshCategoryData(data);
-  expect(data.attributes.POSITION.value.length, 'POSITION attribute was found').toBe(104502);
+  validateMeshCategoryData(t, data);
+  t.equal(data.attributes.POSITION.value.length, 104502, 'POSITION attribute was found');
+
+  t.end();
 });

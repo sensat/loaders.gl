@@ -6,9 +6,8 @@
 // See LICENSE.md and https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md
 
 import {DracoLoader} from '@loaders.gl/draco';
-import type {DracoMesh} from '@loaders.gl/draco';
 import {LoaderContext, parseFromContext} from '@loaders.gl/loader-utils';
-import {GL} from '@math.gl/geometry-utils';
+import {GL} from '@loaders.gl/math';
 import {Vector3} from '@math.gl/core';
 
 import Tile3DFeatureTable from '../classes/tile-3d-feature-table';
@@ -278,12 +277,7 @@ export async function loadDraco(
   // The entire tileset might be included, too expensive to serialize
   delete dracoOptions['3d-tiles'];
 
-  const data = (await parseFromContext(
-    dracoData.buffer,
-    DracoLoader,
-    dracoOptions,
-    context
-  )) as DracoMesh;
+  const data = await parseFromContext(dracoData.buffer, DracoLoader, dracoOptions, context);
 
   const decodedPositions = data.attributes.POSITION && data.attributes.POSITION.value;
   const decodedColors = data.attributes.COLOR_0 && data.attributes.COLOR_0.value;

@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.module.json",
   "include": ["src/**/*"],
   "exclude": ["node_modules"],
   "compilerOptions": {
@@ -8,11 +8,9 @@
     "outDir": "dist"
   },
   "references": [
-    {"path": "../gis"},
     {"path": "../xml"},
     {"path": "../images"},
     {"path": "../loader-utils"},
     {"path": "../schema"}
-    ,{"path": "../lerc"}
   ]
 }

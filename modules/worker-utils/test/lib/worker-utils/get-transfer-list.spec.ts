@@ -1,8 +1,14 @@
-import {expect, test} from 'vitest';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
+import test from 'tape-promise/tape';
 import {getTransferList, getTransferListForWriter} from '@loaders.gl/worker-utils';
+
 const typedArray = new Uint8Array(4);
 const typedArray2 = new Float32Array(typedArray.buffer);
 const messageChannel = typeof MessageChannel !== 'undefined' && new MessageChannel();
+
 const TEST_CASES = [
   {
     title: 'empty',
@@ -30,10 +36,12 @@ const TEST_CASES = [
     output: [typedArray.buffer]
   }
 ];
-test('getTransferList', () => {
+
+test('getTransferList', (t) => {
   for (const testCase of TEST_CASES) {
-    expect(getTransferList(testCase.input), testCase.title).toEqual(testCase.output);
+    t.deepEqual(getTransferList(testCase.input), testCase.output, testCase.title);
   }
+
   if (messageChannel) {
     const testCase = {
       title: 'MessagePort',
@@ -41,50 +49,78 @@ test('getTransferList', () => {
       input: messageChannel,
       output: [messageChannel.port1, messageChannel.port2]
     };
-    expect(getTransferList(testCase.input), testCase.title).toEqual(testCase.output);
+    t.deepEqual(getTransferList(testCase.input), testCase.output, testCase.title);
   }
+
+  t.end();
 });
-test('getTransferListForWriter - Should return empty object if object is null', async () => {
+
+test('getTransferListForWriter - Should return empty object if object is null', async (t) => {
   const options = null;
+
   const transferableData = getTransferListForWriter(options);
+
   const expectedResult = {};
-  expect(transferableData).toEqual(expectedResult);
+
+  t.deepEqual(transferableData, expectedResult);
+  t.end();
 });
-test('getTransferListForWriter - Should return empty object if object is function', async () => {
+
+test('getTransferListForWriter - Should return empty object if object is function', async (t) => {
   const options = {
     func: () => {}
   };
+
   const transferableData = getTransferListForWriter(options);
+
   const expectedResult = {func: {}};
-  expect(transferableData).toEqual(expectedResult);
+
+  t.deepEqual(transferableData, expectedResult);
+  t.end();
 });
-test('getTransferListForWriter - Should return empty object if object is RegExp', async () => {
+
+test('getTransferListForWriter - Should return empty object if object is RegExp', async (t) => {
   const options = {
     reg: /ab+c/i,
     regWithConstructor: new RegExp(/ab+c/, 'i')
   };
+
   const transferableData = getTransferListForWriter(options);
+
   const expectedResult = {reg: {}, regWithConstructor: {}};
-  expect(transferableData).toEqual(expectedResult);
+
+  t.deepEqual(transferableData, expectedResult);
+  t.end();
 });
-test('getTransferListForWriter - Should return new object', async () => {
+
+test('getTransferListForWriter - Should return new object', async (t) => {
   const options = {test: {test1: 'test1'}};
+
   const transferableData = getTransferListForWriter(options);
+
   const expectedResult = {test: {test1: 'test1'}};
-  expect(transferableData).toEqual(expectedResult);
-  expect(transferableData !== expectedResult).toBeTruthy();
+
+  t.deepEqual(transferableData, expectedResult);
+  t.ok(transferableData !== expectedResult);
   // @ts-expect-error
-  expect(transferableData.test !== expectedResult.test).toBeTruthy();
+  t.ok(transferableData.test !== expectedResult.test);
+  t.end();
 });
-test('getTransferListForWriter - Should keep typedArray as it is', async () => {
+
+test('getTransferListForWriter - Should keep typedArray as it is', async (t) => {
   const options = {
     typedOption: new Uint32Array([1, 2, 3, 4, 5])
   };
+
   const transferableData = getTransferListForWriter(options);
+
   const expectedResult = {typedOption: new Uint32Array([1, 2, 3, 4, 5])};
-  expect(transferableData).toEqual(expectedResult);
+
+  t.deepEqual(transferableData, expectedResult);
+  t.end();
 });
-test('getTransferListForWriter - Should handle hested options.', async () => {
+
+test('getTransferListForWriter - Should handle hested options.', async (t) => {
   const options = {
     one: {
       two: {
@@ -100,7 +136,9 @@ test('getTransferListForWriter - Should handle hested options.', async () => {
       }
     }
   };
+
   const transferableData = getTransferListForWriter(options);
+
   const expectedResult = {
     one: {
       two: {
@@ -116,5 +154,7 @@ test('getTransferListForWriter - Should handle hested options.', async () => {
       }
     }
   };
-  expect(transferableData).toEqual(expectedResult);
+
+  t.deepEqual(transferableData, expectedResult);
+  t.end();
 });

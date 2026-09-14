@@ -2,105 +2,26 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
+export {Buffer} from './polyfills/buffer/install-buffer-polyfill';
+
 // import {ArrowTable, ArrowTableBatch} from '@loaders.gl/arrow';
 
-export {ParquetFormat} from './parquet-format';
-
-export type {ParquetLoaderOptions, ParquetJSLoaderOptions} from './parquet-loader-options';
-export {ParquetLoader} from './parquet-loader-types';
-export {GeoParquetLoader} from './geoparquet-loader';
-export {ParquetJSLoader} from './parquet-js-loader-types';
-
-export {ParquetSourceLoader} from './parquet-source-loader-types';
-export type {
-  ParquetDeferredPageFilter,
-  ParquetEncodedColumnChunk,
-  ParquetEncodedPage,
-  ParquetEncodedPageBatch,
-  ParquetEncodedPageReadOptions,
-  ParquetEncodedPageSection,
-  ParquetPageCompressionState
-} from './parquet-encoded-page-types';
-export type {
-  ParquetBatch,
-  ParquetBatchMetadata,
-  ParquetBatchProvenance,
-  ParquetBoundingBox,
-  ParquetColumnChunkMetadata,
-  ParquetColumnChunkStatistics,
-  ParquetColumnChunkSizeStatistics,
-  ParquetGeospatialBoundingBox,
-  ParquetGeospatialStatistics,
-  ParquetDatasetBatch,
-  ParquetDatasetBatchProvenance,
-  ParquetDatasetBoundingBox,
-  ParquetDatasetExplain,
-  ParquetDatasetFile,
-  ParquetDatasetFileCollection,
-  ParquetDatasetFileScanPlan,
-  ParquetDatasetFileProvider,
-  ParquetDatasetFileQuery,
-  ParquetDatasetFiles,
-  ParquetDatasetPartitionValue,
-  ParquetDatasetReadOptions,
-  ParquetDatasetSourceOptions,
-  ParquetDatasetTelemetry,
-  ParquetMetadataRequestOptions,
-  ParquetObjectVersion,
-  ParquetPageScanPlan,
-  ParquetComparisonPredicate,
-  ParquetInPredicate,
-  ParquetLogicalPredicate,
-  ParquetNotPredicate,
-  ParquetNullPredicate,
-  ParquetPredicate,
-  ParquetPredicateProperty,
-  ParquetPredicateValue,
-  ParquetRangeRequestOptions,
-  ParquetReadOptions,
-  ParquetRowGroupMetadata,
-  ParquetSortingColumn,
-  ParquetSourceBatch,
-  ParquetSourceLoaderOptions,
-  ParquetSourceMetadata,
-  ParquetSourceReadOptions,
-  ParquetSourceExplain,
-  ParquetTelemetry,
-  ParquetTelemetryEvent
-} from './parquet-source-types';
 export {
-  PARQUET_TABLE_QUERY_CAPABILITIES,
-  PARQUET_SOURCE_CAPABILITIES,
-  type ParquetSourceCapabilities
-} from './parquet-source-capabilities';
+  ParquetWorkerLoader,
+  ParquetLoader,
+  GeoParquetWorkerLoader,
+  GeoParquetLoader,
+  ParquetColumnarWorkerLoader,
+  ParquetColumnarLoader
+} from './parquet-loader';
 
-export {ParquetWriter} from './parquet-writer';
-export type {
-  ParquetJSWriterEncoding,
-  ParquetJSWriterOptions,
-  ParquetSortingColumnOption,
-  ParquetWriterEncryptionOptions,
-  ParquetWriterFooterSignatureOptions
-} from './parquet-js-writer';
-export {ParquetJSWriter} from './parquet-js-writer';
+export {ParquetWriter as _ParquetWriter} from './parquet-writer';
 
-export {
-  decodeParquetColumnIndex,
-  decodeParquetPageStatisticsValue,
-  canUseParquetPageIndexForColumn,
-  type ParquetPageStatistics
-} from './lib/parquet-page-index';
-export {
-  createParquetModuleAad,
-  decryptParquetModule,
-  encryptParquetModule,
-  createParquetFooterSignature,
-  readParquetEncryptedModule,
-  verifyParquetFooterSignature,
-  type ParquetDecryptModuleOptions,
-  type ParquetEncryptionAlgorithm,
-  type ParquetKeyRetriever
-} from './lib/parquet-encryption';
+// EXPERIMENTAL - expose Parquet WASM loaders/writer
+
+export type {ParquetWasmLoaderOptions} from './parquet-wasm-loader';
+export {ParquetWasmLoader, ParquetWasmWorkerLoader} from './parquet-wasm-loader';
+export {ParquetWasmWriter} from './parquet-wasm-writer';
 
 // EXPERIMENTAL - expose the internal parquetjs API
 
@@ -115,17 +36,5 @@ export {
   convertParquetSchema as convertParquetToArrowSchema
 } from './lib/arrow/convert-schema-from-parquet';
 
-export {
-  checkParquetSplitBlockBloomFilter,
-  decodeParquetSplitBlockBloomFilter,
-  encodeParquetBloomFilterValue,
-  encodeParquetSplitBlockBloomFilter,
-  hashParquetBloomFilterValue,
-  insertParquetSplitBlockBloomFilter,
-  type ParquetBloomFilterPhysicalType,
-  type ParquetSplitBlockBloomFilter
-} from './lib/parquet-bloom-filter';
-export {
-  getParquetBloomFilterProbes,
-  type ParquetBloomFilterProbe
-} from './lib/parquet-bloom-filter-planner';
+// Experimental
+export {BufferPolyfill, installBufferPolyfill} from './polyfills/buffer/index';

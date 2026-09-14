@@ -1,8 +1,6 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
-import {I3SNodePageLoaderWithParser} from '../../i3s-node-page-loader-with-parser';
+import {load} from '@loaders.gl/core';
+import {getSupportedGPUTextureFormats, selectSupportedBasisFormat} from '@loaders.gl/textures';
+import {I3SNodePageLoader} from '../../i3s-node-page-loader';
 import {normalizeTileNonUrlData} from '../parsers/parse-i3s';
 import {getUrlWithToken, generateTilesetAttributeUrls} from '../utils/url-utils';
 import type {LoaderOptions} from '@loaders.gl/loader-utils';
@@ -16,26 +14,8 @@ import {
   I3STextureFormat,
   MeshGeometry,
   I3STileHeader,
-  SceneLayer3D,
-  I3STextureResource,
-  I3SMaterialTexture,
-  I3SPointRenderer,
-  I3SPointSymbol
+  SceneLayer3D
 } from '../../types';
-
-const BROWSER_PREFIXES = ['', 'WEBKIT_', 'MOZ_'];
-const WEBGL_EXTENSIONS: Record<string, string> = {
-  /* eslint-disable camelcase */
-  WEBGL_compressed_texture_s3tc: 'dxt',
-  WEBGL_compressed_texture_s3tc_srgb: 'dxt-srgb',
-  WEBGL_compressed_texture_etc1: 'etc1',
-  WEBGL_compressed_texture_etc: 'etc2',
-  WEBGL_compressed_texture_pvrtc: 'pvrtc',
-  WEBGL_compressed_texture_atc: 'atc',
-  WEBGL_compressed_texture_astc: 'astc',
-  EXT_texture_compression_rgtc: 'rgtc'
-  /* eslint-enable camelcase */
-};
 
 /**
  * class I3SNodePagesTiles - loads nodePages and form i3s tiles from them
@@ -62,9 +42,8 @@ export default class I3SNodePagesTiles {
   constructor(tileset: SceneLayer3D, url: string = '', options: LoaderOptions) {
     this.tileset = {...tileset}; // spread the tileset to avoid circular reference
     this.url = url;
-    const nodePageDefinition = tileset.nodePages || tileset.pointNodePages;
-    this.nodesPerPage = nodePageDefinition?.nodesPerPage || 64;
-    this.lodSelectionMetricType = nodePageDefinition?.lodSelectionMetricType;
+    this.nodesPerPage = tileset.nodePages?.nodesPerPage || 64;
+    this.lodSelectionMetricType = tileset.nodePages?.lodSelectionMetricType;
     this.options = options;
     this.nodesInNodePages = 0;
 
@@ -85,7 +64,7 @@ export default class I3SNodePagesTiles {
       );
       this.pendingNodePages[pageIndex] = {
         status: 'Pending',
-        promise: loadNodePage(nodePageUrl, this.options)
+        promise: load(nodePageUrl, I3SNodePageLoader, this.options)
       };
       this.nodePages[pageIndex] = await this.pendingNodePages[pageIndex].promise;
       this.nodesInNodePages += this.nodePages[pageIndex].nodes.length;
@@ -121,13 +100,10 @@ export default class I3SNodePagesTiles {
 
     let contentUrl: string | undefined;
     let textureUrl: string | undefined;
-    let textureUrls: I3STextureResource[] | undefined;
     let materialDefinition: I3SMaterialDefinition | undefined;
     let textureFormat: I3STextureFormat = 'jpg';
     let attributeUrls: string[] = [];
     let isDracoGeometry: boolean = false;
-    const pointRenderer = getPointRenderer(this.tileset);
-    const pointSymbol = getPointSymbol(pointRenderer);
 
     if (node && node.mesh) {
       // Get geometry resource URL and type (compressed / non-compressed)
@@ -136,18 +112,12 @@ export default class I3SNodePagesTiles {
       contentUrl = url;
       isDracoGeometry = isDracoGeometryResult;
 
-      if (node.mesh.material) {
-        const {
-          textureData,
-          textureResources,
-          materialDefinition: nodeMaterialDefinition
-        } = this.getInformationFromMaterial(node.mesh.material);
-        materialDefinition = nodeMaterialDefinition;
-        textureUrls = textureResources;
-        textureFormat = textureData.format || textureFormat;
-        if (textureData.name && node.mesh.material.resource !== undefined) {
-          textureUrl = `${this.url}/nodes/${node.mesh.material.resource}/textures/${textureData.name}`;
-        }
+      const {textureData, materialDefinition: nodeMaterialDefinition} =
+        this.getInformationFromMaterial(node.mesh.material);
+      materialDefinition = nodeMaterialDefinition;
+      textureFormat = textureData.format || textureFormat;
+      if (textureData.name) {
+        textureUrl = `${this.url}/nodes/${node.mesh.material.resource}/textures/${textureData.name}`;
       }
 
       if (this.tileset.attributeStorageInfo) {
@@ -162,18 +132,13 @@ export default class I3SNodePagesTiles {
     const lodSelection = this.getLodSelection(node);
 
     return normalizeTileNonUrlData({
-      ...node,
       id: id.toString(),
       lodSelection,
       obb: node.obb,
       contentUrl,
       textureUrl,
-      textureUrls,
       attributeUrls,
       materialDefinition,
-      layerType: this.tileset.layerType,
-      pointRenderer,
-      pointSymbol,
       textureFormat,
       textureLoaderOptions: this.textureLoaderOptions,
       children,
@@ -190,29 +155,20 @@ export default class I3SNodePagesTiles {
    */
   private getContentUrl(meshGeometryData: MeshGeometry) {
     let result: {url: string; isDracoGeometry: boolean} | null = null;
-    const geometryDefinition = this.tileset.geometryDefinitions?.[meshGeometryData.definition];
-    if (!geometryDefinition) {
-      return null;
-    }
+    // @ts-ignore
+    const geometryDefinition = this.tileset.geometryDefinitions[meshGeometryData.definition];
     let geometryIndex = -1;
     // Try to find DRACO geometryDefinition of `useDracoGeometry` option is set
-    const i3sOptions = this.options.i3s as Record<string, any> | undefined;
-    if (i3sOptions && typeof i3sOptions === 'object' && i3sOptions.useDracoGeometry) {
+    // @ts-expect-error this.options is not properly typed
+    if (this.options.i3s && this.options.i3s.useDracoGeometry) {
       geometryIndex = geometryDefinition.geometryBuffers.findIndex(
-        buffer => buffer.compressedAttributes && buffer.compressedAttributes.encoding === 'draco'
+        (buffer) => buffer.compressedAttributes && buffer.compressedAttributes.encoding === 'draco'
       );
     }
     // If DRACO geometry is not applicable try to select non-compressed geometry
     if (geometryIndex === -1) {
       geometryIndex = geometryDefinition.geometryBuffers.findIndex(
-        buffer => !buffer.compressedAttributes
-      );
-    }
-    // Point profile geometry is required to be Draco-compressed. More generally,
-    // a compressed buffer remains a valid fallback when no raw representation exists.
-    if (geometryIndex === -1) {
-      geometryIndex = geometryDefinition.geometryBuffers.findIndex(
-        buffer => buffer.compressedAttributes?.encoding === 'draco'
+        (buffer) => !buffer.compressedAttributes
       );
     }
     if (geometryIndex !== -1) {
@@ -260,9 +216,8 @@ export default class I3SNodePagesTiles {
   private getInformationFromMaterial(material: MeshMaterial) {
     const informationFromMaterial: {
       textureData: {name: string | null; format?: I3STextureFormat};
-      textureResources: I3STextureResource[];
       materialDefinition?: I3SMaterialDefinition;
-    } = {textureData: {name: null}, textureResources: []};
+    } = {textureData: {name: null}};
 
     if (material) {
       const materialDefinition = this.tileset.materialDefinitions?.[material.definition];
@@ -276,60 +231,9 @@ export default class I3SNodePagesTiles {
             this.textureDefinitionsSelectedFormats[textureSetDefinitionIndex] ||
             informationFromMaterial.textureData;
         }
-        informationFromMaterial.textureResources = this.getTextureResources(
-          materialDefinition,
-          material.resource
-        );
       }
     }
     return informationFromMaterial;
-  }
-
-  /**
-   * Build URLs for every texture set referenced by an I3S material.
-   * @param materialDefinition - material with texture references
-   * @param resource - node resource id containing the texture files
-   * @returns selected texture resources
-   */
-  private getTextureResources(
-    materialDefinition: I3SMaterialDefinition,
-    resource?: number
-  ): I3STextureResource[] {
-    if (resource === undefined) {
-      return [];
-    }
-
-    const textureReferences: (I3SMaterialTexture | undefined)[] = [
-      materialDefinition.pbrMetallicRoughness?.baseColorTexture,
-      materialDefinition.pbrMetallicRoughness?.metallicRoughnessTexture,
-      materialDefinition.normalTexture,
-      materialDefinition.occlusionTexture,
-      materialDefinition.emissiveTexture
-    ];
-    const textureResources: I3STextureResource[] = [];
-    const textureSetDefinitionIds = new Set<number>();
-
-    for (const textureReference of textureReferences) {
-      const textureSetDefinitionId = textureReference?.textureSetDefinitionId;
-      if (
-        typeof textureSetDefinitionId !== 'number' ||
-        textureSetDefinitionIds.has(textureSetDefinitionId)
-      ) {
-        continue;
-      }
-      const textureData = this.textureDefinitionsSelectedFormats[textureSetDefinitionId];
-      if (!textureData) {
-        continue;
-      }
-      textureSetDefinitionIds.add(textureSetDefinitionId);
-      textureResources.push({
-        textureSetDefinitionId,
-        textureUrl: `${this.url}/nodes/${resource}/textures/${textureData.name}`,
-        textureFormat: textureData.format
-      });
-    }
-
-    return textureResources;
   }
 
   /**
@@ -345,7 +249,7 @@ export default class I3SNodePagesTiles {
       const formats = (textureSetDefinition && textureSetDefinition.formats) || [];
       let selectedFormat: {name: string; format: I3STextureFormat} | null = null;
       for (const i3sFormat of possibleI3sFormats) {
-        const format = formats.find(value => value.format === i3sFormat);
+        const format = formats.find((value) => value.format === i3sFormat);
         if (format) {
           selectedFormat = format;
           break;
@@ -354,7 +258,9 @@ export default class I3SNodePagesTiles {
       // For I3S 1.8 need to define basis target format to decode
       if (selectedFormat && selectedFormat.format === 'ktx2') {
         this.textureLoaderOptions.basis = {
-          containerFormat: 'ktx2'
+          format: selectSupportedBasisFormat(),
+          containerFormat: 'ktx2',
+          module: 'encoder'
         };
       }
 
@@ -368,8 +274,8 @@ export default class I3SNodePagesTiles {
    */
   private getSupportedTextureFormats(): I3STextureFormat[] {
     const formats: I3STextureFormat[] = [];
-    const i3sOptions = this.options.i3s as Record<string, any> | undefined;
-    if (!i3sOptions || i3sOptions.useCompressedTextures) {
+    // @ts-expect-error this.options is not properly typed
+    if (!this.options.i3s || this.options.i3s.useCompressedTextures) {
       // I3S 1.7 selection
       const supportedCompressedFormats = getSupportedGPUTextureFormats();
       // List of possible in i3s formats:
@@ -390,67 +296,4 @@ export default class I3SNodePagesTiles {
     formats.push('png');
     return formats;
   }
-}
-
-async function loadNodePage(url: string, options: LoaderOptions): Promise<NodePage> {
-  const fetchFunction =
-    typeof options.fetch === 'function'
-      ? options.fetch
-      : typeof options.core?.fetch === 'function'
-        ? options.core.fetch
-        : fetch;
-  const response = await fetchFunction(url);
-  if (!response.ok) {
-    throw new Error(`Failed to load I3S node page: ${response.status} ${response.statusText}`);
-  }
-
-  const arrayBuffer = await response.arrayBuffer();
-  return await I3SNodePageLoaderWithParser.parse(arrayBuffer, options);
-}
-
-function getSupportedGPUTextureFormats(gl?: WebGLRenderingContext): Set<string> {
-  const formats = new Set<string>();
-  gl = gl || getWebGLContext() || undefined;
-
-  for (const prefix of BROWSER_PREFIXES) {
-    for (const extension in WEBGL_EXTENSIONS) {
-      if (gl && gl.getExtension(`${prefix}${extension}`)) {
-        formats.add(WEBGL_EXTENSIONS[extension]);
-      }
-    }
-  }
-
-  return formats;
-}
-
-function getWebGLContext() {
-  try {
-    const canvas = document.createElement('canvas');
-    return canvas.getContext('webgl');
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Return the renderer metadata for a Point scene layer without evaluating renderer expressions.
- * @param tileset - I3S scene-layer document
- * @returns typed Point renderer metadata when present
- */
-function getPointRenderer(tileset: SceneLayer3D): I3SPointRenderer | undefined {
-  if (tileset.layerType !== 'Point') {
-    return undefined;
-  }
-  const renderer = tileset.drawingInfo?.renderer;
-  return renderer && typeof renderer.type === 'string' ? (renderer as I3SPointRenderer) : undefined;
-}
-
-/**
- * Select a PointSymbol3D definition from Point renderer metadata.
- * @param renderer - Point renderer metadata
- * @returns point symbol when the renderer declares one
- */
-function getPointSymbol(renderer?: I3SPointRenderer): I3SPointSymbol | undefined {
-  const symbol = renderer?.symbol;
-  return symbol && typeof symbol.type === 'string' ? symbol : undefined;
 }

@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 /**
  * Throws an `Error` with the optional `message` if `condition` is falsy
  * @note Replacement for the external assert method to reduce bundle size

@@ -1,11 +1,7 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 /*
 import {fetchFile} from '@loaders.gl/core';
 
-import {Source as PMTilesSourceLoader, RangeResponse} from 'pmtiles';
+import {Source as PMTilesSource, RangeResponse} from 'pmtiles';
 
 /** @note "source" here is a PMTiles library type, referring to  *
 export function makeSource(data: string | Blob, fetch?) {
@@ -18,7 +14,7 @@ export function makeSource(data: string | Blob, fetch?) {
   }
 }
 
-export class BlobSource implements PMTilesSourceLoader {
+export class BlobSource implements PMTilesSource {
   blob: Blob;
   key: string;
 
@@ -43,7 +39,7 @@ export class BlobSource implements PMTilesSourceLoader {
   }
 }
 
-export class FetchSource implements PMTilesSourceLoader {
+export class FetchSource implements PMTilesSource {
   url: string;
   fetch;
 

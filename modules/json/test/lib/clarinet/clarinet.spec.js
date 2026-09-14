@@ -1,5 +1,8 @@
-import {expect, test} from 'vitest';
+/* eslint-disable */
+// @ts-nocheck
+import test from 'tape-promise/tape';
 import ClarinetParser from '@loaders.gl/json/lib/clarinet/clarinet';
+
 export const EVENTS = [
   'value',
   'string',
@@ -12,6 +15,7 @@ export const EVENTS = [
   'end',
   'ready'
 ];
+
 const seps = [undefined, /\t|\n|\r/, ''];
 const docs = {
   empty_array: {
@@ -747,7 +751,8 @@ const docs = {
     ]
   }
 };
-function generic(key, prechunked, sep) {
+
+function generic(t, key, prechunked, sep) {
   return function () {
     var doc = docs[key].text,
       events = docs[key].events,
@@ -758,6 +763,7 @@ function generic(key, prechunked, sep) {
       current,
       env = process && process.env ? process.env : window,
       record = [];
+
     events.forEach(function (event_pair) {
       l.push(event_pair);
     });
@@ -773,106 +779,50 @@ function generic(key, prechunked, sep) {
           if (!(current && current[0])) {
             return;
           }
-          expect(current[0], '[ln' + i + '] event: [' + current[0] + '] got: [' + event + ']').toBe(
-            event
+          t.equals(
+            current[0],
+            event,
+            '[ln' + i + '] event: [' + current[0] + '] got: [' + event + ']'
           );
           if (event !== 'error')
-            expect(
+            t.equals(
               current[1],
+              value,
               '[ln' + i + '] value: [' + current[1] + '] got: [' + value + ']'
-            ).toBe(value);
+            );
         }
       };
     });
-    doc_chunks.forEach(chunk => parser.write(chunk));
+    doc_chunks.forEach((chunk) => parser.write(chunk));
     parser.end();
   };
 }
-test('clarinet#generic', () => {
+
+test('clarinet#generic', (t) => {
   for (const key in docs) {
     if (docs.hasOwnProperty(key)) {
       // undefined means no split
       // /\t|\n|\r| / means on whitespace
       // '' means on every char
       for (const sep in seps) {
-        // t.comment('[' + key + '] should be able to parse -> ' + sep);
-        generic(key, false, sep);
+        t.comment('[' + key + '] should be able to parse -> ' + sep);
+        generic(t, key, false, sep);
       }
     }
   }
+  t.end();
 });
-test('#pre-chunked', () => {
+
+test('#pre-chunked', (t) => {
   for (const key in docs) {
     if (docs.hasOwnProperty(key)) {
       if (!docs[key].chunks) {
         continue;
       }
-      // t.comment('[' + key + '] should be able to parse pre-chunked');
-      generic(key, true);
+
+      t.comment('[' + key + '] should be able to parse pre-chunked');
+      generic(t, key, true);
     }
   }
-});
-
-test('clarinet reports malformed structural, literal, and numeric states', () => {
-  const malformedDocuments = [
-    ['x', 'Non-whitespace before {[.'],
-    ['{x', 'Malformed object key'],
-    ['{"a" x', 'Bad object'],
-    ['{"a":x', 'Bad value'],
-    ['[1x', 'Bad array'],
-    ['[tx', 'Invalid true started with t'],
-    ['[trx', 'Invalid true started with tr'],
-    ['[trux', 'Invalid true started with tru'],
-    ['[fx', 'Invalid false started with f'],
-    ['[fax', 'Invalid false started with fa'],
-    ['[falx', 'Invalid false started with fal'],
-    ['[falsx', 'Invalid false started with fals'],
-    ['[nx', 'Invalid null started with n'],
-    ['[nux', 'Invalid null started with nu'],
-    ['[nulx', 'Invalid null started with nul'],
-    ['[1.2.3]', 'Invalid number has two dots'],
-    ['[1e2e3]', 'Invalid number has two exponential'],
-    ['[1+2]', 'Invalid symbol in number']
-  ];
-
-  for (const [document, expectedMessage] of malformedDocuments) {
-    const errors = [];
-    const parser = new ClarinetParser({onerror: error => errors.push(error)});
-    parser.write(document);
-    expect(errors[0]?.message).toContain(expectedMessage);
-    expect(errors[0]?.message).toContain('Line: 1');
-  }
-});
-
-test('clarinet resume and close lifecycle exposes parser misuse', () => {
-  const errors = [];
-  const parser = new ClarinetParser({onerror: error => errors.push(error)});
-  parser.write('x');
-  expect(() => parser.write('[]')).toThrow(/Non-whitespace/);
-  expect(parser.resume()).toBe(parser);
-
-  const closedParser = new ClarinetParser();
-  closedParser.write('[]').close();
-  closedParser.write('x');
-  expect(closedParser.error?.message).toContain('Cannot write after close');
-
-  const unknownStateParser = new ClarinetParser({onerror: error => errors.push(error)});
-  unknownStateParser.state = 999;
-  unknownStateParser.write('x');
-  expect(unknownStateParser.error?.message).toContain('Unknown state: 999');
-});
-
-test('clarinet preserves every string escape across single-character chunks', () => {
-  const values = [];
-  const chunks = [];
-  const parser = new ClarinetParser({
-    onvalue: value => values.push(value),
-    onchunkparsed: () => chunks.push(true)
-  });
-  const document = '["\\u0041\\n\\r\\t\\f\\b\\/\\\\\\\""]';
-  for (const character of document) parser.write(character);
-  parser.close();
-
-  expect(values).toEqual(['A\n\r\t\f\b/\\"']);
-  expect(chunks).toHaveLength(document.length);
+  t.end();
 });

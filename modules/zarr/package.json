@@ -1,10 +1,12 @@
 {
   "name": "@loaders.gl/zarr",
-  "version": "5.0.0-alpha.5",
+  "version": "4.3.3",
   "description": "Framework-independent loaders for Zarr",
   "license": "MIT",
   "type": "module",
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/visgl/loaders.gl"
@@ -37,13 +39,10 @@
     "build-bundle-dev": "ocular-bundle ./bundle.ts --env=dev --output=dist/dist.dev.js"
   },
   "dependencies": {
-    "@loaders.gl/loader-utils": "5.0.0-alpha.5",
-    "@math.gl/crs": "5.0.0-alpha.5",
-    "zarr": "^0.5.0",
-    "zarrita": "~0.7.1"
+    "zarr": "^0.5.0"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "~5.0.0-alpha.0"
+    "@loaders.gl/core": "^4.3.0"
   },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+  "gitHead": "3213679d79e6ff2814d48fd3337acfa446c74099"
 }

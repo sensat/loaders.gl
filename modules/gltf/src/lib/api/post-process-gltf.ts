@@ -8,7 +8,6 @@ import type {ParseGLTFOptions} from '../parsers/parse-gltf';
 import type {
   GLTF,
   GLTFAccessor,
-  GLTFAsset,
   GLTFBufferView,
   GLTFCamera,
   GLTFImage,
@@ -23,7 +22,6 @@ import type {
 
 import type {
   GLTFPostprocessed,
-  Asset,
   GLTFAccessorPostprocessed,
   GLTFBufferPostprocessed,
   GLTFBufferViewPostprocessed,
@@ -41,9 +39,6 @@ import type {
 
 import {assert} from '../utils/assert';
 import {getAccessorArrayTypeAndLength} from '../gltf-utils/gltf-utils';
-import {copyToArrayBuffer} from '@loaders.gl/loader-utils';
-import type {BigTypedArray, BigTypedArrayConstructor} from '@loaders.gl/loader-utils';
-import {GLTFIterator} from './gltf-iterator';
 
 // This is a post processor for loaded glTF files
 // The goal is to make the loaded data easier to use in WebGL applications
@@ -70,13 +65,8 @@ const BYTES = {
   5121: 1, // UNSIGNED_BYTE
   5122: 2, // SHORT
   5123: 2, // UNSIGNED_SHORT
-  5124: 4, // INT
   5125: 4, // UNSIGNED_INT
-  5126: 4, // FLOAT
-  5130: 8, // DOUBLE
-  5131: 2, // HALF_FLOAT
-  5134: 8, // INT64
-  5135: 8 // UNSIGNED_INT64
+  5126: 4 // FLOAT
 };
 
 const GL_SAMPLER = {
@@ -124,8 +114,6 @@ function getSizeFromAccessorType(type) {
 }
 
 class GLTFPostProcessor {
-  /** Iterator facade over the source GLTFWithBuffers document. */
-  iterator!: GLTFIterator;
   baseUri: string = '';
   // @ts-expect-error
   jsonUnprocessed: GLTF;
@@ -147,7 +135,6 @@ class GLTFPostProcessor {
     this.baseUri = baseUri;
     this.buffers = buffers;
     this.images = images;
-    this.iterator = new GLTFIterator(gltf);
     this.jsonUnprocessed = json;
 
     this.json = this._resolveTree(gltf.json, options);
@@ -164,56 +151,35 @@ class GLTFPostProcessor {
     this.json = json;
 
     if (gltf.bufferViews) {
-      json.bufferViews = Array.from(this.iterator.bufferViews, object =>
-        this._resolveBufferView(object, this.iterator.getMetadata(object).index)
-      );
+      json.bufferViews = gltf.bufferViews.map((bufView, i) => this._resolveBufferView(bufView, i));
     }
     if (gltf.images) {
-      json.images = Array.from(this.iterator.images, object =>
-        this._resolveImage(object, this.iterator.getMetadata(object).index)
-      );
+      json.images = gltf.images.map((image, i) => this._resolveImage(image, i));
     }
-    json.asset = this._resolveAsset(gltf.asset);
     if (gltf.samplers) {
-      json.samplers = Array.from(this.iterator.samplers, object =>
-        this._resolveSampler(object, this.iterator.getMetadata(object).index)
-      );
+      json.samplers = gltf.samplers.map((sampler, i) => this._resolveSampler(sampler, i));
     }
     if (gltf.textures) {
-      json.textures = Array.from(this.iterator.textures, object =>
-        this._resolveTexture(object, this.iterator.getMetadata(object).index)
-      );
+      json.textures = gltf.textures.map((texture, i) => this._resolveTexture(texture, i));
     }
     if (gltf.accessors) {
-      json.accessors = Array.from(this.iterator.accessors, object =>
-        this._resolveAccessor(object, this.iterator.getMetadata(object).index)
-      );
+      json.accessors = gltf.accessors.map((accessor, i) => this._resolveAccessor(accessor, i));
     }
     if (gltf.materials) {
-      json.materials = Array.from(this.iterator.materials, object =>
-        this._resolveMaterial(object, this.iterator.getMetadata(object).index)
-      );
+      json.materials = gltf.materials.map((material, i) => this._resolveMaterial(material, i));
     }
     if (gltf.meshes) {
-      json.meshes = Array.from(this.iterator.meshes, object =>
-        this._resolveMesh(object, this.iterator.getMetadata(object).index)
-      );
+      json.meshes = gltf.meshes.map((mesh, i) => this._resolveMesh(mesh, i));
     }
     if (gltf.nodes) {
-      json.nodes = Array.from(this.iterator.nodes, object =>
-        this._resolveNode(object, this.iterator.getMetadata(object).index)
-      );
+      json.nodes = gltf.nodes.map((node, i) => this._resolveNode(node, i));
       json.nodes = json.nodes.map((node, i) => this._resolveNodeChildren(node));
     }
     if (gltf.skins) {
-      json.skins = Array.from(this.iterator.skins, object =>
-        this._resolveSkin(object, this.iterator.getMetadata(object).index)
-      );
+      json.skins = gltf.skins.map((skin, i) => this._resolveSkin(skin, i));
     }
     if (gltf.scenes) {
-      json.scenes = Array.from(this.iterator.scenes, object =>
-        this._resolveScene(object, this.iterator.getMetadata(object).index)
-      );
+      json.scenes = gltf.scenes.map((scene, i) => this._resolveScene(scene, i));
     }
     if (typeof this.json.scene === 'number' && json.scenes) {
       json.scene = json.scenes[this.json.scene];
@@ -284,20 +250,12 @@ class GLTFPostProcessor {
 
   // PARSING HELPERS
 
-  /** Resolve the draft glTF 2.1 thumbnail image reference in asset metadata. */
-  _resolveAsset(gltfAsset: GLTFAsset): Asset {
-    return {
-      ...gltfAsset,
-      thumbnail: gltfAsset.thumbnail !== undefined ? this.getImage(gltfAsset.thumbnail) : undefined
-    };
-  }
-
   _resolveScene(scene: GLTFScene, index: number): GLTFScenePostprocessed {
     return {
       ...scene,
       // @ts-ignore
       id: scene.id || `scene-${index}`,
-      nodes: (scene.nodes || []).map(node => this.getNode(node))
+      nodes: (scene.nodes || []).map((node) => this.getNode(node))
     };
   }
 
@@ -339,7 +297,7 @@ class GLTFPostProcessor {
   _resolveNodeChildren(node: GLTFNodePostprocessed): GLTFNodePostprocessed {
     if (node.children) {
       // @ts-expect-error node.children are numbers at this stage
-      node.children = node.children.map(child => this.getNode(child));
+      node.children = node.children.map((child) => this.getNode(child));
     }
     return node;
   }
@@ -364,7 +322,7 @@ class GLTFPostProcessor {
       primitives: []
     };
     if (gltfMesh.primitives) {
-      mesh.primitives = gltfMesh.primitives.map((gltfPrimitive, primitiveIndex) => {
+      mesh.primitives = gltfMesh.primitives.map((gltfPrimitive) => {
         const primitive: GLTFMeshPrimitivePostprocessed = {
           ...gltfPrimitive,
           attributes: {},
@@ -381,7 +339,7 @@ class GLTFPostProcessor {
         if (gltfPrimitive.material !== undefined) {
           primitive.material = this.getMaterial(gltfPrimitive.material);
         }
-        return normalizePrimitiveTopology(primitive, mesh.id, primitiveIndex);
+        return primitive;
       });
     }
     return mesh;
@@ -455,7 +413,7 @@ class GLTFPostProcessor {
       const {ArrayType, byteLength} = getAccessorArrayTypeAndLength(accessor, accessor.bufferView);
       const byteOffset =
         (accessor.bufferView.byteOffset || 0) + (accessor.byteOffset || 0) + buffer.byteOffset;
-      let cutBuffer = copyToArrayBuffer(buffer.arrayBuffer, byteOffset, byteLength);
+      let cutBuffer = buffer.arrayBuffer.slice(byteOffset, byteOffset + byteLength);
       if (accessor.bufferView.byteStride) {
         cutBuffer = this._getValueFromInterleavedBuffer(
           buffer,
@@ -466,70 +424,9 @@ class GLTFPostProcessor {
         );
       }
       accessor.value = new ArrayType(cutBuffer);
-    } else {
-      const {ArrayType} = getAccessorArrayTypeAndLength(accessor, {
-        byteLength: accessor.count * accessor.bytesPerElement
-      });
-      accessor.value = new ArrayType(accessor.count * accessor.components);
-    }
-
-    if (gltfAccessor.sparse) {
-      this._applySparseAccessor(accessor, gltfAccessor.sparse);
     }
 
     return accessor;
-  }
-
-  /** Applies sparse accessor replacements to an accessor's materialized values. */
-  _applySparseAccessor(
-    accessor: GLTFAccessorPostprocessed,
-    sparse: NonNullable<GLTFAccessor['sparse']>
-  ): void {
-    const SparseIndexArray = getSparseIndexArrayType(sparse.indices.componentType);
-    const sparseIndices = this._getTypedArrayFromBufferView(
-      SparseIndexArray,
-      this.getBufferView(sparse.indices.bufferView),
-      sparse.indices.byteOffset || 0,
-      sparse.count
-    );
-    const SparseValueArray = accessor.value.constructor as BigTypedArrayConstructor;
-    const sparseValues = this._getTypedArrayFromBufferView(
-      SparseValueArray,
-      this.getBufferView(sparse.values.bufferView),
-      sparse.values.byteOffset || 0,
-      sparse.count * accessor.components
-    );
-
-    for (let sparseValueIndex = 0; sparseValueIndex < sparse.count; sparseValueIndex++) {
-      const accessorIndex = Number(sparseIndices[sparseValueIndex]);
-      assert(
-        Number.isInteger(accessorIndex) && accessorIndex >= 0 && accessorIndex < accessor.count,
-        'glTF sparse accessor index is out of bounds'
-      );
-      for (let componentIndex = 0; componentIndex < accessor.components; componentIndex++) {
-        const targetIndex = accessorIndex * accessor.components + componentIndex;
-        const sourceIndex = sparseValueIndex * accessor.components + componentIndex;
-        Reflect.set(accessor.value, targetIndex, sparseValues[sourceIndex]);
-      }
-    }
-  }
-
-  /** Creates a typed array from a byte range within a resolved buffer view. */
-  _getTypedArrayFromBufferView(
-    ArrayType: BigTypedArrayConstructor,
-    bufferView: GLTFBufferViewPostprocessed,
-    byteOffset: number,
-    length: number
-  ): BigTypedArray {
-    const byteLength = length * ArrayType.BYTES_PER_ELEMENT;
-    assert(
-      byteOffset + byteLength <= bufferView.byteLength,
-      'glTF sparse accessor data exceeds its buffer view'
-    );
-    const buffer = bufferView.buffer;
-    const absoluteByteOffset = buffer.byteOffset + (bufferView.byteOffset || 0) + byteOffset;
-    const arrayBuffer = copyToArrayBuffer(buffer.arrayBuffer, absoluteByteOffset, byteLength);
-    return new ArrayType(arrayBuffer);
   }
 
   /**
@@ -548,7 +445,7 @@ class GLTFPostProcessor {
     byteStride: number,
     bytesPerElement: number,
     count: number
-  ): ArrayBuffer {
+  ): ArrayBufferLike {
     const result = new Uint8Array(count * bytesPerElement);
     for (let i = 0; i < count; i++) {
       const elementOffset = byteOffset + i * byteStride;
@@ -651,144 +548,6 @@ class GLTFPostProcessor {
     }
     return camera;
   }
-}
-
-/**
- * Expands WebGL-only primitive topologies into portable indexed topologies.
- *
- * WebGPU does not support `LINE_LOOP` or `TRIANGLE_FAN`. The returned primitive uses a generated
- * index accessor and leaves the source glTF primitive, accessor, and buffer data unchanged.
- *
- * @param primitive Resolved glTF primitive.
- * @param meshId Identifier of the primitive's containing mesh.
- * @param primitiveIndex Position of the primitive in its containing mesh.
- * @returns The resolved primitive, normalized when it uses a WebGL-only topology.
- * @throws If an indexed primitive is postprocessed without its index buffer data.
- */
-function normalizePrimitiveTopology(
-  primitive: GLTFMeshPrimitivePostprocessed,
-  meshId: string,
-  primitiveIndex: number
-): GLTFMeshPrimitivePostprocessed {
-  if (primitive.mode !== 2 && primitive.mode !== 6) {
-    return primitive;
-  }
-
-  const sourceIndices = primitive.indices?.value;
-  const sourceIndexCount = primitive.indices?.count ?? getPrimitiveVertexCount(primitive);
-  const maximumIndex = getMaximumIndex(sourceIndices, sourceIndexCount);
-  const IndexArray = maximumIndex <= 65535 ? Uint16Array : Uint32Array;
-  const generatedIndices =
-    primitive.mode === 2
-      ? createLineLoopIndices(sourceIndices, sourceIndexCount, IndexArray)
-      : createTriangleFanIndices(sourceIndices, sourceIndexCount, IndexArray);
-
-  primitive.mode = primitive.mode === 2 ? 1 : 4;
-  primitive.indices = {
-    id: `${meshId}-primitive-${primitiveIndex}-portable-indices`,
-    components: 1,
-    bytesPerComponent: IndexArray.BYTES_PER_ELEMENT,
-    bytesPerElement: IndexArray.BYTES_PER_ELEMENT,
-    componentType: IndexArray === Uint16Array ? 5123 : 5125,
-    normalized: false,
-    count: generatedIndices.length,
-    type: 'SCALAR',
-    min: generatedIndices.length ? [getMinimumIndex(generatedIndices)] : undefined,
-    max: generatedIndices.length ? [maximumIndex] : undefined,
-    value: generatedIndices
-  };
-
-  return primitive;
-}
-
-/** Returns the typed-array constructor for valid sparse accessor index component types. */
-function getSparseIndexArrayType(
-  componentType: number
-): Uint8ArrayConstructor | Uint16ArrayConstructor | Uint32ArrayConstructor {
-  switch (componentType) {
-    case 5121:
-      return Uint8Array;
-    case 5123:
-      return Uint16Array;
-    case 5125:
-      return Uint32Array;
-    default:
-      throw new Error(`Invalid glTF sparse index component type ${componentType}`);
-  }
-}
-
-/** Returns the vertex count shared by a non-indexed primitive's attributes. */
-function getPrimitiveVertexCount(primitive: GLTFMeshPrimitivePostprocessed): number {
-  const attribute = Object.values(primitive.attributes)[0];
-  assert(attribute, 'glTF primitive must define at least one attribute');
-  return attribute.count;
-}
-
-/** Returns the largest referenced vertex index. */
-function getMaximumIndex(
-  indices: ArrayLike<number | bigint> | undefined,
-  indexCount: number
-): number {
-  if (!indices) {
-    return Math.max(0, indexCount - 1);
-  }
-
-  let maximumIndex = 0;
-  for (let index = 0; index < indexCount; index++) {
-    maximumIndex = Math.max(maximumIndex, Number(indices[index]));
-  }
-  return maximumIndex;
-}
-
-/** Returns the smallest generated vertex index. */
-function getMinimumIndex(indices: Uint16Array | Uint32Array): number {
-  let minimumIndex = Infinity;
-  for (const index of indices) {
-    minimumIndex = Math.min(minimumIndex, index);
-  }
-  return minimumIndex;
-}
-
-/** Reads an authored index or generates the equivalent sequential index. */
-function getSourceIndex(indices: ArrayLike<number | bigint> | undefined, index: number): number {
-  return indices ? Number(indices[index]) : index;
-}
-
-/** Expands a line loop into a portable line list. */
-function createLineLoopIndices(
-  sourceIndices: ArrayLike<number | bigint> | undefined,
-  sourceIndexCount: number,
-  IndexArray: Uint16ArrayConstructor | Uint32ArrayConstructor
-): Uint16Array | Uint32Array {
-  if (sourceIndexCount < 2) {
-    return new IndexArray(0);
-  }
-
-  const generatedIndices = new IndexArray(sourceIndexCount * 2);
-  for (let sourceIndex = 0; sourceIndex < sourceIndexCount; sourceIndex++) {
-    generatedIndices[sourceIndex * 2] = getSourceIndex(sourceIndices, sourceIndex);
-    generatedIndices[sourceIndex * 2 + 1] = getSourceIndex(
-      sourceIndices,
-      (sourceIndex + 1) % sourceIndexCount
-    );
-  }
-  return generatedIndices;
-}
-
-/** Expands a triangle fan into a portable triangle list while preserving winding. */
-function createTriangleFanIndices(
-  sourceIndices: ArrayLike<number | bigint> | undefined,
-  sourceIndexCount: number,
-  IndexArray: Uint16ArrayConstructor | Uint32ArrayConstructor
-): Uint16Array | Uint32Array {
-  const triangleCount = Math.max(0, sourceIndexCount - 2);
-  const generatedIndices = new IndexArray(triangleCount * 3);
-  for (let triangleIndex = 0; triangleIndex < triangleCount; triangleIndex++) {
-    generatedIndices[triangleIndex * 3] = getSourceIndex(sourceIndices, 0);
-    generatedIndices[triangleIndex * 3 + 1] = getSourceIndex(sourceIndices, triangleIndex + 1);
-    generatedIndices[triangleIndex * 3 + 2] = getSourceIndex(sourceIndices, triangleIndex + 2);
-  }
-  return generatedIndices;
 }
 
 export function postProcessGLTF(

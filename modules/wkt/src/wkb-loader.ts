@@ -2,49 +2,47 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
-import type {Geometry} from '@loaders.gl/schema';
-import {VERSION} from './lib/version';
-import {WKBFormat} from './wkt-format';
+import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+import {BinaryGeometry, Geometry} from '@loaders.gl/schema';
+import {VERSION} from './lib/utils/version';
+import {parseWKB} from './lib/parse-wkb';
+import {isWKB} from './lib/parse-wkb-header';
 
 export type WKBLoaderOptions = LoaderOptions & {
   wkb?: {
-    /** Shape is deprecated, only geojson is supported */
-    shape?: 'geojson-geometry';
-    /** Override the URL to the shared WKT/WKB worker bundle. */
-    workerUrl?: string;
+    /** 'geometry' is deprecated use 'geojson-geometry' */
+    shape: 'geojson-geometry' | 'binary-geometry' | 'geometry';
   };
 };
 
 /**
- * Preloads the parser-bearing WKB loader implementation.
- */
-async function preload() {
-  const {WKBLoaderWithParser} = await import('./wkb-loader-with-parser');
-  return WKBLoaderWithParser;
-}
-
-/**
- * Metadata-only worker loader for WKB (Well-Known Binary)
+ * Worker loader for WKB (Well-Known Binary)
  */
 export const WKBWorkerLoader = {
-  dataType: null as unknown as Geometry,
+  dataType: null as unknown as Geometry | BinaryGeometry,
   batchType: null as never,
-  ...WKBFormat,
+  name: 'WKB',
+  id: 'wkb',
+  module: 'wkt',
   version: VERSION,
   worker: true,
-  workerFile: 'wkt-worker.js',
+  category: 'geometry',
+  extensions: ['wkb'],
+  mimeTypes: [],
+  // TODO can we define static, serializable tests, eg. some binary strings?
+  tests: [isWKB],
   options: {
     wkb: {
-      shape: 'geojson-geometry'
+      shape: 'binary-geometry' // 'geojson-geometry'
     }
-  },
-  preload
-} as const satisfies Loader<Geometry, never, WKBLoaderOptions>;
+  }
+} as const satisfies Loader<Geometry | BinaryGeometry, never, WKBLoaderOptions>;
 
 /**
- * Metadata-only loader for WKB (Well-Known Binary)
+ * Loader for WKB (Well-Known Binary)
  */
 export const WKBLoader = {
-  ...WKBWorkerLoader
-} as const satisfies Loader<Geometry, never, WKBLoaderOptions>;
+  ...WKBWorkerLoader,
+  parse: async (arrayBuffer: ArrayBuffer) => parseWKB(arrayBuffer),
+  parseSync: parseWKB
+} as const satisfies LoaderWithParser<BinaryGeometry | Geometry, never, WKBLoaderOptions>;

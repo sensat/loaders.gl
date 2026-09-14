@@ -21,7 +21,6 @@ export const ImageWriter = {
   module: 'images',
   version: VERSION,
   extensions: ['jpeg'],
-  mimeTypes: [],
   options: {
     image: {
       mimeType: 'image/png',

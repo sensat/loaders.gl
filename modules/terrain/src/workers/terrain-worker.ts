@@ -3,6 +3,6 @@
 // Copyright (c) vis.gl contributors
 
 import {createLoaderWorker} from '@loaders.gl/loader-utils';
-import {TerrainLoaderWithParser} from '../terrain-loader-with-parser';
+import {TerrainLoader} from '../index';
 
-createLoaderWorker(TerrainLoaderWithParser);
+createLoaderWorker(TerrainLoader);

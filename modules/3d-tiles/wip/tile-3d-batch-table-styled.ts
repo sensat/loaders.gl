@@ -1,9 +1,7 @@
-// SPDX-License-Identifier: Apache-2.0
-
 // This file is derived from the Cesium code base under Apache 2 license
 // See LICENSE.md and https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md
 
-import {GL} from '@math.gl/geometry-utils';
+import {GL} from '@loaders.gl/math'; // 'math.gl/geometry';
 import assert from '../utils/assert';
 
 /*

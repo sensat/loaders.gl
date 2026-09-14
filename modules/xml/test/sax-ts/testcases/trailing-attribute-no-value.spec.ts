@@ -1,8 +1,13 @@
-// SPDX-License-Identifier: ISC
-import {test} from 'vitest';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+// Forked from sax-ts & sax under ISC license
+
+import test from 'tape-promise/tape';
 import {testSax} from '../utils/test-utils';
-test('SAXParser#trailing-attribute-no-value', () => {
-  testSax({
+
+test('SAXParser#trailing-attribute-no-value', (t) => {
+  testSax(t, {
     xml: '<root attrib>',
     expect: [
       ['opentagstart', {name: 'ROOT', attributes: {}}],
@@ -11,4 +16,5 @@ test('SAXParser#trailing-attribute-no-value', () => {
     ],
     saxOptions: {trim: true}
   });
+  t.end();
 });

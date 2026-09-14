@@ -1,7 +1,13 @@
-import {expect, test} from 'vitest';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
+import test from 'tape-promise/tape';
 // import {validateLoader} from 'test/common/conformance';
+
 import {HTMLLoader} from '@loaders.gl/xml';
 import {parse} from '@loaders.gl/core';
+
 const HTML = `
 <HTML>
 <HEAD>
@@ -23,8 +29,11 @@ support@yourcompany.com</a>.
 </BODY>
 </HTML>
 `;
-test('HTMLLoader#forecasts.xml', async () => {
+
+test('HTMLLoader#forecasts.xml', async (t) => {
   const html = await parse(HTML, HTMLLoader);
-  expect(html, 'got result').toBeTruthy();
-  expect(html.HTML.BODY.CENTER.IMG.SRC, 'HTML image tag src correct').toBe('clouds.jpg');
+
+  t.ok(html, 'got result');
+  t.equal(html.HTML.BODY.CENTER.IMG.SRC, 'clouds.jpg', 'HTML image tag src correct');
+  t.end();
 });

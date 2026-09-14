@@ -1,6 +1,4 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
+// @loaders.gl, MIT license
 
 // type Parameter1<T extends (arg1: any, ...args: unknown[]) => unknown> = T extends (
 //   arg1: infer P,

@@ -8,7 +8,6 @@ import {Compression} from './compression';
 
 /**
  * Applies no compression.
- * @deprecated Use `NoCompressor` and/or `NoDecompressor`.
  */
 export class NoCompression extends Compression {
   readonly name: string = 'uncompressed';

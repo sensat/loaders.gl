@@ -1,5 +1,5 @@
 import {loadArcGISModules} from '@deck.gl/arcgis';
-import {SourceLayer} from '@loaders.gl/deck-layers';
+import {Tile3DLayer} from '@deck.gl/geo-layers';
 import {I3SLoader} from '@loaders.gl/i3s';
 
 // Tileset entry point: Indexed 3D layer file url
@@ -36,10 +36,10 @@ export async function renderToDOM(container) {
 
   sceneView.on('layerview-create', () => {
     renderer.deck.layers = [
-      new SourceLayer({
+      new Tile3DLayer({
         id: 'tile-3d-layer',
         data: TILESET_URL,
-        loaders: [I3SLoader]
+        loader: I3SLoader
       })
     ];
   });

@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 import {concatenateArrayBuffersAsync, concatenateArrayBuffers} from '@loaders.gl/loader-utils';
 
 export default async function loaderUtilsBench(suite) {

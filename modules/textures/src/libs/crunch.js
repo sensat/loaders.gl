@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: Zlib
-
 // @ts-nocheck
 // Shim to provide workers a usable "window" object.
 window = this;

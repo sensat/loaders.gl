@@ -14,7 +14,7 @@ export async function checkFetchResponseStatus(response: Response): Promise<void
       if (text) {
         errorMessage += `: ${getErrorText(text)}`;
       }
-    } catch (_error) {
+    } catch (error) {
       // ignore error
     }
     throw new Error(errorMessage);

@@ -2,57 +2,36 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {StrictLoaderOptions, Loader} from '@loaders.gl/loader-utils';
-import type {
-  Batch,
-  GeoArrowEncodingPreference,
-  GeoJSONTable,
-  ArrowTable,
-  ArrowTableBatch
-} from '@loaders.gl/schema';
-import type {SHPLoaderOptions} from './shp-loader';
-import type {ShapefileOutput} from './lib/parsers/parse-shapefile';
-import type {DBFLoaderOptions} from './dbf-loader';
-import type {SHPGeoArrowEncoding} from './lib/parsers/types';
-import type {Proj4CRSDefinition} from '@math.gl/proj4';
-import {ShapefileFormat} from './shp-format';
+import type {LoaderOptions, LoaderWithParser} from '@loaders.gl/loader-utils';
+import {SHP_MAGIC_NUMBER} from './shp-loader';
+import {parseShapefile, parseShapefileInBatches} from './lib/parsers/parse-shapefile';
+import {Batch, GeoJSONTable} from '@loaders.gl/schema';
 
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
 
-export type ShapefileLoaderOptions = StrictLoaderOptions &
-  SHPLoaderOptions &
-  DBFLoaderOptions & {
-    /** Preferred encoding for Arrow geometry output. */
-    geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
-    shapefile?: {
-      shape?: 'geojson-table' | 'arrow-table' | 'v3';
-      geoarrowEncoding?: SHPGeoArrowEncoding;
-      /** Preferred encoding for Arrow geometry output. */
-      geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
-      batchSize?: number;
-      /** @deprecated Worker URLs must be specified with .dbf.workerUrl * .shp.workerUrl */
-      workerUrl?: never;
-    };
-    gis?: {
-      reproject?: boolean;
-      _targetCrs?: Proj4CRSDefinition;
-    };
+export type ShapefileLoaderOptions = LoaderOptions & {
+  shapefile?: {
+    shape?: 'geojson-table' | 'v3';
+    /** @deprecated Worker URLs must be specified with .dbf.workerUrl * .shp.workerUrl */
+    workerUrl?: never;
   };
+};
 
-/** Preloads the parser-bearing Shapefile loader implementation. */
-async function preload() {
-  const {ShapefileLoaderWithParser} = await import('./shapefile-loader-with-parser');
-  return ShapefileLoaderWithParser;
-}
-
-/** Metadata-only Shapefile loader. */
+/**
+ * Shapefile loader
+ * @note Shapefile is multifile format and requires providing additional files
+ */
 export const ShapefileLoader = {
-  dataType: null as unknown as ShapefileOutput | GeoJSONTable | ArrowTable,
-  batchType: null as unknown as ShapefileOutput | Batch | ArrowTableBatch,
-  ...ShapefileFormat,
+  name: 'Shapefile',
+  id: 'shapefile',
+  module: 'shapefile',
   version: VERSION,
+  category: 'geometry',
+  extensions: ['shp'],
+  mimeTypes: ['application/octet-stream'],
+  tests: [new Uint8Array(SHP_MAGIC_NUMBER).buffer],
   options: {
     shapefile: {
       shape: 'v3'
@@ -61,9 +40,8 @@ export const ShapefileLoader = {
       _maxDimensions: 4
     }
   },
-  preload
-} as const satisfies Loader<
-  ShapefileOutput | GeoJSONTable | ArrowTable,
-  ShapefileOutput | Batch | ArrowTableBatch,
-  ShapefileLoaderOptions
->;
+  // @ts-expect-error
+  parse: parseShapefile,
+  // @ts-expect-error
+  parseInBatches: parseShapefileInBatches
+} as const satisfies LoaderWithParser<GeoJSONTable, Batch, ShapefileLoaderOptions>;

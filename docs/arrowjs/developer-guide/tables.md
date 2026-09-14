@@ -1,44 +1,4 @@
----
-title: Working with Arrow tables
-description: Load, inspect, slice, iterate, and filter Apache Arrow tables in JavaScript.
-hide_title: true
-page_style: designed
----
-
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
-
-<DocPageHeader
-  eyebrow="Arrow JS guide · tables"
-  title="Read the columns you need, when you need them."
-  description="Arrow tables support both row-oriented inspection and column-oriented access. This guide starts with a small IPC load, then shows the operations most applications use to explore and filter the result."
-  tone="cyan"
-  meta={['IPC loading', 'Rows and columns', 'Schemas and timestamps']}
-  links={[
-    {label: 'Arrow JavaScript', to: '/docs/arrowjs'},
-    {label: 'Arrow API reference', to: '/docs/arrowjs/api-reference'},
-    {label: 'Apache Arrow guide', to: '/docs/developer-guide/apache-arrow'}
-  ]}
-/>
-
-<DocOrientation
-  eyebrow="A table in four moves"
-  title="Load, inspect, select, and process."
-  description="The same Arrow table can be explored as rows or columns. Keep the column view for typed processing, and convert to row objects only at an application boundary that needs them."
-  tone="cyan"
-  items={[
-    {label: 'Load', value: 'Read Arrow IPC into a Table'},
-    {label: 'Inspect', value: 'Use numRows, schema fields, and field types'},
-    {label: 'Select', value: 'Read rows or child vectors by name'},
-    {label: 'Process', value: 'Filter, slice, and pass batches downstream'}
-  ]}
-/>
-
-<ReferenceBoundary
-  title="Table access patterns"
-  description="The examples below cover IPC loading, schema inspection, row access, column vectors, timestamp conversion, and filtering."
-  tone="cyan"
-/>
+# Working with Tables
 
 References:
 
@@ -46,121 +6,129 @@ References:
 
 ## Loading Arrow Data
 
-Applications often start with loading some Arrow formatted data. In most cases the simplest path is `tableFromIPC()`.
+Applications often start with loading some Arrow formatted data. The Arrow API provides several ways to do this, but in many cases, the simplest approach is to use `Table.from()`.
 
 ```typescript
-import {tableFromIPC} from 'apache-arrow';
+import {Table} from 'apache-arrow';
 const response = await fetch(dataUrl);
 const arrayBuffer = await response.arrayBuffer();
-const table = tableFromIPC(new Uint8Array(arrayBuffer));
+const dataTable = arrow.Table.from(new Uint8Array(arrayBuffer));
 ```
 
 ## Getting Records Count
 
 ```typescript
-const count = table.numRows;
+const count = table.count();
 ```
 
-## Getting Arrow Schema Metadata
+### Getting Arrow Schema Metadata
 
 ```typescript
 const fieldNames = table.schema.fields.map((f) => f.name);
 // Array(3) ["Latitude", "Longitude", "Date"]
+```
 
-const fieldTypes = table.schema.fields.map((field) => field.type);
+```typescript
+const fieldTypes = tables.schema.fields.map(f => f.type)
 // Array(3) [Float, Float, Timestamp]
 
-const fieldTypeNames = fieldTypes.map((type) => type.toString());
+const fieldTypeNames = ...;
 // Array(3) ["Float64", "Float64", "Timestamp<MICROSECOND>"]
 ```
 
-## Accessing Arrow Table Row Data
+### Accessing Arrow Table Row Data
 
 ```typescript
-const firstRow = table.get(0); // 1st row
-const lastRow = table.get(table.numRows - 1);
+const firstRow = tables.get(0); // 1st row data
+const lastRow = tables.get(rowCount - 1);
 ```
 
-## Record `toJSON` and `toArray`
+## Record toJSON and toArray
 
-Convert rows to JSON/arrays:
+It is easy to converting Rows to JSON/Arrays/Strings:
 
 ```typescript
-const rowJson = table.get(0).toJSON();
-const rowArray = table.get(0).toArray();
+toJSON = Array(3)[(41.890751259, -87.71617311899999, Int32Array(2))];
+toArray = Array(3)[(41.933659084, -87.72369064600001, Int32Array(2))];
 ```
 
-Similar conversion methods are available on many Arrow classes:
+Similar conversion methods are avaiable on many Arrow classes.
 
-`table.get(0).toJSON();`
+tables.get(0).toJSON()
 
 ## Slicing Arrow Data
 
+every10KRow = Array(17) [Array(3), Array(3), Array(3), Array(3), Array(3), Array(3), Array(3), Array(3), Array(3), Array(3), Array(3), Array(3), Array(3), Array(3), Array(3), Array(3), Array(3)]
+
+Our custom arrow data range stepper for sampling data:
+
+range = ƒ(start, end, step)
+
+### Iterating over Rows and Cells
+
 ```typescript
-const every10KRows = Array.from({length: 17}, () => table.get(0).toArray());
-```
-
-You can build custom row-range utilities as needed for sampling.
-
-## Iterating over Rows and Cells
-
-```typescript
-let cellIndex = 0;
-for (let rowIndex = 0; rowIndex < table.numRows; rowIndex++) {
-  const row = table.get(rowIndex).toJSON();
-  cellIndex = 0;
-  for (const cell of Object.values(row)) {
+for (let row of dataFrame) {
+  for (let cell of row) {
     if (Array.isArray(cell)) {
-      const td = '[' + cell.map((value) => (value == null ? 'null' : value)).join(', ') + ']';
-      console.log(td);
-    } else if (Object.keys(row)[cellIndex] === 'Date') {
-      const td = toDate(cell);
-      console.log(td);
+      td = '[' + cell.map((value) => (value == null ? 'null' : value)).join(', ') + ']';
+    } else if (fields[k] === 'Date') {
+      td = toDate(cell); // convert Apache arrow Timestamp to Date
     } else {
-      const td = cell.toString();
-      console.log(td);
+      td = cell.toString();
     }
-    cellIndex += 1;
+    k++;
   }
 }
 ```
 
-## Converting Dates
+### Converting Dates
 
-Arrow timestamp values arrive as two 32-bit integers in JS to preserve precision.
+Apache Arrow Timestamp is a 64-bit int of milliseconds since the epoch, represented as two 32-bit ints in JS to preserve precision. The fist number is the "low" int and the second number is the "high" int.
 
 ```typescript
 function toDate(timestamp) {
-  return new Date(timestamp[1] * Math.pow(2, 32) + timestamp[0]);
+  return new Date((timestamp[1] * Math.pow(2, 32) + timestamp[0]) / 1000);
 }
 ```
 
-## Column Data Vectors
+### Column Data Vectors
 
-Arrow tables expose columns as vectors.
+Apache Arrow stores columns in typed arrays and vectors:
+
+Typed vectors have convinience methods to convert Int32 arrays data to JS values you can work with.
 
 For example, to get timestamps in milliseconds:
 
-```typescript
-const timestamps = table.getChild('Date')?.toArray();
-```
+timestamps = Array(10) [2017-01-01, 2017-01-01, 2017-01-01, 2017-01-01, 2017-01-01, 2017-01-01, 2017-01-01, 2017-01-01, 2017-01-01, 2017-01-01]
 
-## Filtering Timestamped Data
+### Filtering Timestamped Data
 
 ```typescript
 function filterByDate(startDate, endDate) {
-  const results = [];
-  const dateColumn = table.getChild('Date')?.toArray() ?? [];
+  const dateFilter = arrow.predicate.custom(
+    (i) => {
+      const arrowDate = table.getColumn('Date').get(i);
+      const date = toDate(arrowDate);
+      return date >= startDate && date <= endDate;
+    },
+    (b) => 1
+  );
 
-  for (let i = 0; i < table.numRows; i++) {
-    const value = toDate(dateColumn[i]);
-    if (value >= startDate && value <= endDate) {
-      results.push({date: value});
+  const getDate;
+  const results = [];
+  table.filter(dateFilter).scan(
+    (index) => {
+      results.push({
+        date: toDate(getDate(index))
+      });
+    },
+    (batch) => {
+      getDate = arrow.predicate.col('Date').bind(batch);
     }
-  }
+  );
 
   return results;
 }
 ```
 
-Our custom filter-by-date method returns matching rows as JS objects that can be graphed or displayed.
+Our custom filter by date method uses custom arrow table predicate filter and scan methods to generate JS friendly data you can map or graph:

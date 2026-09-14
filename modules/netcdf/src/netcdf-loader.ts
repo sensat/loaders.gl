@@ -1,11 +1,7 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
-import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
 import type {NetCDFHeader} from './netcdfjs/netcdf-types';
+import {NetCDFReader} from './netcdfjs/netcdf-reader';
 
-import {NetCDFFormat} from './netcdf-format';
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
@@ -22,17 +18,10 @@ export type NetCDFLoaderOptions = LoaderOptions & {
   };
 };
 
-/** Preloads the parser-bearing NetCDF loader implementation. */
-async function preload() {
-  const {NetCDFLoaderWithParser} = await import('./netcdf-loader-with-parser');
-  return NetCDFLoaderWithParser;
-}
-
 /**
- * Metadata-only loader for NETCDF.
+ * Worker loader for NETCDF
  */
 export const NetCDFWorkerLoader = {
-  ...NetCDFFormat,
   dataType: null as unknown as NetCDF,
   batchType: null as never,
 
@@ -51,14 +40,28 @@ export const NetCDFWorkerLoader = {
     netcdf: {
       loadVariables: false
     }
-  },
-  preload
+  }
 } as const satisfies Loader<NetCDF, never, NetCDFLoaderOptions>;
 
 /**
- * Metadata-only loader for the NetCDF format.
+ * Loader for the NetCDF format
  */
 export const NetCDFLoader = {
   ...NetCDFWorkerLoader,
+  parse: async (arrayBuffer, options) => parseNetCDF(arrayBuffer, options),
   binary: true
-} as const satisfies Loader<NetCDF, never, NetCDFLoaderOptions>;
+} as const satisfies LoaderWithParser<NetCDF, never, NetCDFLoaderOptions>;
+
+function parseNetCDF(arrayBuffer: ArrayBuffer, options?: NetCDFLoaderOptions): NetCDF {
+  const reader = new NetCDFReader(arrayBuffer);
+  const variables: {[variableName: string]: any[][]} = {};
+  if (options?.netcdf?.loadData) {
+    for (const variable of reader.variables) {
+      variables[variable.name] = reader.getDataVariable(variable);
+    }
+  }
+  return {
+    loaderData: reader.header,
+    data: variables
+  };
+}

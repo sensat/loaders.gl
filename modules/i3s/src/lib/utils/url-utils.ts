@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 import {Node3DIndexDocument, SceneLayer3D} from '../../types';
 
 /**
@@ -20,7 +16,7 @@ export function getUrlWithoutParams(url: string): string {
     if (urlWithoutParams.startsWith('null')) {
       urlWithoutParams = null;
     }
-  } catch (_e) {
+  } catch (e) {
     urlWithoutParams = null;
   }
   return urlWithoutParams || url;

@@ -2,18 +2,18 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {expect, test} from 'vitest';
+import test from 'tape-promise/tape';
+
 import {
   getErrorMessageFromResponseSync,
   getErrorMessageFromResponse
 } from '@loaders.gl/core/lib/fetch/fetch-error-message';
-test('getErrorMessageFromResponseSync#imports', () => {
-  expect(
+
+test('getErrorMessageFromResponseSync#imports', (t) => {
+  t.ok(
     typeof getErrorMessageFromResponseSync === 'function',
     'getErrorMessageFromResponseSync() defined'
-  ).toBeTruthy();
-  expect(
-    typeof getErrorMessageFromResponse === 'function',
-    'getErrorMessageFromResponse() defined'
-  ).toBeTruthy();
+  );
+  t.ok(typeof getErrorMessageFromResponse === 'function', 'getErrorMessageFromResponse() defined');
+  t.end();
 });

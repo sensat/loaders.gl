@@ -49,11 +49,7 @@ var utils = {
     const loop = function loop() {
       const current = new Date().getTime();
       const delta = current - start;
-      if (delta >= delay) {
-        callback.call();
-      } else {
-        handle.value = requestAnimFrame(loop);
-      }
+      delta >= delay ? callback.call() : (handle.value = requestAnimFrame(loop));
     };
     handle.value = requestAnimFrame(loop);
     return handle;
@@ -87,9 +83,9 @@ var utils = {
           enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
           enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
           enc4 = chr3 & 63;
-          if (Number.isNaN(chr2)) {
+          if (isNaN(chr2)) {
             enc3 = enc4 = 64;
-          } else if (Number.isNaN(chr3)) {
+          } else if (isNaN(chr3)) {
             enc4 = 64;
           }
           output =
@@ -113,12 +109,6 @@ var utils = {
   },
   isElement: function isElement(elem) {
     return elem && elem.nodeType === 1;
-  },
-  isImageBitmap: function isImageBitmap(image) {
-    return typeof ImageBitmap !== 'undefined' && image instanceof ImageBitmap;
-  },
-  isDrawable: function isDrawable(image) {
-    return utils.isElement(image) || utils.isImageBitmap(image);
   },
   isString: function isString(value) {
     return typeof value === 'string' || Object.prototype.toString.call(value) === '[object String]';
@@ -164,7 +154,7 @@ var utils = {
           // Check for Webm support
           supportObj.webm = testEl.canPlayType('video/webm; codecs="vp8, vorbis"') !== -1;
         }
-      } catch (_e) {}
+      } catch (e) {}
       return supportObj;
     })()
   },
@@ -505,7 +495,7 @@ function NeuQuant() {
   const intbiasshift = 16; // bias for fractions
   const intbias = 1 << intbiasshift;
   const gammashift = 10; // gamma = 1024
-  const _gamma = 1 << gammashift;
+  const gamma = 1 << gammashift;
   const betashift = 10;
   const beta = intbias >> betashift; // beta = 1/1024
   const betagamma = intbias << (gammashift - betashift);
@@ -599,7 +589,7 @@ function NeuQuant() {
       }
       q = network[smallpos];
       // swap p (i) and q (smallpos) entries
-      if (i !== smallpos) {
+      if (i != smallpos) {
         j = q[0];
         q[0] = p[0];
         p[0] = j;
@@ -614,7 +604,7 @@ function NeuQuant() {
         p[3] = j;
       }
       // smallval entry is now in position i
-      if (smallval !== previouscol) {
+      if (smallval != previouscol) {
         netindex[previouscol] = (startpos + i) >> 1;
         for (j = previouscol + 1; j < smallval; j++) {
           netindex[j] = i;
@@ -789,7 +779,7 @@ function NeuQuant() {
   // to prepare for sort
   function unbiasnet() {
     let i;
-    let _j;
+    let j;
     for (i = 0; i < netsize; i++) {
       network[i][0] >>= netbiasshift;
       network[i][1] >>= netbiasshift;
@@ -826,7 +816,7 @@ function NeuQuant() {
           p[0] -= ((a * (p[0] - b)) / alpharadbias) | 0;
           p[1] -= ((a * (p[1] - g)) / alpharadbias) | 0;
           p[2] -= ((a * (p[2] - r)) / alpharadbias) | 0;
-        } catch (_e) {}
+        } catch (e) {}
       }
       if (k > lo) {
         p = network[k--];
@@ -834,7 +824,7 @@ function NeuQuant() {
           p[0] -= ((a * (p[0] - b)) / alpharadbias) | 0;
           p[1] -= ((a * (p[1] - g)) / alpharadbias) | 0;
           p[2] -= ((a * (p[2] - r)) / alpharadbias) | 0;
-        } catch (_e) {}
+        } catch (e) {}
       }
     }
   }
@@ -913,7 +903,7 @@ function NeuQuant() {
  * Copyrights licensed under the MIT License. See the accompanying LICENSE file for terms.
  */
 function workerCode() {
-  const _self = this;
+  const self = this;
   try {
     globalThis.onmessage = function (ev) {
       const data = ev.data || {};
@@ -923,7 +913,7 @@ function workerCode() {
         postMessage(response);
       }
     };
-  } catch (_e) {}
+  } catch (e) {}
   var workerMethods = {
     dataToRGB: function dataToRGB(data, width, height) {
       const length = width * height * 4;
@@ -977,7 +967,7 @@ function workerCode() {
       frame = frame || {};
       const _frame = frame;
       const height = _frame.height;
-      const _palette = _frame.palette;
+      const palette = _frame.palette;
       const sampleInterval = _frame.sampleInterval;
       const width = _frame.width;
       const imageData = frame.data;
@@ -1097,10 +1087,8 @@ function gifWriter(buf, width, height, gopts) {
     let num_colors = check_palette_and_num_colors(palette);
     // Compute the min_code_size (power of 2), destroying num_colors.
     let min_code_size = 0;
-    num_colors >>= 1;
-    while (num_colors) {
+    while ((num_colors >>= 1)) {
       ++min_code_size;
-      num_colors >>= 1;
     }
     num_colors = 1 << min_code_size; // Now we can easily get it back.
     const delay = opts.delay === undefined ? 0 : opts.delay;
@@ -1418,6 +1406,7 @@ AnimatedGIF.prototype = {
   },
   processFrame: function processFrame(position) {
     const AnimatedGifContext = this;
+    const options = this.options;
     const _options = this.options;
     const progressCallback = _options.progressCallback;
     const sampleInterval = _options.sampleInterval;
@@ -1534,8 +1523,8 @@ AnimatedGIF.prototype = {
     const fontColor = _gifshotOptions.fontColor;
     const fontFamily = _gifshotOptions.fontFamily;
     const fontWeight = _gifshotOptions.fontWeight;
-    const _gifHeight = _gifshotOptions.gifHeight;
-    const _gifWidth = _gifshotOptions.gifWidth;
+    const gifHeight = _gifshotOptions.gifHeight;
+    const gifWidth = _gifshotOptions.gifWidth;
     const text = _gifshotOptions.text;
     const textAlign = _gifshotOptions.textAlign;
     const textBaseline = _gifshotOptions.textBaseline;
@@ -1641,7 +1630,7 @@ function getBase64GIF(animatedGifInstance, callback) {
  */
 function existingImages() {
   const obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  const _self = this;
+  const self = this;
   const callback = obj.callback;
   const images = obj.images;
   const options = obj.options;
@@ -1665,7 +1654,7 @@ function existingImages() {
     // if (image.src) {
     //     currentImage = currentImage.src;
     // }
-    if (utils.isDrawable(currentImage)) {
+    if (utils.isElement(currentImage)) {
       if (options.crossOrigin) {
         currentImage.crossOrigin = options.crossOrigin;
       }
@@ -1754,7 +1743,7 @@ const screenShot = {
     const fontFamily = options.fontFamily;
     const fontWeight = options.fontWeight;
     const keepCameraOn = options.keepCameraOn;
-    const _numWorkers = options.numWorkers;
+    const numWorkers = options.numWorkers;
     const progressCallback = options.progressCallback;
     const saveRenderingContexts = options.saveRenderingContexts;
     const savedRenderingContexts = options.savedRenderingContexts;
@@ -1768,7 +1757,7 @@ const screenShot = {
     const gifWidth = Number(options.gifWidth);
     const gifHeight = Number(options.gifHeight);
     let interval = Number(options.interval);
-    const _sampleInterval = Number(options.sampleInterval);
+    const sampleInterval = Number(options.sampleInterval);
     const waitBetweenFrames = hasExistingImages ? 0 : interval * 1000;
     const renderingContextsToSave = [];
     let numFrames = savedRenderingContexts.length
@@ -1992,7 +1981,7 @@ var videoStream = {
       } else if (existingVideo instanceof Blob) {
         try {
           videoElement.src = utils.URL.createObjectURL(existingVideo);
-        } catch (_e) {}
+        } catch (e) {}
         videoElement.innerHTML = `<source src="${existingVideo}" type="${existingVideo.type}" />`;
       }
     } else if (videoElement.mozSrcObject) {
@@ -2001,7 +1990,7 @@ var videoStream = {
       try {
         videoElement.srcObject = cameraStream;
         videoElement.src = utils.URL.createObjectURL(cameraStream);
-      } catch (_e) {
+      } catch (e) {
         videoElement.srcObject = cameraStream;
       }
     }
@@ -2043,7 +2032,7 @@ var videoStream = {
       : webcamVideoElement
         ? webcamVideoElement
         : document.createElement('video');
-    const _cameraStream = void 0;
+    const cameraStream = void 0;
     if (crossOrigin) {
       videoElement.crossOrigin = options.crossOrigin;
     }
@@ -2189,7 +2178,7 @@ function createAndGetGIF(obj, callback) {
   const video = options.video;
   const gifWidth = Number(options.gifWidth);
   const gifHeight = Number(options.gifHeight);
-  const _numFrames = Number(options.numFrames);
+  const numFrames = Number(options.numFrames);
   const cameraStream = obj.cameraStream;
   const videoElement = obj.videoElement;
   const videoWidth = obj.videoWidth;
@@ -2245,11 +2234,11 @@ function existingVideo() {
     'globalThis.URL': true
   };
   const errorObj = error.validate(skipObj);
-  const _loadedImages = 0;
+  const loadedImages = 0;
   let videoType = void 0;
   let videoSrc = void 0;
-  const _tempImage = void 0;
-  const _ag = void 0;
+  const tempImage = void 0;
+  const ag = void 0;
   if (errorObj.error) {
     return callback(errorObj);
   }

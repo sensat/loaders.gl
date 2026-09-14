@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 /**
  * https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_texture_transform/README.md
  */
@@ -11,6 +7,7 @@ import type {GLTFWithBuffers} from '../types/gltf-types';
 import type {
   GLTFMeshPrimitive,
   GLTFAccessor,
+  GLTFBufferView,
   GLTFMaterialNormalTextureInfo,
   GLTFMaterialOcclusionTextureInfo,
   GLTFTextureInfo
@@ -19,8 +16,8 @@ import type {GLTFLoaderOptions} from '../../gltf-loader';
 
 import {getAccessorArrayTypeAndLength} from '../gltf-utils/gltf-utils';
 import {BYTES, COMPONENTS} from '../gltf-utils/gltf-constants';
-import {GLTFIterator} from '../api/gltf-iterator';
-import {ensureArrayBuffer} from '@loaders.gl/loader-utils';
+import {} from '../types/gltf-json-schema';
+import {GLTFScenegraph} from '../api/gltf-scenegraph';
 
 /** Extension name */
 const KHR_TEXTURE_TRANSFORM = 'KHR_texture_transform';
@@ -48,9 +45,9 @@ type CompoundGLTFTextureInfo = GLTFTextureInfo &
   GLTFMaterialOcclusionTextureInfo;
 /** Parameters for TEXCOORD transformation */
 type TransformParameters = {
-  /** Source texCoord selected by the texture info or extension. */
-  sourceTexCoord: number;
-  /** Generated texCoord containing the transformed values. */
+  /** Original texCoord value https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html#_textureinfo_texcoord */
+  originalTexCoord: number;
+  /** New texCoord value from extension https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_texture_transform#gltf-schema-updates */
   texCoord: number;
   /** Transformation matrix */
   matrix: Matrix3;
@@ -62,17 +59,14 @@ type TransformParameters = {
  * @param options GLTFLoader options
  */
 export async function decode(gltfData: GLTFWithBuffers, options: GLTFLoaderOptions) {
-  const iterator = new GLTFIterator(gltfData);
-  const hasExtension = iterator.hasExtension(KHR_TEXTURE_TRANSFORM);
+  const gltfScenegraph = new GLTFScenegraph(gltfData);
+  const hasExtension = gltfScenegraph.hasExtension(KHR_TEXTURE_TRANSFORM);
   if (!hasExtension || !options.gltf?.loadBuffers) {
     return;
   }
   const materials = gltfData.json.materials || [];
   for (let i = 0; i < materials.length; i++) {
-    transformTexCoords(i, gltfData, iterator);
-  }
-  if (!materials.some(material => findTextureInfos(material).length > 0)) {
-    iterator.removeExtension(KHR_TEXTURE_TRANSFORM);
+    transformTexCoords(i, gltfData);
   }
 }
 
@@ -80,154 +74,83 @@ export async function decode(gltfData: GLTFWithBuffers, options: GLTFLoaderOptio
  * Transform TEXCOORD by material
  * @param materialIndex processing material index
  * @param gltfData gltf buffers and json
- * @param gltfScenegraph glTF scenegraph used to remove decoded extensions
  */
-function transformTexCoords(
-  materialIndex: number,
-  gltfData: GLTFWithBuffers,
-  iterator: GLTFIterator
-): void {
+function transformTexCoords(materialIndex: number, gltfData: GLTFWithBuffers): void {
   const material = gltfData.json.materials?.[materialIndex];
-  const materialTextures = findTextureInfos(material);
-  const processedTransforms = new Map<string, TransformParameters>();
-  let nextTexCoord = getNextTexCoord(gltfData);
+  const materialTextures = [
+    material?.pbrMetallicRoughness?.baseColorTexture,
+    material?.emissiveTexture,
+    material?.normalTexture,
+    material?.occlusionTexture,
+    material?.pbrMetallicRoughness?.metallicRoughnessTexture
+  ];
+
+  // Save processed texCoords in order no to process the same twice
+  const processedTexCoords: [number, number][] = [];
 
   for (const textureInfo of materialTextures) {
-    const extension = textureInfo.extensions?.[KHR_TEXTURE_TRANSFORM] as TextureInfo | undefined;
-    if (extension) {
-      const sourceTexCoord = extension.texCoord ?? textureInfo.texCoord ?? 0;
-      const transformKey = getTransformKey(sourceTexCoord, extension);
-      let transformParameters = processedTransforms.get(transformKey);
-      if (!transformParameters) {
-        transformParameters = {
-          sourceTexCoord,
-          texCoord: nextTexCoord,
-          matrix: makeTransformationMatrix(extension)
-        };
-        if (!transformPrimitives(gltfData, materialIndex, transformParameters)) {
-          continue;
-        }
-        nextTexCoord++;
-        processedTransforms.set(transformKey, transformParameters);
-      }
-      textureInfo.texCoord = transformParameters.texCoord;
-      removeObjectExtension(iterator, textureInfo, KHR_TEXTURE_TRANSFORM);
-      if (textureInfo.extensions && Object.keys(textureInfo.extensions).length === 0) {
-        delete textureInfo.extensions;
-      }
+    if (textureInfo && textureInfo?.extensions?.[KHR_TEXTURE_TRANSFORM]) {
+      transformPrimitives(gltfData, materialIndex, textureInfo, processedTexCoords);
     }
-  }
-}
-
-/** Remove an object extension while preserving top-level extension bookkeeping. */
-function removeObjectExtension(
-  iterator: GLTFIterator,
-  object: {extensions?: Record<string, unknown>},
-  extensionName: string
-): void {
-  if (object.extensions?.[extensionName] !== undefined) {
-    iterator.recordRemovedExtension(extensionName);
-    delete object.extensions[extensionName];
   }
 }
 
 /**
- * Finds texture infos at any nesting level of a material, including KHR_materials_* extensions.
- * @param value material value to inspect
- * @returns texture infos using KHR_texture_transform
- */
-function findTextureInfos(value: unknown): CompoundGLTFTextureInfo[] {
-  if (!value || typeof value !== 'object') {
-    return [];
-  }
-  const object = value as Record<string, unknown>;
-  const textureInfos: CompoundGLTFTextureInfo[] = [];
-  const extensions = object.extensions as Record<string, unknown> | undefined;
-  if (Number.isFinite(object.index) && extensions?.[KHR_TEXTURE_TRANSFORM]) {
-    textureInfos.push(object as CompoundGLTFTextureInfo);
-  }
-  for (const [key, nestedValue] of Object.entries(object)) {
-    if (key !== 'extras') {
-      textureInfos.push(...findTextureInfos(nestedValue));
-    }
-  }
-  return textureInfos;
-}
-
-/** Returns the first TEXCOORD set index unused by every primitive. */
-function getNextTexCoord(gltfData: GLTFWithBuffers): number {
-  let maximumTexCoord = -1;
-  for (const mesh of gltfData.json.meshes || []) {
-    for (const primitive of mesh.primitives) {
-      for (const attributeName of Object.keys(primitive.attributes)) {
-        const match = /^TEXCOORD_(\d+)$/.exec(attributeName);
-        if (match) {
-          maximumTexCoord = Math.max(maximumTexCoord, Number(match[1]));
-        }
-      }
-    }
-  }
-  return maximumTexCoord + 1;
-}
-
-/** Returns a stable key for transformations that can share generated attributes. */
-function getTransformKey(sourceTexCoord: number, extension: TextureInfo): string {
-  const {offset = [0, 0], rotation = 0, scale = [1, 1]} = extension;
-  return JSON.stringify([sourceTexCoord, offset, rotation, scale]);
-}
-
-/**
- * Transform primitives of the particular material.
+ * Transform primitives of the particular material
  * @param gltfData gltf data
  * @param materialIndex primitives with this material will be transformed
- * @param transformParameters source and generated texture coordinate sets
- * @returns true when every relevant primitive received the generated attribute
+ * @param texture texture object
+ * @param processedTexCoords storage to save already processed texCoords
  */
 function transformPrimitives(
   gltfData: GLTFWithBuffers,
   materialIndex: number,
-  transformParameters: TransformParameters
-): boolean {
-  const primitives: GLTFMeshPrimitive[] = [];
+  texture: CompoundGLTFTextureInfo,
+  processedTexCoords: [number, number][]
+) {
+  const transformParameters = getTransformParameters(texture, processedTexCoords);
+  if (!transformParameters) {
+    return;
+  }
   const meshes = gltfData.json.meshes || [];
   for (const mesh of meshes) {
     for (const primitive of mesh.primitives) {
       const material = primitive.material;
       if (Number.isFinite(material) && materialIndex === material) {
-        primitives.push(primitive);
+        transformPrimitive(gltfData, primitive, transformParameters);
       }
     }
   }
-  if (
-    primitives.length === 0 ||
-    primitives.some(
-      primitive => !canTransformPrimitive(gltfData, primitive, transformParameters.sourceTexCoord)
-    )
-  ) {
-    return false;
-  }
-  for (const primitive of primitives) {
-    transformPrimitive(gltfData, primitive, transformParameters);
-  }
-  return true;
 }
 
-/** Returns whether a primitive's source texture coordinates can be transformed without data loss. */
-function canTransformPrimitive(
-  gltfData: GLTFWithBuffers,
-  primitive: GLTFMeshPrimitive,
-  sourceTexCoord: number
-): boolean {
-  const texCoordAccessor = primitive.attributes[`TEXCOORD_${sourceTexCoord}`];
-  if (!Number.isFinite(texCoordAccessor)) {
-    return false;
+/**
+ * Get parameters for TEXCOORD transformation
+ * @param texture texture object
+ * @param processedTexCoords storage to save already processed texCoords
+ * @returns texCoord couple and transformation matrix
+ */
+function getTransformParameters(
+  texture: CompoundGLTFTextureInfo,
+  processedTexCoords: [number, number][]
+): TransformParameters | null {
+  const textureInfo = texture.extensions?.[KHR_TEXTURE_TRANSFORM];
+  const {texCoord: originalTexCoord = 0} = texture;
+  // If texCoord is not set in the extension, original attribute data will be replaced
+  const {texCoord = originalTexCoord} = textureInfo;
+  // Make sure that couple [originalTexCoord, extensionTexCoord] is not processed twice
+  const isProcessed =
+    processedTexCoords.findIndex(
+      ([original, newTexCoord]) => original === originalTexCoord && newTexCoord === texCoord
+    ) !== -1;
+  if (!isProcessed) {
+    const matrix = makeTransformationMatrix(textureInfo);
+    if (originalTexCoord !== texCoord) {
+      texture.texCoord = texCoord;
+    }
+    processedTexCoords.push([originalTexCoord, texCoord]);
+    return {originalTexCoord, texCoord, matrix};
   }
-  const accessor = gltfData.json.accessors?.[texCoordAccessor];
-  if (!accessor || accessor.bufferView === undefined || accessor.sparse) {
-    return false;
-  }
-  const bufferView = gltfData.json.bufferViews?.[accessor.bufferView];
-  return Boolean(bufferView && gltfData.buffers[bufferView.buffer]);
+  return null;
 }
 
 /**
@@ -241,12 +164,12 @@ function transformPrimitive(
   primitive: GLTFMeshPrimitive,
   transformParameters: TransformParameters
 ) {
-  const {sourceTexCoord, texCoord, matrix} = transformParameters;
-  const texCoordAccessor = primitive.attributes[`TEXCOORD_${sourceTexCoord}`];
+  const {originalTexCoord, texCoord, matrix} = transformParameters;
+  const texCoordAccessor = primitive.attributes[`TEXCOORD_${originalTexCoord}`];
   if (Number.isFinite(texCoordAccessor)) {
     // Get accessor of the `TEXCOORD_0` attribute
     const accessor = gltfData.json.accessors?.[texCoordAccessor];
-    if (accessor && accessor.bufferView !== undefined) {
+    if (accessor && accessor.bufferView) {
       // Get `bufferView` of the `accessor`
       const bufferView = gltfData.json.bufferViews?.[accessor.bufferView];
       if (bufferView) {
@@ -274,10 +197,41 @@ function transformPrimitive(
           // Save result in Float32Array
           result.set([scratchVector[0], scratchVector[1]], i * components);
         }
-        createAttribute(texCoord, accessor, primitive, gltfData, result);
+        // If texCoord the same, replace gltf structural data
+        if (originalTexCoord === texCoord) {
+          updateGltf(accessor, bufferView, gltfData.buffers, result);
+        } else {
+          // If texCoord change, create new attribute
+          createAttribute(texCoord, accessor, primitive, gltfData, result);
+        }
       }
     }
   }
+}
+
+/**
+ * Update GLTF structural objects with new data as we create new `Float32Array` for `TEXCOORD_0`.
+ * @param accessor accessor to change
+ * @param bufferView bufferView to change
+ * @param buffers binary buffers
+ * @param newTexcoordArray typed array with data after transformation
+ */
+function updateGltf(
+  accessor: GLTFAccessor,
+  bufferView: GLTFBufferView,
+  buffers: {arrayBuffer: ArrayBuffer; byteOffset: number; byteLength: number}[],
+  newTexCoordArray: Float32Array
+): void {
+  accessor.componentType = 5126;
+  buffers.push({
+    arrayBuffer: newTexCoordArray.buffer,
+    byteOffset: 0,
+    byteLength: newTexCoordArray.buffer.byteLength
+  });
+  bufferView.buffer = buffers.length - 1;
+  bufferView.byteLength = newTexCoordArray.buffer.byteLength;
+  bufferView.byteOffset = 0;
+  delete bufferView.byteStride;
 }
 
 /**
@@ -297,12 +251,14 @@ function createAttribute(
   newTexCoordArray: Float32Array
 ) {
   gltfData.buffers.push({
-    arrayBuffer: ensureArrayBuffer(newTexCoordArray.buffer),
+    arrayBuffer: newTexCoordArray.buffer,
     byteOffset: 0,
     byteLength: newTexCoordArray.buffer.byteLength
   });
-  gltfData.json.bufferViews = gltfData.json.bufferViews || [];
   const bufferViews = gltfData.json.bufferViews;
+  if (!bufferViews) {
+    return;
+  }
   bufferViews.push({
     buffer: gltfData.buffers.length - 1,
     byteLength: newTexCoordArray.buffer.byteLength,

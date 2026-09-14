@@ -28,7 +28,7 @@ export function toBuffer(binaryData: ArrayBuffer | Buffer): Buffer {
   }
 
   if (ArrayBuffer.isView(binaryData)) {
-    binaryData = binaryData.buffer as ArrayBuffer;
+    binaryData = binaryData.buffer;
   }
 
   // TODO - move to loaders.gl/polyfills

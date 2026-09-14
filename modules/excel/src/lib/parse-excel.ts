@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 import type {ExcelLoaderOptions} from '../excel-loader';
 import {utils, read} from 'xlsx';
 // import {convertToArrayRow} from '@loaders.gl/schema';

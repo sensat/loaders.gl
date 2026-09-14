@@ -3,16 +3,19 @@
 // Copyright (c) vis.gl contributors
 // Forked from https://github.com/mapbox/geojson-vt under compatible ISC license
 
-import {expect, test} from 'vitest';
+import test from 'tape-promise/tape';
 // @ts-ignore-error
 import {clipFeatures} from '@loaders.gl/mvt/lib/vector-tiler/features/clip-features';
+
 /* eslint comma-spacing:0*/
+
 const geom1 = [
   0, 0, 0, 50, 0, 0, 50, 10, 0, 20, 10, 0, 20, 20, 0, 30, 20, 0, 30, 30, 0, 50, 30, 0, 50, 40, 0,
   25, 40, 0, 25, 50, 0, 0, 50, 0, 0, 60, 0, 25, 60, 0
 ];
 const geom2 = [0, 0, 0, 50, 0, 0, 50, 10, 0, 0, 10, 0];
-test('VectorTiler#clipFeatures#clips polylines', () => {
+
+test('VectorTiler#clipFeatures#clips polylines', (t) => {
   const clipped = clipFeatures(
     [
       {geometry: geom1, type: 'LineString', tags: 1, minX: 0, minY: 0, maxX: 50, maxY: 60},
@@ -26,6 +29,7 @@ test('VectorTiler#clipFeatures#clips polylines', () => {
     Infinity,
     {}
   );
+
   const expected = [
     {
       id: null,
@@ -56,9 +60,13 @@ test('VectorTiler#clipFeatures#clips polylines', () => {
       maxY: 10
     }
   ];
-  expect(JSON.stringify(clipped)).toBe(JSON.stringify(expected));
+
+  t.equal(JSON.stringify(clipped), JSON.stringify(expected));
+
+  t.end();
 });
-test('VectorTiler#clipFeatures#clips lines with line metrics on', () => {
+
+test('VectorTiler#clipFeatures#clips lines with line metrics on', (t) => {
   const geom = geom1.slice();
   // @ts-expect-error
   geom.size = 0;
@@ -72,6 +80,7 @@ test('VectorTiler#clipFeatures#clips lines with line metrics on', () => {
   geom.start = 0;
   // @ts-expect-error
   geom.end = geom.size;
+
   const clipped = clipFeatures(
     [{geometry: geom, type: 'LineString', minX: 0, minY: 0, maxX: 50, maxY: 60}],
     1,
@@ -82,17 +91,25 @@ test('VectorTiler#clipFeatures#clips lines with line metrics on', () => {
     Infinity,
     {lineMetrics: true}
   );
-  expect(clipped.map(f => [f.geometry.start, f.geometry.end])).toEqual([
-    [10, 40],
-    [70, 130],
-    [160, 200],
-    [230, 245]
-  ]);
+
+  t.same(
+    clipped.map((f) => [f.geometry.start, f.geometry.end]),
+    [
+      [10, 40],
+      [70, 130],
+      [160, 200],
+      [230, 245]
+    ]
+  );
+
+  t.end();
 });
+
 function closed(geometry) {
   return [geometry.concat(geometry.slice(0, 3))];
 }
-test('VectorTiler#clipFeatures#clips polygons', () => {
+
+test('VectorTiler#clipFeatures#clips polygons', (t) => {
   const clipped = clipFeatures(
     [
       {geometry: closed(geom1), type: 'Polygon', tags: 1, minX: 0, minY: 0, maxX: 50, maxY: 60},
@@ -106,6 +123,7 @@ test('VectorTiler#clipFeatures#clips polygons', () => {
     Infinity,
     {}
   );
+
   const expected = [
     {
       id: null,
@@ -133,9 +151,13 @@ test('VectorTiler#clipFeatures#clips polygons', () => {
       maxY: 10
     }
   ];
-  expect(JSON.stringify(clipped)).toBe(JSON.stringify(expected));
+
+  t.equal(JSON.stringify(clipped), JSON.stringify(expected));
+
+  t.end();
 });
-test('VectorTiler#clipFeatures#clips points', () => {
+
+test('VectorTiler#clipFeatures#clips points', (t) => {
   const clipped = clipFeatures(
     [
       {geometry: geom1, type: 'MultiPoint', tags: 1, minX: 0, minY: 0, maxX: 50, maxY: 60},
@@ -149,7 +171,8 @@ test('VectorTiler#clipFeatures#clips points', () => {
     Infinity,
     {}
   );
-  expect(clipped).toEqual([
+
+  t.same(clipped, [
     {
       id: null,
       type: 'MultiPoint',
@@ -162,4 +185,6 @@ test('VectorTiler#clipFeatures#clips points', () => {
       maxY: 60
     }
   ]);
+
+  t.end();
 });

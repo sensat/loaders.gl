@@ -9,7 +9,7 @@
  Create as many sidebars as you want.
  */
 const sidebars = {
-  Examples: [
+  examplesSidebar: [
     {
       type: 'doc',
       label: 'Overview',
@@ -17,23 +17,38 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Tiled 3D Formats',
+      label: 'Geospatial Table Formats',
+      items: [
+        'geospatial/flatgeobuf',
+        'geospatial/geoarrow',
+        'geospatial/geoparquet',
+        'geospatial/geopackage',
+        'geospatial/geojson',
+        'geospatial/shapefile',
+        'geospatial/kml',
+        'geospatial/gpx',
+        'geospatial/tcx'
+      ]
+    },
+    {
+      type: 'category',
+      label: 'Geospatial Tile Formats',
+      items: ['tiles/mvt', 'tiles/pmtiles', 'tiles/table-tiler', 'tiles/wms']
+    },
+    {
+      type: 'category',
+      label: '3D Tile Formats',
       items: [
         'i3s-building-scene-layer',
         'i3s-picking',
         'i3s-colorization-by-attributes',
-        'i3s-profile-gallery',
-        'i3s-slpk',
-        '3d-tiles',
-        'pointclouds/potree-source',
-        'pointclouds/copc-source'
+        '3d-tiles'
       ]
     },
     {
       type: 'category',
       label: 'Point Cloud Formats',
       items: [
-        'pointclouds/gaussian-splats',
         'pointclouds/draco',
         'pointclouds/las',
         'pointclouds/pcd',
@@ -43,98 +58,20 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'OGC Services',
-      items: ['tiles/wms', 'tiles/wfs', 'tiles/wmts']
-    },
-    {
-      type: 'category',
-      label: 'ArcGIS Services',
-      items: [
-        'tiles/arcgis-map-server',
-        'tiles/arcgis-image-server',
-        'tiles/arcgis-feature-server',
-        'tiles/arcgis-vector-tile-server'
-      ]
-    },
-    {
-      type: 'category',
-      label: 'Geospatial Raster Formats',
-      items: ['geospatial/geotiff', 'geospatial/geo-zarr']
-    },
-    {
-      type: 'category',
-      label: 'Image Formats',
+      label: 'General Formats',
       collapsed: false,
       items: [
         'textures',
         // 'gltf',
       ]
-    },
-    {
-      type: 'category',
-      label: 'Bioimaging Raster Formats',
-      items: ['bioimaging/ome-tiff', 'bioimaging/ome-zarr']
-    },
-    {
-      type: 'category',
-      label: 'Cloud-Native Queries',
-      items: [
-        'geospatial/fsq-places',
-        'geospatial/overture-parquet',
-        'cloud-native/iceberg'
-      ]
-    },
-    {
-      type: 'category',
-      label: 'Tiled Geospatial Formats',
-      items: ['tiles/mvt', 'tiles/pmtiles', 'tiles/table-tiler', 'tiles/mlt']
-    },
-    {
-      type: 'category',
-      label: 'Geospatial Table Formats',
-      items: [
-        'geospatial/csv',
-        'geospatial/shapefile',
-        'geospatial/geojson',
-        'geospatial/geoarrow',
-        'geospatial/flatgeobuf',
-        'geospatial/geoparquet',
-        'geospatial/geopackage',
-        'geospatial/kml',
-        'geospatial/gpx',
-        'geospatial/tcx'
-      ]
-    },
-    {
-      type: 'category',
-      label: 'General Data Formats',
-      items: ['table/bson', 'table/json', 'table/xml']
-    },
-    {
-      type: 'category',
-      label: 'Table Formats',
-      items: [
-        'table/arrow',
-        'table/arrow-scan',
-        'table/parquet',
-        'table/avro',
-        'table/orc',
-        'table/csv',
-        'table/csv-scan'
-      ]
-    },
-    {
-      type: 'category',
-      label: 'Trace Formats',
-      items: ['traces/chrome-trace']
-    },
-    {
-      type: 'category',
-      label: 'Benchmarks',
-      items: [
-        'benchmarks',
-      ]
     }
+    // {
+    //   type: 'category',
+    //   label: 'Benchmarks',
+    //   items: [
+    //     'benchmarks',
+    //   ]
+    // }
   ]
 };
 

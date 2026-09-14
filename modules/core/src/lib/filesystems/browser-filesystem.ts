@@ -50,34 +50,23 @@ export class BrowserFileSystem implements FileSystem {
     }
 
     // Local fetches are served from the list of files
-    const file = this._getFile(path, true);
+    const file = this.files[path];
     if (!file) {
       return new Response(path, {status: 400, statusText: 'NOT FOUND'});
     }
 
     const headers = new Headers(options?.headers);
     const range = headers.get('Range');
-    const bytes = range && /bytes=(\d+)-(\d+)/.exec(range);
+    const bytes = range && /bytes=($1)-($2)/.exec(range);
 
     if (bytes) {
       const start = parseInt(bytes[1]);
-      const end = Math.min(parseInt(bytes[2]), file.size - 1);
-      if (start > end) {
-        const response = new Response(null, {
-          status: 416,
-          headers: {'Content-Range': `bytes */${file.size}`}
-        });
-        Object.defineProperty(response, 'url', {value: path});
-        return response;
-      }
+      const end = parseInt(bytes[2]);
       // The trick when reading File objects is to read successive "slices" of the File
       // Per spec https://w3c.github.io/FileAPI/, slicing a File should only update the start and end fields
       // Actually reading from file should happen in `readAsArrayBuffer` (and as far we can tell it does)
-      const data = await file.slice(start, end + 1).arrayBuffer();
-      const response = new Response(data, {
-        status: 206,
-        headers: {'Content-Range': `bytes ${start}-${end}/${file.size}`}
-      });
+      const data = await file.slice(start, end).arrayBuffer();
+      const response = new Response(data);
       Object.defineProperty(response, 'url', {value: path});
       return response;
     }
@@ -106,7 +95,7 @@ export class BrowserFileSystem implements FileSystem {
    * Return information (size) about files in this file system
    */
   async stat(path: string, options?: object): Promise<{size: number}> {
-    const file = this._getFile(path, false);
+    const file = this.files[path];
     if (!file) {
       throw new Error(path);
     }
@@ -117,19 +106,16 @@ export class BrowserFileSystem implements FileSystem {
    * Just removes the file from the list
    */
   async unlink(path: string): Promise<void> {
-    const file = this._getFile(path, false);
-    if (file) {
-      delete this.files[file.name];
-      delete this.lowerCaseFiles[file.name.toLowerCase()];
-      this.usedFiles[file.name] = true;
-    }
+    delete this.files[path];
+    delete this.lowerCaseFiles[path];
+    this.usedFiles[path] = true;
   }
 
   // implements IRandomAccessFileSystem
 
   // RANDOM ACCESS
   async openReadableFile(pathname: string, flags: unknown): Promise<ReadableFile> {
-    return new BlobFile(this._getFile(pathname, true));
+    return new BlobFile(this.files[pathname]);
   }
 
   // PRIVATE
@@ -137,7 +123,7 @@ export class BrowserFileSystem implements FileSystem {
   // Supports case independent paths, and file usage tracking
   _getFile(path: string, used: boolean): File {
     // Prefer case match, but fall back to case independent.
-    const file = this.files[path] || this.lowerCaseFiles[path.toLowerCase()];
+    const file = this.files[path] || this.lowerCaseFiles[path];
     if (file && used) {
       this.usedFiles[path] = true;
     }

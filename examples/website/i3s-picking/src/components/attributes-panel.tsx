@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FLEX} from './styles';
+import {IconProp} from '@fortawesome/fontawesome-svg-core';
 
 const Container = styled.div`
   ${FLEX}
@@ -67,7 +70,7 @@ const Button = styled.button`
   background: transparent;
   color: white;
   outline: none;
-  font-size: 19px;
+  fontsize: 19px;
 `;
 
 const Header = styled.div`
@@ -136,7 +139,7 @@ export default function AttributesPanel({
       <Header title={title}>
         {title && <Title>{title}</Title>}
         <Button onClick={handleClosePanel}>
-          x
+          <FontAwesomeIcon icon={faTimes as IconProp} />
         </Button>
       </Header>
     );

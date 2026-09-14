@@ -24,9 +24,7 @@ export type DataType =
   | 'float32'
   | 'float64'
   | 'binary'
-  | 'binary-view'
   | 'utf8'
-  | 'utf8-view'
   | 'date-day'
   | 'date-millisecond'
   | 'time-second'
@@ -42,7 +40,6 @@ export type DataType =
   // Composite types
   | {type: 'decimal'; bitWidth: number; precision: number; scale: number}
   | {type: 'list'; children: Field[]} // one child only
-  | {type: 'large-list'; children: Field[]} // one child only, with 64-bit offsets
   | {type: 'struct'; children: Field[]}
   | {
       type: 'sparse-union';

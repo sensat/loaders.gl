@@ -2,14 +2,21 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {expect, test} from 'vitest';
+// Forked from https://github.com/chrelad/openlayers/blob/master/tests/Format/
+// under OpenLayers license (only used for test cases)
+// See README.md in `./data` directory for full license text copy.
+
+import test from 'tape-promise/tape';
 // import {validateLoader} from 'test/common/conformance';
+
 import {CSWDomainLoader} from '@loaders.gl/wms';
 import {parse} from '@loaders.gl/core';
+
 // const CSW_REQUEST_2_0_2 =
 // '<csw:GetDomain xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="CSW" version="2.0.2">' +
 //   '<csw:PropertyName>type</csw:PropertyName>' +
 // '</csw:GetDomain>';
+
 const CSW_RESPONSE_2_0_2 =
   '<?xml version="1.0" encoding="UTF-8"?>' +
   '<csw:GetDomainResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">' +
@@ -21,22 +28,27 @@ const CSW_RESPONSE_2_0_2 =
   '</csw:ListOfValues>' +
   '</csw:DomainValues>' +
   '</csw:GetDomainResponse>';
-test('CSWGetDomainLoader', async () => {
+test('CSWGetDomainLoader', async (t) => {
   const domain = await parse(CSW_RESPONSE_2_0_2, CSWDomainLoader);
-  // t.comment(JSON.stringify(domain));
+  t.comment(JSON.stringify(domain));
+
   const domainValues = domain.domainValues;
   // test getRecordsResponse object
-  expect(domainValues, 'object contains domainValues property').toBeTruthy();
+  t.ok(domainValues, 'object contains domainValues property');
+
   // test DomainValues
-  expect(domainValues.length, 'object contains 1 object in domainValues').toBe(1);
+  t.equal(domainValues.length, 1, 'object contains 1 object in domainValues');
   const domainValue = domainValues[0];
-  expect(domainValue.type, 'check value for attribute type').toBe('csw:Record');
-  expect(domainValue.propertyName, 'check value for element propertyName').toBe('type');
-  expect(domainValue.values, 'object contains values property').toBeTruthy();
+  t.equal(domainValue.type, 'csw:Record', 'check value for attribute type');
+  t.equal(domainValue.propertyName, 'type', 'check value for element propertyName');
+  t.ok(domainValue.values, 'object contains values property');
+
   // test ListOfValues
-  expect(domainValue.values.length, 'object contains 2 objects ' + 'in values').toBe(2);
+  t.equal(domainValue.values.length, 2, 'object contains 2 objects ' + 'in values');
   const value = domainValue.values[0];
-  expect(value, 'object contains value property').toBeTruthy();
-  expect(value.my_attr, 'check value for attribute my_attr').toBe('my_value');
-  expect(value.value, 'check value for element Value').toBe('dataset');
+  t.ok(value, 'object contains value property');
+  t.equal(value.my_attr, 'my_value', 'check value for attribute my_attr');
+  t.equal(value.value, 'dataset', 'check value for element Value');
+
+  t.end();
 });

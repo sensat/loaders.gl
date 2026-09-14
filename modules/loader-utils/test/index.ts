@@ -4,7 +4,6 @@
 
 import './lib/binary-utils/array-buffer-utils.spec';
 import './lib/binary-utils/binary-copy-utils.spec';
-import './lib/binary-utils/binary-chunk-reader.spec';
 import './lib/binary-utils/memory-copy-utils.spec';
 
 import './lib/iterators/async-iteration.spec';
@@ -14,19 +13,15 @@ import './lib/iterators/make-transform-iterator.spec';
 import './lib/option-utils/merge-loader-options.spec';
 
 import './lib/path-utils/file-aliases.spec';
-import './lib/path-utils/cached-uri-resolver.spec';
+import './lib/path-utils/path.spec';
 
 import './lib/request-utils/request-scheduler.spec';
-import './lib/request-utils/range-request-scheduler.node.spec';
-import './lib/request-utils/parse-content-type.spec';
-import './lib/javascript-utils/is-type.spec';
-import './lib/sources/data-source.spec';
-import './lib/sources/data-source-manager.spec';
 
 // import './lib/files/node-file-facade.spec';
 // import './lib/filesystems/node-filesystem-facade.spec';
 
-import './lib/readable-file/readable-file.spec';
-import './lib/readable-file/http-file.spec';
+import './lib/file-provider/data-view-file.spec';
+import './lib/file-provider/file-handle-file.spec';
+import './lib/file-provider/file-provider.spec';
 
-import './lib/worker-loader-utils/parse-with-worker.browser.spec';
+import './lib/worker-loader-utils/parse-with-worker.spec';

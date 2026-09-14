@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {expect, test} from 'vitest';
+import test from 'tape-promise/tape';
 import {isBrowser} from '@loaders.gl/core';
 import {
   getResourceUrl,
@@ -13,7 +13,7 @@ import {
 const DATA_URL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAGUExURf///wAAAFXC034AAAAMSURBVAjXY3BgaAAAAUQAwetZAwkAAAAASUVORK5CYII=';
 
-test('getResourceUrl', () => {
+test('getResourceUrl', (t) => {
   const blob = new Blob(['abc'], {type: 'application/text'});
   const file = new File(['abc'], 'filename.csv', {type: 'text/csv'});
   const response = new Response(new Blob(['abc']), {
@@ -23,16 +23,19 @@ test('getResourceUrl', () => {
       'content-type': 'application/json'
     }
   });
-
+  // Inject a url property for testing, since url is read only property for the Response class
   Object.defineProperty(response, 'url', {value: 'https://abc.com/file.json?variable=value'});
 
-  expect(getResourceUrl(DATA_URL)).toEqual(DATA_URL);
-  expect(getResourceUrl(blob)).toEqual('');
-  expect(getResourceUrl(file)).toEqual('filename.csv');
-  expect(getResourceUrl(response)).toEqual('https://abc.com/file.json?variable=value');
+  t.deepEqual(getResourceUrl(DATA_URL), DATA_URL);
+  t.deepEqual(getResourceUrl(blob), '');
+  t.deepEqual(getResourceUrl(file), 'filename.csv');
+
+  t.deepEqual(getResourceUrl(response), 'https://abc.com/file.json?variable=value');
+
+  t.end();
 });
 
-test('getResourceMIMEType', () => {
+test('getResourceMIMEType', (t) => {
   const blob = new Blob(['abc'], {type: 'application/text'});
   const file = new File(['abc'], 'filename.csv', {type: 'text/csv'});
   const response = new Response(new Blob(['abc']), {
@@ -42,20 +45,25 @@ test('getResourceMIMEType', () => {
       'content-type': 'application/json'
     }
   });
-
+  // Inject a url property for testing, since url is read only property for the Response class
   Object.defineProperty(response, 'url', {value: 'https://abc.com/file.json?variable=value'});
 
-  expect(getResourceMIMEType(DATA_URL)).toEqual('image/png');
-  expect(getResourceMIMEType(blob)).toEqual('application/text');
-  expect(getResourceMIMEType(file)).toEqual('text/csv');
-  expect(getResourceMIMEType(response)).toEqual('application/json');
+  t.deepEqual(getResourceMIMEType(DATA_URL), 'image/png');
+  t.deepEqual(getResourceMIMEType(blob), 'application/text');
+  t.deepEqual(getResourceMIMEType(file), 'text/csv');
+
+  t.deepEqual(getResourceMIMEType(response), 'application/json');
+
+  t.end();
 });
 
-test('getResourceContentLength', () => {
-  expect(getResourceContentLength(new ArrayBuffer(3))).toBe(3);
-  expect(getResourceContentLength('abc')).toBe(3);
-});
+test('getResourceContentLength', (t) => {
+  t.equal(getResourceContentLength(new ArrayBuffer(3)), 3);
+  t.equal(getResourceContentLength('abc'), 3);
 
-test.runIf(isBrowser)('getResourceContentLength(Blob)', () => {
-  expect(getResourceContentLength(new Blob(['abc']))).toBe(3);
+  if (isBrowser) {
+    t.equal(getResourceContentLength(new Blob(['abc'])), 3);
+  }
+
+  t.end();
 });

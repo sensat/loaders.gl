@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 import {getJSModule, registerJSModules} from '@loaders.gl/loader-utils';
 import {Hash} from './hash';
 

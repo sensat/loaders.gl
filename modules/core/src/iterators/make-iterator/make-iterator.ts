@@ -9,7 +9,7 @@ import {makeArrayBufferIterator} from './make-array-buffer-iterator';
 import {makeBlobIterator} from './make-blob-iterator';
 import type {StreamIteratorOptions} from './make-stream-iterator';
 import {makeStreamIterator} from './make-stream-iterator';
-import {isBlob, isReadableStream, isResponse} from '@loaders.gl/loader-utils';
+import {isBlob, isReadableStream, isResponse} from '../../javascript-utils/is-type';
 
 /**
  * @param [options.chunkSize]
@@ -38,17 +38,14 @@ export function makeIterator(
     return makeArrayBufferIterator(data, options);
   }
   if (isBlob(data)) {
-    return makeBlobIterator(data, options);
+    return makeBlobIterator(data as Blob, options);
   }
   if (isReadableStream(data)) {
-    return makeStreamIterator(data, options);
+    return makeStreamIterator(data as ReadableStream, options);
   }
   if (isResponse(data)) {
-    const responseBody = data.body;
-    if (!responseBody) {
-      throw new Error('Readable stream not available on Response');
-    }
-    return makeStreamIterator(responseBody as ReadableStream, options);
+    const response = data as Response;
+    return makeStreamIterator(response.body as ReadableStream, options);
   }
   throw new Error('makeIterator');
 }

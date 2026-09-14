@@ -1,7 +1,7 @@
 {
   "name": "@loaders.gl/geopackage",
   "description": "GeoPackage data loaders",
-  "version": "5.0.0-alpha.5",
+  "version": "4.3.3",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
@@ -23,14 +23,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    },
-    "./unbundled": {
-      "types": "./dist/unbundled.d.ts",
-      "import": "./dist/unbundled.js"
-    },
-    "./bundled": {
-      "types": "./dist/bundled.d.ts",
-      "import": "./dist/bundled.js"
     }
   },
   "sideEffects": false,
@@ -51,19 +43,18 @@
     "build-worker": "# esbuild src/workers/geopackage-worker.ts --bundle --outfile=dist/geopackage-worker.js --external:{util,fs,path} --define:__VERSION__=\\\"$npm_package_version\\\""
   },
   "dependencies": {
-    "@loaders.gl/gis": "5.0.0-alpha.5",
-    "@loaders.gl/loader-utils": "5.0.0-alpha.5",
-    "@loaders.gl/schema": "5.0.0-alpha.5",
-    "@loaders.gl/schema-utils": "5.0.0-alpha.5",
-    "@loaders.gl/wkt": "5.0.0-alpha.5",
-    "@math.gl/crs": "5.0.0-alpha.5",
-    "@math.gl/proj4": "5.0.0-alpha.5",
+    "@loaders.gl/gis": "4.3.3",
+    "@loaders.gl/loader-utils": "4.3.3",
+    "@loaders.gl/schema": "4.3.3",
+    "@loaders.gl/wkt": "4.3.3",
+    "@math.gl/proj4": "^4.1.0",
     "@types/sql.js": "^1.4.5",
-    "apache-arrow": ">= 17.0.0",
-    "sql.js": "1.14.1"
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "sql.js": "1.8.0"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "~5.0.0-alpha.0"
+    "@loaders.gl/core": "^4.3.0"
   },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+  "gitHead": "3213679d79e6ff2814d48fd3337acfa446c74099"
 }

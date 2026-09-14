@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 import {TypedArray} from '../../types';
 
 /**
@@ -11,8 +7,8 @@ import {TypedArray} from '../../types';
  * @param byteLength
  */
 export function compareArrayBuffers(
-  arrayBuffer1: ArrayBufferLike,
-  arrayBuffer2: ArrayBufferLike,
+  arrayBuffer1: ArrayBuffer,
+  arrayBuffer2: ArrayBuffer,
   byteLength?: number
 ): boolean {
   byteLength = byteLength || arrayBuffer1.byteLength;
@@ -45,7 +41,7 @@ export function concatenateArrayBuffersFromArray(
   sources: (ArrayBuffer | Uint8Array)[]
 ): ArrayBuffer {
   // Make sure all inputs are wrapped in typed arrays
-  const sourceArrays = sources.map(source2 =>
+  const sourceArrays = sources.map((source2) =>
     source2 instanceof ArrayBuffer ? new Uint8Array(source2) : source2
   );
 
@@ -101,7 +97,7 @@ export function concatenateTypedArrays<T>(...typedArrays: T[]): T {
  * @param byteLength
  */
 export function sliceArrayBuffer(
-  arrayBuffer: ArrayBufferLike,
+  arrayBuffer: ArrayBuffer,
   byteOffset: number,
   byteLength?: number
 ): ArrayBuffer {

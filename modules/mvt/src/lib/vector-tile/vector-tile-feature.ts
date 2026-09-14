@@ -4,8 +4,12 @@
 
 // This code is forked from https://github.com/mapbox/vector-tile-js under BSD 3-clause license.
 
-import type {Feature, FlatFeature, FlatIndexedGeometry} from '@loaders.gl/schema';
-import type {GeojsonGeometryInfo} from '@loaders.gl/gis';
+import type {
+  Feature,
+  FlatFeature,
+  FlatIndexedGeometry,
+  GeojsonGeometryInfo
+} from '@loaders.gl/schema';
 import Protobuf from 'pbf';
 import {
   classifyRings,
@@ -382,7 +386,8 @@ function _toGeoJSONFeature(
   };
 
   if (vtFeature.id !== null) {
-    result.id = vtFeature.id;
+    result.properties ||= {};
+    result.properties.id = vtFeature.id;
   }
 
   return result;

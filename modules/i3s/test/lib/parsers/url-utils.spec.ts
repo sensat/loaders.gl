@@ -1,4 +1,4 @@
-import {expect, test} from 'vitest';
+import test from 'tape-promise/tape';
 import {
   getUrlWithToken,
   generateTileAttributeUrls,
@@ -6,32 +6,45 @@ import {
   // @ts-expect-error
 } from '@loaders.gl/i3s/lib/utils/url-utils';
 import {getUrlWithoutParams} from '../../../src/lib/utils/url-utils';
-test('i3s-utils#getUrlWithoutParams', async () => {
+
+test('i3s-utils#getUrlWithoutParams', async (t) => {
   const url = getUrlWithoutParams('http://a.b.c/x/y/z?token=efk');
-  expect(url).toBe('http://a.b.c/x/y/z');
+  t.equal(url, 'http://a.b.c/x/y/z');
+
   const url2 = getUrlWithoutParams('@loaders.gl/core/test/data/url');
-  expect(url2).toBe('@loaders.gl/core/test/data/url');
+  t.equal(url2, '@loaders.gl/core/test/data/url');
+  t.end();
 });
-test('i3s-utils#getUrlWithToken Should return URL without token if token null', async () => {
+
+test('i3s-utils#getUrlWithToken Should return URL without token if token null', async (t) => {
   const url = getUrlWithToken('test', null);
-  expect(url).toBeTruthy();
-  expect(url).toBe('test');
+
+  t.ok(url);
+  t.equal(url, 'test');
+  t.end();
 });
-test('i3s-utils#getUrlWithToken Should return URL with token token if token exists', async () => {
+
+test('i3s-utils#getUrlWithToken Should return URL with token token if token exists', async (t) => {
   const url = getUrlWithToken('test', '12345');
-  expect(url).toBeTruthy();
-  expect(url).toBe('test?token=12345');
+
+  t.ok(url);
+  t.equal(url, 'test?token=12345');
+  t.end();
 });
-test('i3s-utils#generateTileAttributeUrls Should return attribute URLs for tile', async () => {
+
+test('i3s-utils#generateTileAttributeUrls Should return attribute URLs for tile', async (t) => {
   const tile = {
     attributeData: [{href: './attributes/f_0/0'}, {href: './attributes/f_1/0'}]
   };
   const attrUrlsStub = ['test/attributes/f_0/0', 'test/attributes/f_1/0'];
   const attributeUrls = generateTileAttributeUrls('test', tile);
-  expect(attributeUrls).toBeTruthy();
-  expect(attributeUrls).toEqual(attrUrlsStub);
+
+  t.ok(attributeUrls);
+  t.deepEqual(attributeUrls, attrUrlsStub);
+  t.end();
 });
-test('i3s-utils#generateTilesetAttributeUrls Should return attribute URLs for tileset', async () => {
+
+test('i3s-utils#generateTilesetAttributeUrls Should return attribute URLs for tileset', async (t) => {
   const tileset = {
     attributeStorageInfo: [{key: 'f_0'}, {key: 'f_1'}],
     url: 'test'
@@ -39,6 +52,8 @@ test('i3s-utils#generateTilesetAttributeUrls Should return attribute URLs for ti
   const resource = '1';
   const attributeUrls = generateTilesetAttributeUrls(tileset, 'test', resource);
   const attrUrlsStub = ['test/nodes/1/attributes/f_0/0', 'test/nodes/1/attributes/f_1/0'];
-  expect(attributeUrls).toBeTruthy();
-  expect(attributeUrls).toEqual(attrUrlsStub);
+
+  t.ok(attributeUrls);
+  t.deepEqual(attributeUrls, attrUrlsStub);
+  t.end();
 });

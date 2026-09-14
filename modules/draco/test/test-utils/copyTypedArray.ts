@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 import {copyToArray} from '@loaders.gl/loader-utils';
 
 export function cloneTypeArray(source) {

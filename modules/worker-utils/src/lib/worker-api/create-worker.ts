@@ -6,7 +6,6 @@ import type {
   WorkerMessageType,
   WorkerMessagePayload,
   WorkerContext,
-  WorkerJobContext,
   Process,
   ProcessInBatches
 } from '../../types';
@@ -16,13 +15,13 @@ import WorkerBody from '../worker-farm/worker-body';
 
 /** Counter for jobs */
 let requestId = 0;
-let activeInputBatches: AsyncQueue<any> | null = null;
-let activeOutputAcknowledgements: AsyncQueue<void> | null = null;
+let inputBatches: AsyncQueue<any>;
+let options: {[key: string]: any};
 
 export type ProcessOnMainThread = (
   data: any,
   options?: {[key: string]: any},
-  jobContext?: WorkerJobContext
+  context?: WorkerContext
 ) => any;
 
 /**
@@ -44,20 +43,11 @@ export async function createWorker(
   WorkerBody.onmessage = async (type: WorkerMessageType, payload: WorkerMessagePayload) => {
     try {
       switch (type) {
-        case 'preload':
-          WorkerBody.postMessage('done', {});
-          break;
-
         case 'process':
           if (!process) {
             throw new Error('Worker does not support atomic processing');
           }
-          const result = await process(
-            payload.input,
-            payload.options || {},
-            context,
-            payload.context || {}
-          );
+          const result = await process(payload.input, payload.options || {}, context);
           WorkerBody.postMessage('done', {result});
           break;
 
@@ -65,47 +55,21 @@ export async function createWorker(
           if (!processInBatches) {
             throw new Error('Worker does not support batched processing');
           }
-          const inputBatches = new AsyncQueue<any>();
-          const outputAcknowledgements = new AsyncQueue<void>();
-          activeInputBatches = inputBatches;
-          activeOutputAcknowledgements = outputAcknowledgements;
-          try {
-            const resultIterator = processInBatches(
-              createDemandDrivenIterator(inputBatches),
-              payload.options || {},
-              context,
-              payload.context || {}
-            );
-            for await (const batch of resultIterator) {
-              await WorkerBody.postMessage('output-batch', {result: batch});
-              await outputAcknowledgements.next();
-            }
-            await WorkerBody.postMessage('done', {});
-          } finally {
-            activeInputBatches = null;
-            activeOutputAcknowledgements = null;
+          inputBatches = new AsyncQueue<any>();
+          options = payload.options || {};
+          const resultIterator = processInBatches(inputBatches, options, context);
+          for await (const batch of resultIterator) {
+            WorkerBody.postMessage('output-batch', {result: batch});
           }
+          WorkerBody.postMessage('done', {});
           break;
 
         case 'input-batch':
-          if (!activeInputBatches) {
-            throw new Error('Worker has no active batched processing session');
-          }
-          activeInputBatches.push(payload.input);
+          inputBatches.push(payload.input);
           break;
 
         case 'input-done':
-          if (!activeInputBatches) {
-            throw new Error('Worker has no active batched processing session');
-          }
-          activeInputBatches.close();
-          break;
-
-        case 'output-ack':
-          if (!activeOutputAcknowledgements) {
-            throw new Error('Worker has no active batched processing session');
-          }
-          activeOutputAcknowledgements.push(undefined);
+          inputBatches.close();
           break;
 
         default:
@@ -117,19 +81,7 @@ export async function createWorker(
   };
 }
 
-/** Requests exactly one input batch whenever the worker-side processor advances its iterator. */
-async function* createDemandDrivenIterator(inputBatches: AsyncQueue<any>): AsyncIterable<any> {
-  while (true) {
-    await WorkerBody.postMessage('input-request', {});
-    const nextBatch = await inputBatches.next();
-    if (nextBatch.done) {
-      return;
-    }
-    yield nextBatch.value;
-  }
-}
-
-function processOnMainThread(arrayBuffer: ArrayBuffer, options = {}, jobContext = {}) {
+function processOnMainThread(arrayBuffer: ArrayBuffer, options = {}) {
   return new Promise((resolve, reject) => {
     const id = requestId++;
 
@@ -160,7 +112,7 @@ function processOnMainThread(arrayBuffer: ArrayBuffer, options = {}, jobContext 
     WorkerBody.addEventListener(onMessage);
 
     // Ask the main thread to decode data
-    const payload = {id, input: arrayBuffer, options, context: jobContext};
+    const payload = {id, input: arrayBuffer, options};
     WorkerBody.postMessage('process', payload);
   });
 }

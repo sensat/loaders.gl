@@ -3,10 +3,9 @@
 // Copyright (c) vis.gl contributors
 
 import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
-import type {Geometry} from '@loaders.gl/schema';
-import {convertGeometryToTWKB} from '@loaders.gl/gis';
-import {VERSION} from './lib/version';
-import {TWKBFormat} from './wkt-format';
+import {VERSION} from './lib/utils/version';
+import {encodeTWKB} from './lib/encode-twkb';
+import {Geometry} from '@loaders.gl/schema';
 
 export type TWKBWriterOptions = WriterOptions & {
   twkb?: {
@@ -19,17 +18,15 @@ export type TWKBWriterOptions = WriterOptions & {
  * WKB exporter
  */
 export const TWKBWriter = {
-  ...TWKBFormat,
   name: 'TWKB (Tiny Well Known Binary)',
   id: 'twkb',
   module: 'wkt',
   version: VERSION,
   extensions: ['twkb'],
-  mimeTypes: ['application/text'],
   encode: async (geometry: Geometry, options?: TWKBWriterOptions) =>
-    convertGeometryToTWKB(geometry, options?.twkb),
+    encodeTWKB(geometry, options?.twkb),
   encodeSync: (geometry: Geometry, options?: TWKBWriterOptions) =>
-    convertGeometryToTWKB(geometry, options?.twkb),
+    encodeTWKB(geometry, options?.twkb),
   options: {
     twkb: {
       hasZ: false,

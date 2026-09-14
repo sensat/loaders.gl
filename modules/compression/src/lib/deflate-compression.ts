@@ -2,56 +2,31 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
+// DEFLATE
 import type {CompressionOptions} from './compression';
 import {Compression} from './compression';
 import {isBrowser, toArrayBuffer, promisify1} from '@loaders.gl/loader-utils';
-import {
-  Deflate,
-  Gzip,
-  Gunzip,
-  Inflate,
-  Unzlib,
-  Zlib,
-  deflateSync,
-  gzipSync,
-  gunzipSync,
-  inflateSync,
-  unzlibSync,
-  zlibSync
-} from 'fflate';
-import type {DeflateOptions, GzipOptions} from 'fflate';
+import pako from 'pako'; // https://bundlephobia.com/package/pako
 import zlib from 'zlib';
-import {
-  compressWithNativeCompressionStream,
-  compressBatchesWithNativeCompressionStream
-} from './compression-stream';
-import {
-  decompressWithNativeDecompressionStream,
-  decompressBatchesWithNativeDecompressionStream
-} from './decompression-stream';
 
 export type DeflateCompressionOptions = CompressionOptions & {
-  deflate?: {
-    level?: number;
-    gzip?: boolean;
-    useZlib?: boolean;
-    useNative?: boolean;
-    [option: string]: any;
-  };
-  /** Creates raw data without a wrapper. */
+  deflate?: pako.InflateOptions & pako.DeflateOptions & {useZlib?: boolean};
+  /** creates raw data, without wrapper (header and adler32 crc). */
   raw?: boolean;
 };
 
 /**
- * DEFLATE compression and decompression compatibility facade.
- * @deprecated Import a direction-specific DEFLATE compressor or decompressor.
+ * DEFLATE compression / decompression
  */
 export class DeflateCompression extends Compression {
   readonly name: string = 'deflate';
   readonly extensions: string[] = [];
   readonly contentEncodings = ['deflate'];
   readonly isSupported = true;
+
   readonly options: DeflateCompressionOptions;
+
+  private _chunks: ArrayBuffer[] = [];
 
   constructor(options: DeflateCompressionOptions = {}) {
     super(options);
@@ -59,148 +34,132 @@ export class DeflateCompression extends Compression {
   }
 
   async compress(input: ArrayBuffer): Promise<ArrayBuffer> {
-    const format = this.options.raw ? null : this.options.deflate?.gzip ? 'gzip' : 'deflate';
-    if (format && this.options.deflate?.useNative !== false) {
-      const nativeOutput = await compressWithNativeCompressionStream(input, format);
-      if (nativeOutput) return nativeOutput;
-    }
+    // On Node.js we can use built-in zlib
     if (!isBrowser && this.options.deflate?.useZlib) {
-      const buffer = this.options.deflate.gzip
+      const buffer = this.options.deflate?.gzip
         ? await promisify1(zlib.gzip)(input)
         : await promisify1(zlib.deflate)(input);
-      return toArrayBuffer(buffer as Buffer);
+      return toArrayBuffer(buffer);
     }
     return this.compressSync(input);
   }
 
   async decompress(input: ArrayBuffer): Promise<ArrayBuffer> {
-    const format = this.options.raw
-      ? 'deflate-raw'
-      : this.options.deflate?.gzip
-        ? 'gzip'
-        : 'deflate';
-    if (this.options.deflate?.useNative !== false) {
-      const nativeOutput = await decompressWithNativeDecompressionStream(input, format);
-      if (nativeOutput) return nativeOutput;
-    }
+    // On Node.js we can use built-in zlib
     if (!isBrowser && this.options.deflate?.useZlib) {
-      const buffer = this.options.deflate.gzip
+      const buffer = this.options.deflate?.gzip
         ? await promisify1(zlib.gunzip)(input)
         : await promisify1(zlib.inflate)(input);
-      return toArrayBuffer(buffer as Buffer);
+      return toArrayBuffer(buffer);
     }
     return this.decompressSync(input);
   }
 
   compressSync(input: ArrayBuffer): ArrayBuffer {
+    // On Node.js we can use built-in zlib
     if (!isBrowser && this.options.deflate?.useZlib) {
       const buffer = this.options.deflate?.gzip ? zlib.gzipSync(input) : zlib.deflateSync(input);
       return toArrayBuffer(buffer);
     }
-    const bytes = new Uint8Array(input);
-    const options = (this.options.deflate || {}) as DeflateOptions & GzipOptions;
-    const output = this.options.raw
-      ? deflateSync(bytes, options)
-      : this.options.deflate?.gzip
-        ? gzipSync(bytes, options)
-        : zlibSync(bytes, options);
-    return toArrayBuffer(output);
+    const pakoOptions: pako.DeflateOptions = this.options?.deflate || {};
+    const inputArray = new Uint8Array(input);
+    const deflate = this.options?.raw ? pako.deflateRaw : pako.deflate;
+    return deflate(inputArray, pakoOptions).buffer;
   }
 
   decompressSync(input: ArrayBuffer): ArrayBuffer {
+    // On Node.js we can use built-in zlib
     if (!isBrowser && this.options.deflate?.useZlib) {
       const buffer = this.options.deflate?.gzip ? zlib.gunzipSync(input) : zlib.inflateSync(input);
       return toArrayBuffer(buffer);
     }
-    const bytes = new Uint8Array(input);
-    const output = this.options.raw
-      ? inflateSync(bytes)
-      : this.options.deflate?.gzip
-        ? gunzipSync(bytes)
-        : unzlibSync(bytes);
-    return toArrayBuffer(output);
+    const pakoOptions: pako.InflateOptions = this.options?.deflate || {};
+    const inputArray = new Uint8Array(input);
+    const inflate = this.options?.raw ? pako.inflateRaw : pako.inflate;
+    return inflate(inputArray, pakoOptions).buffer;
   }
 
   async *compressBatches(
-    inputBatches: AsyncIterable<ArrayBuffer> | Iterable<ArrayBuffer>
+    asyncIterator: AsyncIterable<ArrayBuffer> | Iterable<ArrayBuffer>
   ): AsyncIterable<ArrayBuffer> {
-    if (!this.options.raw && this.options.deflate?.useNative !== false) {
-      const format = this.options.deflate?.gzip ? 'gzip' : 'deflate';
-      const nativeBatches = compressBatchesWithNativeCompressionStream(inputBatches, format);
-      if (nativeBatches) {
-        yield* nativeBatches;
-        return;
-      }
-    }
-    const options = (this.options.deflate || {}) as DeflateOptions & GzipOptions;
-    const processor = this.options.deflate?.gzip
-      ? new Gzip(options)
-      : this.options.raw
-        ? new Deflate(options)
-        : new Zlib(options);
-    yield* this.transformBatches(processor, inputBatches);
+    const pakoOptions: pako.DeflateOptions = this.options?.deflate || {};
+    const pakoProcessor = new pako.Deflate(pakoOptions);
+    yield* this.transformBatches(pakoProcessor, asyncIterator);
   }
 
   async *decompressBatches(
-    inputBatches: AsyncIterable<ArrayBuffer> | Iterable<ArrayBuffer>
+    asyncIterator: AsyncIterable<ArrayBuffer> | Iterable<ArrayBuffer>
   ): AsyncIterable<ArrayBuffer> {
-    const format = this.options.raw
-      ? 'deflate-raw'
-      : this.options.deflate?.gzip
-        ? 'gzip'
-        : 'deflate';
-    if (this.options.deflate?.useNative !== false) {
-      const nativeBatches = decompressBatchesWithNativeDecompressionStream(inputBatches, format);
-      if (nativeBatches) {
-        yield* nativeBatches;
-        return;
-      }
-    }
-    const processor = this.options.deflate?.gzip
-      ? new Gunzip()
-      : this.options.raw
-        ? new Inflate()
-        : new Unzlib();
-    yield* this.transformBatches(processor, inputBatches);
+    const pakoOptions: pako.InflateOptions = this.options?.deflate || {};
+    const pakoProcessor = new pako.Inflate(pakoOptions);
+    yield* this.transformBatches(pakoProcessor, asyncIterator);
   }
 
-  /**
-   * Streams batches through a DEFLATE-compatible processor.
-   *
-   * @deprecated Prefer `compressBatches` or `decompressBatches`. Retained for
-   * compatibility with callers that supplied a Pako-style processor.
-   */
   async *transformBatches(
-    processor: {
-      ondata?: (data: Uint8Array, final: boolean) => void;
-      onData?: (data: Uint8Array) => void;
-      onEnd?: (status: number) => void;
-      push: (data: Uint8Array, final?: boolean) => boolean | void;
-    },
-    inputBatches: AsyncIterable<ArrayBuffer> | Iterable<ArrayBuffer>
+    pakoProcessor: pako.Inflate | pako.Deflate,
+    asyncIterator: AsyncIterable<ArrayBuffer> | Iterable<ArrayBuffer>
   ): AsyncIterable<ArrayBuffer> {
-    const chunks: ArrayBuffer[] = [];
-    const appendChunk = (data: Uint8Array): void => {
-      chunks.push(new Uint8Array(data).slice().buffer as ArrayBuffer);
-    };
-    processor.ondata = appendChunk;
-    processor.onData = appendChunk;
-    processor.onEnd = status => {
-      if (status !== 0) {
-        throw new Error(`${this.name}: streaming processor failed with status ${status}`);
+    pakoProcessor.onData = this._onData.bind(this);
+    pakoProcessor.onEnd = this._onEnd.bind(this);
+    for await (const chunk of asyncIterator) {
+      const uint8Array = new Uint8Array(chunk);
+      const ok = pakoProcessor.push(uint8Array, false); // false -> not last chunk
+      if (!ok) {
+        throw new Error(`${this._getError()}write`);
       }
-    };
-    for await (const batch of inputBatches) {
-      const result = processor.push(new Uint8Array(batch), false);
-      if (result === false) {
-        throw new Error(`${this.name}: streaming processor rejected a batch`);
-      }
-      yield* chunks.splice(0);
+      const chunks = this._getChunks();
+      yield* chunks;
     }
-    const result = processor.push(new Uint8Array(0), true);
-    if (result === false) {
-      throw new Error(`${this.name}: streaming processor rejected the final batch`);
+
+    // End
+    const emptyChunk = new Uint8Array(0);
+    const ok = pakoProcessor.push(emptyChunk, true); // true -> last chunk
+    if (!ok) {
+      // For some reason we get error but it still works???
+      // throw new Error(this._getError() + 'end');
     }
+    const chunks = this._getChunks();
     yield* chunks;
+  }
+
+  _onData(chunk) {
+    this._chunks.push(chunk);
+  }
+
+  _onEnd(status) {
+    if (status !== 0) {
+      throw new Error(this._getError(status) + this._chunks.length);
+    }
+  }
+
+  _getChunks(): ArrayBuffer[] {
+    const chunks = this._chunks;
+    this._chunks = [];
+    return chunks;
+  }
+
+  // TODO - For some reason we don't get the error message from pako in _onEnd?
+  _getError(code: number = 0): string {
+    const MESSAGES = {
+      /* Z_NEED_DICT       2  */
+      2: 'need dictionary',
+      /* Z_STREAM_END      1  */
+      1: 'stream end',
+      /* Z_OK              0  */
+      0: '',
+      /* Z_ERRNO         (-1) */
+      '-1': 'file error',
+      /* Z_STREAM_ERROR  (-2) */
+      '-2': 'stream error',
+      /* Z_DATA_ERROR    (-3) */
+      '-3': 'data error',
+      /* Z_MEM_ERROR     (-4) */
+      '-4': 'insufficient memory',
+      /* Z_BUF_ERROR     (-5) */
+      '-5': 'buffer error',
+      /* Z_VERSION_ERROR (-6) */
+      '-6': 'incompatible version'
+    };
+    return `${this.name}: ${MESSAGES[code]}`;
   }
 }

@@ -2,46 +2,79 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
 // import {geojsonToBinary} from '@loaders.gl/gis';
 // import {GeoJSONTable} from '@loaders.gl/schema';
-import type {
-  GeoArrowEncodingPreference,
-  GeoJSONTable,
-  ObjectRowTable,
-  ArrowTable
-} from '@loaders.gl/schema';
-import {KMLFormat} from './kml-format';
+import {FeatureCollection, GeoJSONTable, ObjectRowTable} from '@loaders.gl/schema';
+import {kml} from '@tmcw/togeojson';
+import {DOMParser} from '@xmldom/xmldom';
 
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
 
 export type KMLLoaderOptions = LoaderOptions & {
-  /** Preferred encoding for Arrow geometry output. */
-  geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
   kml?: {
-    shape?: 'object-row-table' | 'geojson-table' | 'arrow-table' | 'raw';
-    geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
+    shape?: 'object-row-table' | 'geojson-table' | 'binary' | 'raw';
   };
 };
 
-/** Preloads the parser-bearing KML loader implementation. */
-async function preload() {
-  const {KMLLoaderWithParser} = await import('./kml-loader-with-parser');
-  return KMLLoaderWithParser;
-}
+const KML_HEADER = `\
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">`;
 
-/** Metadata-only loader for KML (Keyhole Markup Language). */
+/**
+ * Loader for KML (Keyhole Markup Language)
+ */
 export const KMLLoader = {
-  dataType: null as unknown as ObjectRowTable | GeoJSONTable | ArrowTable,
+  dataType: null as unknown as ObjectRowTable | GeoJSONTable,
   batchType: null as never,
 
-  ...KMLFormat,
+  name: 'KML (Keyhole Markup Language)',
+  id: 'kml',
+  module: 'kml',
   version: VERSION,
+  extensions: ['kml'],
+  mimeTypes: ['application/vnd.google-earth.kml+xml'],
+  text: true,
+  tests: [KML_HEADER],
+  parse: async (arrayBuffer, options?: KMLLoaderOptions) =>
+    parseTextSync(new TextDecoder().decode(arrayBuffer), options),
+  parseTextSync,
   options: {
-    kml: {shape: 'arrow-table'},
+    kml: {shape: 'geojson-table'},
     gis: {}
-  },
-  preload
-} as const satisfies Loader<ObjectRowTable | GeoJSONTable | ArrowTable, never, KMLLoaderOptions>;
+  }
+} as const satisfies LoaderWithParser<ObjectRowTable | GeoJSONTable, never, KMLLoaderOptions>;
+
+function parseTextSync(text: string, options?: KMLLoaderOptions): ObjectRowTable | GeoJSONTable {
+  const doc = new DOMParser().parseFromString(text, 'text/xml');
+  const geojson: FeatureCollection = kml(doc);
+
+  const kmlOptions = {...KMLLoader.options.kml, ...options?.kml};
+
+  switch (kmlOptions.shape) {
+    case 'geojson-table': {
+      const table: GeoJSONTable = {
+        shape: 'geojson-table',
+        type: 'FeatureCollection',
+        features: geojson.features
+      };
+      return table;
+    }
+    // case 'geojson':
+    //   return geojson;
+    // case 'binary':
+    //   return geojsonToBinary(geojson.features);
+    // case 'raw':
+    //   return doc;
+    case 'object-row-table':
+      const table: ObjectRowTable = {
+        shape: 'object-row-table',
+        data: geojson.features
+      };
+      return table;
+    default:
+      throw new Error(kmlOptions.shape);
+  }
+}

@@ -17,7 +17,7 @@ export async function getErrorMessageFromResponse(response: Response): Promise<s
     } else {
       message += response.statusText;
     }
-  } catch (_error) {
+  } catch (error) {
     // eslint forbids return in finally statement
     return message;
   }

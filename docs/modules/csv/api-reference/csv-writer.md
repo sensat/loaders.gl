@@ -1,66 +1,46 @@
----
-title: CSVWriter
-description: Encode loaders.gl tables as CSV or delimiter-separated text.
-hide_title: true
-page_style: designed
----
+# CSVWriter
 
-import {CsvDocsTabs} from '@site/src/components/docs/csv-docs-tabs';
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
+<p class="badges">
+  <img src="https://img.shields.io/badge/From-v4.0-blue.svg?style=flat-square" alt="From-v4.0" />
+</p>
 
-<DocPageHeader
-  eyebrow="CSV module · writer API"
-  title="CSVWriter"
-  description="Write loaders.gl tables back to CSV or another delimiter-separated text representation, including Arrow-backed tables produced by CSVLoader."
-  tone="blue"
-  meta={['From v4.0', 'CSV / TSV', 'Table output']}
-  links={[
-    {label: 'CSV format', to: '/docs/modules/csv/formats/csv'},
-    {label: 'CSV module', to: '/docs/modules/csv'}
-  ]}
-/>
+Writes tabular data into comma-separated value and [delimiter-separated value](https://en.wikipedia.org/wiki/Delimiter-separated_values) encoding.
 
-<CsvDocsTabs active="csvwriter" />
-
-<DocOrientation
-  eyebrow="What it accepts"
-  title="Export the same table in a format people can open anywhere."
-  description="CSVWriter accepts loaders.gl table data and turns it into interoperable text. Use it at the application boundary when a table needs to leave the binary pipeline."
-  tone="blue"
-  items={[
-    {label: 'Input', value: 'Rows, columns, or Arrow-backed tables'},
-    {label: 'Output', value: 'CSV or delimiter-separated text'},
-    {label: 'Names', value: 'Optional display names from metadata'},
-    {label: 'API', value: 'Async encode or synchronous text output'}
-  ]}
-/>
-
-<ReferenceBoundary
-  title="CSVWriter reference"
-  description="The sections below document imports, encoding forms, and writer options."
-  tone="blue"
-/>
-
-`CSVWriter` writes tabular data into comma-separated value and delimiter-separated value encoding.
+| Loader         | Characteristic                                      |
+| -------------- | --------------------------------------------------- |
+| File Format    | [CSV](/docs/modules/csv/formats/csv)                |
+| Data Format    | [Tables](/docs/specifications/category-table)       |
+| File Type      | Text                                                |
+| File Extension | `.csv`, `.tsv`, `.dsv`                              |
+| MIME Types     | `text/csv`, `text/tab-separated-values`, `text/dsv` |
+| Supported APIs | `load`, `parse`, `parseSync`, `parseInBatches`      |
 
 ## Usage
 
 ```typescript
 import {encode} from '@loaders.gl/core';
-import type {Table} from '@loaders.gl/schema';
-import {CSVWriter} from '@loaders.gl/csv';
+import {Table} from '@loaders.gl/schema';
+import {CSVLoader} from '@loaders.gl/csv';
 
-declare const table: Table;
+const table: Table = ...;
 
-const data = await encode(table, CSVWriter); // ArrayBuffer
-const text = CSVWriter.encodeTextSync(table, {csv: options}); // string
+const data = await encode(table, CSVLoader); // ArrayBuffer
+// or
+const text = await encodeAsText(url, CSVLoader); // string
+// or
+const iterator = await encodeInBatches(url, CSVLoader, {csv: options}); // Iterable<ArrayBuffer>
 ```
 
-`CSVWriter` can also encode Arrow-backed tables returned by `CSVLoader` with `csv.shape: 'arrow-table'`.
+## Options
 
-## CSVWriter Options
-
-| Option                | Type      | Default | Description                                                                       |
-| --------------------- | --------- | ------- | --------------------------------------------------------------------------------- |
-| `csv.useDisplayNames` | `boolean` | `false` | If `true`, use field `metadata.displayName` values as column names when available. |
+| Option | Type | Default | Description |
+| ------ | ---- | ------- | ----------- ||
+| `csv.header` | Boolean \| String | `auto` | If `true`, the first row of parsed data will be interpreted as field names. If `false`, the first row is interpreted as data. |
+| `csv.columnPrefix` | String | `column` | The prefix to use when naming columns for CSV files with no header. Defaults to 'column1', 'column2' etc. |
+| `csv.delimiter` | String | auto-detect | The delimiting character. |
+| `csv.newline` | String | auto-detect | The newline sequence. Must be `\r`, `\n`, or `\r\n`. |
+| `csv.quoteChar` | String | `"` | The character used to quote fields. |
+| `csv.escapeChar` | String | `"` | The character used to escape the quote character within a field. |
+| `csv.dynamicTyping` | Boolean | `true` | If `true`, numeric and boolean data values will be converted to their type (instead if strings. **Note**: if you disable `dynamicTyping`, you need to explicitly set `header` to a boolean value. Otherwise, `header: 'auto'` would automatically treat the first row as a header. |
+| `csv.comments` | String | `false` | Comment indicator (for example, "#" or "//"). Lines starting with this string are skipped. |
+| `csv.transform` | Function | - | A function to apply on each value. The function receives the value as its first argument and the column number or header name when enabled as its second argument. The return value of the function will replace the value it received. The transform function is applied before dynamicTyping. |

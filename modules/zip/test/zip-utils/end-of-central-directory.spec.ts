@@ -1,10 +1,16 @@
-import {expect, test} from 'vitest';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
+import test from 'tape-promise/tape';
 import {DATA_ARRAY} from '@loaders.gl/i3s/test/data/test.zip';
 import {parseEoCDRecord} from '../../src/parse-zip/end-of-central-directory';
-import {DataViewReadableFile} from '../../src/parse-zip/readable-file-utils';
+import {DataViewFile} from '@loaders.gl/loader-utils';
 import {parseZipCDFileHeader} from '../../src/parse-zip/cd-file-header';
-test('SLPKLoader#eon of central directory record parse', async () => {
-  const provider = new DataViewReadableFile(new DataView(DATA_ARRAY.buffer));
+
+test('SLPKLoader#eon of central directory record parse', async (t) => {
+  const provider = new DataViewFile(new DataView(DATA_ARRAY.buffer));
   const localFileHeader = await parseEoCDRecord(provider);
-  expect(parseZipCDFileHeader(localFileHeader?.cdStartOffset, provider)).toBeTruthy();
+  t.ok(parseZipCDFileHeader(localFileHeader?.cdStartOffset, provider));
+  t.end();
 });

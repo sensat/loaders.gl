@@ -1,120 +1,45 @@
----
-title: WMTS format
-description: Request map imagery through advertised tile matrix sets and resource templates.
-hide_title: true
-page_style: designed
----
+# WMTS - Web Map Tiling Service
 
-import {WmsDocsTabs} from '@site/src/components/docs/wms-docs-tabs';
-import {ClientExample} from '@site/src/components';
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocLiveExample} from '@site/src/components/docs/doc-live-example';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
+![ogc-logo](../../../images/logos/ogc-logo-60.png)
 
-<DocPageHeader
-  eyebrow="OGC tiled image service"
-  title="WMTS"
-  description="WMTS describes discrete tile matrix sets, layers, styles, image formats, and resource templates. The source negotiates those capabilities before requesting visible imagery."
-  tone="mint"
-  logos={[{alt: 'Open Geospatial Consortium', src: '/images/format-logos/ogc-logo-transparent.png'}]}
-  meta={['WMTS 1.0.0', 'Tile matrix sets', 'KVP and REST templates']}
-  links={[
-    {label: 'WMS module', to: '/docs/modules/wms'},
-    {label: 'WMS format', to: '/docs/modules/wms/formats/wms'}
-  ]}
-/>
+- _[`@loaders.gl/wms`](/docs/modules/wms)_
+- _[Wikipedia article](https://en.wikipedia.org/wiki/Web_Map_Tile_Service)_
 
-<DocLiveExample label="WMTS tile service example" height="440px">
-  <ClientExample kind="wms" format="WMTS" />
-</DocLiveExample>
+WmTS (Web Map Tile Service) is a standardized protocol for serving pre-rendered or run-time computed georeferenced **map tiles** over the Internet.
 
-<WmsDocsTabs active="wmts" />
+The specification was developed and first published by the Open Geospatial Consortium in 2010.
 
-<DocOrientation
-  eyebrow="The tile-service sequence"
-  title="Read the capabilities. Choose the matrix. Fetch the tile."
-  description="WMTS differs from WMS by making tiling explicit. The client selects an advertised layer, style, format, and matrix set, then requests tiles using the service’s identifiers."
-  tone="mint"
-  items={[
-    {label: 'Discover', value: 'Layers, styles, formats, and matrix sets'},
-    {label: 'Select', value: 'A compatible CRS and tile matrix'},
-    {label: 'Request', value: 'KVP parameters or REST resource URL'},
-    {label: 'Render', value: 'Visible image tiles through TileSource'}
-  ]}
-/>
+## Characteristics
 
-WMTS serves map imagery on discrete, advertised tile matrix sets. `WMTSSourceLoader` implements a
-loaders.gl `TileSource` and negotiates the layer, style, format, and grid from capabilities.
+WMTS is not a single file format but rather a protocol, specifying a number of required and optional requests. Some requests return binary images, and some return metadata formatted as XML (text) responses. The XML responses are fairly detailed and some variations exists, so when working with WMTS it is typically useful to have access to pre-tested parsers for each response type.
 
-<ReferenceBoundary
-  title="WMTS capabilities and tile requests"
-  description="The sections below cover capabilities parsing, matrix selection, request encodings, image formats, CRS metadata, and rendering integration."
-  tone="mint"
-/>
+## Request Types
 
-## Feature support
+The WMTS standard specifies a number of "request types" that a standards-compliant WMTS server should support. loaders.gl provides loaders for all WMTS request responses:
 
-| Capability | Support | API and behavior |
-| --- | --- | --- |
-| WMTS 1.0.0 | Supported | Capabilities parsing and KVP `GetTile` requests |
-| `GetCapabilities` | Supported | `WMTSCapabilitiesLoader` parses layers and matrix sets |
-| Normalized tile metadata | Supported | `getMetadata()` exposes extent, CRS, tile size, and tile grid |
-| `GetTile` | Supported | Fetches and decodes advertised image formats |
-| KVP request encoding | Supported | Standard query-parameter operation |
-| RESTful resource templates | Supported | Uses advertised `ResourceURL` templates or `wmts.urlTemplate` |
-| SOAP encoding | Not supported | Outside browser-oriented tile retrieval |
-| Layer selection | Supported | Select by advertised layer identifier |
-| Tile matrix-set selection | Supported | Explicit selection or compatibility-ranked automatic choice |
-| Style and image format | Supported | Select advertised identifiers and MIME types |
-| Non-numeric matrix identifiers | Supported | Zoom levels map to identifiers from capabilities |
-| CRS and axis metadata | Supported | Normalized from the chosen matrix set |
-| `GetFeatureInfo` | Not exposed | Use a direct request when supported by the server |
-| deck.gl rendering | First class | `SourceLayer` requests visible image tiles from the source |
+| **WMTS Request**   | **Response Loader**      | **Description**                                                                                                                                                                                                                      |
+| ------------------ | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `GetCapabilities`  | `WMTSCapabilitiesLoader` | Returns parameters about the WMTS (such as map image format and WMTS version compatibility) and the available layers (map bounding box, coordinate reference systems, URI of the data and whether the layer is mostly opaque or not) |
+| `GetTile`          | `ImageLoader`            | returns a map image. Parameters include: width and height of the map, coordinate reference system, rendering style, image format                                                                                                     |
+| `GetFeatureInfo`   | `WMTSFeatureInfoLoader`  | if a layer is marked as 'queryable' then you can request data about a coordinate of the map image.                                                                                                                                   |
+| `GetLegendGraphic` | `ImageLoader`            | An image of the map's legend, giving a visual guide to map elements.                                                                                                                                                                 |
 
-## Create a tile source
+Note that only the `GetCapabilities` and `GetTile` request types are are required to be supported by a WMTS server. The response to `GetCapabilities` contains information about which request types are supported
 
-```ts
-import {createDataSource} from '@loaders.gl/core';
-import {WMTSSourceLoader} from '@loaders.gl/wms';
+## Request Formats
 
-const source = createDataSource(wmtsUrl, [WMTSSourceLoader], {
-  wmts: {
-    layer: 'MODIS_Terra_CorrectedReflectance_TrueColor',
-    tileMatrixSet: 'GoogleMapsCompatible_Level9',
-    format: 'image/jpeg'
-  }
-});
+The WMTS standard defines three different ways to send request parameters to the server.
 
-const metadata = await source.getMetadata();
-const image = await source.getTile({z: 3, x: 2, y: 4});
-```
+| Format          | Constant    | Supported | Description          |
+| --------------- | ----------- | --------- | -------------------- |
+| Key-Value Pairs | `'kvp'`     | Y         | Query parameters     |
+| RESTful         | `'restful'` | N         | URL path             |
+| SOAP            | `'soap'`    | N         | XML encoded payloads |
 
-If the service endpoint and capabilities document have different URLs, provide `capabilitiesUrl`
-under `wmts`.
+## Map images
 
-## Tile-grid negotiation
+A WMTS server usually serves the map in a bitmap format, e.g. PNG, GIF, JPEG. In addition, vector graphics can be included, such as points, lines, curves and text, expressed in SVG or WebCGM format. The MIME types of the `GetTile` request can be inspected in the response to the `GetCapabilities` request.
 
-WMTS matrix sets may use provider-specific identifiers, origins, resolutions, and limits. The source
-keeps the advertised grid rather than assuming a Google-style XYZ pyramid. Applications can select
-a matrix set explicitly; otherwise loaders.gl ranks compatible sets and normalizes the selected
-grid for consumers such as deck.gl.
+## Layers
 
-## deck.gl integration
-
-```ts
-import {SourceLayer} from '@loaders.gl/deck-layers';
-import {WMTSSourceLoader} from '@loaders.gl/wms';
-
-const layer = new SourceLayer({
-  id: 'satellite-imagery',
-  data: wmtsUrl,
-  loaders: [WMTSSourceLoader],
-  sourceOptions: {
-    wmts: {layer: layerId, tileMatrixSet: matrixSetId}
-  }
-});
-```
-
-## References
-
-- [OGC Web Map Tile Service standard](https://www.ogc.org/standard/wmts/)
+Unlike WMS, there is no specified way to request a server to combine and return a map tile with information coming from more than one layer in a single retrieval. WMTS clients that want to show a combination of layers must make independent requests for the layer tiles and then combine or overlay the responses. Also, bounding boxes and scales of these WMTS tiles are constrained to a discrete set of values.

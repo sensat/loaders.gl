@@ -1,7 +1,13 @@
-import {expect, test} from 'vitest';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
+import test from 'tape-promise/tape';
 import {WorkerPool} from '@loaders.gl/worker-utils';
+
 const CHUNKS_TOTAL = 6;
 const MAX_CONCURRENCY = 3;
+
 const hasWorker = typeof Worker !== 'undefined';
 const testWorkerSource = `
   self.onmessage = function(event) {
@@ -13,76 +19,99 @@ const testWorkerSource = `
     setTimeout(function () { self.postMessage(messageData); }, 50);
   };
 `;
-test('WorkerPool', async () => {
+
+test('WorkerPool', async (t) => {
   if (!hasWorker) {
-    console.log('Worker test is browser only');
+    t.comment('Worker test is browser only');
+    t.end();
     return;
   }
-  const callback = info => {
-    console.log(`${info.message} ${info.jobName}, queued jobs ${info.backlog}`);
+
+  const callback = (info) => {
+    t.comment(`${info.message} ${info.jobName}, queued jobs ${info.backlog}`);
   };
+
   const workerPool = new WorkerPool({
     source: testWorkerSource,
     name: 'test-worker',
     maxConcurrency: MAX_CONCURRENCY,
     onDebug: callback
   });
+
   const TEST_CASES = new Array(CHUNKS_TOTAL).fill(0).map((_, i) => ({chunk: i}));
+
   const result = await Promise.all(
-    TEST_CASES.map(async data => {
+    TEST_CASES.map(async (data) => {
       const job = await workerPool.startJob('test-job');
       job.postMessage('process', {input: data.chunk});
       return job.result;
     })
   );
+
   for (let i = 0; i < CHUNKS_TOTAL; i++) {
-    expect(result[i].output, 'worker returns expected result').toEqual(TEST_CASES[i].chunk);
+    t.deepEquals(result[i].output, TEST_CASES[i].chunk, 'worker returns expected result');
   }
+
   workerPool.destroy();
+  t.end();
 });
-test('WorkerPool with reuseWorkers === false param', async () => {
+
+test('WorkerPool with reuseWorkers === false param', async (t) => {
   if (!hasWorker) {
-    console.log('Worker test is browser only');
+    t.comment('Worker test is browser only');
+    t.end();
     return;
   }
+
   const workerPool = new WorkerPool({
     source: testWorkerSource,
     name: 'test-worker',
     maxConcurrency: MAX_CONCURRENCY,
     reuseWorkers: false
   });
+
   const TEST_CASES = new Array(CHUNKS_TOTAL).fill(0).map((_, i) => ({chunk: i}));
+
   await Promise.all(
-    TEST_CASES.map(async data => {
+    TEST_CASES.map(async (data) => {
       const job = await workerPool.startJob('test-job');
       job.postMessage('process', {input: data});
       return job.result;
     })
   );
+
   // @ts-ignore
-  expect(workerPool.idleQueue.length).toBe(0);
+  t.equal(workerPool.idleQueue.length, 0);
   workerPool.destroy();
+  t.end();
 });
-test('WorkerPool with reuseWorkers === true param', async () => {
+
+test('WorkerPool with reuseWorkers === true param', async (t) => {
   if (!hasWorker) {
-    console.log('Worker test is browser only');
+    t.comment('Worker test is browser only');
+    t.end();
     return;
   }
+
   const workerPool = new WorkerPool({
     source: testWorkerSource,
     name: 'test-worker',
     maxConcurrency: MAX_CONCURRENCY,
     reuseWorkers: true
   });
+
   const TEST_CASES = new Array(CHUNKS_TOTAL).fill(0).map((_, i) => ({chunk: i}));
+
   await Promise.all(
-    TEST_CASES.map(async data => {
+    TEST_CASES.map(async (data) => {
       const job = await workerPool.startJob('test-job');
       job.postMessage('process', {input: data});
       return job.result;
     })
   );
+
   // @ts-ignore
-  expect(workerPool.idleQueue.length).toBe(3);
+  t.equal(workerPool.idleQueue.length, 3);
   workerPool.destroy();
+  t.end();
 });

@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.module.json",
   "include": ["src/**/*"],
   "exclude": ["node_modules"],
   "compilerOptions": {
@@ -11,7 +11,6 @@
     {"path": "../loader-utils"},
     {"path": "../schema"},
     {"path": "../images"},
-    {"path": "../mvt"},
-    {"path": "../mlt"}
+    {"path": "../mvt"}
   ]
 }

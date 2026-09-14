@@ -1,20 +1,20 @@
 // loaders.gl
 // SPDX-License-Identifier: MIT
 
-import type {TileSource, GetTileParameters, GetTileDataParameters} from './tile-source';
-import type {ImageSource, ImageSourceMetadata} from './image-source';
+import {TileSource, GetTileParameters, GetTileDataParameters} from './tile-source';
+import {ImageSource, ImageSourceMetadata} from './image-source';
 
 /**
  * MapTileSource - data sources that allow data to be queried by (geospatial) extents
  * @note
  * - If geospatial, bounding box is expected to be in web mercator coordinates
  */
-export class TileSourceAdapter<ImageSourceT extends ImageSource> implements TileSource {
-  readonly viewportSource: ImageSourceT;
-  constructor(source: ImageSourceT) {
+// @ts-expect-error TODO - does not implement all DataSource members
+export class TileSourceAdapter implements TileSource<ImageSourceMetadata> {
+  readonly viewportSource: ImageSource;
+  constructor(source: ImageSource) {
     this.viewportSource = source;
   }
-
   async getMetadata(): Promise<ImageSourceMetadata> {
     return await this.viewportSource.getMetadata();
   }

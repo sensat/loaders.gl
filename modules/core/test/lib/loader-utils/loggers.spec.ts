@@ -2,22 +2,24 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {expect, test} from 'vitest';
+import test from 'tape-promise/tape';
 import {NullLog, ConsoleLog} from '@loaders.gl/core/lib/loader-utils/loggers';
 
-test('NullLog#methods', () => {
+test('NullLog#methods', (t) => {
   const log = new NullLog();
-  testLogger(log, 'NullLog');
+  testLogger(t, log, 'NullLog');
+  t.end();
 });
 
-test('ConsoleLog#methods', () => {
+test('ConsoleLog#methods', (t) => {
   const log = new ConsoleLog();
-  testLogger(log, 'ConsoleLog');
+  testLogger(t, log, 'ConsoleLog');
+  t.end();
 });
 
-function testLogger(log, logName) {
-  expect(() => log.log()(), `${logName}.log()`).not.toThrow();
-  expect(() => log.info()(), `${logName}.info()`).not.toThrow();
-  expect(() => log.warn()(), `${logName}.warn()`).not.toThrow();
-  expect(() => log.error()(), `${logName}.error()`).not.toThrow();
+function testLogger(t, log, logName) {
+  t.doesNotThrow(() => log.log()(), `${logName}.log()`);
+  t.doesNotThrow(() => log.info()(), `${logName}.info()`);
+  t.doesNotThrow(() => log.warn()(), `${logName}.warn()`);
+  t.doesNotThrow(() => log.error()(), `${logName}.error()`);
 }

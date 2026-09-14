@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 
 import Map from 'react-map-gl';
@@ -7,14 +7,14 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 
 import DeckGL from '@deck.gl/react';
 import {ViewState, FlyToInterpolator} from '@deck.gl/core';
-import {SourceDataDrivenTile3DLayer} from '@loaders.gl/deck-layers';
+
+import {DataDrivenTile3DLayer, colorizeTile} from '@deck.gl-community/experimental';
 
 import {COORDINATE_SYSTEM, I3SLoader} from '@loaders.gl/i3s';
 import {Tileset3D} from '@loaders.gl/tiles';
 import {ControlPanel} from './components/control-panel';
 import {AttributeData, ColorsByAttribute} from './types';
 import {ColorizationPanel} from './components/colorization-panel';
-import {colorizeTile} from './colorize-tile';
 import {
   COLORIZE_MODES,
   COLORS_BY_ATTRIBUTE,
@@ -24,7 +24,6 @@ import {
   TRANSITION_DURAITON
 } from './constants';
 import {getNumericAttributeInfo} from './utils/fetch-attributes-data';
-import {createDeckFullscreenWidget, createDeckStatsWidget} from '../../shared/create-deck-stats-widget';
 
 export default function App() {
   const tileSets: string[] = Object.keys(EXAMPLES);
@@ -36,13 +35,6 @@ export default function App() {
     attributeName: ''
   });
   const [colorsByAttribute, setColorsByAttribute] = useState<ColorsByAttribute | null>(null);
-  const widgets = useMemo(
-    () => [
-      createDeckFullscreenWidget('i3s-colorization-by-attributes-fullscreen'),
-      createDeckStatsWidget('i3s-colorization-by-attributes-stats')
-    ],
-    []
-  );
 
   function onSelectTilesetHandler(item: string) {
     setTilesetSelected(item);
@@ -109,7 +101,7 @@ export default function App() {
 
   function renderLayers() {
     const loadOptions = {i3s: {coordinateSystem: COORDINATE_SYSTEM.LNGLAT_OFFSETS}};
-    const layers = new SourceDataDrivenTile3DLayer({
+    const layers = new DataDrivenTile3DLayer({
       data: EXAMPLES[tilesetSelected].url,
       loader: I3SLoader,
       onTilesetLoad: onTilesetLoadHandler,
@@ -123,12 +115,7 @@ export default function App() {
 
   return (
     <div style={{position: 'relative', height: '100%'}}>
-      <DeckGL
-        initialViewState={viewState}
-        layers={renderLayers()}
-        controller={MAP_CONTROLLER}
-        widgets={widgets}
-      >
+      <DeckGL initialViewState={viewState} layers={renderLayers()} controller={MAP_CONTROLLER}>
         <Map
           reuseMaps
           mapLib={maplibregl}

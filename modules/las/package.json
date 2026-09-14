@@ -1,6 +1,6 @@
 {
   "name": "@loaders.gl/las",
-  "version": "5.0.0-alpha.5",
+  "version": "4.3.3",
   "description": "Framework-independent loader for the LAS and LAZ formats",
   "license": "MIT",
   "type": "module",
@@ -28,33 +28,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    },
-    "./unbundled": {
-      "types": "./dist/unbundled.d.ts",
-      "import": "./dist/unbundled.js"
-    },
-    "./bundled": {
-      "types": "./dist/bundled.d.ts",
-      "import": "./dist/bundled.js"
-    },
-    "./las-loader": {
-      "types": "./dist/las-loader.d.ts",
-      "import": "./dist/las-loader.js"
-    },
-    "./lazperf-loader": {
-      "types": "./dist/lazperf-loader.d.ts",
-      "import": "./dist/lazperf-loader.js"
-    },
-    "./las-copc-loader": {
-      "types": "./dist/las-copc-loader.d.ts",
-      "import": "./dist/las-copc-loader.js"
-    },
-    "./laz-rs-loader": {
-      "types": "./dist/laz-rs-loader.d.ts",
-      "import": "./dist/laz-rs-loader.js"
-    },
-    "./las-worker.js": {
-      "import": "./dist/las-worker.js"
     }
   },
   "sideEffects": false,
@@ -70,22 +43,18 @@
     "README.md"
   ],
   "scripts": {
-    "pre-build": "npm run copy-wasm-files && npm run build-bundle && npm run build-bundle-dev && npm run build-worker",
-    "copy-wasm-files": "cp src/libs/laz-rs-wasm/*.wasm* dist/libs/laz-rs-wasm/",
+    "pre-build": "npm run build-bundle && npm run build-bundle-dev && npm run build-worker",
     "build-bundle": "ocular-bundle ./bundle.ts --output=dist/dist.min.js",
     "build-bundle-dev": "ocular-bundle ./bundle.ts --env=dev --output=dist/dist.dev.js",
     "build-worker": "esbuild src/workers/las-worker.ts --bundle --outfile=dist/las-worker.js --define:__VERSION__=\\\"$npm_package_version\\\""
   },
   "dependencies": {
-    "@loaders.gl/loader-utils": "5.0.0-alpha.5",
-    "@loaders.gl/schema": "5.0.0-alpha.5",
-    "@loaders.gl/schema-utils": "5.0.0-alpha.5",
-    "@math.gl/crs": "5.0.0-alpha.5",
-    "copc": "0.0.8",
-    "laz-perf": "^0.0.7"
+    "@loaders.gl/loader-utils": "4.3.3",
+    "@loaders.gl/schema": "4.3.3",
+    "laz-perf": "^0.0.6"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "~5.0.0-alpha.0"
+    "@loaders.gl/core": "^4.3.0"
   },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+  "gitHead": "3213679d79e6ff2814d48fd3337acfa446c74099"
 }

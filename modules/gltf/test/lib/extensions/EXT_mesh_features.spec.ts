@@ -1,10 +1,9 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
+/* eslint-disable camelcase */
+import test from 'tape-promise/tape';
 
-import {expect, test} from 'vitest';
 import {decodeExtensions, encodeExtensions} from '../../../src/lib/api/gltf-extensions';
 import {GLTFScenegraph, createExtMeshFeatures, type GLTF} from '@loaders.gl/gltf';
+
 const binaryBufferData = [
   0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 1, 33, 223, 70, 43, 39,
   58, 199, 113, 55, 81, 71, 94, 21, 60, 71, 154, 68, 219, 198, 113, 55, 81, 199, 183, 210, 225, 198,
@@ -12,7 +11,9 @@ const binaryBufferData = [
   0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 63, 0, 1, 10,
   0, 68, 82, 89, 71, 82, 79, 85, 78, 68, 0, 108, 60, 0, 95, 5, 0, 1, 3, 0, 0
 ];
+
 const binaryBufferDataAlligned = binaryBufferData.concat([0, 0]);
+
 const getGltfWithExtension = () => ({
   buffers: [
     {
@@ -170,15 +171,20 @@ const getGltfWithExtension = () => ({
     ]
   }
 });
-test('gltf#EXT_mesh_features - Should decode', async () => {
+
+test('gltf#EXT_mesh_features - Should decode', async (t) => {
   const options = {gltf: {loadImages: true, loadBuffers: true}};
   const gltf = getGltfWithExtension();
   gltf.buffers[0].arrayBuffer = new Uint8Array(binaryBufferDataAlligned).buffer;
   await decodeExtensions(gltf, options);
-  expect(gltf.json.meshes[0].primitives[0].extensions.EXT_mesh_features.featureIds[0].data).toEqual(
+
+  t.deepEqual(
+    gltf.json.meshes[0].primitives[0].extensions.EXT_mesh_features.featureIds[0].data,
     [1, 1, 1, 1]
   );
+  t.end();
 });
+
 const PRIMITIVE_EXPECTED = {
   attributes: {TEXCOORD_0: 2, POSITION: 1, _FEATURE_ID_0: 3},
   indices: 0,
@@ -203,21 +209,23 @@ const PRIMITIVE_EXPECTED = {
     }
   }
 };
-test('gltf#EXT_mesh_features - Should encode featureIDs', () => {
+
+test('gltf#EXT_mesh_features - Should encode featureIDs', (t) => {
   const gltf = getGltfWithExtension();
   gltf.buffers[0].arrayBuffer = new Uint8Array(binaryBufferDataAlligned).buffer;
-  const scenegraph = new GLTFScenegraph(
-    gltf as unknown as {
-      json: GLTF;
-    }
-  );
+
+  const scenegraph = new GLTFScenegraph(gltf as unknown as {json: GLTF});
   const primitive = gltf.json.meshes[0].primitives[0];
   const featureIds = [4, 4, 4, 3, 0, 1, 2];
   const tableIndex = 8;
+
   createExtMeshFeatures(scenegraph, primitive, featureIds, tableIndex);
   encodeExtensions(scenegraph.gltf, {});
-  expect(primitive).toEqual(PRIMITIVE_EXPECTED);
+
+  t.deepEqual(primitive, PRIMITIVE_EXPECTED);
+  t.end();
 });
+
 const GLTF_JSON_ROUNDTRIP_EXPECTED = {
   asset: {
     version: '2.0'
@@ -273,12 +281,17 @@ const GLTF_JSON_ROUNDTRIP_EXPECTED = {
 const BUFFER_ROUNDTRIP_EXPECTED = new Uint8Array(
   binaryBufferData.concat([1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0])
 ).buffer;
-test('gltf#EXT_mesh_features - Roundtrip encode/decode', async () => {
+
+test('gltf#EXT_mesh_features - Roundtrip encode/decode', async (t) => {
   const options = {gltf: {loadImages: true, loadBuffers: true}};
   const gltf = getGltfWithExtension();
   gltf.buffers[0].arrayBuffer = new Uint8Array(binaryBufferDataAlligned).buffer;
+
   await decodeExtensions(gltf, options);
   const gltfBin = encodeExtensions(gltf, options);
-  expect(gltfBin.json).toEqual(GLTF_JSON_ROUNDTRIP_EXPECTED);
-  expect(gltfBin.buffers[0].arrayBuffer).toEqual(BUFFER_ROUNDTRIP_EXPECTED);
+
+  t.deepEqual(gltfBin.json, GLTF_JSON_ROUNDTRIP_EXPECTED);
+
+  t.deepEqual(gltfBin.buffers[0].arrayBuffer, BUFFER_ROUNDTRIP_EXPECTED);
+  t.end();
 });

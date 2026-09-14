@@ -2,29 +2,64 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {LoaderWithParser, LoaderOptions, ReadableFile} from '@loaders.gl/loader-utils';
+import {BlobFile} from '@loaders.gl/loader-utils';
 import {VERSION} from './lib/version';
 
 import {VectorSourceInfo, ImageSourceInfo} from './source-info';
-import type {PMTilesSourceLoaderOptions} from './pmtiles-source-loader';
-import {PMTilesFormat} from './pmtiles-format';
+import {PMTilesTileSource, PMTilesTileSourceProps} from './pmtiles-source';
 
 export type PMTilesLoaderOptions = LoaderOptions & {
-  pmtiles?: PMTilesSourceLoaderOptions['pmtiles'];
+  pmtiles?: PMTilesTileSourceProps['pmtiles'];
 };
 
-/** Preloads the parser-bearing PMTiles loader implementation. */
-async function preload() {
-  const {PMTilesLoaderWithParser} = await import('./pmtiles-loader-with-parser');
-  return PMTilesLoaderWithParser;
-}
-
-/** Metadata-only loader for PMTiles metadata. */
+/**
+ * Loader for PMTiles metadata
+ * @note This loader is intended to allow PMTiles to be treated like other file types in top-level loading logic.
+ * @note For actual access to the tile data, use the PMTilesSource class.
+ */
 export const PMTilesLoader = {
-  ...PMTilesFormat,
+  name: 'PMTiles',
+  id: 'pmtiles',
+  module: 'pmtiles',
   version: VERSION,
+  extensions: ['pmtiles'],
+  mimeTypes: ['application/octet-stream'],
+  tests: ['PMTiles'],
   options: {
     pmtiles: {}
   },
-  preload
-} as const satisfies Loader<VectorSourceInfo | ImageSourceInfo, never, PMTilesLoaderOptions>;
+  parse: async (arrayBuffer: ArrayBuffer, options?: PMTilesLoaderOptions) =>
+    parseFileAsPMTiles(new BlobFile(new Blob([arrayBuffer])), options),
+  parseFile: parseFileAsPMTiles
+} as const satisfies LoaderWithParser<
+  VectorSourceInfo | ImageSourceInfo,
+  never,
+  PMTilesLoaderOptions
+>;
+
+async function parseFileAsPMTiles(
+  file: ReadableFile,
+  options?: PMTilesLoaderOptions
+): Promise<VectorSourceInfo | ImageSourceInfo> {
+  const source = new PMTilesTileSource(file.handle as string | Blob, {
+    pmtiles: options?.pmtiles || {}
+  });
+  const formatSpecificMetadata = await source.getMetadata();
+  const {tileMIMEType, tilejson = {}} = formatSpecificMetadata;
+  const {layers = []} = tilejson;
+  switch (tileMIMEType) {
+    case 'application/vnd.mapbox-vector-tile':
+      return {
+        shape: 'vector-source',
+        layers: layers.map((layer) => ({name: layer.name, schema: layer.schema})),
+        tables: [],
+        formatSpecificMetadata
+      } as VectorSourceInfo;
+    case 'image/png':
+    case 'image/jpeg':
+      return {shape: 'image-source', formatSpecificMetadata} as ImageSourceInfo;
+    default:
+      throw new Error(`PMTilesLoader: Unsupported tile MIME type ${tileMIMEType}`);
+  }
+}

@@ -2,11 +2,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {test} from 'vitest';
-import {isBrowser, parse} from '@loaders.gl/core';
-import type {LoaderWithParser} from '@loaders.gl/loader-utils';
+import test from 'tape-promise/tape';
+
+import {isBrowser} from '@loaders.gl/core';
 
 // const JSON_DATA = [{col1: 22, col2: 'abc'}];
+
 // const JSONLoader = {
 //   name: 'JSON',
 //   extensions: ['json'],
@@ -14,39 +15,43 @@ import type {LoaderWithParser} from '@loaders.gl/loader-utils';
 //   parseTextSync: JSON.parse
 // };
 
-test.runIf(isBrowser)('parse#Blob (text)', async () => {});
+test('parse#Blob (text)', async (t) => {
+  if (!isBrowser) {
+    t.comment('Skipping parse(Blob) tests in Node.js');
+    t.end();
+    return;
+  }
 
-test.runIf(isBrowser)('parse#Blob (binary)', async () => {
-  console.log('Not implemented...');
+  // TODO/ActionEngine - restore test
+  // const TEXT_DATA = JSON.stringify(JSON_DATA);
+  // const blob = new Blob([TEXT_DATA]);
+
+  // // @ts-ignore (partial loader object)
+  // const data = await parse(blob, JSONLoader);
+
+  // t.deepEquals(data, JSON_DATA, 'parse(Blob) returned data');
+
+  t.end();
 });
 
-test.runIf(isBrowser)('parse#Blob (streaming parser)', async () => {
-  console.log('Not implemented...');
+test('parse#Blob (binary)', async (t) => {
+  if (!isBrowser) {
+    t.comment('Skipping parse(Blob) tests in Node.js');
+    t.end();
+    return;
+  }
+
+  t.comment('Not implemented...');
+  t.end();
 });
 
-test('parse#Blob uses loader.parseBlob when available', async ({expect}) => {
-  let parseBlobCalled = false;
-  const loader = {
-    id: 'blob-native-test-loader',
-    name: 'Blob Native Test Loader',
-    module: 'core',
-    version: 'latest',
-    extensions: ['bin'],
-    mimeTypes: ['application/octet-stream'],
-    binary: true,
-    dataType: null as unknown as string,
-    batchType: null as never,
-    async parse() {
-      throw new Error('parse should not be called for Blob-native loaders');
-    },
-    async parseBlob(blob: Blob) {
-      parseBlobCalled = true;
-      return await blob.text();
-    }
-  } as const satisfies LoaderWithParser<string>;
+test('parse#Blob (streaming parser)', async (t) => {
+  if (!isBrowser) {
+    t.comment('Skipping fetchFile in Node.js');
+    t.end();
+    return;
+  }
 
-  const result = await parse(new Blob(['blob data'], {type: 'application/octet-stream'}), loader);
-
-  expect(result).toBe('blob data');
-  expect(parseBlobCalled).toBe(true);
+  t.comment('Not implemented...');
+  t.end();
 });

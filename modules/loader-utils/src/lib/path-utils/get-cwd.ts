@@ -1,6 +1,4 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
+// loaders.gl MIT license
 
 export function getCWD() {
   if (typeof process !== 'undefined' && typeof process.cwd !== 'undefined') {

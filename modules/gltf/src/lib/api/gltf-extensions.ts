@@ -1,10 +1,5 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 /* eslint-disable camelcase */
-import type {GLTF} from '../types/gltf-json-schema';
-import type {GLTFWithBuffers} from '../types/gltf-types';
+import {GLTF} from '../types/gltf-json-schema';
 import type {GLTFLoaderOptions} from '../../gltf-loader';
 import {GLTFWriterOptions} from '../../gltf-writer';
 
@@ -17,9 +12,7 @@ import * as EXT_structural_metadata from '../extensions/EXT_structural_metadata'
 
 // GLTF 2.0 Khronos extensions (decode/encode)
 import * as EXT_meshopt_compression from '../extensions/EXT_meshopt_compression';
-import * as KHR_meshopt_compression from '../extensions/KHR_meshopt_compression';
 import * as EXT_texture_webp from '../extensions/EXT_texture_webp';
-import * as EXT_texture_avif from '../extensions/EXT_texture_avif';
 import * as KHR_texture_basisu from '../extensions/KHR_texture_basisu';
 import * as KHR_draco_mesh_compression from '../extensions/KHR_draco_mesh_compression';
 import * as KHR_texture_transform from '../extensions/KHR_texture_transform';
@@ -32,11 +25,7 @@ import * as EXT_feature_metadata from '../extensions/deprecated/EXT_feature_meta
 
 type GLTFExtensionPlugin = {
   name: string;
-  preprocess?: (
-    gltfData: GLTFWithBuffers,
-    options: GLTFLoaderOptions,
-    context
-  ) => void | Promise<void>;
+  preprocess?: (gltfData: {json: GLTF}, options: GLTFLoaderOptions, context) => void;
   decode?: (
     gltfData: {
       json: GLTF;
@@ -61,9 +50,7 @@ export const EXTENSIONS: GLTFExtensionPlugin[] = [
   // 2.0
   EXT_structural_metadata,
   EXT_mesh_features,
-  KHR_meshopt_compression,
   EXT_meshopt_compression,
-  EXT_texture_avif,
   EXT_texture_webp,
   // Basisu should come after webp, we want basisu to be preferred if both are provided
   KHR_texture_basisu,
@@ -81,16 +68,16 @@ export const EXTENSIONS: GLTFExtensionPlugin[] = [
 const EXTENSIONS_ENCODING: GLTFExtensionPlugin[] = [EXT_structural_metadata, EXT_mesh_features];
 
 /** Call before any resource loading starts */
-export async function preprocessExtensions(gltf, options: GLTFLoaderOptions = {}, context?) {
-  const extensions = EXTENSIONS.filter(extension => useExtension(extension.name, options));
+export function preprocessExtensions(gltf, options: GLTFLoaderOptions = {}, context?) {
+  const extensions = EXTENSIONS.filter((extension) => useExtension(extension.name, options));
   for (const extension of extensions) {
-    await extension.preprocess?.(gltf, options, context);
+    extension.preprocess?.(gltf, options, context);
   }
 }
 
 /** Call after resource loading */
 export async function decodeExtensions(gltf, options: GLTFLoaderOptions = {}, context?) {
-  const extensions = EXTENSIONS.filter(extension => useExtension(extension.name, options));
+  const extensions = EXTENSIONS.filter((extension) => useExtension(extension.name, options));
   for (const extension of extensions) {
     // Note: We decode async extensions sequentially, this might not be necessary
     // Currently we only have Draco, but when we add Basis we may revisit

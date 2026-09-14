@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 import type {ReadableOptions} from 'stream';
 import * as Stream from 'stream';
 
@@ -18,7 +14,7 @@ export function makeNodeStream<ArrayBuffer>(
   options?: ReadableOptions
 ): ReadableType {
   // @ts-ignore AsyncGenerator
-  // biome-ignore format: preserve intentional fixture layout
+  // prettier-ignore
   const iterator = source[Symbol.asyncIterator]
     ? // @ts-ignore AsyncGenerator
     source[Symbol.asyncIterator]()
@@ -63,11 +59,7 @@ class AsyncIterableReadable extends Readable {
     const bm = this._bytesMode;
     let r: IteratorResult<ArrayBuffer> | null = null;
     // while (this.readable && !(r = await it.next(bm ? size : null)).done) {
-    while (this.readable) {
-      r = await it.next();
-      if (r.done) {
-        break;
-      }
+    while (this.readable && !(r = await it.next()).done) {
       if (size !== null) {
         size -= bm && ArrayBuffer.isView(r.value) ? r.value.byteLength : 1;
       }

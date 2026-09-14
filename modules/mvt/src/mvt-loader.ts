@@ -2,22 +2,18 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
-import type {GeoArrowEncodingPreference} from '@loaders.gl/schema';
+import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
 // import type {MVTOptions} from './lib/types';
-import {MVTFormat} from './mvt-format';
-import {deserializeMVTWorkerResult, serializeMVTWorkerResult} from './lib/mvt-worker-transport';
+import {parseMVT} from './lib/parse-mvt';
 
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
 
 export type MVTLoaderOptions = LoaderOptions & {
-  /** Preferred encoding for Arrow geometry output. */
-  geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
   mvt?: {
     /** Shape of returned data */
-    shape?: 'geojson-table' | 'columnar-table' | 'binary-geometry' | 'arrow-table';
+    shape?: 'geojson-table' | 'columnar-table' | 'geojson' | 'binary' | 'binary-geometry';
     /** `wgs84`: coordinates in long, lat (`tileIndex` must be provided. `local` coordinates are `0-1` from tile origin */
     coordinates?: 'wgs84' | 'local';
     /** An object containing tile index values (`x`, `y`, `z`) to reproject features' coordinates into WGS84. Mandatory with `wgs84` coordinates option. */
@@ -28,52 +24,60 @@ export type MVTLoaderOptions = LoaderOptions & {
     layers?: string[];
     /** Override the URL to the worker bundle (by default loads from unpkg.com) */
     workerUrl?: string;
-    /** Preferred encoding for Arrow geometry output. */
-    geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
   };
   gis?: {
+    /** @deprecated Use options.mvt.shape === 'binary-geometry' */
+    binary?: boolean;
     /** @deprecated. Use options.mvt.shape */
-    format?: 'geojson-table' | 'columnar-table' | 'binary-geometry' | 'arrow-table';
+    format?: 'geojson-table' | 'columnar-table' | 'geojson' | 'binary' | 'binary-geometry';
   };
 };
 
-/** Preloads the parser-bearing MVT loader implementation. */
-async function preload() {
-  const {MVTLoaderWithParser} = await import('./mvt-loader-with-parser');
-  return MVTLoaderWithParser;
-}
-
-/** Metadata-only worker loader for the Mapbox Vector Tile format. */
+/**
+ * Worker loader for the Mapbox Vector Tile format
+ */
 export const MVTWorkerLoader = {
-  ...MVTFormat,
   dataType: null as any,
   batchType: null as never,
+
+  name: 'Mapbox Vector Tile',
+  id: 'mvt',
+  module: 'mvt',
   version: VERSION,
+  // Note: ArcGIS uses '.pbf' extension and 'application/octet-stream'
+  extensions: ['mvt', 'pbf'],
+  mimeTypes: [
+    // https://www.iana.org/assignments/media-types/application/vnd.mapbox-vector-tile
+    'application/vnd.mapbox-vector-tile',
+    'application/x-protobuf'
+    // 'application/octet-stream'
+  ],
   worker: true,
+  category: 'geometry',
   options: {
     mvt: {
-      shape: 'geojson-table',
+      shape: 'geojson',
       coordinates: 'local',
       layerProperty: 'layerName',
       layers: undefined!,
       tileIndex: undefined!
     }
-  },
-  serializeWorkerResult: serializeMVTWorkerResult,
-  deserializeWorkerResult: deserializeMVTWorkerResult,
-  preload
+  }
 } as const satisfies Loader<
   any, // BinaryFeatureCollection | GeoJSONTable | Feature<Geometry, GeoJsonProperties>,
   never,
   MVTLoaderOptions
 >;
 
-/** Metadata-only loader for the Mapbox Vector Tile format. */
+/**
+ * Loader for the Mapbox Vector Tile format
+ */
 export const MVTLoader = {
   ...MVTWorkerLoader,
-  binary: true,
-  preload
-} as const satisfies Loader<
+  parse: async (arrayBuffer, options?: MVTLoaderOptions) => parseMVT(arrayBuffer, options),
+  parseSync: parseMVT,
+  binary: true
+} as const satisfies LoaderWithParser<
   any, // BinaryFeatureCollection | GeoJSONTable | Feature<Geometry, GeoJsonProperties>,
   never,
   MVTLoaderOptions

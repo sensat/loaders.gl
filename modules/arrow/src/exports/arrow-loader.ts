@@ -3,8 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
-import type {ArrowTable} from '@loaders.gl/schema';
-import {ArrowFormat} from './arrow-format';
+import type {ArrowTable} from '../schema/arrow-table-type';
 
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
@@ -24,23 +23,27 @@ export type ArrowLoaderOptions = LoaderOptions & {
 };
 
 /** ArrowJS table loader */
-async function preload() {
-  const {ArrowLoaderWithParser} = await import('../arrow-loader-with-parser');
-  return ArrowLoaderWithParser;
-}
-
-/** Metadata-only ArrowJS table worker loader. */
 export const ArrowWorkerLoader = {
   dataType: null as unknown as ArrowTable,
   batchType: null as never,
 
-  ...ArrowFormat,
+  name: 'Apache Arrow',
+  id: 'arrow',
+  module: 'arrow',
   version: VERSION,
   // worker: true,
+  category: 'table',
+  extensions: ['arrow', 'feather'],
+  mimeTypes: [
+    'application/vnd.apache.arrow.file',
+    'application/vnd.apache.arrow.stream',
+    'application/octet-stream'
+  ],
+  binary: true,
+  tests: ['ARROW'],
   options: {
     arrow: {
       shape: 'columnar-table'
     }
-  },
-  preload
+  }
 } as const satisfies Loader<ArrowTable, never, ArrowLoaderOptions>;

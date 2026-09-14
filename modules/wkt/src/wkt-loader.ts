@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
-import type {Geometry} from '@loaders.gl/schema';
-import {VERSION} from './lib/version';
-import {WKTFormat} from './wkt-format';
+import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+import {VERSION} from './lib/utils/version';
+import {parseWKT, isWKT, WKT_MAGIC_STRINGS} from './lib/parse-wkt';
+import {Geometry} from '@loaders.gl/schema';
 
 export type WKTLoaderOptions = LoaderOptions & {
   /** Options for the WKTLoader */
@@ -20,35 +20,36 @@ export type WKTLoaderOptions = LoaderOptions & {
 };
 
 /**
- * Preloads the parser-bearing WKT loader implementation.
- */
-async function preload() {
-  const {WKTLoaderWithParser} = await import('./wkt-loader-with-parser');
-  return WKTLoaderWithParser;
-}
-
-/**
- * Metadata-only Well-Known text worker loader
+ * Well-Known text worker loader
  */
 export const WKTWorkerLoader = {
   dataType: null as unknown as Geometry,
   batchType: null as never,
 
-  ...WKTFormat,
+  name: 'WKT (Well-Known Text)',
+  id: 'wkt',
+  module: 'wkt',
   version: VERSION,
   worker: true,
+  extensions: ['wkt'],
+  mimeTypes: ['text/plain'],
+  category: 'geometry',
+  text: true,
+  tests: WKT_MAGIC_STRINGS,
+  testText: isWKT,
   options: {
     wkt: {
       shape: 'geojson-geometry',
       crs: true
     }
-  },
-  preload
+  }
 } as const satisfies Loader<Geometry, never, WKTLoaderOptions>;
 
 /**
- * Metadata-only Well-Known text loader
+ * Well-Known text loader
  */
 export const WKTLoader = {
-  ...WKTWorkerLoader
-} as const satisfies Loader<Geometry, never, WKTLoaderOptions>;
+  ...WKTWorkerLoader,
+  parse: async (arrayBuffer, options?) => parseWKT(new TextDecoder().decode(arrayBuffer), options),
+  parseTextSync: (string: string, options?) => parseWKT(string, options)
+} as const satisfies LoaderWithParser<Geometry, never, WKTLoaderOptions>;

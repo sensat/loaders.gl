@@ -1,62 +1,13 @@
----
-title: '@loaders.gl/json'
-description: Parse JSON, newline-delimited JSON, and GeoJSON into document, table, or feature data.
-hide_title: true
-page_style: designed
----
+# Overview
 
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
-import {StructuredDataPathGraphic} from '@site/src/components/docs/structured-data-path-graphic';
+The `@loaders.gl/json` module parses JSON. It can parse arbitrary JSON data but is optimized for:
 
-<DocPageHeader
-  eyebrow="Structured data module"
-  title="@loaders.gl/json"
-  description="The JSON module covers arbitrary documents, newline-delimited records, tabular arrays, and GeoJSON. Applications can preserve nested structures or ask for table and feature outputs when that is the better next step."
-  tone="yellow"
-  meta={['JSON / NDJSON', 'GeoJSON', 'Table and feature output']}
-  links={[
-    {label: 'JSON category', to: '/docs/specifications/category-json'},
-    {label: 'Using loaders', to: '/docs/developer-guide/using-loaders'}
-  ]}
-/>
-
-<StructuredDataPathGraphic />
-
-<DocOrientation
-  eyebrow="One module, several paths"
-  title="Keep documents, rows, and features distinct."
-  description="JSON values are not automatically tables. The module keeps the source structure available, while specialized loaders make the intended table or geospatial interpretation explicit."
-  tone="yellow"
-  items={[
-    {label: 'Documents', value: 'Nested objects, arrays, and scalar values'},
-    {label: 'Rows', value: 'JSON arrays and newline-delimited JSON records'},
-    {label: 'Features', value: 'GeoJSON geometries, features, and collections'},
-    {label: 'Batches', value: 'Incremental parsing for line-oriented inputs'}
-  ]}
-/>
-
-The `@loaders.gl/json` module parses JSON, tabular JSON, and geospatial formats that use JSON encoding. It includes:
-
-- `JSONLoader` for arbitrary JSON documents.
-- `JSONTableLoader` for JSON documents that should always resolve to table output.
-- `GeoJSONLoader` for the GeoJSON geospatial format, which uses JSON encoding.
-- Streaming JSON and GeoJSON loaders for line-oriented formats.
+- loading tabular data stored in JSON arrays.
+- loading tabular geospatial data stored in GeoJSON.
+- loading tabular data from various streaming JSON and GeoJSON formats, such as new-line delimited JSON.
 
 The JSON loaders also support batched parsing which can be useful when loading very large tabular JSON files
 to avoid blocking for tens of seconds.
-
-For configuration formats with the same general object/array data model, see the dependency-free
-[`YAMLLoader`](/docs/modules/config/api-reference/yaml-loader) and
-[`TOMLLoader`](/docs/modules/config/api-reference/toml-loader) in `@loaders.gl/config`.
-
-<ReferenceBoundary
-  title="JSON module details"
-  description="The sections below list loaders and writers, output shapes, streaming behavior, and parser options."
-  tone="yellow"
-/>
-
-`JSONLoader` exposes `json.backend: 'fast'` as an experimental opt-in backend for streaming extraction. This keeps atomic JSON parsing on the standard `JSON.parse` path while using the faster streaming parser for `loadInBatches`.
 
 ## Installation
 
@@ -66,15 +17,14 @@ npm install @loaders.gl/core @loaders.gl/json
 
 ## Loaders and Writers
 
-| Loader / Writer | Description |
-| --------------- | ----------- |
-| [`JSONLoader`](/docs/modules/json/api-reference/json-loader) | Loads arbitrary JSON documents and can extract arrays as loaders.gl row tables. |
-| [`JSONTableLoader`](/docs/modules/json/api-reference/json-table-loader) | Loads JSON row arrays as loaders.gl row tables or Apache Arrow tables. |
-| [`NDJSONLoader`](/docs/modules/json/api-reference/ndjson-loader) | Loads newline-delimited JSON records. |
-| [`GeoJSONLoader`](/docs/modules/json/api-reference/geojson-loader) | Loads GeoJSON features and feature collections. |
-| [`NDGeoJSONLoader`](/docs/modules/json/api-reference/ndgeojson-loader) | Loads newline-delimited GeoJSON records. |
-| [`JSONWriter`](/docs/modules/json/api-reference/json-writer) | Writes loaders.gl tables as JSON arrays or custom wrapped JSON values. |
-| [`GeoJSONWriter`](/docs/modules/json/api-reference/geojson-writer) | Writes geospatial tables as GeoJSON. |
+| Exports                                                                |
+| ---------------------------------------------------------------------- |
+| [`JSONLoader`](/docs/modules/json/api-reference/json-loader)           |
+| [`NDJSONLoader`](/docs/modules/json/api-reference/ndjson-loader)       |
+| [`GeoJSONLoader`](/docs/modules/json/api-reference/geojson-loader)     |
+| [`NDGeoJSONLoader`](/docs/modules/json/api-reference/ndgeojson-loader) |
+| [`JSONWriter`](/docs/modules/json/api-reference/json-writer)           |
+| [`GeoJSONWriter`](/docs/modules/json/api-reference/geojson-writer)     |
 
 ## Additional APIs
 
@@ -100,10 +50,10 @@ allowing correct distinctions to be made in usage.
 | [NewLine Delimited JSON][format_ndjson]           | `.ndjson`    | `application/x-ndjson`     | `NDJSONLoader`                                                |
 | [JSON Lines][format_jsonlines]                    | `.jsonl`     | `application/x-ldjson`     | `NDJSONLoader`                                                |
 | [JSON Text Sequences][format_json_seq]            |              | `application/json-seq`     | `NDJSONLoader`. Partial records must not span multiple lines. |     |
-| [GeoJSON][format_geojson]                         | `.geojson`   | `application/geo+json`     | `GeoJSONLoader`                                               |
-| [Newline Delimited GeoJSON][format_ndgeojson]     | `.ndgeojson` |                            | `NDGeoJSONLoader`                                             |
-| [GeoJSON Lines][format_geojson]                   | `.geojsonl`  |                            | `NDGeoJSONLoader`                                             |
-| [GeoJSON Text Sequences][format_geojson_text_seq] |              | `application/geo+json-seq` | `NDGeoJSONLoader`                                             |
+| [GeoJSON][format_geojson]                         | `.json`      | `application/geo+json`     | `JSONLoader`                                                  |
+| [Newline Delimited GeoJSON][format_ndgeojson]     | `.ndgeojson` |                            | `NDJSONLoader`                                                |
+| [GeoJSON Lines][format_geojson]                   | `.geojsonl`  |                            | `NDJSONLoader`                                                |
+| [GeoJSON Text Sequences][format_geojson_text_seq] |              | `application/geo+json-seq` | `NDJSONLoader`                                                |
 
 [format_json]: https://www.json.org/json-en.html
 [format_ndjson]: http://ndjson.org/

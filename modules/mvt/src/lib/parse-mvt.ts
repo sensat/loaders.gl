@@ -3,17 +3,13 @@
 // Copyright vis.gl contributors
 
 import type {
-  ArrowTable,
   FlatFeature,
   Feature,
+  GeojsonGeometryInfo,
   GeoJSONTable,
   BinaryFeatureCollection
 } from '@loaders.gl/schema';
-import {
-  convertFeaturesToWKBArrowTable,
-  flatGeojsonToBinary,
-  GeojsonGeometryInfo
-} from '@loaders.gl/gis';
+import {flatGeojsonToBinary} from '@loaders.gl/gis';
 import {log} from '@loaders.gl/loader-utils';
 import Protobuf from 'pbf';
 
@@ -34,9 +30,7 @@ export function parseMVT(arrayBuffer: ArrayBuffer, options?: MVTLoaderOptions) {
   const mvtOptions = checkOptions(options);
 
   const shape: string | undefined =
-    (options?.gis as {format?: string} | undefined)?.format ||
-    options?.mvt?.shape ||
-    (options as {shape?: string} | undefined)?.shape;
+    options?.gis?.format || options?.mvt?.shape || (options?.shape as string);
   switch (shape) {
     case 'columnar-table': // binary + some JS arrays
       return {shape: 'columnar-table', data: parseToBinary(arrayBuffer, mvtOptions)};
@@ -48,17 +42,11 @@ export function parseMVT(arrayBuffer: ArrayBuffer, options?: MVTLoaderOptions) {
       };
       return table;
     }
-    case 'arrow-table': {
-      const table: ArrowTable = convertFeaturesToWKBArrowTable(
-        parseToGeojsonFeatures(arrayBuffer, mvtOptions),
-        {
-          encodingPreference:
-            options?.geoarrow?.encodingPreference || mvtOptions.geoarrow?.encodingPreference
-        }
-      );
-      return table;
-    }
+    case 'geojson':
+      return parseToGeojsonFeatures(arrayBuffer, mvtOptions);
     case 'binary-geometry':
+      return parseToBinary(arrayBuffer, mvtOptions);
+    case 'binary':
       return parseToBinary(arrayBuffer, mvtOptions);
     default:
       throw new Error(shape || 'undefined shape');
@@ -147,20 +135,19 @@ function parseToGeojsonFeatures(arrayBuffer: ArrayBuffer, options: MVTOptions): 
 
 /** Check that options are good */
 function checkOptions(options?: MVTLoaderOptions): MVTOptions {
-  const mvtOptions = options?.mvt as MVTOptions | undefined;
-  if (!mvtOptions) {
+  if (!options?.mvt) {
     throw new Error('mvt options required');
   }
 
-  if (mvtOptions.coordinates === 'wgs84' && !mvtOptions.tileIndex) {
+  if (options.mvt?.coordinates === 'wgs84' && !options.mvt.tileIndex) {
     throw new Error('MVT Loader: WGS84 coordinates need tileIndex property');
   }
 
-  if (options?.gis) {
+  if (options.gis) {
     log.warn('MVTLoader: "options.gis" is deprecated, use "options.mvt.shape" instead')();
   }
 
-  return mvtOptions;
+  return options.mvt;
 }
 
 /**

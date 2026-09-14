@@ -3,6 +3,7 @@
 // Copyright (c) vis.gl contributors
 
 import {createLoaderWorker} from '@loaders.gl/loader-utils';
-import {CompressedTextureLoaderWithParser} from '../compressed-texture-loader-with-parser';
+import {CompressedTextureLoader} from '../compressed-texture-loader';
 
-createLoaderWorker(CompressedTextureLoaderWithParser);
+// @ts-expect-error
+createLoaderWorker(CompressedTextureLoader);

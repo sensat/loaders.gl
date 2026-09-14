@@ -2,13 +2,16 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {expect, test} from 'vitest';
+import test from 'tape-promise/tape';
 
 import {encodeTextSync} from '@loaders.gl/core';
-import {WKTLoader as MetadataWKTLoader, WKTWriter} from '@loaders.gl/wkt';
+import {WKTWriter} from '@loaders.gl/wkt';
 
-test('WKTWriter', () => {
-  expect(() => encodeTextSync({type: 'FeatureCollection'}, WKTWriter)).toThrow();
+test('WKTWriter', (t) => {
+  t.throws(
+    () => encodeTextSync({type: 'FeatureCollection'}, WKTWriter),
+    'does not accept featurecollections'
+  );
 
   // const fixtures = [
   //   'LINESTRING (30 10, 10 30, 40 40)',
@@ -25,58 +28,22 @@ test('WKTWriter', () => {
   // ];
 
   // fixtures.forEach((fix) => t.equal(fix, encodeSync(parse(fix, WKTLoader), WKTWriter), fix));
-  const geojsonFeature = {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'Point',
-      coordinates: [42, 20]
-    }
-  };
 
-  expect(encodeTextSync(geojsonFeature.geometry, WKTWriter)).toBe('POINT (42 20)');
-  expect(
+  t.equal(
     encodeTextSync(
       {
-        type: 'LineString',
-        coordinates: [
-          [0, 1],
-          [2, 3]
-        ]
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Point',
+          coordinates: [42, 20]
+        }
       },
       WKTWriter
-    )
-  ).toBe('LINESTRING (0 1, 2 3)');
-  expect(
-    encodeTextSync(
-      {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [0, 0],
-            [1, 0],
-            [0, 1],
-            [0, 0]
-          ]
-        ]
-      },
-      WKTWriter
-    )
-  ).toBe('POLYGON ((0 0, 1 0, 0 1, 0 0))');
-  expect(
-    encodeTextSync({type: 'GeometryCollection', geometries: [geojsonFeature.geometry]}, WKTWriter)
-  ).toBe('GEOMETRYCOLLECTION (POINT (42 20))');
-});
-
-test('WKT loader preloads the parser and writer supports binary output', async () => {
-  const parser = await MetadataWKTLoader.preload();
-  expect(parser.parseTextSync('POINT (4 5)')).toEqual({
-    type: 'Point',
-    coordinates: [4, 5]
-  });
-  const encoded = await WKTWriter.encode({type: 'Point', coordinates: [4, 5]});
-  expect(new TextDecoder().decode(encoded)).toBe('POINT (4 5)');
-  expect(new TextDecoder().decode(WKTWriter.encodeSync({type: 'Point', coordinates: [4, 5]}))).toBe(
-    'POINT (4 5)'
+    ),
+    'POINT (42 20)',
+    'point equal'
   );
+
+  t.end();
 });

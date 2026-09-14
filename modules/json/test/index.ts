@@ -10,7 +10,6 @@ import './lib/clarinet';
 
 // JSON Parsers
 import './lib/parser/json-parser.spec';
-import './lib/parser/fast-streaming-json-parser.spec';
 import './lib/parser/streaming-json-parser.spec';
 
 // Loaders

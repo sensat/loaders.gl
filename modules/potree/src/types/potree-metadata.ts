@@ -2,144 +2,93 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {PROJStringDefinition} from '@math.gl/crs';
-import {z} from 'zod';
-
-/** Potree axis-aligned bounding box metadata. */
+/** Bounding box */
 export interface PotreeBoundingBox {
-  /** Minimum X coordinate. */
+  /** Min X */
   lx: number;
-  /** Minimum Y coordinate. */
+  /** Min Y */
   ly: number;
-  /** Minimum Z coordinate. */
+  /** Min Z */
   lz: number;
-  /** Maximum X coordinate. */
+  /** Max X */
   ux: number;
-  /** Maximum Y coordinate. */
+  /** Max Y */
   uy: number;
-  /** Maximum Z coordinate. */
+  /** Max Z */
   uz: number;
-  /** Additional bounding-box properties are preserved verbatim. */
-  [key: string]: unknown;
 }
 
-/** Attribute types for Potree `*.bin` content. */
+/** Attribute types for *.bin content */
 export type PotreeAttribute =
-  /** Three `uint32` position components: x, y, z. */
+  /** 3 (uint32) numbers: x, y, z */
   | 'POSITION_CARTESIAN'
-  /** Four `uint8` color components: r, g, b, a. */
+  /** 4 x (uint8) numbers for the color: r, g, b, a */
   | 'RGBA_PACKED'
-  /** Four `uint8` color components: r, g, b, a. */
+  /** 4 x (uint8) numbers for the color: r, g, b, a */
   | 'COLOR_PACKED'
-  /** Three `uint8` color components: r, g, b. */
+  /** 3 x (uint8) numbers for the color: r, g, b */
   | 'RGB_PACKED'
-  /** Three floating-point normal components: x, y, z. */
+  /** 3 x (float) numbers: x', y', z'  */
   | 'NORMAL_FLOATS'
-  /** One byte of padding. */
+  /** (uint8) number */
   | 'FILLER_1B'
-  /** One `uint16` point-intensity value. */
+  /** (uint16) number specifying the point's intensity */
   | 'INTENSITY'
-  /** One `uint8` classification identifier. */
+  /** (uint8) id for the class used */
   | 'CLASSIFICATION'
-  /** A sphere-mapped normal representation; support may be incomplete. */
+  /** Note: might need to be revisited, best don't use */
   | 'NORMAL_SPHEREMAPPED'
-  /** An octahedral 16-bit normal representation; support may be incomplete. */
+  /** Note: might need to be revisited, best don't use */
   | 'NORMAL_OCT16'
-  /** Three floating-point normal components: x, y, z. */
+  /** 3 x (float) numbers: x', y', z' */
   | 'NORMAL';
 
-/** Legacy inline hierarchy entry containing a node name and point count.
- * @example ['r043', 145]
- */
+/** Hierarchy item: [node name leading with 'r', points count
+ * @example [r043, 145]
+] */
 export type HierarchyItem = [string, number];
 
 /**
- * Potree data set format metadata from `cloud.js`.
+ * Potree data set format metadata (cloud.js)
  * @version 1.7
- * @see https://github.com/potree/potree/blob/1.7/docs/potree-file-format.md
- */
+ * @link https://github.com/potree/potree/blob/1.7/docs/potree-file-format.md
+ * */
 export interface PotreeMetadata {
-  /** Potree format version in which this file was written. */
+  /** Version number in which this file is written */
   version: string;
-  /** Folder used to load additional octree data. */
+  /** Folder that is used to load additional data */
   octreeDir: string;
-  /** Number of points contained in the complete point cloud. */
-  points?: number;
-  /** Proj.4-compatible definition of the point cloud's projection. */
-  projection?: PROJStringDefinition;
-  /** World bounding box used to limit the initial point of view. */
+  /** Amount of points contained in the whole pointcloud data */
+  points: number;
+  /**
+   * This parameter is used to transform the point data
+   * to the projection system used while visualizing the points. It has to be
+   * in a format that is parsable by [proj.4][proj4].
+   * */
+  projection: string;
+  /** Bounding box of the world used to limit the initial POV. */
   boundingBox: PotreeBoundingBox;
-  /** Tight bounding box around the actual points. */
+  /** Bounding box of the actual points in the data */
   tightBoundingBox: PotreeBoundingBox;
-  /** Description of the attributes stored in point-data files. */
+  /** Description of point attributes in data files */
   pointAttributes: 'LAS' | 'LAZ' | PotreeAttribute[];
-  /** Root-node point spacing, halved at each octree level. */
+  /**
+   * Space between points at the root node.
+   * This value is halved at each octree level.
+   * */
   spacing: number;
   /**
-   * Scale applied to `POSITION_CARTESIAN` components before adding the bounding-box minimum.
-   */
+   * Scale applied to convert POSITION_CARTESIAN components
+   * from uint32 values to floating point values. The full transformation
+   * to world coordinates is
+   * position = (POSITION_CARTESIAN * scale) + boundingBox.min
+   * */
   scale: number;
-  /** Number of octree levels before another hierarchy folder is expected. */
+  /** Amount of Octree levels before a new folder hierarchy is expected. */
   hierarchyStepSize: number;
   /**
-   * Legacy inline file hierarchy, superseded by hierarchy index files.
+   * The hierarchy of files, now loaded through index files.
    * @deprecated
-   */
-  hierarchy?: HierarchyItem[];
-  /** Additional metadata properties are preserved verbatim. */
-  [key: string]: unknown;
+   * */
+  hierarchy: HierarchyItem[];
 }
-
-/** Zod schema for a Potree axis-aligned bounding box. */
-export const PotreeBoundingBoxSchema = z
-  .object({
-    lx: z.number(),
-    ly: z.number(),
-    lz: z.number(),
-    ux: z.number(),
-    uy: z.number(),
-    uz: z.number()
-  })
-  .passthrough() satisfies z.ZodType<PotreeBoundingBox>;
-
-/** Zod schema for the point attributes supported by the Potree binary loader. */
-export const PotreeAttributeSchema = z.enum([
-  'POSITION_CARTESIAN',
-  'RGBA_PACKED',
-  'COLOR_PACKED',
-  'RGB_PACKED',
-  'NORMAL_FLOATS',
-  'FILLER_1B',
-  'INTENSITY',
-  'CLASSIFICATION',
-  'NORMAL_SPHEREMAPPED',
-  'NORMAL_OCT16',
-  'NORMAL'
-]) satisfies z.ZodType<PotreeAttribute>;
-
-/** Zod schema for one legacy inline hierarchy entry. */
-export const PotreeHierarchyItemSchema = z.tuple([
-  z.string().regex(/^r[0-7]*$/),
-  z.number().int().nonnegative()
-]) satisfies z.ZodType<HierarchyItem>;
-
-/** Zod schema for Potree 1.7 `cloud.js` metadata. */
-export const PotreeMetadataSchema = z
-  .object({
-    version: z.string().min(1),
-    octreeDir: z.string().min(1),
-    points: z.number().int().nonnegative().optional(),
-    projection: z.string().optional(),
-    boundingBox: PotreeBoundingBoxSchema,
-    tightBoundingBox: PotreeBoundingBoxSchema,
-    pointAttributes: z.union([
-      z.literal('LAS'),
-      z.literal('LAZ'),
-      z.array(PotreeAttributeSchema).min(1)
-    ]),
-    spacing: z.number().positive(),
-    scale: z.number().positive(),
-    hierarchyStepSize: z.number().int().positive(),
-    hierarchy: z.array(PotreeHierarchyItemSchema).optional()
-  })
-  .passthrough() satisfies z.ZodType<PotreeMetadata>;

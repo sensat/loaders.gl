@@ -1,8 +1,14 @@
-import {expect, test} from 'vitest';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+// Forked from sax-ts & sax under ISC license
+
+import test from 'tape-promise/tape';
 import {testSax} from '../utils/test-utils';
+
 // https://github.com/isaacs/sax-js/issues/33
-test('SAXParser#issue-30', () => {
-  testSax({
+test(`SAXParser#${__filename}`, (t) => {
+  testSax(t, {
     xml:
       '<xml>\n' +
       '<!-- \n' +
@@ -26,4 +32,6 @@ test('SAXParser#issue-30', () => {
       strict: true
     }
   });
+
+  t.end();
 });

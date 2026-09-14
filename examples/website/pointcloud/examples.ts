@@ -2,16 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-export type Example = {
-  type: 'las' | 'draco' | 'pcd' | 'ply' | 'obj';
-  url: string | File;
-  urls?: string[];
-  pointCount?: number;
-  initialExample?: boolean;
-  attributions?: string[];
-  viewState?: Record<string, unknown>;
-  tileSize?: number[];
-};
+import {Example} from './components/example-panel';
 
 const DECK_DATA_URI = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master';
 const LOADERS_URI = 'https://raw.githubusercontent.com/visgl/loaders.gl/master';
@@ -20,28 +11,23 @@ export const EXAMPLES: Record<string, Record<string, Example>> = {
   PLY: {
     'Richmond Azaelias': {
       type: 'ply',
-      url: `${LOADERS_URI}/modules/ply/test/data/richmond-azaelias.ply`,
-      pointCount: 359610
+      url: `${LOADERS_URI}/modules/ply/test/data/richmond-azaelias.ply`
     },
     'Lucy 800K': {
       type: 'ply',
-      url: `${DECK_DATA_URI}/examples/point-cloud-ply/lucy800k.ply`,
-      pointCount: 772191
+      url: `${DECK_DATA_URI}/examples/point-cloud-ply/lucy800k.ply`
     },
     'Lucy 100K': {
       type: 'ply',
-      url: `${DECK_DATA_URI}/examples/point-cloud-ply/lucy100k.ply`,
-      pointCount: 50002
+      url: `${DECK_DATA_URI}/examples/point-cloud-ply/lucy100k.ply`
     },
     Bunny: {
       type: 'ply',
-      url: `${LOADERS_URI}/modules/ply/test/data/bunny.ply`,
-      pointCount: 34834
+      url: `${LOADERS_URI}/modules/ply/test/data/bunny.ply`
     },
     'Bun Zipper (Text)': {
       type: 'ply',
-      url: `${LOADERS_URI}/modules/ply/test/data/bun_zipper.ply`,
-      pointCount: 35947
+      url: `${LOADERS_URI}/modules/ply/test/data/bun_zipper.ply`
     }
   },
 
@@ -50,18 +36,11 @@ export const EXAMPLES: Record<string, Record<string, Example>> = {
     'Indoor Scan 800K': {
       type: 'las',
       url: `${DECK_DATA_URI}/examples/point-cloud-laz/indoor.0.1.laz`
-    },
-    'LAS 1-4 example': {
-      type: 'las',
-      // TODO upload the file to deck data
-      url: 'https://pub-0e04e4fabfef402d8789a24f6a393790.r2.dev/SerpentMound_LAS14_ExtraDims.laz'
-
-    },
+    }
     // TODO need fix
     // 'Indoor Scan 8M': {
-    //   type: 'las',
     //   url: `${DECK_DATA_URI}/examples/point-cloud-laz/indoor.laz`
-    // },
+    // }
   },
 
   Draco: {
@@ -73,11 +52,9 @@ export const EXAMPLES: Record<string, Record<string, Example>> = {
   // TODO need fix
   PCD: {
     Zaghetto: {
-      type: 'pcd',
       url: `${LOADERS_URI}/modules/pcd/test/data/Zaghetto.pcd`
     },
     'Simple (Text)': {
-      type: 'pcd',
       url: `${LOADERS_URI}/modules/pcd/test/data/simple-ascii.pcd`
     }
   },

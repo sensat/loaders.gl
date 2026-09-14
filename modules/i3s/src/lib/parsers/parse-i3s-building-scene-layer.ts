@@ -1,23 +1,18 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 import type {BuildingSceneLayerTileset, BuildingSceneSublayer} from '../../types';
 
 const OBJECT_3D_LAYER_TYPE = '3DObject';
-const POINT_LAYER_TYPE = 'Point';
 
 /**
  * Parses Builiding Scene Layer and creates tileset
- * @param data - Building scene layer JSON as text or encoded bytes.
- * @param url - URL used as the base for sublayer URLs.
+ * @param data
+ * @param options
+ * @param context
  */
 export async function parseBuildingSceneLayer(
-  data: string | ArrayBuffer,
+  data: ArrayBuffer,
   url: string
 ): Promise<BuildingSceneLayerTileset> {
-  const text = typeof data === 'string' ? data : new TextDecoder().decode(data);
-  const layer0 = JSON.parse(text);
+  const layer0 = JSON.parse(new TextDecoder().decode(data));
   const {sublayers} = layer0;
 
   return {
@@ -41,8 +36,8 @@ function parseSublayersTree(
     const subLayer = sublayers[index];
     const {id, layerType, visibility = true, ...rest} = subLayer;
 
-    // Building Scene Layers can contain renderable 3D Object and Point sublayers.
-    if (layerType === OBJECT_3D_LAYER_TYPE || layerType === POINT_LAYER_TYPE) {
+    // Add support only for 3DObject layer type for I3S purposes.
+    if (layerType === OBJECT_3D_LAYER_TYPE) {
       const sublayerUrl = `${url}/sublayers/${id}`;
 
       layers.push({

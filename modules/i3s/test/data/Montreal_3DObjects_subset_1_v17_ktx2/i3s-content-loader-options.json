@@ -320,6 +320,6 @@
   "useDracoGeometry": true,
   "useCompressedTextures": true,
   "decodeTextures": true,
-  "coordinateSystem": "lnglat-offsets",
+  "coordinateSystem": 3,
   "colorsByAttribute": null
 }

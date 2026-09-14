@@ -3,8 +3,7 @@
 // Copyright (c) vis.gl contributors
 // Copyright 2022 Foursquare Labs, Inc.
 
-import type {Table} from '@loaders.gl/schema';
-import {makeArrayRowIterator, getTableNumCols} from '@loaders.gl/schema-utils';
+import {Table, makeArrayRowIterator, getTableNumCols} from '@loaders.gl/schema';
 import {csvFormatRows} from 'd3-dsv';
 import type {CSVWriterOptions} from '../../csv-writer';
 
@@ -21,7 +20,7 @@ export function encodeTableAsCSV(
 
   const fields = table.schema?.fields || [];
 
-  const columnNames = fields.map(f => {
+  const columnNames = fields.map((f) => {
     // This is a leaky abstraction, assuming Kepler metadata
     const displayName = f.metadata?.displayName;
     return useDisplayNames && typeof displayName === 'string' ? displayName : f.name;
@@ -37,10 +36,7 @@ export function encodeTableAsCSV(
     formattedData.push(formattedRow);
   }
 
-  // We represent missing values as '', leaving the option for the app to explicity represent 'null'.
-  const stringsOnly = formattedData.map(row => row.map(value => (value === null ? '' : value)));
-
-  return csvFormatRows(stringsOnly);
+  return csvFormatRows(formattedData);
 }
 
 /**

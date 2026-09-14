@@ -2,8 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {LoaderOptions} from '../../../loader-types';
-import {createAuthenticatedFetch} from '../../request-utils/request-credentials';
+import type {LoaderOptions} from '@loaders.gl/loader-utils';
 
 /**
  * Gets the current fetch function from options
@@ -13,33 +12,21 @@ import {createAuthenticatedFetch} from '../../request-utils/request-credentials'
  * @param context
  */
 export function getFetchFunction(options?: LoaderOptions) {
-  const fetchOption = options?.fetch ?? options?.core?.fetch;
-  let fetchFunction: (url: string, requestOptions?: RequestInit) => Promise<Response>;
+  const fetchFunction = options?.fetch;
 
-  if (typeof fetchOption === 'function') {
-    fetchFunction = (url: string, requestOptions?: RequestInit) => fetchOption(url, requestOptions);
-  } else if (fetchOption) {
-    fetchFunction = (url, requestOptions) =>
-      fetch(url, mergeFetchOptions(fetchOption, requestOptions));
-  } else {
-    fetchFunction = (url, requestOptions) => fetch(url, requestOptions);
+  // options.fetch can be a function
+  if (fetchFunction && typeof fetchFunction === 'function') {
+    return (url: string, fetchOptions?: RequestInit) => fetchFunction(url, fetchOptions);
   }
 
-  return createAuthenticatedFetch({
-    fetch: fetchFunction,
-    credentials: options?.core?.credentials || []
-  });
-}
-
-/** Combines static and per-request fetch options without replacing either header collection. */
-function mergeFetchOptions(fetchOptions: RequestInit, requestOptions?: RequestInit): RequestInit {
-  const mergedOptions: RequestInit = {...fetchOptions, ...requestOptions};
-  if (fetchOptions.headers || requestOptions?.headers) {
-    const headers = new Headers(fetchOptions.headers);
-    new Headers(requestOptions?.headers).forEach((value, key) => headers.set(key, value));
-    mergedOptions.headers = headers;
+  // options.fetch can be an options object, use global fetch with those options
+  const fetchOptions = options?.fetch;
+  if (fetchOptions && typeof fetchOptions !== 'function') {
+    return (url) => fetch(url, fetchOptions);
   }
-  return mergedOptions;
+
+  // else return the global fetch function
+  return (url) => fetch(url);
 }
 
 export function mergeImageSourceLoaderProps<Props extends {loadOptions?: any}>(

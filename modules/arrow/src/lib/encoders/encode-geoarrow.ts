@@ -4,7 +4,6 @@
 
 import * as arrow from 'apache-arrow';
 import {AnyArrayType, VECTOR_TYPES} from '../types';
-import {ensureArrayBuffer} from '@loaders.gl/loader-utils';
 
 export type ColumnarTable = {
   name: string;
@@ -27,7 +26,7 @@ export function encodeGeoArrowSync(data: ColumnarTable): ArrayBuffer {
   }
   const table = new arrow.Table(vectors);
   const arrowBuffer = arrow.tableToIPC(table);
-  return ensureArrayBuffer(arrowBuffer);
+  return arrowBuffer;
 }
 
 /**

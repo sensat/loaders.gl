@@ -1,29 +1,33 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
+/* eslint-disable camelcase */
+import test from 'tape-promise/tape';
 
-import {expect, test} from 'vitest';
 // @ts-expect-error
 import {decodeExtensions} from '@loaders.gl/gltf/lib/api/gltf-extensions';
-test('gltf#EXT_feature_metadata - Should do nothing if no "EXT_feature_metadata" extension', async () => {
+
+test('gltf#EXT_feature_metadata - Should do nothing if no "EXT_feature_metadata" extension', async (t) => {
   const gltfWithFeatureTextures = {
     json: {
       extensionsUsed: ['EXT_feature_metadata'],
       extensions: {}
     }
   };
+
   const options = {gltf: {loadImages: true, loadBuffers: true}};
   await decodeExtensions(gltfWithFeatureTextures, options);
+
   const expectedResult = {
     json: {
       extensionsUsed: ['EXT_feature_metadata'],
       extensions: {}
     }
   };
+
   // Modifies input
-  expect(gltfWithFeatureTextures.json).toEqual(expectedResult.json);
+  t.deepEqual(gltfWithFeatureTextures.json, expectedResult.json);
+  t.end();
 });
-test('gltf#EXT_feature_metadata - Should handle String feature attributes', async () => {
+
+test('gltf#EXT_feature_metadata - Should handle String feature attributes', async (t) => {
   const GLTF_WITH_STRING_PROPERTIES = {
     buffers: [
       {
@@ -68,8 +72,10 @@ test('gltf#EXT_feature_metadata - Should handle String feature attributes', asyn
       }
     }
   };
+
   const options = {gltf: {loadImages: true, loadBuffers: true}};
   await decodeExtensions(GLTF_WITH_STRING_PROPERTIES, options);
+
   const expectedResult = {
     buffers: [
       {
@@ -118,10 +124,13 @@ test('gltf#EXT_feature_metadata - Should handle String feature attributes', asyn
       }
     }
   };
+
   // Modifies input
-  expect(GLTF_WITH_STRING_PROPERTIES.json).toEqual(expectedResult.json);
+  t.deepEqual(GLTF_WITH_STRING_PROPERTIES.json, expectedResult.json);
+  t.end();
 });
-test('gltf#EXT_feature_metadata - Should handle number feature attributes', async () => {
+
+test('gltf#EXT_feature_metadata - Should handle number feature attributes', async (t) => {
   const binaryBufferData = [
     65, 76, 48, 49, 51, 65, 76, 48, 49, 51, 65, 76, 48, 49, 51, 65, 76, 48, 49, 51, 65, 76, 48, 49,
     51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 10, 0, 0, 0, 15, 0, 0, 0, 20, 0, 0, 0, 25, 0,
@@ -189,8 +198,10 @@ test('gltf#EXT_feature_metadata - Should handle number feature attributes', asyn
       }
     }
   };
+
   const options = {gltf: {loadImages: true, loadBuffers: true}};
   await decodeExtensions(GLTF_WITH_EXTENSION, options);
+
   const expectedJson = {
     extensionsUsed: ['EXT_feature_metadata'],
     bufferViews: [
@@ -262,10 +273,14 @@ test('gltf#EXT_feature_metadata - Should handle number feature attributes', asyn
       }
     }
   };
+
   // Modifies input
-  expect(GLTF_WITH_EXTENSION.json).toEqual(expectedJson);
+  t.deepEqual(GLTF_WITH_EXTENSION.json, expectedJson);
+
+  t.end();
 });
-test('gltf#EXT_feature_metadata - Should handle feature texture attributes', async () => {
+
+test('gltf#EXT_feature_metadata - Should handle feature texture attributes', async (t) => {
   const GLTF_WITH_TEXTURES = {
     buffers: [
       {
@@ -283,6 +298,7 @@ test('gltf#EXT_feature_metadata - Should handle feature texture attributes', asy
         data: new Uint8Array([24, 24, 24, 255, 28, 28, 28, 255, 35, 35, 35, 255, 24, 24, 24, 255])
       }
     ],
+
     json: {
       accessors: [
         {
@@ -360,8 +376,10 @@ test('gltf#EXT_feature_metadata - Should handle feature texture attributes', asy
       ]
     }
   };
+
   const options = {gltf: {loadImages: true, loadBuffers: true}};
   await decodeExtensions(GLTF_WITH_TEXTURES, options);
+
   const expectedResult = {
     buf: {
       arrayBuffer: new Uint32Array([0, 1, 2, 0]).buffer,
@@ -370,14 +388,19 @@ test('gltf#EXT_feature_metadata - Should handle feature texture attributes', asy
     },
     data: [24, 35, 28]
   };
-  expect(GLTF_WITH_TEXTURES.buffers[1]).toEqual(expectedResult.buf);
+
+  t.deepEqual(GLTF_WITH_TEXTURES.buffers[1], expectedResult.buf);
+
   const featureTextures = GLTF_WITH_TEXTURES.json.extensions.EXT_feature_metadata.featureTextures;
-  expect(
+  t.deepEqual(
     // @ts-expect-error
-    featureTextures['r3dm::uncertainty_ce90sum'].properties['r3dm::uncertainty_ce90sum'].data
-  ).toEqual(expectedResult.data);
+    featureTextures['r3dm::uncertainty_ce90sum'].properties['r3dm::uncertainty_ce90sum'].data,
+    expectedResult.data
+  );
+  t.end();
 });
-test('gltf#EXT_feature_metadata - Should handle arrays', async () => {
+
+test('gltf#EXT_feature_metadata - Should handle arrays', async (t) => {
   const binaryBufferData = [
     0, 0, 0, 125, 125, 125, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 100, 100, 0, 125, 63, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -540,8 +563,10 @@ test('gltf#EXT_feature_metadata - Should handle arrays', async () => {
       extensionsUsed: ['EXT_feature_metadata']
     }
   };
+
   const options = {gltf: {loadImages: true, loadBuffers: true}};
   await decodeExtensions(GLTF_WITH_EXTENSION, options);
+
   const expectedResult = {
     colorData: [
       {
@@ -587,15 +612,17 @@ test('gltf#EXT_feature_metadata - Should handle arrays', async () => {
     ],
     nameData: ['never_classified', 'undef', '', '', '', '', 'building', 'untrusted_ground']
   };
+
   const EXT_feature_metadata = GLTF_WITH_EXTENSION.json.extensions.EXT_feature_metadata;
-  expect(
+  t.deepEqual(
     // @ts-expect-error
-    Array.from(EXT_feature_metadata.featureTables['owt::lulc'].properties.color.data, value =>
-      Array.from(value)
-    )
-  ).toEqual(expectedResult.colorData.map(value => Object.values(value)));
-  expect(
+    EXT_feature_metadata.featureTables['owt::lulc'].properties.color.data,
+    expectedResult.colorData
+  );
+  t.deepEqual(
     // @ts-expect-error
-    EXT_feature_metadata.featureTables['owt::lulc'].properties.name.data
-  ).toEqual(expectedResult.nameData);
+    EXT_feature_metadata.featureTables['owt::lulc'].properties.name.data,
+    expectedResult.nameData
+  );
+  t.end();
 });

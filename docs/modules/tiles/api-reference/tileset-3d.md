@@ -1,53 +1,10 @@
----
-title: Tileset3D
-description: Traverse, cull, request, and cache source-backed 3D tilesets.
-hide_title: true
-page_style: designed
----
+# Tileset3D
 
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
-import {TiledSceneGraphic} from '@site/src/components/docs/tiled-scene-graphic';
+> The `Tileset3D` class is being generalized to handle more use cases. Since this may require modifying some APIs, this class should be considered experiemental.
 
-<DocPageHeader
-  eyebrow="Tiles module · 3D runtime"
-  title="Tileset3D"
-  description="The shared runtime for hierarchical 3D data: traverse visible tiles, cull by volume, schedule requests, manage cache state, and coordinate selected content."
-  tone="cyan"
-  meta={['3D traversal', 'Culling and requests', 'Source-backed runtime']}
-  links={[
-    {label: 'Tileset3DSource', to: '/docs/modules/tiles/api-reference/tileset-3d-source'},
-    {label: 'Tiles3DSource', to: '/docs/modules/tiles/api-reference/tiles-3d-source'},
-    {label: 'Tiles module', to: '/docs/modules/tiles'}
-  ]}
-/>
+The `Tileset3D` class can be instantiated with tileset data formatted according to the [3D Tiles Category](/docs/specifications/category-3d-tiles), which is supported by the [Tiles3DLoader](/docs/modules/3d-tiles/api-reference/tiles-3d-loader).
 
-<TiledSceneGraphic />
-
-<DocOrientation
-  eyebrow="The 3D runtime"
-  title="Select the data the view needs, when it needs it."
-  description="Tileset3D keeps hierarchical data responsive by combining view-dependent traversal with source-provided metadata and content loading."
-  tone="cyan"
-  items={[
-    {label: 'Traversal', value: 'Choose tiles by screen-space and hierarchy'},
-    {label: 'Culling', value: 'Test volumes against the current view'},
-    {label: 'Requests', value: 'Schedule and prioritize tile content'},
-    {label: 'Cache', value: 'Retain, unload, and refresh tile state'}
-  ]}
-/>
-
-<ReferenceBoundary
-  title="Tileset3D reference"
-  description="The sections below document construction, viewport updates, callbacks, traversal, cache behavior, and source integration."
-  tone="cyan"
-/>
-
-The `Tileset3D` class is the shared runtime for traversal, culling, selection, cache management, and request scheduling across source-backed 3D tilesets.
-
-It is constructed with a [`Tileset3DSource`](/docs/modules/tiles/api-reference/tileset-3d-source), such as [`Tiles3DSource`](/docs/modules/tiles/api-reference/tiles-3d-source) or [`I3SSource`](/docs/modules/tiles/api-reference/i3s-source).
-
-## Standards
+References
 
 - [3D Tiles](https://github.com/AnalyticalGraphicsInc/3d-tiles/tree/master/specification).
 - [I3S Tiles](https://github.com/Esri/i3s-spec).
@@ -57,111 +14,89 @@ It is constructed with a [`Tileset3DSource`](/docs/modules/tiles/api-reference/t
 Loading a tileset and instantiating a `Tileset3D` instance.
 
 ```typescript
+import {load} from '@loaders.gl/core';
+import {Tileset3D} from '@loaders.gl/tiles';
 import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
-import {Tiles3DSource, Tileset3D} from '@loaders.gl/tiles';
 
 const tilesetUrl = 'https://assets.ion.cesium.com/43978/tileset.json';
-const source = new Tiles3DSource({url: tilesetUrl, loader: Tiles3DLoader});
-const tileset = new Tileset3D(source, {
+const tilesetJson = await load(tilesetUrl, Tiles3DLoader);
+const tileset3d = new Tileset3D(tilesetJson, {
   onTileLoad: (tile) => console.log(tile)
 });
 ```
 
-Loading a tileset from an I3S source and updating it with the viewport:
+Loading a tileset and dynamically load/unload with viewport.
 
 ```typescript
+import {load} from '@loaders.gl/core';
+import {Tileset3D} from '@loaders.gl/tiles';
 import {I3SLoader} from '@loaders.gl/i3s';
-import {I3SSource, Tileset3D} from '@loaders.gl/tiles';
 import {WebMercatorViewport} from '@deck.gl/web-mercator';
 
-const tilesetUrl =
+const tileseturl =
   'https://tiles.arcgis.com/tiles/z2tnIkrLQ2BRzr6P/arcgis/rest/services/SanFrancisco_Bldgs/SceneServer/layers/0';
-const source = new I3SSource({url: tilesetUrl, loader: I3SLoader});
-const tileset = new Tileset3D(source, {
+const tilesetJson = await load(tilesetUrl, I3SLoader);
+const tileset3d = new Tileset3D(tilesetJson, {
   onTileLoad: (tile) => console.log(tile)
 });
 
 const viewport = new WebMercatorViewport({latitude, longitude, zoom});
-await tileset.selectTiles(viewport);
-const visibleTiles = tileset.tiles.filter(tile => tile.selected);
+tileset3d.update(viewport);
 ```
 
-`Tileset3D.selectTiles` waits for initialization and coalesces viewport updates. Call it again when
-the viewport changes; the selected set can continue to change as requested tile content arrives.
+Since `Tileset3D's update` is a synchronized call, which selects the tiles qualified for rendering based on current viewport and available tiles, user can trigger another `update` when new tiles are loaded.
 
-`Tileset3D.update(viewport)` remains available as a fire-and-forget compatibility wrapper when the
-application does not need to await the traversal promise.
+```typescript
+import {Tileset3D} from '@loaders.gl/tiles';
+
+const viewport = new WebMercatorViewport({latitude, longitude, zoom});
+
+const tileset3d = new Tileset3D(tilesetJson, {
+  onTileLoad: (tile) => tileset3d.update(viewport)
+});
+```
 
 ## Constructor
 
 ```typescript
-new Tileset3D(source, {
+new Tileset3D(tilesetJson, {
   onTileLoad: (tile) => console.log(tile)
 });
 ```
 
 Parameters:
 
-- `source`: a [`Tileset3DSource`](/docs/modules/tiles/api-reference/tileset-3d-source) instance
+- `json`: loaded tileset json object, should follow the format [tiles format](https://loaders.gl/docs/specifications/category-3d-tiles)
 - `options`:
   - `options.ellipsoid`=`Ellipsoid.WGS84` (`Ellipsoid`) - The ellipsoid determining the size and shape of the globe.
   - `options.throttleRequests`=`true` (`Boolean`) - Determines whether or not to throttle tile fetching requests. Throttled requests are prioritized according to tile visibility.
   - `options.maxRequests`=`64` (`Number`) - When throttling tile fetching, the maximum number of simultaneous requests.
   - `options.modelMatrix`=`Matrix4.IDENTITY` (`Matrix4`) - A 4x4 transformation matrix this transforms the entire tileset.
-  - `options.cacheBytes`=`536870912` (`Number`) - Soft target in bytes for estimated cached 3D Tiles content. Current-frame tiles remain protected. I3S retains a `33554432` default. See [Caching and memory](/docs/modules/3d-tiles/concepts/caching-and-memory).
-  - `options.maximumCacheOverflowBytes`=`536870912` (`Number`) - Additional current-frame headroom in bytes before cache pressure raises the active SSE threshold. I3S retains a `1048576` default.
-  - `options.memoryAdjustedScreenSpaceError`=`true` (`Boolean`) - Adapts the active SSE threshold when estimated usage exceeds `cacheBytes + maximumCacheOverflowBytes`. I3S retains its `false` default.
-  - `options.maximumMemoryUsage` (`Number`, deprecated) - MiB compatibility alias for `cacheBytes`; the byte-native option wins when both are supplied.
-  - `options.memoryCacheOverflow` (`Number`, deprecated) - MiB compatibility alias for `maximumCacheOverflowBytes`; the byte-native option wins when both are supplied.
-  - `options.viewDistanceScale`=`1.0` (`Number`) - Multiplies calculated screen-space error. Lower values stop refinement earlier; higher values select more detail. See [Screen-space error and level of detail](/docs/modules/3d-tiles/concepts/screen-space-error-and-lod).
-  - `options.progressiveResolutionHeightFraction`=`0.3` (`Number`) - Prioritizes coarse viewport coverage using SSE at a reduced logical viewport height. Set to `0` to disable; values above `0.5` are ignored. See [Request scheduling and priorities](/docs/modules/3d-tiles/concepts/request-scheduling-and-priorities).
-  - `options.foveatedScreenSpaceError`=`true` (`Boolean`) - Prioritizes perspective requests near the camera view axis before peripheral detail. This changes request timing, not the final LOD target. See [Request scheduling and priorities](/docs/modules/3d-tiles/concepts/request-scheduling-and-priorities).
-  - `options.foveatedConeSize`=`0.1` (`Number`) - Fraction of the perspective field of view that receives no foveated SSE relaxation. Set to `1` to disable peripheral deferral.
-  - `options.foveatedMinimumScreenSpaceErrorRelaxation`=`0` (`Number`) - Minimum logical-pixel SSE relaxation immediately outside the center cone.
-  - `options.foveatedInterpolationCallback`=`linear interpolation` (`Function`) - Interpolates logical-pixel SSE relaxation from the cone edge toward the viewport edge.
-  - `options.foveatedTimeDelay`=`0.2` (`Number`) - Maximum seconds eligible peripheral requests wait after camera movement. Traditional `REPLACE` traversal is never deferred.
+  - `options.maximumMemoryUsage`=`512` (`Number`) - The maximum amount of memory in MB that can be used by the tileset.
+  - `options.viewDistanceScale`=`1.0` (`Number`) - A scaling factor for tile refinement. A lower value would cause lower level tiles to load. Useful for debugging and for restricting resource usage.
   - `options.updateTransforms`=`true` (`Boolean`) - Always check if the tileset `modelMatrix` was updated. Set to `false` to improve performance when the tileset remains stationary in the scene.
   - `options.loadOptions` - _loaders.gl_ options used when loading tiles from the tiling server. Includes `fetch` options such as authentication `headers`, worker options such as `maxConcurrency`, and options to other loaders such as `3d-tiles`, `gltf`, and `draco`.
   - `options.contentLoader` = `null` (`Promise`) - An optional external async content loader for the tile. Once the promise resolves, a tile is regarded as _READY_ to be displayed on the viewport.
-  - `options.loadTiles`=`true` (`Boolean`) - Whether the tileset traverses and updates tiles. Set this option to `false` at runtime to freeze the scene.
+  - `options.loadTiles`=`true` (`Boolean`) - Whether the tileset traverse and update tiles. Set this options to `false` during the run time to freeze the scene.
 
 Callbacks:
 
 - `onTileLoad` (`(tileHeader : Tile3D) : void`) - callback when a tile node is fully loaded during the tileset traversal.
 - `onTileUnload` (`(tileHeader : Tile3D) : void`) - callback when a tile node is unloaded during the tileset traversal.
-- `onTileError` (`(tileHeader : Tile3D, message : String) : void`) - callback when a tile fails to load during traversal.
+- `onTileError` (`(tileHeader : Tile3D, message : String) : void`) - callback when a tile faile to load during the tileset traversal.
 - `onTraversalComplete` (`(selectedTiles : Tile3D[]) : Tile3D[]`) - callback post-process selectedTiles right after traversal.
 
-The `Tileset3D` allows callbacks (`onTileLoad`, `onTileUnload`) to be registered that notify the app
-when the set of tiles available for rendering has changed. Tile loads complete asynchronously, so
-the selected set can change after a traversal call returns.
-
-For format-specific source behavior, see:
-
-- [`Tiles3DSource`](/docs/modules/tiles/api-reference/tiles-3d-source)
-- [`I3SSource`](/docs/modules/tiles/api-reference/i3s-source)
+The `Tileset3D` allows callbacks (`onTileLoad`, `onTileUnload`) to be registered that notify the app when the set of tiles available for rendering has changed. This is important because tile loads complete asynchronously, after the `tileset3D.update(...)` call has returned.
 
 Cesium 3D tiles specific options:
 
-- `options.maximumScreenSpaceError`=`8` (`Number`) - The maximum screen-space error used to drive level-of-detail refinement. See [Screen-space error and level of detail](/docs/modules/3d-tiles/concepts/screen-space-error-and-lod).
-- `options.dynamicScreenSpaceError`=`true` (`Boolean`) - Reduces refinement for distant,
-  horizon-facing tiles in perspective views. Orthographic traversal is unaffected.
-- `options.dynamicScreenSpaceErrorDensity`=`0.0002` (`Number`) - Base fog density, in inverse
-  meters, used by dynamic SSE. Higher values reduce distant refinement sooner.
-- `options.dynamicScreenSpaceErrorFactor`=`24` (`Number`) - Maximum dynamic SSE reduction in
-  logical/CSS pixels.
-- `options.dynamicScreenSpaceErrorHeightFalloff`=`0.25` (`Number`) - Fraction of the root tileset
-  height at which dynamic SSE starts to fade as the camera rises. Values are clamped to `[0, 1]`.
-
-See [Screen-space error and level of detail](/docs/modules/3d-tiles/concepts/screen-space-error-and-lod#dynamic-perspective-sse)
-for the formulas, worked example, projection boundaries, and tuning guidance.
+- `options.maximumScreenSpaceError`=`16`] (`Number`) - The maximum screen space error used to drive level of detail refinement.
 
 ## Properties
 
 ###### `boundingVolume` (BoundingVolume)
 
-The root tile's bounding volume, which is also the bounding volume of the entire tileset. See
-`Tile3D#boundingVolume`.
+The root tile's bounding volume, which is also the bouding volume of the entire tileset. Check `Tile3D#boundingVolume`
 
 ###### `cartesianCenter` (Number[3])
 
@@ -169,7 +104,7 @@ Center of tileset in fixed frame coordinates.
 
 ###### `cartographicCenter` (Number[3])
 
-Center of the tileset in cartographic coordinates `[long, lat, elevation]`.
+Center of tileset in cartographic coordinates `[long, lat, elevation]`
 
 ###### `ellipsoid` ([`Ellipsoid`](https://math.gl/modules/geospatial/docs/api-reference/ellipsoid))
 
@@ -242,55 +177,29 @@ radius equal to the tile's <b>geometric error</b> were rendered at the tile's po
 
 Depending on the tileset, `maximumScreenSpaceError` may need to be tweaked to achieve the right balance between performance with visual quality. \*
 
-For formulas, projection-specific behavior, transform scaling, and tuning guidance, see [Screen-space error and level of detail](/docs/modules/3d-tiles/concepts/screen-space-error-and-lod).
+### maximumMemoryUsage : Number
 
-^default 8 \*
+^default 16 \*
 ^exception `maximumScreenSpaceError` must be greater than or equal to zero.
 
-### skipLevelOfDetail : Boolean
-
-Enables skip-LOD replacement traversal. When enabled, traversal may descend past one or more
-hierarchy levels without waiting for every intermediate child, while keeping ready replacement
-ancestors selected as temporary coverage. This can improve first-detail latency on deep trees at
-the cost of temporary ancestor/descendant overdraw. `ADD` refinement is unaffected.
-
-^default false
-
-### cacheBytes : Number
-
-The soft target in bytes for estimated tile content retained by the cache. The estimate includes
+The maximum amount of GPU memory (in MB) that may be used to cache tiles. This value is estimated from
 geometry, textures, and batch table textures of loaded tiles. For point clouds, this value also
 includes per-point metadata.
 
-Tiles not needed in the current frame are unloaded in least-recently-used order to approach this target.
-Tiles used by the current frame remain protected.
+Tiles not in view are unloaded to enforce this.
 
 If decreasing this value results in unloading tiles, the tiles are unloaded the next frame.
 
-If tiles sized more than `cacheBytes` are needed
+If tiles sized more than `maximumMemoryUsage` are needed
 to meet the desired screen space error, determined by `Tileset3D.maximumScreenSpaceError`,
 for the current view, then the memory usage of the tiles loaded will exceed
-`cacheBytes` by up to `maximumCacheOverflowBytes` before memory-adjusted SSE raises the active
-threshold. When current-frame tiles go out of use, they become eligible for eviction.
+`maximumMemoryUsage`. For example, if the maximum is 256 MB, but
+300 MB of tiles are needed to meet the screen space error, then 300 MB of tiles may be loaded. When
+these tiles go out of view, they will be unloaded.
 
-^default 536870912 \*
-^exception `cacheBytes` must be a finite number greater than or equal to zero.
+^default 512 \*
+^exception `maximumMemoryUsage` must be greater than or equal to zero.
 ^see Tileset3D#gpuMemoryUsageInBytes
-
-### maximumCacheOverflowBytes : Number
-
-Additional current-frame memory headroom in bytes. When estimated usage exceeds
-`cacheBytes + maximumCacheOverflowBytes` and memory adjustment is enabled,
-`memoryAdjustedScreenSpaceError` rises incrementally to reduce future LOD demand. This value does
-not change the base target used to evict unused tiles.
-
-^default 536870912 \*
-^exception `maximumCacheOverflowBytes` must be a finite number greater than or equal to zero.
-
-### maximumMemoryUsage : Number (Deprecated)
-
-Compatibility property and constructor option that expresses `cacheBytes` in mebibytes. Assignments
-remain synchronized with `cacheBytes`. Use the byte-native API for new code.
 
 ### root : Tile3D
 
@@ -317,6 +226,8 @@ tileset.readyPromise.then(function (tileset) {
 
 A 4x4 transformation matrix that transforms the entire tileset.
 
+### maximumMemoryUsage : Number
+
 ### gpuMemoryUsageInBytes : Number
 
 The total amount of GPU memory in bytes used by the tileset. This value is estimated from
@@ -342,7 +253,7 @@ See [Extras](https://github.com/AnalyticalGraphicsInc/3d-tiles/tree/master/speci
 
 Unloads all tiles that weren't selected the previous frame. This can be used to
 explicitly manage the tile cache and reduce the total number of tiles loaded below
-`Tileset3D.cacheBytes` when unused content is available for eviction.
+`Tileset3D.maximumMemoryUsage`.
 
 Tile unloads occur at the next frame to keep all the WebGL delete calls
 within the render loop.

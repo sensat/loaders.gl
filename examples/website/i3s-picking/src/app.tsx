@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useState} from 'react';
 import {createRoot} from 'react-dom/client';
 
 import Map from 'react-map-gl';
@@ -7,13 +7,12 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 
 import DeckGL from '@deck.gl/react';
 import {ViewState, MapController, FlyToInterpolator, PickingInfo} from '@deck.gl/core';
-import {SourceLayer} from '@loaders.gl/deck-layers';
 
+import {Tile3DLayer} from '@deck.gl/geo-layers';
 import {COORDINATE_SYSTEM, I3SLoader, loadFeatureAttributes} from '@loaders.gl/i3s';
 import {Tileset3D} from '@loaders.gl/tiles';
 import {ControlPanel} from './components/control-panel';
 import AttributesPanel from './components/attributes-panel';
-import {createDeckFullscreenWidget, createDeckStatsWidget} from '../../shared/create-deck-stats-widget';
 
 export const EXAMPLES = {
   'San Francisco': {
@@ -23,10 +22,6 @@ export const EXAMPLES = {
   'New York': {
     name: 'New York',
     url: 'https://tiles.arcgis.com/tiles/P3ePLMYs2RVChkJx/arcgis/rest/services/Buildings_NewYork_17/SceneServer/layers/0'
-  },
-  'Montreal': {
-    name: 'Montreal',
-    url: 'https://tiles.arcgis.com/tiles/z2tnIkrLQ2BRzr6P/arcgis/rest/services/Montreal/SceneServer/layers/0'
   }
 };
 
@@ -58,10 +53,6 @@ export default function App() {
   const [viewState, setViewState] = useState<ViewState>(INITIAL_VIEW_STATE);
   const [highlightedObjectIndex, setHighlightedObjectIndex] = useState<number>(-1);
   const [attributesObject, setAttributesObject] = useState(null);
-  const widgets = useMemo(
-    () => [createDeckFullscreenWidget('i3s-picking-fullscreen'), createDeckStatsWidget('i3s-picking-stats')],
-    []
-  );
 
   function onSelectTilesetHandler(item: string) {
     setTilesetSelected(EXAMPLES[item]?.url);
@@ -101,9 +92,9 @@ export default function App() {
 
   function renderLayers() {
     const loadOptions = {i3s: {coordinateSystem: COORDINATE_SYSTEM.LNGLAT_OFFSETS}};
-    const layers = new SourceLayer({
+    const layers = new Tile3DLayer({
       data: tilesetSelected,
-      loaders: [I3SLoader],
+      loader: I3SLoader,
       onTilesetLoad: onTilesetLoadHandler,
       loadOptions,
       pickable: true,
@@ -129,7 +120,6 @@ export default function App() {
         initialViewState={viewState}
         layers={renderLayers()}
         controller={MAP_CONTROLLER}
-        widgets={widgets}
         onClick={onClickHandler}
       >
         <Map

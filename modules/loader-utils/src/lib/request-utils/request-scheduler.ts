@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 import {Stats} from '@probe.gl/stats';
 
 type Handle = any;
@@ -73,21 +69,6 @@ export default class RequestScheduler {
   }
 
   /**
-   * Update scheduler props. Preserves active and queued requests.
-   */
-  setProps(props: Omit<RequestSchedulerProps, 'id'>): void {
-    if (props.throttleRequests !== undefined) {
-      this.props.throttleRequests = props.throttleRequests;
-    }
-    if (props.maxRequests !== undefined) {
-      this.props.maxRequests = props.maxRequests;
-    }
-    if (props.debounceTime !== undefined) {
-      this.props.debounceTime = props.debounceTime;
-    }
-  }
-
-  /**
    * Called by an application that wants to issue a request, without having it deeply queued by the browser
    *
    * When the returned promise resolved, it is OK for the application to issue a request.
@@ -118,7 +99,7 @@ export default class RequestScheduler {
     }
 
     const request: Request = {handle, priority: 0, getPriority};
-    const promise = new Promise<RequestResult>(resolve => {
+    const promise = new Promise<RequestResult>((resolve) => {
       // @ts-ignore
       request.resolve = resolve;
       return request;

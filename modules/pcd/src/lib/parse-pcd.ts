@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 // PCD Loader, adapted from THREE.js (MIT license)
 // Description: A loader for PCD ascii and binary files.
 // Limitations: Compressed binary files are not supported.
@@ -10,8 +6,7 @@
 // @author Filipe Caixeta / http://filipecaixeta.com.br
 // @author Mugen87 / https://github.com/Mugen87
 
-import {MeshAttribute, MeshAttributes} from '@loaders.gl/schema';
-import {getMeshBoundingBox} from '@loaders.gl/schema-utils';
+import {MeshAttribute, MeshAttributes, getMeshBoundingBox} from '@loaders.gl/schema';
 import {decompressLZF} from './decompress-lzf';
 import {getPCDSchema} from './get-pcd-schema';
 import type {PCDHeader, PCDMesh} from './pcd-types';
@@ -47,7 +42,7 @@ const LITTLE_ENDIAN: boolean = true;
  * @param data
  * @returns
  */
-export function parsePCD(data: ArrayBufferLike): PCDMesh {
+export default function parsePCD(data: ArrayBufferLike): PCDMesh {
   // parse header (always ascii format)
   const textData = new TextDecoder().decode(data);
   const pcdHeader = parsePCDHeader(textData);
@@ -76,21 +71,20 @@ export function parsePCD(data: ArrayBufferLike): PCDMesh {
 
   const header = getMeshHeader(pcdHeader, attributes);
 
-  const schemaMetadata = Object.fromEntries([
-    ['topology', 'point-list'],
+  const metadata = Object.fromEntries([
     ['mode', '0'],
     ['boundingBox', JSON.stringify(header.boundingBox)]
   ]);
 
-  const schema = getPCDSchema(pcdHeader, schemaMetadata);
+  const schema = getPCDSchema(pcdHeader, metadata);
 
   return {
     loader: 'pcd',
     loaderData: pcdHeader,
     header,
     schema,
+    mode: 0, // POINTS
     topology: 'point-list',
-    mode: 0, // POINTS (deprecated)
     attributes
   };
 }
@@ -146,7 +140,7 @@ function getMeshAttributes(attributes: HeaderAttributes): {[attributeName: strin
     };
   }
 
-  if (!normalizedAttributes.COLOR_0 && attributes.label && attributes.label.length > 0) {
+  if (attributes.label && attributes.label.length > 0) {
     // TODO - RGBA
     normalizedAttributes.COLOR_0 = {
       value: new Uint8Array(attributes.label),
@@ -163,7 +157,7 @@ function getMeshAttributes(attributes: HeaderAttributes): {[attributeName: strin
  * @returns Header
  */
 /* eslint-disable complexity, max-statements */
-export function parsePCDHeader(data: string): PCDHeader {
+function parsePCDHeader(data: string): PCDHeader {
   const result1 = data.search(/[\r\n]DATA\s(\S*)\s/i);
   const result2 = /[\r\n]DATA\s(\S*)\s/i.exec(data.substr(result1 - 1));
 
@@ -229,11 +223,11 @@ export function parsePCDHeader(data: string): PCDHeader {
   }
 
   if (pcdHeader.size !== null) {
-    pcdHeader.size = pcdHeader.size[1].split(' ').map(x => parseInt(x, 10));
+    pcdHeader.size = pcdHeader.size[1].split(' ').map((x) => parseInt(x, 10));
   }
 
   if (pcdHeader.count !== null) {
-    pcdHeader.count = pcdHeader.count[1].split(' ').map(x => parseInt(x, 10));
+    pcdHeader.count = pcdHeader.count[1].split(' ').map((x) => parseInt(x, 10));
   } else {
     pcdHeader.count = [];
     if (pcdHeader.fields !== null) {
@@ -246,17 +240,20 @@ export function parsePCDHeader(data: string): PCDHeader {
   pcdHeader.offset = {};
 
   let sizeSum = 0;
-  for (let i = 0, l = pcdHeader.fields.length; i < l; i++) {
-    if (pcdHeader.data === 'ascii') {
-      pcdHeader.offset[pcdHeader.fields[i]] = i;
-    } else {
-      pcdHeader.offset[pcdHeader.fields[i]] = sizeSum;
-      sizeSum += pcdHeader.size[i] * pcdHeader.count[i];
+  if (pcdHeader.fields !== null && pcdHeader.size !== null) {
+    for (let i = 0; i < pcdHeader.fields.length; i++) {
+      if (pcdHeader.data === 'ascii') {
+        pcdHeader.offset[pcdHeader.fields[i]] = i;
+      } else {
+        pcdHeader.offset[pcdHeader.fields[i]] = sizeSum;
+        sizeSum += pcdHeader.size[i];
+      }
     }
   }
 
   // for binary only
   pcdHeader.rowSize = sizeSum;
+
   return pcdHeader;
 }
 
@@ -402,9 +399,15 @@ function parsePCDBinaryCompressed(pcdHeader: PCDHeader, data: ArrayBufferLike): 
     }
 
     if (offset.rgb !== undefined) {
-      color.push(dataview.getUint8(pcdHeader.points * offset.rgb + pcdHeader.size[3] * i + 0));
-      color.push(dataview.getUint8(pcdHeader.points * offset.rgb + pcdHeader.size[3] * i + 1));
-      color.push(dataview.getUint8(pcdHeader.points * offset.rgb + pcdHeader.size[3] * i + 2));
+      color.push(
+        dataview.getUint8(pcdHeader.points * offset.rgb + pcdHeader.size[3] * i + 0) / 255.0
+      );
+      color.push(
+        dataview.getUint8(pcdHeader.points * offset.rgb + pcdHeader.size[3] * i + 1) / 255.0
+      );
+      color.push(
+        dataview.getUint8(pcdHeader.points * offset.rgb + pcdHeader.size[3] * i + 2) / 255.0
+      );
     }
 
     if (offset.normal_x !== undefined) {

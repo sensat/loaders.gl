@@ -1,8 +1,6 @@
 // loaders.gl
 // SPDX-License-Identifier: MIT
 
-import {ensureArrayBuffer} from '@loaders.gl/loader-utils';
-
 /* global TextEncoder */
 export class Utf8ArrayBufferEncoder {
   private readonly chunkSize: number;
@@ -25,8 +23,8 @@ export class Utf8ArrayBufferEncoder {
     return this.totalLength >= this.chunkSize;
   }
 
-  getArrayBufferBatch(): ArrayBuffer {
-    return ensureArrayBuffer(this.textEncoder.encode(this.getStringBatch()).buffer);
+  getArrayBufferBatch(): ArrayBufferLike {
+    return this.textEncoder.encode(this.getStringBatch()).buffer;
   }
 
   getStringBatch(): string {

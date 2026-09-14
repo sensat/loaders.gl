@@ -3,104 +3,74 @@
 // Copyright (c) vis.gl contributors
 
 // Types
+export type {ArrowTable, ArrowTableBatch} from './schema/arrow-table-type';
 export {VECTOR_TYPES} from './lib/types';
+import {ArrowTableBatchAggregator} from './schema/arrow-table-batch';
+
+// Make the ArrowBatch type available
+import {TableBatchBuilder} from '@loaders.gl/schema';
+TableBatchBuilder.ArrowBatch = ArrowTableBatchAggregator;
 
 // Arrow loader / Writer
 
-export {ArrowFormat} from './exports/arrow-format';
-
 export type {ArrowLoaderOptions} from './exports/arrow-loader';
-
+export {ArrowWorkerLoader} from './exports/arrow-loader';
 export {ArrowLoader} from './arrow-loader';
-export {ArrowSourceLoader, ArrowTableSource} from './arrow-source';
 
-export {ArrowWriter, type ArrowWriterOptions} from './arrow-writer';
-export type {
-  ArrowConvertFromOptions,
-  ArrowConvertToOptions
-} from './arrow-converter/arrow-converter';
-export {ARROW_CONVERTERS, ArrowConverter} from './arrow-converter/arrow-converter';
-
-export {tightenArrowTableSchemaNullability} from './lib/tighten-arrow-table-schema-nullability';
+export {ArrowWriter} from './arrow-writer';
 
 // Geoarrow loader
-
+export {GeoArrowWorkerLoader} from './exports/geoarrow-loader';
 export {GeoArrowLoader} from './geoarrow-loader';
+
+// Schema utils
+export {
+  convertArrowToSchema,
+  convertSchemaToArrow,
+
+  // DETAILED FUNCTIONS
+  serializeArrowSchema,
+  deserializeArrowSchema,
+  serializeArrowMetadata,
+  deserializeArrowMetadata,
+  serializeArrowField,
+  deserializeArrowField,
+  serializeArrowType,
+  deserializeArrowType
+} from './lib//tables/convert-arrow-schema';
+
+// Table utils
+export {convertArrowToTable} from './lib/tables/convert-arrow-to-table';
+export {convertTableToArrow} from './lib/tables/convert-table-to-arrow';
 
 // EXPERIMENTAL
 
 // Arrow Utils
-export {IndexedArrowVector} from './lib/utils/indexed-arrow-vector';
-export {
-  IndexedArrowTable,
-  type IndexedArrowTableComparator,
-  type IndexedArrowTableFindPredicate,
-  type IndexedArrowTablePredicate,
-  type IndexedArrowTableRow
-} from './lib/utils/indexed-arrow-table';
-export {
-  MappedArrowTable,
-  type MappedArrowTableComparator,
-  type MappedArrowTablePredicate
-} from './lib/utils/mapped-arrow-table';
-export {
-  validateArrowTableSchema,
-  type ValidateArrowTableSchemaOptions
-} from './lib/utils/arrow-schema-utils';
-export {
-  renameArrowColumns,
-  type ArrowFieldNameMap,
-  type RenamedArrowColumns
-} from './lib/utils/rename-arrow-columns';
-export {
-  convertArrowTableVariableWidthTypes,
-  convertArrowVariableWidthVector,
-  type ConvertArrowVariableWidthOptions
-} from './lib/utils/convert-arrow-variable-width';
-export {
-  splitArrowBuffers,
-  splitArrowTableBuffers,
-  type SplitArrowBuffersInput,
-  type SplitArrowBuffersOptions
-} from './lib/utils/split-arrow-buffers';
-export {
-  dehydrateArrowTable,
-  hydrateArrowTable,
-  serializeArrowTableToIPC,
-  deserializeArrowTableFromIPC,
-  type DehydratedArrowData,
-  type DehydratedArrowRecordBatch,
-  type DehydratedArrowTable,
-  type DehydratedArrowVector,
-  type SerializedArrowTableIPC
-} from './lib/utils/arrow-table-transport';
-export {
-  compareUTF8,
-  parseUTF8BigInt,
-  parseUTF8Boolean,
-  parseUTF8Number,
-  type UTF8Comparison
-} from './lib/utils/utf8-utils';
+export type {GeoArrowEncoding} from '@loaders.gl/gis';
+// getGeometryColumnsFromArrowTable,
+// getGeoArrowEncoding
 
 export type {
-  ParseGeoArrowInput,
-  ParseGeoArrowResult,
-  TriangulateWKBColumnInput,
-  TriangulateWKBColumnResult
-} from './triangulate-on-worker';
+  BinaryDataFromGeoArrow,
+  BinaryGeometriesFromArrowOptions
+} from './lib/geoarrow/convert-geoarrow-to-binary-geometry';
+export {
+  getBinaryGeometryTemplate,
+  getBinaryGeometriesFromArrow,
+  getTriangleIndices,
+  getMeanCentersFromBinaryGeometries
+} from './lib/geoarrow/convert-geoarrow-to-binary-geometry';
+
+export {updateBoundsFromGeoArrowSamples} from './lib/geoarrow/get-arrow-bounds';
+
+export {parseGeometryFromArrow} from './lib/geoarrow/convert-geoarrow-to-geojson-geometry';
+
+// EXPERIMENTAL WORKER
+export {hardClone} from './workers/hard-clone';
+
+export type {ParseGeoArrowInput, ParseGeoArrowResult} from './triangulate-on-worker';
 export {
   TriangulationWorker,
   triangulateOnWorker,
-  triangulateWKBColumnOnWorker,
   parseGeoArrowOnWorker
 } from './triangulate-on-worker';
-export {
-  triangulateWKBGeometryColumn,
-  type TriangulatedWKBGeometryColumns
-} from './triangulate-wkb-geometry-column';
-
-// DEPRECATED EXPORTS
-/** @deprecated Use ArrowLoader. */
-export {ArrowWorkerLoader} from './exports/arrow-loader';
-/** @deprecated Use GeoArrowLoader. */
-export {GeoArrowWorkerLoader} from './exports/geoarrow-loader';

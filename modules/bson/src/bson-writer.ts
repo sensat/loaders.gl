@@ -5,7 +5,6 @@
 import type {WriterWithEncoder, WriterOptions} from '@loaders.gl/loader-utils';
 import type {EncodeBSONOptions} from './lib/encoders/encode-bson';
 import {encodeBSONSync} from './lib/encoders/encode-bson';
-import {BSONFormat} from './bson-format';
 
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
@@ -16,7 +15,6 @@ export type BSONWriterOptions = WriterOptions & {
 }
 
 export const BSONWriter = {
-  ...BSONFormat,
   name: 'BSON',
   id: 'bson',
   module: 'bson',

@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: Unlicense
-
 // @ts-nocheck
 /* eslint-disable */
 
@@ -1124,6 +1122,7 @@ function TextEncoder(label, options) {
     enc._encoding = getEncoding('utf-8');
 
     if (label !== undefined && 'console' in globalThis) {
+      console.warn('TextEncoder constructor called with encoding label, ' + 'which is ignored.');
     }
   }
 
@@ -1344,7 +1343,7 @@ function UTF8Decoder(options) {
  * @param {{fatal: boolean}} options
  */
 function UTF8Encoder(options) {
-  var _fatal = options.fatal;
+  var fatal = options.fatal;
   /**
    * @param {Stream} stream Input stream.
    * @param {number} code_point Next code point read from the stream.
@@ -1457,7 +1456,7 @@ function SingleByteDecoder(index, options) {
  * @param {{fatal: boolean}} options
  */
 function SingleByteEncoder(index, options) {
-  var _fatal = options.fatal;
+  var fatal = options.fatal;
   /**
    * @param {Stream} stream Input stream.
    * @param {number} code_point Next code point read from the stream.
@@ -1690,7 +1689,7 @@ function GB18030Decoder(options) {
  * @param {boolean=} gbk_flag
  */
 function GB18030Encoder(options, gbk_flag) {
-  var _fatal = options.fatal;
+  var fatal = options.fatal;
   // gb18030's decoder has an associated gbk flag (initially unset).
   /**
    * @param {Stream} stream Input stream.
@@ -1883,7 +1882,7 @@ function Big5Decoder(options) {
  * @param {{fatal: boolean}} options
  */
 function Big5Encoder(options) {
-  var _fatal = options.fatal;
+  var fatal = options.fatal;
   /**
    * @param {Stream} stream Input stream.
    * @param {number} code_point Next code point read from the stream.
@@ -2043,7 +2042,7 @@ function EUCJPDecoder(options) {
  * @param {{fatal: boolean}} options
  */
 function EUCJPEncoder(options) {
-  var _fatal = options.fatal;
+  var fatal = options.fatal;
   /**
    * @param {Stream} stream Input stream.
    * @param {number} code_point Next code point read from the stream.
@@ -2416,7 +2415,7 @@ function ISO2022JPDecoder(options) {
  * @param {{fatal: boolean}} options
  */
 function ISO2022JPEncoder(options) {
-  var _fatal = options.fatal;
+  var fatal = options.fatal;
   // iso-2022-jp's encoder has an associated iso-2022-jp encoder
   // state which is one of ASCII, Roman, and jis0208 (initially
   // ASCII).
@@ -2466,8 +2465,8 @@ function ISO2022JPEncoder(options) {
     if (
       iso2022jp_state === states.Roman &&
       ((isASCIICodePoint(code_point) && code_point !== 0x005c && code_point !== 0x007e) ||
-        code_point === 0x00a5 ||
-        code_point === 0x203e)
+        code_point == 0x00a5 ||
+        code_point == 0x203e)
     ) {
       // 1. If code point is an ASCII code point, return a byte
       // whose value is code point.
@@ -2640,7 +2639,7 @@ function ShiftJISDecoder(options) {
  * @param {{fatal: boolean}} options
  */
 function ShiftJISEncoder(options) {
-  var _fatal = options.fatal;
+  var fatal = options.fatal;
   /**
    * @param {Stream} stream Input stream.
    * @param {number} code_point Next code point read from the stream.
@@ -2788,7 +2787,7 @@ function EUCKRDecoder(options) {
  * @param {{fatal: boolean}} options
  */
 function EUCKREncoder(options) {
-  var _fatal = options.fatal;
+  var fatal = options.fatal;
   /**
    * @param {Stream} stream Input stream.
    * @param {number} code_point Next code point read from the stream.
@@ -2956,7 +2955,7 @@ function UTF16Decoder(utf16_be, options) {
  * @param {{fatal: boolean}} options
  */
 function UTF16Encoder(utf16_be, options) {
-  var _fatal = options.fatal;
+  var fatal = options.fatal;
   /**
    * @param {Stream} stream Input stream.
    * @param {number} code_point Next code point read from the stream.
@@ -3017,7 +3016,7 @@ decoders['UTF-16LE'] = function (options) {
  * @param {{fatal: boolean}} options
  */
 function XUserDefinedDecoder(options) {
-  var _fatal = options.fatal;
+  var fatal = options.fatal;
   /**
    * @param {Stream} stream The stream of bytes being decoded.
    * @param {number} bite The next byte read from the stream.
@@ -3045,7 +3044,7 @@ function XUserDefinedDecoder(options) {
  * @param {{fatal: boolean}} options
  */
 function XUserDefinedEncoder(options) {
-  var _fatal = options.fatal;
+  var fatal = options.fatal;
   /**
    * @param {Stream} stream Input stream.
    * @param {number} code_point Next code point read from the stream.

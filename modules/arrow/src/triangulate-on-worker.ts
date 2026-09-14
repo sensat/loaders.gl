@@ -5,7 +5,7 @@
 import * as arrow from 'apache-arrow';
 import type {WorkerOptions} from '@loaders.gl/worker-utils';
 import {processOnWorker} from '@loaders.gl/worker-utils';
-import type {BinaryDataFromGeoArrow, GeoArrowEncoding} from '@loaders.gl/geoarrow';
+import {BinaryDataFromGeoArrow, GeoArrowEncoding} from '@loaders.gl/arrow';
 
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
@@ -13,13 +13,11 @@ const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
 
 export type TriangulationWorkerInput =
   | ({operation: 'triangulate'} & TriangulateInput)
-  | TriangulateWKBColumnInput
   | ParseGeoArrowInput
   | {operation: 'test'; data: any};
 
 export type TriangulationWorkerOutput =
   | ({operation: 'triangulate'} & TriangulateResult)
-  | ({operation: 'triangulate-wkb-column'} & TriangulateWKBColumnResult)
   | ({operation: 'parse-geoarrow'} & ParseGeoArrowResult)
   | {operation: 'test'; data: any};
 
@@ -29,7 +27,7 @@ type GeoArrowChunkData = {
   length: number;
   nullCount: number;
   buffers: any;
-  children: GeoArrowChunkData[];
+  children: arrow.Data[];
   dictionary?: arrow.Vector;
 };
 
@@ -46,20 +44,6 @@ export type ParseGeoArrowInput = {
 export type ParseGeoArrowResult = {
   chunkIndex: number;
   binaryDataFromGeoArrow: BinaryDataFromGeoArrow | null;
-};
-
-/** Input data for operation: 'triangulate-wkb-column'. */
-export type TriangulateWKBColumnInput = {
-  operation: 'triangulate-wkb-column';
-  chunkData: GeoArrowChunkData;
-  chunkIndex: number;
-};
-
-/** Result type for operation: 'triangulate-wkb-column'. */
-export type TriangulateWKBColumnResult = {
-  chunkIndex: number;
-  vertexIndexColumn: GeoArrowChunkData;
-  vertexColumn: GeoArrowChunkData;
 };
 
 /** Input data for operation: 'triangulate' */
@@ -83,15 +67,6 @@ export const TriangulationWorker = {
   name: 'Triangulate',
   module: 'arrow',
   version: VERSION,
-  /** Enables processing through worker-utils worker pools. */
-  worker: true,
-  /** Creates a bundler-resolved ES module worker in browsers. */
-  loadWorker: () =>
-    typeof Worker !== 'undefined'
-      ? new Worker(new URL('./workers/triangulation-worker-module.js', import.meta.url), {
-          type: 'module'
-        })
-      : null,
   options: {}
 };
 
@@ -103,16 +78,6 @@ export function triangulateOnWorker(
   options: WorkerOptions = {}
 ): Promise<TriangulateResult> {
   return processOnWorker(TriangulationWorker, {...data, operation: 'triangulate'}, options);
-}
-
-/**
- * Triangulate a GeoArrow WKB geometry column on a worker.
- */
-export function triangulateWKBColumnOnWorker(
-  data: TriangulateWKBColumnInput,
-  options: WorkerOptions = {}
-): Promise<TriangulateWKBColumnResult> {
-  return processOnWorker(TriangulationWorker, data, options);
 }
 
 /**

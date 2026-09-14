@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {isResponse} from '@loaders.gl/loader-utils';
+import {isResponse} from '../../javascript-utils/is-type';
 import {FetchError} from '../fetch/fetch-error';
 import {getResourceContentLength, getResourceUrl, getResourceMIMEType} from './resource-utils';
 import {shortenUrlForDisplay} from './url-utils';
@@ -15,7 +15,7 @@ import {shortenUrlForDisplay} from './url-utils';
  */
 export async function makeResponse(resource: unknown): Promise<Response> {
   if (isResponse(resource)) {
-    return resource;
+    return resource as Response;
   }
 
   // Add content-length header if possible
@@ -97,7 +97,7 @@ async function getResponseError(response: Response): Promise<Error> {
       !response.bodyUsed && contentType?.includes('application/json')
         ? await response.json()
         : await response.text();
-  } catch (_error) {
+  } catch (error) {
     // eslint forbids return in a finally statement, so we just catch here
   }
   return new FetchError(message, info);
@@ -112,9 +112,9 @@ async function getInitialDataUrl(
   }
   if (resource instanceof Blob) {
     const blobSlice = resource.slice(0, 5);
-    return await new Promise(resolve => {
+    return await new Promise((resolve) => {
       const reader = new FileReader();
-      reader.onload = event => resolve(event?.target?.result as string);
+      reader.onload = (event) => resolve(event?.target?.result as string);
       reader.readAsDataURL(blobSlice);
     });
   }

@@ -1,15 +1,16 @@
----
-title: "GeoPackage"
-hide_title: true
----
+# GeoPackage
 
-import {ClientExample} from '../../components';
-import {GeoPackageDocsTabs} from '@site/src/components/docs/geopackage-docs-tabs';
+<h4>
+The GeoPackage module uses sql.js which has bundling issues with docusaurus,
+however the `GeoPackageLoader` has been used successfully with vite / esbuild.
+</h4>
 
-<GeoPackageDocsTabs active="try-it" />
+<!-- 
+import Demo from 'examples/website/geospatial/app';
 
-<div style={{height: 'calc(100vh - 76px)'}}> 
-  <ClientExample kind="geospatial" format="GeoPackage" >
-      [**`GeoPackageLoader`**](/docs/modules/geopackage/api-reference/geopackage-loader) loads GeoPackage files, optionally into GeoJSON.
-  </ClientExample>
+<div style={{height: '100vh'}}> 
+  <Demo format="GeoPackage" >
+      [**`GeoPackageLoader`**](/docs/modules/arrow/api-reference/geopackage-loader) loads GeoPackage files, optionally into GeoJSON.
+  </Demo>
 </div>
+-->

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {GL} from '@math.gl/geometry-utils';
+import {GL} from '@loaders.gl/math';
 
 export function getConstructorForDataFormat(dataType: string) {
   switch (dataType) {
@@ -58,31 +58,30 @@ export const OBJECT_ID_ATTRIBUTE_TYPE = 'Oid32';
 export const FLOAT_64_TYPE = 'Float64';
 export const INT_16_ATTRIBUTE_TYPE = 'Int16';
 
-// deck.gl coordinate system constants as string literals.
-export const COORDINATE_SYSTEM = {
+// https://github.com/visgl/deck.gl/blob/9548f43cba2234a1f4877b6b17f6c88eb35b2e08/modules/core/src/lib/constants.js#L27
+// Describes the format of positions
+export enum COORDINATE_SYSTEM {
   /**
-   * `LNGLAT` if rendering into a geospatial viewport, `CARTESIAN` otherwise.
+   * `LNGLAT` if rendering into a geospatial viewport, `CARTESIAN` otherwise
    */
-  DEFAULT: 'default',
+  DEFAULT = -1,
   /**
-   * Positions are interpreted as [lng, lat, elevation].
-   * lng/lat are degrees, elevation is meters, distances are meters.
+   * Positions are interpreted as [lng, lat, elevation]
+   * lng lat are degrees, elevation is meters. distances as meters.
    */
-  LNGLAT: 'lnglat',
+  LNGLAT = 1,
   /**
-   * Positions are interpreted as meter offsets, distances as meters.
+   * Positions are interpreted as meter offsets, distances as meters
    */
-  METER_OFFSETS: 'meter-offsets',
+  METER_OFFSETS = 2,
   /**
-   * Positions are interpreted as lng/lat offsets: [deltaLng, deltaLat, elevation].
-   * deltaLng/deltaLat are delta degrees, elevation is meters, distances are meters.
+   * Positions are interpreted as lng lat offsets: [deltaLng, deltaLat, elevation]
+   * deltaLng, deltaLat are delta degrees, elevation is meters.
+   * distances as meters.
    */
-  LNGLAT_OFFSETS: 'lnglat-offsets',
+  LNGLAT_OFFSETS = 3,
   /**
-   * Non-geospatial.
+   * Non-geospatial
    */
-  CARTESIAN: 'cartesian'
-} as const;
-
-/** String coordinate systems shared with deck.gl layer props. */
-export type CoordinateSystem = (typeof COORDINATE_SYSTEM)[keyof typeof COORDINATE_SYSTEM];
+  CARTESIAN = 0
+}

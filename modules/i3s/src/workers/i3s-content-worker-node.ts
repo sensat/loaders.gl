@@ -1,10 +1,6 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 // Polyfills increases the bundle size significantly. Use it for NodeJS worker only
 import '@loaders.gl/polyfills';
 import {createLoaderWorker} from '@loaders.gl/loader-utils';
-import {I3SContentLoaderWithParser} from '../i3s-content-loader-with-parser';
+import {I3SContentLoader} from '../i3s-content-loader';
 
-createLoaderWorker(I3SContentLoaderWithParser);
+createLoaderWorker(I3SContentLoader);

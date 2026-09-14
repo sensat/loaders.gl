@@ -1,9 +1,14 @@
-// SPDX-License-Identifier: ISC
-import {test} from 'vitest';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+// Forked from sax-ts & sax under ISC license
+
+import test from 'tape-promise/tape';
 import {testSax} from '../utils/test-utils';
+
 // https://github.com/isaacs/sax-js/issues/49
-test('SAXParser#issue-84', () => {
-  testSax({
+test('SAXParser#issue-84', (t) => {
+  testSax(t, {
     xml: '<?has unbalanced "quotes?><xml>body</xml>',
     expect: [
       ['processinginstruction', {name: 'has', body: 'unbalanced "quotes'}],
@@ -18,4 +23,6 @@ test('SAXParser#issue-84', () => {
       noscript: true
     }
   });
+
+  t.end();
 });

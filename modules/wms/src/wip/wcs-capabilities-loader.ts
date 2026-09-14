@@ -1,11 +1,9 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
+// loaders.gl, MIT license
 
-import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
 import type {WCSCapabilities} from './lib/wcs/parse-wcs-capabilities';
+import {parseWCSCapabilities} from './lib/wcs/parse-wcs-capabilities';
 
-import {WCSCapabilitiesFormat} from '../wms-format';
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
@@ -20,7 +18,6 @@ export type WCSLoaderOptions = LoaderOptions & {
  * Loader for the response to the WCS GetCapability request
  */
 export const WCSCapabilitiesLoader = {
-  ...WCSCapabilitiesFormat,
   dataType: null as unknown as WCSCapabilities,
   batchType: null as never,
 
@@ -30,21 +27,20 @@ export const WCSCapabilitiesLoader = {
   module: 'wms',
   version: VERSION,
   worker: false,
-  encoding: 'xml',
-  format: 'wcs-capabilities',
   extensions: ['xml'],
   mimeTypes: ['application/vnd.ogc.wcs_xml', 'application/xml', 'text/xml'],
   testText: testXMLFile,
   options: {
     wms: {}
   },
-  /** Loads the parser-bearing WCS capabilities loader implementation. */
-  preload: async () => (await import('./wcs-capabilities-loader-with-parser')).WCSCapabilitiesLoaderWithParser
-} as const satisfies Loader<WCSCapabilities, never, WCSLoaderOptions>;
+  parse: async (arrayBuffer: ArrayBuffer, options?: WCSLoaderOptions) =>
+    parseWCSCapabilities(new TextDecoder().decode(arrayBuffer), options),
+  parseTextSync: (text: string, options?: WCSLoaderOptions) => parseWCSCapabilities(text, options)
+} as const satisfies LoaderWithParser<WCSCapabilities, never, WCSLoaderOptions>;
 
 function testXMLFile(text: string): boolean {
   // TODO - There could be space first.
   return text.startsWith('<?xml');
 }
 
-export const _typecheckWFSCapabilitiesLoader: Loader = WCSCapabilitiesLoader;
+export const _typecheckWFSCapabilitiesLoader: LoaderWithParser = WCSCapabilitiesLoader;

@@ -7,7 +7,7 @@
 
 import {Vector3, Matrix3, Matrix4, Quaternion} from '@math.gl/core';
 import {Ellipsoid} from '@math.gl/geospatial';
-import {GL, octDecodeInRange} from '@math.gl/geometry-utils';
+import {GL} from '@loaders.gl/math'; // 'math.gl/geometry';
 import Tile3DFeatureTable from '../classes/tile-3d-feature-table';
 import Tile3DBatchTable from '../classes/tile-3d-batch-table';
 
@@ -157,37 +157,32 @@ function extractInstancedAttributes(
     instanceTranslationRotationScale.translation = instancePosition;
 
     // Get the instance rotation
-    const normalUp = featureTable.getProperty('NORMAL_UP', GL.FLOAT, 3, i, scratch1);
-    const normalRight = featureTable.getProperty('NORMAL_RIGHT', GL.FLOAT, 3, i, scratch2);
-    tile.normalUp = normalUp;
-    tile.normalRight = normalRight;
+    tile.normalUp = featureTable.getProperty('NORMAL_UP', GL.FLOAT, 3, i, scratch1);
+    tile.normalRight = featureTable.getProperty('NORMAL_RIGHT', GL.FLOAT, 3, i, scratch2);
 
-    let hasCustomOrientation = false;
-    if (normalUp) {
-      if (!normalRight) {
+    const hasCustomOrientation = false;
+    if (tile.normalUp) {
+      if (!tile.normalRight) {
         throw new Error('i3dm: Custom orientation requires both NORMAL_UP and NORMAL_RIGHT.');
       }
-      instanceNormalUp.copy(normalUp);
-      instanceNormalRight.copy(normalRight);
+      // Vector3.unpack(normalUp, 0, instanceNormalUp);
+      // Vector3.unpack(normalRight, 0, instanceNormalRight);
       tile.hasCustomOrientation = true;
-      hasCustomOrientation = true;
     } else {
-      const octNormalUp = featureTable.getProperty(
+      tile.octNormalUp = featureTable.getProperty(
         'NORMAL_UP_OCT32P',
         GL.UNSIGNED_SHORT,
         2,
         i,
         scratch1
       );
-      const octNormalRight = featureTable.getProperty(
+      tile.octNormalRight = featureTable.getProperty(
         'NORMAL_RIGHT_OCT32P',
         GL.UNSIGNED_SHORT,
         2,
         i,
         scratch2
       );
-      tile.octNormalUp = octNormalUp;
-      tile.octNormalRight = octNormalRight;
 
       if (tile.octNormalUp) {
         if (!tile.octNormalRight) {
@@ -196,9 +191,12 @@ function extractInstancedAttributes(
           );
         }
 
-        decodeOct32POrientation(octNormalUp, octNormalRight, instanceNormalUp, instanceNormalRight);
-        tile.hasCustomOrientation = true;
+        throw new Error('i3dm: oct-encoded orientation not implemented');
+        /*
+        AttributeCompression.octDecodeInRange(octNormalUp[0], octNormalUp[1], 65535, instanceNormalUp);
+        AttributeCompression.octDecodeInRange(octNormalRight[0], octNormalRight[1], 65535, instanceNormalRight);
         hasCustomOrientation = true;
+        */
       } else if (tile.eastNorthUp) {
         Ellipsoid.WGS84.eastNorthUpToFixedFrame(instancePosition, instanceTransform);
         instanceTransform.getRotationMatrix3(instanceRotation);
@@ -258,26 +256,4 @@ function extractInstancedAttributes(
   }
 
   tile.instances = instances;
-}
-
-/**
- * Decodes the two 16-bit octahedral direction vectors used by the i3dm orientation semantics.
- *
- * The feature-table values are unsigned normalized coordinates in the inclusive `[0, 65535]`
- * range. Both directions are decoded before constructing the orthonormal basis, preserving the
- * same right/up/forward convention as the uncompressed `NORMAL_UP` and `NORMAL_RIGHT` fields.
- *
- * @param encodedUp - Two-component oct-encoded up direction.
- * @param encodedRight - Two-component oct-encoded right direction.
- * @param normalUp - Destination up vector.
- * @param normalRight - Destination right vector.
- */
-function decodeOct32POrientation(
-  encodedUp: number[],
-  encodedRight: number[],
-  normalUp: Vector3,
-  normalRight: Vector3
-): void {
-  octDecodeInRange(encodedUp[0], encodedUp[1], 65535, normalUp);
-  octDecodeInRange(encodedRight[0], encodedRight[1], 65535, normalRight);
 }

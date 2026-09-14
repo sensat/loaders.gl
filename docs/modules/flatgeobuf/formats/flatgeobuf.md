@@ -1,49 +1,4 @@
----
-title: FlatGeobuf format
-description: A binary, spatially indexed feature format designed for streaming and selective reads.
-hide_title: true
-page_style: designed
----
-
-import {FlatGeobufDocsTabs} from '@site/src/components/docs/flatgeobuf-docs-tabs';
-import {RangeRequestGraphic} from '@site/src/components/docs/range-request-graphic';
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
-
-<DocPageHeader
-  eyebrow="Indexed feature format"
-  title="Find the features before decoding the file."
-  description="FlatGeobuf stores OGC geometries in a compact FlatBuffers layout and can include a spatial index. That makes it useful for streaming and bounded reads without the weight of a database."
-  tone="cyan"
-  meta={['FlatBuffers', 'Row-oriented', 'Optional spatial index']}
-  links={[
-    {label: 'FlatGeobuf module', to: '/docs/modules/flatgeobuf'},
-    {label: 'FlatGeobuf source', to: '/docs/modules/flatgeobuf/api-reference/flatgeobuf-source-loader'}
-  ]}
-/>
-
-<FlatGeobufDocsTabs active="overview" />
-
-<RangeRequestGraphic />
-
-<DocOrientation
-  eyebrow="The useful trade-off"
-  title="A row format with a spatial shortcut."
-  description="FlatGeobuf keeps complete features together while its index lets a reader skip records outside a requested bounding box. It complements columnar formats rather than replacing them."
-  tone="cyan"
-  items={[
-    {label: 'Layout', value: 'FlatBuffers-encoded feature records'},
-    {label: 'Selection', value: 'R-tree bounding-box pruning when present'},
-    {label: 'Geometry', value: 'OGC Simple Features geometry types'},
-    {label: 'Output', value: 'GeoJSON-like features or Arrow batches'}
-  ]}
-/>
-
-<p className="badges">
-  <a href="/docs/developer-guide/common-scan-architecture">
-    <img src="https://img.shields.io/badge/Scan-Supported-2f855a.svg?style=flat-square" alt="Scan supported" />
-  </a>
-</p>
+# FlatGeobuf
 
 ![flatgeobuf-logo](../images/flatgeobuf-logo.png)
 
@@ -52,12 +7,6 @@ import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/desig
 
 FlatGeobuf is a binary (FlatBuffers-encoded) format that defines geospatial geometries. It is row-oriented rather than columnar like GeoParquet and GeoArrow and offers a different set of trade-offs.
 FlatGeobuf was inspired by [geobuf](https://github.com/mapbox/geobuf) and [flatbush](https://github.com/mourner/flatbush).
-
-<ReferenceBoundary
-  title="FlatGeobuf structure and support"
-  description="The sections below describe layout, geometry types, indexing, scan behavior, and the format features supported by loaders.gl."
-  tone="cyan"
-/>
 
 ## Characteristics
 
@@ -70,14 +19,10 @@ Goals are to be suitable for large volumes of static data, significantly faster 
 
 ## Geometries
 
-FlatGeobuf supports vector geometry types defined in the OGC Simple Features specification (the
-same feature types supported by the WKB 2D geometry type enumeration).
+FlatGeobuf supports any vector geometry type defined in the OGC Simple Features specification (the same feature types supported by the WKB 2D geometry type enumeration).
 
 :::caution
-FlatGeobuf geometries include the standard building blocks of `Point`, `LineString`, `Polygon`,
-`MultiPoint`, `MultiLineString`, `MultiPolygon`, and `GeometryCollection`, but also include less
-frequently used types such as `CircularString`, `Surface`, and `TIN` (triangulated irregular
-network). These additional types are not supported by loaders.gl.
+GeoBuf geometries include the standard building blocks of `Point`, `LineString`, `Polygon`,`MultiPoint`, `MultiLineString`, `MultiPolygon`, and `GeometryCollection`, but also includes more infrequently types such as `CircularString`, `Surface`, and `TIN`` (Triangulated irregular network). These additional types are not supported by loaders.gl.
 :::
 
 | Type               | Value | loaders.gl | Comment |
@@ -128,7 +73,7 @@ Apart from geometry, FlatGeobuf supports columns with a range of types:
 ## Metadata
 
 :::caution
-loaders.gl does not expose all metadata fields yet.
+loaders.gl currently does not currently expose all metadata.
 :::
 
 ```typescript
@@ -177,29 +122,15 @@ Each column also has a string that can hold arbitrary metadata.
 
 ## Spatial indexing
 
+:::caution
+loaders.gl currently does not support spatial filtering.
+:::
+
 FlatGeobuf files can optionally contain a spatial index. The spatial index is optional to allow the format to be efficiently written as a stream, support appending, and for use cases where spatial filtering is not needed.
 
 The spatial index clusters the data on a [packed Hilbert R-Tree](https://en.wikipedia.org/wiki/Hilbert_R-tree#Packed_Hilbert_R-trees) enabling fast bounding box spatial filtering.
 
 The Hilbert curve imposes a linear ordering on the data rectangles and then traverses the sorted list, assigning each set of C rectangles to a node in the R-tree. The final result is that the set of data rectangles on the same node will be close to each other in the linear order.
-
-## Scan support
-
-`FlatGeobufSource` uses the packed R-tree when a bounds query is supplied and applies the remaining
-portable table query to the selected features.
-
-| Capability | Support | Execution |
-| --- | --- | --- |
-| Entry point | `read()` | Arrow feature batches |
-| Schema and bounds discovery | Supported | Header metadata |
-| Bounding box | Supported | Packed R-tree pushdown when the file contains an index |
-| Attribute predicate | Supported | Residual after feature decoding |
-| Projection and global limit | Supported | Applied to surviving features |
-| Cancellation | Supported | Covers range reads and result production |
-| Explain output | Supported | Distinguishes R-tree pruning from residual work |
-
-Spatial bounds use the source coordinate reference system. The adapter does not reproject query
-bounds.
 
 ### Optimizing Remotely Hosted FlatGeobufs
 

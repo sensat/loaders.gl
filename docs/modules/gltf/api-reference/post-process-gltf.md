@@ -1,42 +1,4 @@
----
-title: postProcessGLTF
-description: Convert raw glTF JSON into an interlinked structure when an application wants resolved scenegraph references.
-hide_title: true
-page_style: designed
----
-
-import {GltfDocsTabs} from '@site/src/components/docs/gltf-docs-tabs';
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
-
-<DocPageHeader
-  eyebrow="glTF API / post-processing"
-  title="Opt into convenient scenegraph links."
-  description="The glTF loader preserves standards-shaped JSON. postProcessGLTF is the explicit second step for applications that prefer object references between scenes, nodes, meshes, materials, and buffers."
-  tone="pink"
-  meta={['Explicit opt-in', 'Resolved references', 'Typed postprocessed data']}
-/>
-
-<GltfDocsTabs active="post-processing" />
-
-<DocOrientation
-  eyebrow="Two useful representations"
-  title="Raw first. Convenient when needed."
-  description="Keeping post-processing separate lets loaders.gl preserve fidelity for general consumers while giving renderers and scene tools an easy-to-navigate graph when they need one."
-  tone="pink"
-  items={[
-    {label: 'Input', value: 'A GLTFWithBuffers result with source-shaped JSON and resources.'},
-    {label: 'Transform', value: 'Resolve selected numeric links and construct scenegraph helpers.'},
-    {label: 'Output', value: 'A GLTFPostprocessed structure for convenient traversal.'},
-    {label: 'Choice', value: 'Call it only when the application benefits from the extra structure.'}
-  ]}
-/>
-
-<ReferenceBoundary
-  title="Post-processing reference"
-  description="The sections below describe the function signature, copied versus shared objects, resolved links, and the transformations performed."
-  tone="pink"
-/>
+# postProcessGLTF
 
 The `postProcessGLTF` function transforms standards-compliant glTF JSON
 into an inter-linked JavaScript data structure that it significantly easier to work with.
@@ -83,27 +45,20 @@ The GLTF post processor copies objects in the input gltf json field as necessary
 - The `GLTFPostprocessed` type has less optional fields. Many optional `GLTF` fields will be required and populated with empty arrays etc as appropriate.
 - "Resolves" references to GLTF objects. glTF objects reference other object with integer indexes. Such indexes will be replaced with object references, simplifying iteration over the scenegraph.
 - Generates required `id` fields for all objects.
-- Expands `LINE_LOOP` and `TRIANGLE_FAN` primitives into portable indexed `LINES` and `TRIANGLES`
-  without changing the loaded source JSON or buffers.
 
 ## Post Processing of glTF Extensions
 
-While many glTF extensions can only be handled in the final renderer, some extensions are "structural" and can be processed during loading.
+Mhile many glTF extensions can only be handled in the final renderer, some extensions are "structural" and can be processed during the loading / post processing stage.
 
 Such structural extensions may represent alternate, optional, more efficient ways to store data etc.
 Examples are mesh compressions such as Draco, or alternate image formats for textures.
 
 By handling these extensions during loading, less work needs to be done by the upstream renderer.
-Meshopt decompression is completed by the asynchronous `GLTFLoader` before `postProcessGLTF` runs;
-the postprocessor itself does not decode compressed streams. See the
-[meshopt compression guide](/docs/modules/gltf/formats/gltf#meshopt-compression) for the distinction
-between the existing EXT extension and the newer KHR extension.
 
-| Extension                                                                                     | Preprocessed | Description                                |
-| --------------------------------------------------------------------------------------------- | ------------ | ------------------------------------------ |
-| [KHR_draco_mesh_compression](/docs/modules/gltf/formats/gltf#khr_draco_mesh_compression)       | Y            | Decompresses draco-compressed geometries   |
-| [KHR_meshopt_compression](/docs/modules/gltf/formats/gltf#khr_meshopt_compression)             | Y            | Decompresses meshopt-compressed geometries |
-| [EXT_meshopt_compression](/docs/modules/gltf/formats/gltf#ext_meshopt_compression)             | Y            | Decompresses meshopt-compressed geometries |
+| Extension                                                | Preprocessed | Description                                |
+| -------------------------------------------------------- | ------------ | ------------------------------------------ |
+| [KHR_draco_mesh_compression][KHR_draco_mesh_compression] | Y            | Decompresses draco-compressed geometries   |
+| [EXT_meshopt_compression][EXT_meshopt_compression])      | Y            | Decompresses meshopt-compressed geometries |
 
 ## Detailed Post Processing Notes
 
@@ -116,15 +71,6 @@ Background: The GLTF file format describes a tree structure, however it links no
 ### Adds `id` to every node
 
 The postprocessor makes sure each node and an `id` value, unless already present.
-
-### Normalizes WebGL-only primitive topologies
-
-WebGPU does not support the glTF `LINE_LOOP` and `TRIANGLE_FAN` primitive modes.
-`postProcessGLTF` expands those modes into indexed `LINES` and `TRIANGLES`, respectively. Indexed
-and non-indexed source primitives are both supported, winding is preserved, and generated indices
-use `Uint16Array` or `Uint32Array` according to the largest referenced vertex. The original glTF
-primitive, accessor, and buffer data remain unchanged. Bufferless index accessors are materialized
-from their implicit-zero base and optional sparse substitutions before topology expansion.
 
 ## Node Specific Post Processing
 
@@ -146,8 +92,6 @@ The accessor parameters which are textual strings in glTF will be resolved into 
 
 - `accessor.value` - This will be set to a typed array that is a view into the underlying bufferView.
 
-Draft glTF 2.1 accessor component types are represented by `Int32Array`, `Float64Array`, `Uint16Array` (raw IEEE-754 binary16 words), `BigInt64Array`, or `BigUint64Array` as appropriate. See [Accessor Component Types](/docs/modules/gltf/formats/gltf#accessor-component-types).
-
 Remarks:
 
 - While it can be very convenient to initialize WebGL buffers from `accessor.value`, this approach will defeat any memory sharing on the GPU that the glTF file specifies through accessors sharing `bufferViews`. The canonical way of instantitating a glTF model is for an application to create one WebGL buffer for each `bufferView` and then use accessors to reference data chunks inside those WebGL buffers with `offset` and `stride`.
@@ -155,8 +99,7 @@ Remarks:
 ## Images
 
 - `image.image` - Populated from the supplied `gltf.images` array. This array is populated by the `GLTFLoader` via `options.loadImages: true`):
-- `image.uri` - If the loaded image in the `images` array is not available, uses `gltf.baseUri` to resolve a relative URI and replaces this value.
-- `asset.thumbnail` - A draft glTF 2.1 thumbnail index is replaced by the corresponding processed image object.
+- `image.uri` - If loaded image in the `images` array is not available, uses `gltf.baseUri` or `options.baseUri` is available, to resolve a relative URI and replaces this value.
 
 ### Materials
 

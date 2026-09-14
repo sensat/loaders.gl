@@ -8,41 +8,7 @@
 // TODO - Finish hierarchy suypport: this file is only half ported
 /* eslint-disable */
 // @ts-nocheck
-import {GL} from '@math.gl/geometry-utils';
-import {createTypedArrayFromAccessor} from './helpers/tile-3d-accessor-utils';
-
-const defined = x => x !== undefined;
-
-const scratchVisited = [];
-const scratchStack = [];
-let marker = 0;
-
-/** Throws an error when a hierarchy invariant is violated. */
-function assert(condition, message) {
-  if (!condition) {
-    throw new Error(message || 'Batch table hierarchy assertion failed');
-  }
-}
-
-/** Combines JSON hierarchy properties with any decoded binary properties. */
-function combine(binaryProperties, properties) {
-  return {...binaryProperties, ...properties};
-}
-
-/**
- * Returns decoded binary hierarchy properties when supported.
- *
- * Binary hierarchy accessors are still a pending part of the hierarchy port;
- * fail explicitly for those descriptors instead of silently dropping values.
- */
-function getBinaryProperties(featuresLength, properties, binaryBody) {
-  for (const propertyName in properties || {}) {
-    if (properties[propertyName] && 'byteOffset' in properties[propertyName]) {
-      throw new Error(`Binary hierarchy property ${propertyName} is not supported yet`);
-    }
-  }
-  return undefined;
-}
+const defined = (x) => x !== undefined;
 
 export function initializeHierarchy(batchTable, jsonHeader, binaryBody) {
   if (!jsonHeader) {
@@ -71,6 +37,8 @@ export function initializeHierarchy(batchTable, jsonHeader, binaryBody) {
 function initializeHierarchyValues(hierarchyJson, binaryBody) {
   let i;
   let classId;
+  let binaryAccessor;
+
   const instancesLength = hierarchyJson.instancesLength;
   const classes = hierarchyJson.classes;
   let classIds = hierarchyJson.classIds;
@@ -79,27 +47,27 @@ function initializeHierarchyValues(hierarchyJson, binaryBody) {
   let parentIdsLength = instancesLength;
 
   if (defined(classIds.byteOffset)) {
-    classIds.componentType ??= GL.UNSIGNED_SHORT;
-    classIds.type = 'SCALAR';
-    classIds = createTypedArrayFromAccessor(
-      classIds,
+    classIds.componentType = defaultValue(classIds.componentType, GL.UNSIGNED_SHORT);
+    classIds.type = AttributeType.SCALAR;
+    binaryAccessor = getBinaryAccessor(classIds);
+    classIds = binaryAccessor.createArrayBufferView(
       binaryBody.buffer,
-      binaryBody.byteOffset,
+      binaryBody.byteOffset + classIds.byteOffset,
       instancesLength
-    ).values;
+    );
   }
 
   let parentIndexes;
   if (defined(parentCounts)) {
     if (defined(parentCounts.byteOffset)) {
-      parentCounts.componentType ??= GL.UNSIGNED_SHORT;
-      parentCounts.type = 'SCALAR';
-      parentCounts = createTypedArrayFromAccessor(
-        parentCounts,
+      parentCounts.componentType = defaultValue(parentCounts.componentType, GL.UNSIGNED_SHORT);
+      parentCounts.type = AttributeType.SCALAR;
+      binaryAccessor = getBinaryAccessor(parentCounts);
+      parentCounts = binaryAccessor.createArrayBufferView(
         binaryBody.buffer,
-        binaryBody.byteOffset,
+        binaryBody.byteOffset + parentCounts.byteOffset,
         instancesLength
-      ).values;
+      );
     }
     parentIndexes = new Uint16Array(instancesLength);
     parentIdsLength = 0;
@@ -110,14 +78,14 @@ function initializeHierarchyValues(hierarchyJson, binaryBody) {
   }
 
   if (defined(parentIds) && defined(parentIds.byteOffset)) {
-    parentIds.componentType ??= GL.UNSIGNED_SHORT;
-    parentIds.type = 'SCALAR';
-    parentIds = createTypedArrayFromAccessor(
-      parentIds,
+    parentIds.componentType = defaultValue(parentIds.componentType, GL.UNSIGNED_SHORT);
+    parentIds.type = AttributeType.SCALAR;
+    binaryAccessor = getBinaryAccessor(parentIds);
+    parentIds = binaryAccessor.createArrayBufferView(
       binaryBody.buffer,
-      binaryBody.byteOffset,
+      binaryBody.byteOffset + parentIds.byteOffset,
       parentIdsLength
-    ).values;
+    );
   }
 
   const classesLength = classes.length;
@@ -161,10 +129,10 @@ export function traverseHierarchy(hierarchy, instanceIndex, endConditionCallback
 
   const parentCounts = hierarchy.parentCounts;
   const parentIds = hierarchy.parentIds;
-  if (!parentIds) {
+  if (parentIds) {
     return endConditionCallback(hierarchy, instanceIndex);
   }
-  if (parentCounts) {
+  if (parentCounts > 0) {
     return traverseHierarchyMultipleParents(hierarchy, instanceIndex, endConditionCallback);
   }
   return traverseHierarchySingleParent(hierarchy, instanceIndex, endConditionCallback);
@@ -228,19 +196,19 @@ function traverseHierarchySingleParent(hierarchy, instanceIndex, endConditionCal
     hasParent = parentId !== instanceIndex;
     instanceIndex = parentId;
   }
-  return undefined;
+  throw new Error('traverseHierarchySingleParent');
 }
 
 // DEBUG CODE
 
 function validateHierarchy(hierarchy) {
-  const _scratchValidateStack = [];
+  const scratchValidateStack = [];
 
   const classIds = hierarchy.classIds;
   const instancesLength = classIds.length;
 
   for (let i = 0; i < instancesLength; ++i) {
-    validateInstance(hierarchy, i, _scratchValidateStack);
+    validateInstance(hierarchy, i, stack);
   }
 }
 

@@ -2,24 +2,15 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Mesh} from '@loaders.gl/schema';
-import {deduceMeshSchema, getMeshBoundingBox} from '@loaders.gl/schema-utils';
+import {Mesh, getMeshBoundingBox} from '@loaders.gl/schema';
 import decode, {DECODING_STEPS} from './decode-quantized-mesh';
 import {addSkirt} from './helpers/skirt';
 
 export type ParseQuantizedMeshOptions = {
-  /** Bounds used to map quantized mesh coordinates to x/y positions. */
   bounds?: [number, number, number, number];
-  /** Optional skirt height in meters. */
   skirtHeight?: number | null;
 };
 
-/**
- * Parse quantized mesh terrain bytes as a mesh.
- * @param arrayBuffer Quantized mesh terrain bytes.
- * @param options Quantized mesh parser options.
- * @returns Terrain mesh decoded from the quantized mesh payload.
- */
 export function parseQuantizedMesh(
   arrayBuffer: ArrayBuffer,
   options: ParseQuantizedMeshOptions = {}
@@ -59,14 +50,6 @@ export function parseQuantizedMesh(
     triangleIndices = newTriangles;
   }
 
-  const topology = 'triangle-list';
-  const mode = 4; // TRIANGLES
-  const schema = deduceMeshSchema(attributes, {
-    topology,
-    mode: String(mode),
-    boundingBox: JSON.stringify(boundingBox)
-  });
-
   return {
     // Data return by this loader implementation
     loaderData: {
@@ -77,9 +60,10 @@ export function parseQuantizedMesh(
       vertexCount: triangleIndices.length,
       boundingBox
     },
-    schema,
-    topology,
-    mode,
+    // TODO
+    schema: undefined!,
+    topology: 'triangle-list',
+    mode: 4, // TRIANGLES
     indices: {value: triangleIndices, size: 1},
     attributes
   };

@@ -2,16 +2,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {
-  ArrowTable,
-  ArrowTableBatch,
-  GeoJSONTable,
-  BinaryFeatureCollection
-} from '@loaders.gl/schema';
-import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
-import type {GeoArrowEncodingPreference} from '@loaders.gl/schema';
-import type {Proj4CRSDefinition} from '@math.gl/proj4';
-import {FlatGeobufFormat} from './flatgeobuf-format';
+import type {GeoJSONTable, BinaryFeatureCollection} from '@loaders.gl/schema';
+import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+import {
+  parseFlatGeobuf,
+  parseFlatGeobufInBatches,
+  ParseFlatGeobufOptions
+} from './lib/parse-flatgeobuf';
 
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
@@ -21,36 +18,31 @@ const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
 const FGB_MAGIC_NUMBER = [0x66, 0x67, 0x62, 0x03, 0x66, 0x67, 0x62, 0x01];
 
 export type FlatGeobufLoaderOptions = LoaderOptions & {
-  /** Preferred encoding for Arrow geometry output. */
-  geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
   flatgeobuf?: {
-    shape?: 'geojson-table' | 'columnar-table' | 'binary-geometry' | 'arrow-table';
+    shape?: 'geojson-table' | 'columnar-table' | 'binary';
     /** Override the URL to the worker bundle (by default loads from unpkg.com) */
     workerUrl?: string;
     boundingBox?: [[number, number], [number, number]];
-    /** Preferred encoding for Arrow geometry output. */
-    geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
   };
   gis?: {
     reproject?: boolean;
-    _targetCrs?: Proj4CRSDefinition;
+    _targetCrs?: string;
   };
 };
 
-/** Preloads the parser-bearing FlatGeobuf loader implementation. */
-async function preload() {
-  const {FlatGeobufLoaderWithParser} = await import('./flatgeobuf-loader-with-parser');
-  return FlatGeobufLoaderWithParser;
-}
-
-/** Metadata-only FlatGeobuf worker loader. */
+/** Load flatgeobuf on a worker */
 export const FlatGeobufWorkerLoader = {
-  ...FlatGeobufFormat,
-
   dataType: null as any,
   batchType: null as any,
+
+  id: 'flatgeobuf',
+  name: 'FlatGeobuf',
+  module: 'flatgeobuf',
   version: VERSION,
   worker: true,
+  extensions: ['fgb'],
+  mimeTypes: ['application/octet-stream'],
+  category: 'geometry',
   tests: [new Uint8Array(FGB_MAGIC_NUMBER).buffer],
   options: {
     flatgeobuf: {
@@ -59,17 +51,37 @@ export const FlatGeobufWorkerLoader = {
     gis: {
       reproject: false
     }
-  },
-  preload
-} as const satisfies Loader<
-  GeoJSONTable | ArrowTable | BinaryFeatureCollection,
-  ArrowTableBatch | any,
-  FlatGeobufLoaderOptions
->;
+  }
+} as const satisfies Loader<GeoJSONTable | BinaryFeatureCollection, any, FlatGeobufLoaderOptions>;
 
-/** Metadata-only FlatGeobuf loader. */
 export const FlatGeobufLoader = {
   ...FlatGeobufWorkerLoader,
-  binary: true,
-  preload
-} as const satisfies Loader<any, any, FlatGeobufLoaderOptions>;
+  parse: async (arrayBuffer: ArrayBuffer, options: FlatGeobufLoaderOptions = {}) =>
+    parseSync(arrayBuffer, options),
+  parseSync,
+  // @ts-expect-error this is a stream parser not an async iterator parser
+  parseInBatchesFromStream,
+  binary: true
+} as const satisfies LoaderWithParser<any, any, FlatGeobufLoaderOptions>;
+
+function parseSync(arrayBuffer: ArrayBuffer, options: FlatGeobufLoaderOptions = {}) {
+  return parseFlatGeobuf(arrayBuffer, getOptions(options));
+}
+
+function parseInBatchesFromStream(stream: any, options: FlatGeobufLoaderOptions) {
+  return parseFlatGeobufInBatches(stream, getOptions(options));
+}
+
+function getOptions(options: FlatGeobufLoaderOptions): ParseFlatGeobufOptions {
+  options = {
+    ...options,
+    flatgeobuf: {...FlatGeobufLoader.options.flatgeobuf, ...options?.flatgeobuf},
+    gis: {...FlatGeobufLoader.options.gis, ...options?.gis}
+  };
+  return {
+    shape: options?.flatgeobuf?.shape ?? 'geojson-table',
+    boundingBox: options?.flatgeobuf?.boundingBox,
+    crs: options?.gis?._targetCrs || 'WGS84',
+    reproject: options?.gis?.reproject || false
+  };
+}

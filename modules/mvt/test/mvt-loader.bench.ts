@@ -33,19 +33,18 @@ export default async function mvtLoaderBench(suite) {
     const mvtArrayBuffer = await response.arrayBuffer();
 
     // Actually define perf test
-    suite.addAsync(`${name} MVT -> geojson-table`, options, async () => {
-      // Conversion to geojson-table only
+    suite.addAsync(`${name} MVT -> geojson`, options, async () => {
+      // Conversion to geojson only
       await parse(mvtArrayBuffer.slice(0), MVTLoader, {worker: true});
     });
-    suite.addAsync(`${name} MVT -> binary-geometry (via geojson-table)`, options, async () => {
-      const geometryTable = await parse(mvtArrayBuffer.slice(0), MVTLoader, {worker: true});
-      geojsonToBinary(geometryTable.features);
+    suite.addAsync(`${name} MVT -> binary (legacy)`, options, async () => {
+      // Conversion to binary, via intermediate geojson
+      const geometryJSON = await parse(mvtArrayBuffer.slice(0), MVTLoader, {worker: true});
+      geojsonToBinary(geometryJSON);
     });
-    suite.addAsync(`${name} MVT -> binary-geometry`, options, async () => {
-      await parse(mvtArrayBuffer.slice(0), MVTLoader, {
-        mvt: {shape: 'binary-geometry'},
-        worker: true
-      });
+    suite.addAsync(`${name} MVT -> binary`, options, async () => {
+      // Conversion to binary directly
+      await parse(mvtArrayBuffer.slice(0), MVTLoader, {gis: {format: 'binary'}, worker: true});
     });
   }
 }

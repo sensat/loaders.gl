@@ -4,20 +4,6 @@
 
 // CSW - Catalog Service for the Web
 
-export {
-  CSWCapabilitiesFormat,
-  CSWDomainFormat,
-  CSWRecordsFormat,
-  GMLFormat,
-  WCSCapabilitiesFormat,
-  WFSCapabilitiesFormat,
-  WMSCapabilitiesFormat,
-  WMSErrorFormat,
-  WMSFeatureInfoFormat,
-  WMSLayerDescriptionFormat,
-  WMTSCapabilitiesFormat
-} from './wms-format';
-
 export type {CSWLoaderOptions} from './csw-capabilities-loader';
 
 export type {CSWCapabilities} from './csw-capabilities-loader';
@@ -50,9 +36,9 @@ export {WMSLayerDescriptionLoader as _WMSLayerDescriptionLoader} from './wip/wms
 
 // WMTS - Web Map Tile Service
 
-export type {WMTSLoaderOptions} from './wmts-capabilities-loader';
-export type {WMTSCapabilities} from './lib/parsers/wmts/parse-wmts-capabilities';
-export {WMTSCapabilitiesLoader} from './wmts-capabilities-loader';
+// export type {WMTSLoaderOptions as _WMTSLoaderOptions} from './wip/wmts-capabilities-loader';
+// export type {WMTSCapabilities as _WMTSCapabilities} from './wip/wmts-capabilities-loader';
+// export {WMTSCapabilitiesLoader as _WMTSCapabilitiesLoader} from './wip/wmts-capabilities-loader';
 
 // WFS - Web Feature Service
 
@@ -70,80 +56,16 @@ export {GMLLoader as _GMLLoader} from './gml-loader';
 
 // OGC Services
 
-export type {
-  CSWCatalogQuery,
-  CSWRecord,
-  CSWSourceLoaderOptions
-} from './csw-source-loader';
-export {CSWCatalogSource, CSWSourceLoader} from './csw-source-loader';
-export {WMSSourceLoader, WMSImageSource} from './wms-source-loader';
-export type {WMTSSourceLoaderOptions} from './wmts-source-loader';
-export {WMTSSourceLoader, WMTSImageTileSource} from './wmts-source-loader';
-export type {ServiceCRS} from './crs-utils';
-export {
-  normalizeServiceCRS,
-  areServiceCRSEquivalent,
-  selectServiceCRS,
-  getServiceCRSAxisOrder
-} from './crs-utils';
-export {WFSSourceLoader, WFSVectorSource} from './wfs-source-loader';
-export type {WFSVersion} from './wfs-source-loader';
-export type {
-  OGCAPICollection,
-  OGCAPILandingPage,
-  OGCAPILink,
-  OGCAPISourceOptions
-} from './ogc-api-source-loader';
-export {
-  OGCAPIFeaturesSource,
-  OGCAPIFeaturesSourceLoader,
-  OGCAPITilesSource,
-  OGCAPITilesSourceLoader
-} from './ogc-api-source-loader';
-export type {OGCAPIEDRQueryParameters, OGCAPIEDRSourceOptions} from './ogc-api-edr-source-loader';
-export {
-  OGCAPIEDRSource,
-  OGCAPIEDRSourceLoader
-} from './ogc-api-edr-source-loader';
-export type {
-  OGCAPICoveragesQueryParameters,
-  OGCAPICoveragesSourceOptions
-} from './ogc-api-coverages-source-loader';
-export {
-  OGCAPICoveragesSource,
-  OGCAPICoveragesSourceLoader
-} from './ogc-api-coverages-source-loader';
-export type {
-  WCSCoverage,
-  WCSCoverageMetadata,
-  WCSGetCoverageParameters,
-  WCSSourceOptions
-} from './wcs-source-loader';
-export {WCSCoverageSource, WCSCoverageSourceLoader} from './wcs-source-loader';
+// export {CSWSource} from './services/ogc/csw-service';
+export {WMSSource, WMSImageSource} from './services/ogc/wms-service';
 
-export type {GeoServiceType, ServiceCapabilities} from './service-capabilities';
-export {
-  normalizeWMSCapabilities,
-  normalizeWMTSCapabilities,
-  normalizeWFSCapabilities,
-  normalizeTileServiceCapabilities,
-  normalizeVectorServiceCapabilities
-} from './service-capabilities';
+// ArcGIS SourceLoaders
 
-export type {
-  ServiceRuntimeOptions,
-  ServiceTelemetryEvent,
-  ServiceSourceLoader
-} from './service-runtime';
-export {DEFAULT_SERVICE_LOADERS, ServiceRequestError, ServiceRuntime} from './service-runtime';
-export type {ServiceEndpoint, ServiceEndpointPreferences} from './capability-graph';
-export {CapabilityGraph, discoverServiceGraph} from './capability-graph';
+export {getArcGISServices as _getArcGISServices} from './services/arcgis/arcgis-server';
+export {ArcGISImageServerSource as _ArcGISImageServerSource} from './services/arcgis/arcgis-image-server';
 
-export {ImageSource} from './lib/deprecated/image-source-compatibility';
+// DEPRECATED: TODO - remove once deck.gl has been udpated
+export {ImageSource} from '@loaders.gl/loader-utils';
 export type {ImageType} from '@loaders.gl/images';
 export type {ImageServiceType} from './lib/deprecated/create-image-source';
 export {createImageSource} from './lib/deprecated/create-image-source';
-
-// DEPRECATED EXPORTS
-/** @deprecated Use `WMSSourceLoader`. Kept for deck.gl compatibility. */
-export {WMSSourceLoader as WMSSource} from './wms-source-loader';

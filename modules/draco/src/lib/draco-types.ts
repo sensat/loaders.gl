@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 /* eslint-disable camelcase */
 
 import {Mesh} from '@loaders.gl/schema';

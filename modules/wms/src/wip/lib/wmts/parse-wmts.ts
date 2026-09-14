@@ -1,8 +1,6 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
+// loaders.gl, MIT license
 
-import {parseXMLTextSync} from '../../../lib/parsers/xml/parse-xml-text';
+import {XMLLoader} from '@loaders.gl/xml';
 
 export type WMTSCapabilities = {};
 
@@ -13,7 +11,7 @@ export type WMTSCapabilities = {};
 export function parseWMTSCapabilities(text: string, options): WMTSCapabilities {
   // Remove namespaces in XML
   options = {...options, xml: {...options?.xml, removeNSPrefix: true}};
-  const parsedXML = parseXMLTextSync(text, options);
+  const parsedXML = XMLLoader.parseTextSync?.(text, options);
   const xmlCapabilities: any = parsedXML.Capabilities || parsedXML;
   return uncapitalizeKeys(xmlCapabilities);
 }

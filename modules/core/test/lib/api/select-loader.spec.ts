@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {expect, test} from 'vitest';
+import test from 'tape-promise/tape';
 import {fetchFile, selectLoader, selectLoaderSync, isBrowser} from '@loaders.gl/core';
 import {ImageLoader} from '@loaders.gl/images';
 import {DracoLoader} from '@loaders.gl/draco';
@@ -11,6 +11,7 @@ import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
 import {KMLLoader} from '@loaders.gl/kml';
 
 const KML_URL = '@loaders.gl/kml/test/data/kml/KML_Samples.kml';
+
 const DRACO_URL = '@loaders.gl/draco/test/data/bunny.drc';
 const TILE_3D_URL =
   '@loaders.gl/3d-tiles/test/data/CesiumJS/PointCloud/PointCloudRGB/pointCloudRGB.pnts';
@@ -18,164 +19,199 @@ const URL_WITH_QUERYSTRING =
   'https://wms.chartbundle.com/tms/1.0.0/sec/{z}/{x}/{y}.png?origin=nw.xy';
 const DRACO_URL_QUERYSTRING = '@loaders.gl/draco/test/data/bunny.drc?query.string';
 
-test('selectLoaderSync#urls', async () => {
+test('selectLoaderSync#urls', async (t) => {
   // @ts-ignore
-  expect(() => selectLoaderSync(null), 'selectedLoader throws if no loader found').toThrow();
-  expect(
+  t.throws(() => selectLoaderSync(null), 'selectedLoader throws if no loader found');
+
+  t.equal(
     // @ts-ignore
     selectLoaderSync('.', null, {nothrow: true}),
+    null,
     'selectedLoader({nothrow: true}) returns null instead of throwing'
-  ).toBe(null);
-  expect(
+  );
+
+  t.is(
     selectLoaderSync('data.laz', [ImageLoader, Tiles3DLoader, DracoLoader, LASLoader]),
+    LASLoader,
     'find loader by url extension'
-  ).toBe(LASLoader);
-  expect(
+  );
+
+  t.is(
     selectLoaderSync(
       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAGUExURf///wAAAFXC034AAAAMSURBVAjXY3BgaAAAAUQAwetZAwkAAAAASUVORK5CYII=',
       [ImageLoader, Tiles3DLoader, DracoLoader, LASLoader]
     ),
+    ImageLoader,
     'find loader by data url mime type'
-  ).toBe(ImageLoader);
-  expect(
+  );
+
+  t.is(
     selectLoaderSync(URL_WITH_QUERYSTRING, [ImageLoader, Tiles3DLoader, DracoLoader, LASLoader]),
+    ImageLoader,
     'find loader from URL with query params'
-  ).toBe(ImageLoader);
+  );
 
   const response = await fetchFile(DRACO_URL_QUERYSTRING);
-  expect(response.url.endsWith(DRACO_URL_QUERYSTRING.slice(-20)), 'URL ends with ').toBeTruthy();
-  expect(
+  t.ok(response.url.endsWith(DRACO_URL_QUERYSTRING.slice(-20)), 'URL ends with ');
+  t.is(
     selectLoaderSync(response, [ImageLoader, Tiles3DLoader, DracoLoader, LASLoader]),
+    DracoLoader,
     'find loader from response with query params'
-  ).toBe(DracoLoader);
-  expect(
+  );
+
+  t.throws(
     () => selectLoaderSync('data.obj', [ImageLoader, Tiles3DLoader, DracoLoader, LASLoader]),
     'find no loaders by url extension'
-  ).toThrow();
-  expect(
+  );
+
+  t.is(
     selectLoaderSync('data.obj', [ImageLoader, Tiles3DLoader, DracoLoader, LASLoader], {
       fallbackMimeType: 'image/png'
     }),
+    ImageLoader,
     'options.fallbackMimeType can resolve loader using provided mimeType'
-  ).toBe(ImageLoader);
-  expect(
+  );
+
+  t.is(
     selectLoaderSync('data.obj', [ImageLoader, Tiles3DLoader, DracoLoader, LASLoader], {
       fallbackMimeType: 'application/x.image'
     }),
+    ImageLoader,
     'options.fallbackMimeType can resolve loader using provided `application/x.<loaderId>` mimeType'
-  ).toBe(ImageLoader);
-  expect(
+  );
+
+  t.is(
     selectLoaderSync('data.las', [ImageLoader, Tiles3DLoader, DracoLoader, LASLoader], {
       mimeType: 'image/png'
     }),
+    ImageLoader,
     'options.mimeType can override loader using provided mimeType'
-  ).toBe(ImageLoader);
-  expect(
+  );
+
+  t.is(
     selectLoaderSync('data.las', [ImageLoader, Tiles3DLoader, DracoLoader, LASLoader], {
       mimeType: 'application/x.image'
     }),
+    ImageLoader,
     'options.mimeType can override loader using provided `application/x.<loaderId>` mimeType'
-  ).toBe(ImageLoader);
+  );
 });
 
-test('selectLoader#urls', async () => {
+test('selectLoader#urls', async (t) => {
   // @ts-ignore
-  await expect(
-    selectLoader(null),
-    'selectedLoader rejects if no loader found'
-  ).rejects.toBeDefined();
-  expect(
+  await t.rejects(selectLoader(null), 'selectedLoader rejects if no loader found');
+
+  t.equal(
     // @ts-ignore
     await selectLoader('.', null, {nothrow: true}),
+    null,
     'selectedLoader({nothrow: true}) returns null instead of throwing'
-  ).toBe(null);
-  expect(
+  );
+
+  t.is(
     await selectLoader('data.laz', [ImageLoader, Tiles3DLoader, DracoLoader, LASLoader]),
+    LASLoader,
     'find loader by url extension'
-  ).toBe(LASLoader);
-  expect(
+  );
+
+  t.is(
     await selectLoader(
       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAGUExURf///wAAAFXC034AAAAMSURBVAjXY3BgaAAAAUQAwetZAwkAAAAASUVORK5CYII=',
       [ImageLoader, Tiles3DLoader, DracoLoader, LASLoader]
     ),
+    ImageLoader,
     'find loader by data url mime type'
-  ).toBe(ImageLoader);
-  expect(
+  );
+
+  t.is(
     await selectLoader(URL_WITH_QUERYSTRING, [ImageLoader, Tiles3DLoader, DracoLoader, LASLoader]),
+    ImageLoader,
     'find loader from URL with query params'
-  ).toBe(ImageLoader);
+  );
 
   const response = await fetchFile(DRACO_URL_QUERYSTRING);
-  expect(response.url.endsWith(DRACO_URL_QUERYSTRING.slice(-20)), 'URL ends with ').toBeTruthy();
-  expect(
+  t.ok(response.url.endsWith(DRACO_URL_QUERYSTRING.slice(-20)), 'URL ends with ');
+  t.is(
     await selectLoader(response, [ImageLoader, Tiles3DLoader, DracoLoader, LASLoader]),
+    DracoLoader,
     'find loader from response with query params'
-  ).toBe(DracoLoader);
-  await expect(
+  );
+
+  t.rejects(
     selectLoader('data.obj', [ImageLoader, Tiles3DLoader, DracoLoader, LASLoader]),
     'find no loaders by url extension'
-  ).rejects.toBeDefined();
+  );
 });
 
-test('selectLoader#data', async () => {
+test('selectLoader#data', async (t) => {
   const dracoResponse = await fetchFile(DRACO_URL);
   const dracoData = await dracoResponse.arrayBuffer();
+
   const tileResponse = await fetchFile(TILE_3D_URL);
   const tileData = await tileResponse.arrayBuffer();
 
-  expect(
+  t.is(
     await selectLoader(dracoResponse, [Tiles3DLoader, DracoLoader, LASLoader]),
+    DracoLoader,
     'find loader by examining Response object'
-  ).toBe(DracoLoader);
-  expect(
+  );
+
+  t.is(
     await selectLoader(dracoData, [Tiles3DLoader, DracoLoader, LASLoader]),
+    DracoLoader,
     'find loader by examining binary data'
-  ).toBe(DracoLoader);
-  await expect(
+  );
+  t.rejects(
     selectLoader(new ArrayBuffer(10), [Tiles3DLoader, DracoLoader, LASLoader]),
     'find no loaders by examining binary data'
-  ).rejects.toBeDefined();
-  await expect(
-    selectLoader(dracoData, [LASLoader]),
-    'find no loaders by examining binary data'
-  ).rejects.toBeDefined();
-  expect(
+  );
+  t.rejects(selectLoader(dracoData, [LASLoader]), 'find no loaders by examining binary data');
+  t.is(
     await selectLoader(tileData, [Tiles3DLoader]),
+    Tiles3DLoader,
     'find loader by checking magic string'
-  ).toBe(Tiles3DLoader);
+  );
 
   const response = await fetchFile(KML_URL);
   const KML_SAMPLE = await response.text();
-  expect(await selectLoader(KML_SAMPLE, [KMLLoader]), 'find loader by examining text data').toBe(
-    KMLLoader
-  );
-  await expect(
-    selectLoader('hello', [KMLLoader]),
-    'find no loaders by examining text data'
-  ).rejects.toBeDefined();
 
+  t.is(
+    await selectLoader(KML_SAMPLE, [KMLLoader]),
+    KMLLoader,
+    'find loader by examining text data'
+  );
+  t.rejects(selectLoader('hello', [KMLLoader]), 'find no loaders by examining text data');
+
+  // Create an ArrayBuffer with a byteOffset to the payload
   const byteOffset = 10;
   const offsetBuffer = new ArrayBuffer(tileData.byteLength + byteOffset);
   const offsetArray = new Uint8Array(offsetBuffer, byteOffset);
   offsetArray.set(new Uint8Array(tileData));
-  expect(
+  t.is(
     await selectLoader(offsetArray, [Tiles3DLoader]),
+    Tiles3DLoader,
     'find loader by checking magic string in embedded tile data (with offset)'
-  ).toBe(Tiles3DLoader);
+  );
+
+  t.end();
 });
 
-test.runIf(isBrowser)('selectLoader#via (unregistered) MIME type', async () => {
-  const blob = new Blob([''], {type: 'application/x.draco'});
-  const loader = await selectLoader(blob, [Tiles3DLoader, DracoLoader, LASLoader]);
-
-  expect(loader, 'find loader by unregistered MIME type').toBe(DracoLoader);
+test('selectLoader#via (unregistered) MIME type', async (t) => {
+  if (isBrowser) {
+    const blob = new Blob([''], {type: 'application/x.draco'});
+    const loader = await selectLoader(blob, [Tiles3DLoader, DracoLoader, LASLoader]);
+    t.is(loader, DracoLoader, 'find loader by unregistered MIME type');
+  }
+  t.end();
 });
 
-test.runIf(isBrowser)('selectLoader#Blob data sniffing', async () => {
-  const blob = new Blob(['DRACO']);
-  let loader = await selectLoader(blob, [Tiles3DLoader, DracoLoader, LASLoader]);
-  expect(loader, 'selectLoader find loader by Blob content sniffing').toBe(DracoLoader);
-
-  loader = selectLoaderSync(blob, [Tiles3DLoader, DracoLoader, LASLoader], {nothrow: true});
-  expect(loader, 'selectLoaderSync does not find loader by Blob content sniffing').toBe(null);
+test('selectLoader#Blob data sniffing', async (t) => {
+  if (isBrowser) {
+    const blob = new Blob(['DRACO']);
+    let loader = await selectLoader(blob, [Tiles3DLoader, DracoLoader, LASLoader]);
+    t.is(loader, DracoLoader, 'selectLoader find loader by Blob content sniffing');
+    loader = selectLoaderSync(blob, [Tiles3DLoader, DracoLoader, LASLoader], {nothrow: true});
+    t.is(loader, null, 'selectLoaderSync does not find loader by Blob content sniffing');
+  }
+  t.end();
 });

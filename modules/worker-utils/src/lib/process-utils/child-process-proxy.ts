@@ -3,18 +3,11 @@
 // Copyright (c) vis.gl contributors
 
 /* eslint-disable no-console */
+// Avoid using named imports for Node builtins to help with "empty" resolution
+// for bundlers targeting browser environments. Access imports & types
+// through the `ChildProcess` object (e.g. `ChildProcess.spawn`, `ChildProcess.ChildProcess`).
+import * as ChildProcess from 'child_process';
 import {getAvailablePort} from './process-utils';
-
-type NodeChildProcess = import('child_process').ChildProcess;
-type SpawnOptions = import('child_process').SpawnOptions;
-
-async function getChildProcessModule(): Promise<typeof import('child_process')> {
-  if (typeof process === 'undefined' || !process.versions?.node) {
-    throw new Error('ChildProcessProxy is only available in Node.js environments');
-  }
-
-  return await import('child_process');
-}
 
 export type ChildProcessProxyProps = {
   command: string;
@@ -29,7 +22,7 @@ export type ChildProcessProxyProps = {
   /** wait: 0 - infinity */
   wait?: number;
   /** Options passed on to Node'.js `spawn` */
-  spawn?: SpawnOptions;
+  spawn?: ChildProcess.SpawnOptions;
   /** Should proceed if stderr stream recieved data */
   ignoreStderr?: boolean;
   /** Callback when the  */
@@ -43,7 +36,7 @@ const DEFAULT_PROPS: ChildProcessProxyProps = {
   port: 5000,
   autoPort: true,
   wait: 2000,
-  onSuccess: processProxy => {
+  onSuccess: (processProxy) => {
     console.log(`Started ${processProxy.props.command}`);
   }
 };
@@ -55,7 +48,7 @@ const DEFAULT_PROPS: ChildProcessProxyProps = {
 export default class ChildProcessProxy {
   id: string;
   props: ChildProcessProxyProps = {...DEFAULT_PROPS};
-  private childProcess: NodeChildProcess | null = null;
+  private childProcess: ChildProcess.ChildProcess | null = null;
   private port: number = 0;
   private successTimer?: any; // NodeJS.Timeout;
 
@@ -68,8 +61,6 @@ export default class ChildProcessProxy {
   async start(props: ChildProcessProxyProps): Promise<object> {
     props = {...DEFAULT_PROPS, ...props};
     this.props = props;
-
-    const childProcessModule = await getChildProcessModule();
 
     const args = [...props.arguments];
 
@@ -92,30 +83,25 @@ export default class ChildProcessProxy {
         });
 
         console.log(`Spawning ${props.command} ${props.arguments.join(' ')}`);
-        const spawnOptions: SpawnOptions = props.spawn || {};
-        const childProcess: NodeChildProcess = childProcessModule.spawn(
-          props.command,
-          args,
-          spawnOptions
-        );
+        const childProcess = ChildProcess.spawn(props.command, args, props.spawn);
         this.childProcess = childProcess;
 
-        childProcess.stdout?.on('data', data => {
+        childProcess.stdout.on('data', (data) => {
           console.log(data.toString());
         });
-        childProcess.stderr?.on('data', data => {
+        childProcess.stderr.on('data', (data) => {
           console.log(`Child process wrote to stderr: "${data}".`);
           if (!props.ignoreStderr) {
             this._clearTimeout();
             reject(new Error(data));
           }
         });
-        childProcess.on('error', error => {
+        childProcess.on('error', (error) => {
           console.log(`Child process errored with ${error}`);
           this._clearTimeout();
           reject(error);
         });
-        childProcess.on('close', code => {
+        childProcess.on('close', (code) => {
           console.log(`Child process exited with ${code}`);
           this.childProcess = null;
           this._clearTimeout();

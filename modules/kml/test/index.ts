@@ -3,9 +3,5 @@
 // Copyright (c) vis.gl contributors
 
 import './gpx-loader.spec';
-import './gpx-arrow-loader.spec';
 import './kml-loader.spec';
-import './kml-arrow-loader.spec';
-import './kmz.spec';
 import './tcx-loader.spec';
-import './tcx-arrow-loader.spec';

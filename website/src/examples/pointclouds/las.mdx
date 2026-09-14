@@ -1,11 +1,7 @@
----
-title: "LAS"
-hide_title: true
----
+# LAS
 
-import {LasDocsTabs} from '@site/src/components/docs/las-docs-tabs';
-import {PointcloudLoaderLiveExample} from '@site/src/components/docs/loader-live-example';
+import Demo from 'examples/website/pointcloud/app';
 
-<LasDocsTabs active="try-it" />
-
-<PointcloudLoaderLiveExample format="LAZ" />
+<div style={{height: 'calc(100vh - var(--ifm-navbar-height))'}}> 
+  <Demo format="LAZ"/>
+</div>

@@ -15,11 +15,11 @@ export type LERCData = {
   /**	[band1, band2, …] Each band is a typed array of width * height * depthCount */
   pixels: TypedArray[];
   /**	Typed array with a size of width*height, or null if all pixels are valid */
-  mask: Uint8Array | null;
+  mask: Uint8Array;
   /**	Depth count  */
   depthCount: number;
   /**	array	[band1_mask, band2_mask, …] Each band is a Uint8Array of width * height * depthCount */
-  bandMasks?: Uint8Array[] | null;
+  bandMasks?: Uint8Array[];
 };
 
 export type LercPixelType = 'S8' | 'U8' | 'S16' | 'U16' | 'S32' | 'U32' | 'F32' | 'F64';

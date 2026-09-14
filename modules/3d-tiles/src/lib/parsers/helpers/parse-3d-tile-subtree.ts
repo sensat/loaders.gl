@@ -4,7 +4,6 @@
 
 import type {Subtree, Availability} from '../../../types';
 import type {LoaderContext, LoaderOptions} from '@loaders.gl/loader-utils';
-import {SubtreeSchema} from '../../../subtree-zod-schema';
 
 const SUBTREE_FILE_MAGIC = 0x74627573;
 const SUBTREE_FILE_VERSION = 1;
@@ -38,7 +37,7 @@ export default async function parse3DTilesSubtree(
 
   const textDecoder = new TextDecoder('utf8');
   const string = textDecoder.decode(stringAttribute);
-  const subtree = SubtreeSchema.parse(JSON.parse(string));
+  const subtree = JSON.parse(string);
 
   const binaryByteLength = parseUint64Value(data.slice(16, 24));
   let internalBinaryBuffer = new ArrayBuffer(0);
@@ -52,7 +51,7 @@ export default async function parse3DTilesSubtree(
     for (const contentAvailability of subtree.contentAvailability) {
       await loadExplicitBitstream(subtree, contentAvailability, internalBinaryBuffer, context);
     }
-  } else if (subtree.contentAvailability) {
+  } else {
     await loadExplicitBitstream(
       subtree,
       subtree.contentAvailability,
@@ -79,13 +78,10 @@ export default async function parse3DTilesSubtree(
  */
 export async function loadExplicitBitstream(
   subtree: Subtree,
-  availabilityObject: Availability | undefined,
+  availabilityObject: Availability,
   internalBinaryBuffer: ArrayBuffer,
   context: LoaderContext | undefined
 ): Promise<void> {
-  if (!availabilityObject) {
-    return;
-  }
   const bufferViewIndex = Number.isFinite(availabilityObject.bitstream)
     ? availabilityObject.bitstream
     : availabilityObject.bufferView;

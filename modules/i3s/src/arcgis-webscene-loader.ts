@@ -1,11 +1,8 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
-import type {LoaderOptions, Loader} from '@loaders.gl/loader-utils';
+import type {LoaderOptions, LoaderWithParser} from '@loaders.gl/loader-utils';
 import type {ArcGISWebSceneData} from './types';
 
-import {ArcGISWebSceneFormat} from './i3s-format';
+import {parseWebscene} from './lib/parsers/parse-arcgis-webscene';
+
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
@@ -17,7 +14,6 @@ export type ArcGISWebSceneLoaderOptions = LoaderOptions & {};
  * Spec - https://developers.arcgis.com/web-scene-specification/objects/webscene/
  */
 export const ArcGISWebSceneLoader = {
-  ...ArcGISWebSceneFormat,
   dataType: null as unknown as ArcGISWebSceneData,
   batchType: null as never,
   name: 'ArcGIS Web Scene Loader',
@@ -25,9 +21,15 @@ export const ArcGISWebSceneLoader = {
   module: 'i3s',
   version: VERSION,
   mimeTypes: ['application/json'],
-  /** Loads the parser-bearing ArcGIS WebScene loader implementation. */
-  preload: async () =>
-    (await import('./arcgis-webscene-loader-with-parser')).ArcGISWebSceneLoaderWithParser,
+  parse,
   extensions: ['json'],
   options: {}
-} as const satisfies Loader<ArcGISWebSceneData, never, ArcGISWebSceneLoaderOptions>;
+} as const satisfies LoaderWithParser<ArcGISWebSceneData, never, ArcGISWebSceneLoaderOptions>;
+
+/**
+ * Parse ArcGIS webscene
+ * @param data
+ */
+async function parse(data: ArrayBuffer): Promise<ArcGISWebSceneData> {
+  return parseWebscene(data);
+}

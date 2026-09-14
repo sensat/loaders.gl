@@ -1,6 +1,11 @@
-import {expect, test} from 'vitest';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+
+import test from 'tape-promise/tape';
 import {isBrowser} from '@loaders.gl/worker-utils';
 import {getLoadableWorkerURL} from '../../../src/lib/worker-utils/get-loadable-worker-url';
+
 const WORKER_SOURCE = `
   self.onmessage = function(event) {
     const messageData = {
@@ -11,24 +16,34 @@ const WORKER_SOURCE = `
     setTimeout(function () { self.postMessage(messageData); }, 50);
   };
 `;
+
 const LOCAL_WORKER_URL = 'modules/worker-utils/dist/null-worker.js';
+
 const REMOTE_WORKER_URL = 'https://unpkg.com/loaders.gl/worker-utils/dist/null-worker.js';
-test('getLoadableWorkerURL', () => {
+
+test('getLoadableWorkerURL', (t) => {
   if (!isBrowser) {
+    t.end();
   }
+
   let workerURL;
   workerURL = getLoadableWorkerURL({source: WORKER_SOURCE});
-  expect(workerURL.startsWith('blob:'), 'Worker source generates Object URL').toBeTruthy();
+  t.ok(workerURL.startsWith('blob:'), 'Worker source generates Object URL');
+
   workerURL = getLoadableWorkerURL({url: LOCAL_WORKER_URL});
-  expect(workerURL, 'Local worker URL is returned unchanged').toBe(LOCAL_WORKER_URL);
+  t.equal(workerURL, LOCAL_WORKER_URL, 'Local worker URL is returned unchanged');
+
   workerURL = getLoadableWorkerURL({url: REMOTE_WORKER_URL});
-  expect(workerURL.startsWith('blob:'), 'Remote worker URL generates Object URL').toBeTruthy();
-  expect(
+  t.ok(workerURL.startsWith('blob:'), 'Remote worker URL generates Object URL');
+
+  t.throws(
     () => getLoadableWorkerURL({source: WORKER_SOURCE, url: REMOTE_WORKER_URL}),
     'Throws when supplying both source and url'
-  ).toThrow();
-  expect(
+  );
+  t.throws(
     () => getLoadableWorkerURL({source: WORKER_SOURCE, url: LOCAL_WORKER_URL}),
     'Throws when supplying both source and url'
-  ).toThrow();
+  );
+
+  t.end();
 });

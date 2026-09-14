@@ -3,14 +3,11 @@
 // Copyright vis.gl contributors
 
 // LOADERS
-export {Tiles3DFormat, Tile3DSubtreeFormat, ThreeTZFormat} from './tiles-3d-format';
 export {Tiles3DLoader} from './tiles-3d-loader';
 export {CesiumIonLoader} from './cesium-ion-loader';
 export {Tile3DSubtreeLoader} from './tile-3d-subtree-loader';
 export type {Tiles3DArchiveFileLoaderOptions} from './3d-tiles-archive-loader';
 export {Tiles3DArchiveFileLoader} from './3d-tiles-archive-loader';
-export type {Tiles3DArchiveSourceInput} from './3d-tiles-archive-source';
-export {Tiles3DArchiveSource} from './3d-tiles-archive-source';
 
 // WRITERS
 export {Tile3DWriter} from './tile-3d-writer';
@@ -29,18 +26,9 @@ export type {
   Tiles3DTileJSON,
   Tiles3DTileJSONPostprocessed,
   Tiles3DTilesetJSON,
-  Tiles3DTilesetAsset,
-  Tiles3DMetadataEntity,
-  Tiles3DMetadataGroup,
-  Tiles3DMetadataSchema,
   Tiles3DTilesetJSONPostprocessed,
-  ImplicitTilingData,
   Tiles3DTileContent,
-  ImplicitTilingExensionData,
-  Subtree,
-  Availability,
-  GLTFStyleBuffer,
-  GLTFStyleBufferView
+  ImplicitTilingExensionData
 } from './types';
 export type {Tiles3DLoaderOptions} from './tiles-3d-loader';
 export {Tiles3DArchive} from './3d-tiles-archive/3d-tiles-archive-archive';

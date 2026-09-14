@@ -1,47 +1,8 @@
----
-title: GeoJSONWriter
-description: Encode loaders.gl geospatial data as GeoJSON or newline-delimited features.
-hide_title: true
-page_style: designed
----
+# GeoJSONWriter
 
-import {JsonDocsTabs} from '@site/src/components/docs/json-docs-tabs';
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
-
-<DocPageHeader
-  eyebrow="JSON module · geospatial writer"
-  title="GeoJSONWriter"
-  description="Encode loaders.gl geospatial tables as GeoJSON, keeping feature geometry and properties in a format that mapping tools and web APIs understand."
-  tone="mint"
-  meta={['From v4.0', 'GeoJSON', 'Streaming output']}
-  links={[
-    {label: 'GeoJSON format', to: '/docs/modules/json/formats/geojson'},
-    {label: 'GeoJSONLoader', to: '/docs/modules/json/api-reference/geojson-loader'},
-    {label: 'JSON module', to: '/docs/modules/json'}
-  ]}
-/>
-
-<JsonDocsTabs active="geojsonwriter" tryItHref="/examples/geospatial/geojson" />
-
-<DocOrientation
-  eyebrow="What it writes"
-  title="Send table data back to the map as features."
-  description="GeoJSONWriter converts table-shaped geospatial data into a FeatureCollection or feature stream, with an incremental path for larger outputs."
-  tone="mint"
-  items={[
-    {label: 'Input', value: 'GeoJSON tables and geometry columns'},
-    {label: 'Output', value: 'GeoJSON features and collections'},
-    {label: 'Streaming', value: 'Incremental feature batches'},
-    {label: 'Boundary', value: 'Readable web and GIS interchange'}
-  ]}
-/>
-
-<ReferenceBoundary
-  title="GeoJSONWriter reference"
-  description="The sections below document format metadata, usage, streaming, output shapes, and writer options."
-  tone="mint"
-/>
+<p class="badges">
+  <img src="https://img.shields.io/badge/From-v4.0-blue.svg?style=flat-square" alt="From-v4.0" />
+</p>
 
 Streaming writer for GeoJSON encoded files.
 
@@ -107,9 +68,12 @@ Supports table category options such as `batchType` and `batchSize`.
 
 ## JSONPaths
 
-The loader implements a focused subset of the [IETF JSONPath specification (RFC 9535)](https://www.rfc-editor.org/rfc/rfc9535). See the [JSONPath support table](../jsonpath.md) for the full list of supported and unsupported features.
+A minimal subset of the JSONPath syntax is supported, to specify which array in a JSON object should be streamed as batchs.
 
-JSONPaths are used only to identify which array should be streamed, so selectors such as `$.features[*]` and `$.features[:]` are normalized to `$.features`. Descendant operators, element indexes, filters, and unions are not supported. Regardless of the paths provided, only arrays will be streamed.
+`$.component1.component2.component3`
+
+- No support for wildcards, brackets etc. Only paths starting with `$` (JSON root) are supported.
+- Regardless of the paths provided, only arrays will be streamed.
 
 ## Attribution
 

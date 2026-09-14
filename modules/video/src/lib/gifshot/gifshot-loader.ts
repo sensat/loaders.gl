@@ -3,12 +3,12 @@
 // Copyright (c) vis.gl contributors
 
 // @ts-nocheck
-import {loadLibrary, type LoadLibraryOptions} from '@loaders.gl/worker-utils';
+import {loadLibrary} from '@loaders.gl/worker-utils';
 import {registerJSModules, getJSModule} from '@loaders.gl/loader-utils';
 
 let loadGifshotPromise;
 
-export async function loadGifshotModule(options: LoadLibraryOptions = {}) {
+export async function loadGifshotModule(options = {}) {
   registerJSModules(options.modules);
   const gifshot = getJSModule('gifshot');
   if (gifshot) {
@@ -18,7 +18,8 @@ export async function loadGifshotModule(options: LoadLibraryOptions = {}) {
   return await loadGifshotPromise;
 }
 
-async function loadGifshot(options: LoadLibraryOptions) {
+async function loadGifshot(options) {
+  options.libraryPath = options.libraryPath || 'libs/';
   const gifshot = await loadLibrary('gifshot.js', 'gifshot', options);
 
   // Depends on how import happened...

@@ -2,38 +2,44 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader} from '@loaders.gl/loader-utils';
-import type {Geometry} from '@loaders.gl/schema';
+import type {LoaderWithParser} from '@loaders.gl/loader-utils';
+import {BinaryGeometry} from '@loaders.gl/schema';
 
 import type {WKBLoaderOptions} from './wkb-loader';
 import {WKBLoader} from './wkb-loader';
-import {VERSION} from './lib/version';
-import {HexWKBFormat} from './wkt-format';
+import {VERSION} from './lib/utils/version';
+import {decodeHex} from './lib/utils/hex-transcoder';
 
 export type HexWKBLoaderOptions = WKBLoaderOptions;
 
 /**
- * Preloads the parser-bearing Hex WKB loader implementation.
- */
-async function preload() {
-  const {HexWKBLoaderWithParser} = await import('./hex-wkb-loader-with-parser');
-  return HexWKBLoaderWithParser;
-}
-
-/**
- * Metadata-only worker loader for Hex-encoded WKB (Well-Known Binary)
+ * Worker loader for Hex-encoded WKB (Well-Known Binary)
  */
 export const HexWKBLoader = {
-  dataType: null as unknown as Geometry,
+  dataType: null as unknown as BinaryGeometry,
   batchType: null as never,
-  ...HexWKBFormat,
+  name: 'Hexadecimal WKB',
+  id: 'wkb',
+  module: 'wkt',
   version: VERSION,
   worker: true,
+  category: 'geometry',
+  extensions: ['wkb'],
+  mimeTypes: [],
   options: WKBLoader.options,
   text: true,
   testText: isHexWKB,
-  preload
-} as const satisfies Loader<Geometry, never, HexWKBLoaderOptions>;
+  // TODO - encoding here seems wasteful - extend hex transcoder?
+  parse: async (arrayBuffer: ArrayBuffer) => parseHexWKB(new TextDecoder().decode(arrayBuffer)),
+  parseTextSync: parseHexWKB
+} as const satisfies LoaderWithParser<BinaryGeometry, never, HexWKBLoaderOptions>;
+
+function parseHexWKB(text: string, options?: HexWKBLoaderOptions): BinaryGeometry {
+  const uint8Array = decodeHex(text);
+  const binaryGeometry = WKBLoader.parseSync?.(uint8Array.buffer, options);
+  // @ts-expect-error
+  return binaryGeometry;
+}
 
 /**
  * Check if string is a valid Well-known binary (WKB) in HEX format
@@ -41,7 +47,6 @@ export const HexWKBLoader = {
  *
  * @param str input string
  * @returns true if string is a valid WKB in HEX format
- * @todo Avoid costly regex check
  */
 export function isHexWKB(string: string | null): boolean {
   if (!string) {

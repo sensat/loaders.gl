@@ -1,18 +1,4 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
-export {PotreeFormat, PotreeHierarchyChunkFormat, PotreeBinFormat} from './potree-format';
 export {PotreeLoader} from './potree-loader';
 export {PotreeHierarchyChunkLoader} from './potree-hierarchy-chunk-loader';
 export {PotreeBinLoader} from './potree-bin-loader';
-export {PotreeSourceLoader} from './potree-source-loader';
-
-export type {
-  HierarchyItem,
-  PotreeAttribute,
-  PotreeBoundingBox,
-  PotreeMetadata
-} from './potree-metadata-schema';
-
-export {type POTreeNode} from './parsers/parse-potree-hierarchy-chunk';
+export {PotreeSource} from './potree-source';

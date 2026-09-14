@@ -2,10 +2,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
-import type {PotreeMetadata} from './types/potree-metadata';
+import type {LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
 
-import {PotreeFormat} from './potree-format';
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
@@ -14,28 +12,21 @@ export type POTreeLoaderOptions = LoaderOptions & {
   potree?: {};
 };
 
-/** Preloads the parser-bearing Potree loader implementation. */
-async function preload() {
-  const {PotreeLoaderWithParser} = await import('./potree-loader-with-parser');
-  return PotreeLoaderWithParser;
-}
-
-/** Metadata-only Potree loader. */
+/** Potree loader */
 export const PotreeLoader = {
-  ...PotreeFormat,
-  dataType: null as unknown as PotreeMetadata,
+  dataType: null as unknown as any,
   batchType: null as never,
 
   name: 'potree metadata',
   id: 'potree',
   module: 'potree',
   version: VERSION,
-  text: true,
   extensions: ['js'],
   mimeTypes: ['application/json'],
-  testText: text => text.indexOf('octreeDir') >= 0,
+  testText: (text) => text.indexOf('octreeDir') >= 0,
+  parse: (data: ArrayBuffer) => JSON.parse(new TextDecoder().decode(data)),
+  parseTextSync: (text) => JSON.parse(text),
   options: {
     potree: {}
-  },
-  preload
-} as const satisfies Loader<PotreeMetadata, never, POTreeLoaderOptions>;
+  }
+} as const satisfies LoaderWithParser<any, never, POTreeLoaderOptions>;

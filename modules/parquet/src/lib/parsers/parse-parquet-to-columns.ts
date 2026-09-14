@@ -10,15 +10,17 @@ import {ParquetRowGroup} from '../../parquetjs/schema/declare';
 import {ParquetSchema} from '../../parquetjs/schema/schema';
 import {materializeColumns} from '../../parquetjs/schema/shred';
 import {getSchemaFromParquetReader} from './get-parquet-schema';
+import {installBufferPolyfill} from '../../polyfills/buffer/index';
 import {preloadCompressions} from '../../parquetjs/compression';
 
 /**
- * @deprecated - Use parseParquetToArrow
+ * @deprecated
  */
 export async function parseParquetFileInColumns(
   file: ReadableFile,
   options?: ParquetLoaderOptions
 ): Promise<ColumnarTable> {
+  installBufferPolyfill();
   await preloadCompressions(options);
 
   for await (const batch of parseParquetFileInColumnarBatches(file, options)) {
@@ -38,11 +40,10 @@ export async function* parseParquetFileInColumnarBatches(
   file: ReadableFile,
   options?: ParquetLoaderOptions
 ): AsyncIterable<ColumnarTableBatch> {
+  installBufferPolyfill();
   await preloadCompressions(options);
 
-  const reader = new ParquetReader(file, {
-    int96AsTimestamp: options?.parquet?.int96AsTimestamp
-  });
+  const reader = new ParquetReader(file);
 
   // Extract schema and geo metadata
   const schema = await getSchemaFromParquetReader(reader);
@@ -50,9 +51,7 @@ export async function* parseParquetFileInColumnarBatches(
   const parquetSchema = await reader.getSchema();
 
   // Iterate over row batches
-  const rowGroups = reader.rowGroupIterator(
-    options?.parquet?.columns?.length ? {columnList: options.parquet.columns} : undefined
-  );
+  const rowGroups = reader.rowGroupIterator(options?.parquet);
   for await (const rowGroup of rowGroups) {
     yield convertRowGroupToTableBatch(rowGroup, parquetSchema, schema);
   }

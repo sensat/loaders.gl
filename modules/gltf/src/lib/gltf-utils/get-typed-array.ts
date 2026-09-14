@@ -1,10 +1,6 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 // TODO - GLTFScenegraph should use these
 import {assert} from '../utils/assert';
-import type {BigTypedArray} from '@loaders.gl/schema';
+import type {TypedArray} from '@loaders.gl/schema';
 import type {GLTF, GLTFExternalBuffer, GLTFAccessor} from '../types/gltf-types';
 import {getAccessorArrayTypeAndLength} from './gltf-utils';
 
@@ -27,7 +23,8 @@ export function getTypedArrayForBufferView(json, buffers, bufferViewIndex) {
 // returns a `Uint8Array`
 export function getTypedArrayForImageData(json, buffers, imageIndex) {
   const image = json.images[imageIndex];
-  return getTypedArrayForBufferView(json, buffers, image.bufferView);
+  const bufferViewIndex = json.bufferViews[image.bufferView];
+  return getTypedArrayForBufferView(json, buffers, bufferViewIndex);
 }
 
 /**
@@ -35,14 +32,14 @@ export function getTypedArrayForImageData(json, buffers, imageIndex) {
  * @param json - json part of gltf content of a GLTF tile.
  * @param buffers - Array containing buffers of data.
  * @param accessor - accepts accessor index or accessor object.
- * @returns Typed array with type matching the accessor component type.
+ * @returns {TypedArray} Typed array with type matching the type of data poited by the accessor.
  */
 // eslint-disable-next-line complexity
 export function getTypedArrayForAccessor(
   json: GLTF,
   buffers: GLTFExternalBuffer[],
   accessor: GLTFAccessor | number
-): BigTypedArray {
+): TypedArray {
   const gltfAccessor = typeof accessor === 'number' ? json.accessors?.[accessor] : accessor;
   if (!gltfAccessor) {
     throw new Error(`No gltf accessor ${JSON.stringify(accessor)}`);
@@ -66,11 +63,11 @@ export function getTypedArrayForAccessor(
   // Creare an array of component's type where all components (not just elements) will reside
   if (typeof bufferView.byteStride === 'undefined' || bufferView.byteStride === elementByteSize) {
     // No iterleaving
-    const result: BigTypedArray = new ArrayType(arrayBuffer, byteOffset, length);
+    const result: TypedArray = new ArrayType(arrayBuffer, byteOffset, length);
     return result;
   }
   // Iterleaving
-  const result: BigTypedArray = new ArrayType(length);
+  const result: TypedArray = new ArrayType(length);
   for (let i = 0; i < gltfAccessor.count; i++) {
     const values = new ArrayType(
       arrayBuffer,

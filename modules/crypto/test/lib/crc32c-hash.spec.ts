@@ -2,23 +2,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {expect, test} from 'vitest';
+import test from 'tape-promise/tape';
 import {fetchFile} from '@loaders.gl/core';
 import {CRC32CHash, encodeNumber} from '@loaders.gl/crypto';
+import TEST_CASES from './crc32c-test-cases.json' assert {type: 'json'};
 
-const loadJSON = async (relativePath: string) => {
-  const url = new URL(relativePath, import.meta.url);
-  if (url.protocol === 'file:' && typeof window === 'undefined') {
-    const {readFile} = await import('fs/promises');
-    return JSON.parse(await readFile(url, 'utf8'));
-  }
-  const response = await fetch(url);
-  return response.json();
-};
-
-const TEST_CASES = await loadJSON('./crc32c-test-cases.json');
-
-test('crc32c#additional tests', async () => {
+test('crc32c#additional tests', async (t) => {
   for (const type in TEST_CASES) {
     const set = TEST_CASES[type];
 
@@ -36,10 +25,11 @@ test('crc32c#additional tests', async () => {
     for (const tc of set.cases) {
       if (tc.expected && !tc.charset) {
         const hash = await new CRC32CHash().hash(tc.arrayBuffer, 'base64');
-        expect(
+        t.equals(
           hash,
+          tc.expected,
           `should digest "${tc.input.slice(0, 10)}..." correctly ${tc.expected} ${tc.want}`
-        ).toBe(tc.expected);
+        );
       }
     }
 
@@ -61,4 +51,5 @@ test('crc32c#additional tests', async () => {
     t.equals(hash, set.expected, `should digest all test chunks correctly`);
     */
   }
+  t.end();
 });

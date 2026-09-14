@@ -2,17 +2,21 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {expect, test} from 'vitest';
+import test from 'tape-promise/tape';
 import {setLoaderOptions, getLoaderOptions} from '@loaders.gl/core';
-test('setLoaderOptions', () => {
+
+test('setLoaderOptions', (t) => {
   setLoaderOptions({});
+  t.end();
 });
-test('getLoaderOptions', () => {
+
+test('getLoaderOptions', (t) => {
   const options1 = getLoaderOptions();
-  expect(options1.customOption).toBeFalsy();
+  t.notOk(options1.customOption);
   setLoaderOptions({
     customOption: 'customValue'
   });
   const options2 = getLoaderOptions();
-  expect(options2.customOption).toBe('customValue');
+  t.equals(options2.customOption, 'customValue');
+  t.end();
 });

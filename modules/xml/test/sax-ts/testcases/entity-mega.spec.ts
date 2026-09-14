@@ -1,7 +1,12 @@
-// SPDX-License-Identifier: ISC
-import {test} from 'vitest';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+// Forked from sax-ts & sax under ISC license
+
+import test from 'tape-promise/tape';
 import {testSax} from '../utils/test-utils';
 import {SAXParser} from '@loaders.gl/xml';
+
 let xml = '<r>';
 let text = '';
 for (const i in SAXParser.ENTITIES) {
@@ -9,8 +14,9 @@ for (const i in SAXParser.ENTITIES) {
   text += SAXParser.ENTITIES[i];
 }
 xml += '</r>';
-test('SAXParser#entity-mega', () => {
-  testSax({
+
+test('SAXParser#entity-mega', (t) => {
+  testSax(t, {
     xml,
     expect: [
       ['opentagstart', {name: 'R', attributes: {}}],
@@ -19,4 +25,6 @@ test('SAXParser#entity-mega', () => {
       ['closetag', 'R']
     ]
   });
+
+  t.end();
 });

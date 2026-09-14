@@ -1,11 +1,7 @@
----
-title: "PCD"
-hide_title: true
----
+# PCD
 
-import {PcdDocsTabs} from '@site/src/components/docs/pcd-docs-tabs';
-import {PointcloudLoaderLiveExample} from '@site/src/components/docs/loader-live-example';
+import Demo from 'examples/website/pointcloud/app';
 
-<PcdDocsTabs active="try-it" />
-
-<PointcloudLoaderLiveExample format="PCD" />
+<div style={{height: 'calc(100vh - var(--ifm-navbar-height))'}}> 
+  <Demo format="PCD"/>
+</div>

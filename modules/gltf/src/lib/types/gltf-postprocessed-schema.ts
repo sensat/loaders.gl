@@ -1,9 +1,7 @@
-// SPDX-License-Identifier: MIT
-
 // Types forked from https://github.com/bwasty/gltf-loader-ts under MIT license
 // Generated from official JSON schema using `npm run generate-type` = on 2018-02-24
 
-import type {BigTypedArray} from '@loaders.gl/loader-utils';
+import type {TypedArray} from '@loaders.gl/loader-utils';
 
 export type GlTfId = number;
 
@@ -85,7 +83,7 @@ export type GLTFAccessorPostprocessed = {
   components: number;
   bytesPerComponent: number;
   bytesPerElement: number;
-  value: BigTypedArray;
+  value: TypedArray;
 
   // GLTF attributes (possibly overridden)
   /**
@@ -99,19 +97,7 @@ export type GLTFAccessorPostprocessed = {
   /**
    * The datatype of components in the attribute.
    */
-  componentType:
-    | 5120
-    | 5121
-    | 5122
-    | 5123
-    | 5124
-    | 5125
-    | 5126
-    | 5130
-    | 5131
-    | 5134
-    | 5135
-    | number;
+  componentType: 5120 | 5121 | 5122 | 5123 | 5125 | 5126 | number;
   /**
    * Specifies whether integer data values should be normalized.
    */
@@ -244,11 +230,6 @@ export type Asset = {
    * The minimum glTF version that this asset targets.
    */
   minVersion?: string;
-  /**
-   * The image that provides a preview of this glTF asset.
-   * Draft glTF 2.1.
-   */
-  thumbnail?: GLTFImagePostprocessed;
   extensions?: any;
   extras?: any;
   // [k: string]: any;
@@ -268,8 +249,6 @@ export type GLTFBufferPostprocessed = {
 
   /** The uri of the buffer. */
   uri?: string;
-  /** The zero-based GLB v3 chunk index selected by this buffer. */
-  chunk?: number;
   name?: any;
   extensions?: any;
   extras?: any;
@@ -636,8 +615,6 @@ export type GLTFNodePostprocessed = {
    * The index of the mesh in this node.
    */
   mesh?: GLTFMeshPostprocessed;
-  /** Index of the draft glTF 2.1 external asset instantiated by this node. */
-  externalAsset?: GlTfId;
   /**
    * The node's unit quaternion rotation in the order (x, y, z, w), where w is the scalar.
    */

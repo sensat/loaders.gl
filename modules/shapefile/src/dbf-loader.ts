@@ -2,30 +2,24 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, StrictLoaderOptions} from '@loaders.gl/loader-utils';
-import type {ArrowTable, ArrowTableBatch} from '@loaders.gl/schema';
+import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+import {parseDBF, parseDBFInBatches} from './lib/parsers/parse-dbf';
 
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
 
-export type DBFLoaderOptions = StrictLoaderOptions & {
+export type DBFLoaderOptions = LoaderOptions & {
   dbf?: {
     encoding?: string;
-    shape?: 'rows' | 'table' | 'object-row-table' | 'arrow-table';
-    batchSize?: number;
     /** Override the URL to the worker bundle (by default loads from unpkg.com) */
     workerUrl?: string;
   };
 };
 
-/** Preloads the parser-bearing DBF loader implementation. */
-async function preload() {
-  const {DBFLoaderWithParser} = await import('./dbf-loader-with-parser');
-  return DBFLoaderWithParser;
-}
-
-/** Metadata-only DBF worker loader. */
+/**
+ * DBFLoader - DBF files are used to contain non-geometry columns in Shapefiles
+ */
 export const DBFWorkerLoader = {
   name: 'DBF',
   dataType: null as unknown,
@@ -42,12 +36,15 @@ export const DBFWorkerLoader = {
     dbf: {
       encoding: 'latin1'
     }
-  },
-  preload
-} as const satisfies Loader<any | ArrowTable, any | ArrowTableBatch, DBFLoaderOptions>;
+  }
+} as const satisfies Loader<any, any, DBFLoaderOptions>;
 
-/** Metadata-only DBF file loader. */
-export const DBFLoader: Loader<any, any, DBFLoaderOptions> = {
+/** DBF file loader */
+export const DBFLoader: LoaderWithParser = {
   ...DBFWorkerLoader,
-  preload
+  parse: async (arrayBuffer, options) => parseDBF(arrayBuffer, options),
+  parseSync: parseDBF,
+  parseInBatches(arrayBufferIterator: AsyncIterable<ArrayBuffer> | Iterable<ArrayBuffer>, options) {
+    return parseDBFInBatches(arrayBufferIterator, options);
+  }
 };

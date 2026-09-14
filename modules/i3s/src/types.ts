@@ -1,17 +1,8 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
-import type {CRSIdentifier} from '@math.gl/crs';
-
 import type {Matrix4, Quaternion, Vector3} from '@math.gl/core';
-import type {ImageDataType} from '@loaders.gl/images';
 import type {TypedArray, MeshAttribute, TextureLevel} from '@loaders.gl/schema';
 import {TILESET_TYPE, TILE_REFINEMENT, TILE_TYPE, Tile3D, Tileset3D} from '@loaders.gl/tiles';
-import type {TilesetSpatialOptions, TilesetSpatialReference} from '@loaders.gl/tiles';
 import I3SNodePagesTiles from './lib/helpers/i3s-nodepages-tiles';
 import {LoaderWithParser} from '@loaders.gl/loader-utils';
-import type {CoordinateSystem} from './lib/parsers/constants';
 
 export type COLOR = [number, number, number, number];
 
@@ -35,70 +26,11 @@ export interface I3STilesetHeader extends SceneLayer3D {
   lodMetricValue?: number;
   /** Loader that has to be used to load content */
   loader: LoaderWithParser;
-  /** Normalized CRS discovery metadata added by the loader. */
-  spatialMetadata?: TilesetSpatialReference;
-  /** Point-profile renderer metadata retained for renderer integration. */
-  pointRenderer?: I3SPointRenderer;
-  /** Point-profile symbol selected by the layer renderer, when present. */
-  pointSymbol?: I3SPointSymbol;
 }
 /** https://github.com/Esri/i3s-spec/blob/master/docs/1.8/nodePage.cmn.md */
 export type NodePage = {
   /** Array of nodes. */
   nodes: NodeInPage[];
-};
-
-/** I3S Point Cloud node-page document (I3S 2.0+). */
-export type I3SPointCloudNodePage = {
-  /** Nodes stored in this page. */
-  nodes: I3SPointCloudNode[];
-};
-
-/** A node reference in an I3S Point Cloud hierarchy. */
-export type I3SPointCloudNode = {
-  /** Stable node resource identifier. */
-  resourceId: number | string;
-  /** Node bounding box. */
-  obb: Obb;
-  /** Number of points in this node. */
-  vertexCount: number;
-  /** LOD threshold from the Point Cloud node page. */
-  lodThreshold?: number;
-  /** First child node id in the global node index. */
-  firstChild?: number;
-  /** Number of contiguous child nodes. */
-  childCount?: number;
-  /** Optional geometry resource id. */
-  geometryResource?: number;
-  /** Additional producer metadata. */
-  [key: string]: unknown;
-};
-
-/** Point Cloud attribute storage descriptor. */
-export type I3SPointCloudAttributeInfo = {
-  /** Attribute key used in resource URLs. */
-  key?: string;
-  /** Human-readable or canonical attribute name. */
-  name?: string;
-  /** Encoding name, for example `lepcc-rgb`. */
-  encoding?: string;
-  /** Resource identifier, when not implied by the key. */
-  resource?: number;
-  /** Scalar value type for uncompressed attributes. */
-  valueType?: string;
-  /** Number of scalar components per point. */
-  valueSize?: number;
-  /** Standard uncompressed scalar storage descriptor. */
-  attributeValues?: {
-    /** Scalar value type. */
-    valueType?: string;
-    /** Number of scalar components per point. */
-    valuesPerElement?: number;
-  };
-  /** Optional bit-field definitions for flag bytes. */
-  values?: Record<string, unknown>;
-  /** Additional producer metadata. */
-  [key: string]: unknown;
 };
 /**
  * Spec - https://github.com/Esri/i3s-spec/blob/master/docs/1.8/mesh.cmn.md
@@ -107,7 +39,7 @@ type NodeMesh = {
   /**
    * The material definition.
    */
-  material?: MeshMaterial;
+  material: MeshMaterial;
   /** The geometry definition. */
   geometry: MeshGeometry;
   /** The attribute set definition. */
@@ -183,23 +115,13 @@ export type I3SMinimalNodeData = {
   contentUrl?: string;
   /** Texture image URL */
   textureUrl?: string;
-  /** All texture-set resources referenced by the node material. */
-  textureUrls?: I3STextureResource[];
   /** Feature attributes URLs */
   attributeUrls?: string[];
   /** Material definition from I3S layer metadata */
   materialDefinition?: I3SMaterialDefinition;
-  /** Scene-layer profile that produced this tile. */
-  layerType?: SceneLayer3D['layerType'];
-  /** Point-profile renderer metadata retained for renderer integration. */
-  pointRenderer?: I3SPointRenderer;
-  /** Point-profile symbol selected by the layer renderer, when present. */
-  pointSymbol?: I3SPointSymbol;
-  /** Legacy shared-resource bundle loaded for this node, when present. */
-  sharedResources?: SharedResources;
   /** Texture format per I3S spec */
   textureFormat: I3STextureFormat;
-  /** Loader options for texture loader. The loader might be `CompressedTextureLoader` for `dds`, BasisLoader for `ktx2` or `ImageBitmapLoader` for `jpg` and `png`. */
+  /** Loader options for texture loader. The loader might be `CompressedTextureLoader` for `dds`, BasisLoader for `ktx2` or ImageLoader for `jpg`and `png` */
   textureLoaderOptions?: {[key: string]: any};
   /** Child Nodes references  */
   children: NodeReference[];
@@ -227,11 +149,9 @@ export type I3SParseOptions = {
   decodeTextures?: boolean;
   /** deck.gl compatible coordinate system.
    * https://github.com/visgl/deck.gl/blob/master/docs/developer-guide/coordinate-systems.md
-   * Supported coordinate systems: `meter-offsets`, `lnglat-offsets`
+   * Supported coordinate systems: METER_OFFSETS, LNGLAT_OFFSETS
    */
-  coordinateSystem?: CoordinateSystem;
-  /** Shared target CRS options used by direct I3S content parsing. */
-  spatial?: TilesetSpatialOptions;
+  coordinateSystem?: number;
   /** Options to colorize 3DObjects by attribute value */
   colorsByAttribute?: {
     /** Feature attribute name */
@@ -259,35 +179,16 @@ export type I3STileOptions = {
   isDracoGeometry: boolean;
   textureUrl?: string;
   textureFormat?: I3STextureFormat;
-  /** All texture-set resources referenced by the node material. */
-  textureUrls?: I3STextureResource[];
   textureLoaderOptions?: any;
   materialDefinition?: I3SMaterialDefinition;
-  /** Scene-layer profile that produced the tile. */
-  layerType?: SceneLayer3D['layerType'];
-  /** Point-profile renderer metadata. */
-  pointRenderer?: I3SPointRenderer;
-  /** Point-profile symbol metadata. */
-  pointSymbol?: I3SPointSymbol;
   attributeUrls: string[];
   mbs: Mbs;
-};
-
-/** A selected texture-set resource for an I3S node. */
-export type I3STextureResource = {
-  textureSetDefinitionId: number;
-  textureUrl: string;
-  textureFormat: I3STextureFormat;
 };
 
 export type I3STilesetOptions = {
   store: Store;
   attributeStorageInfo: AttributeStorageInfo[];
   fields: Field[];
-  /** Normalized source and requested target CRS metadata. */
-  spatialReference?: TilesetSpatialReference;
-  /** Registered resources used by the requested spatial operation. */
-  spatialOptions?: TilesetSpatialOptions;
 };
 
 // TODO Replace "[key: string]: any" with actual defenition
@@ -297,34 +198,14 @@ export type I3STileContent = {
   featureIds: number[] | TypedArray;
   vertexCount: number;
   modelMatrix: Matrix4;
-  coordinateSystem: CoordinateSystem;
-  /** Stable target origin subtracted before Float32 conversion. */
-  origin?: [number, number, number];
-  /** Geographic target origin used with longitude/latitude offsets. */
-  cartographicOrigin?: [number, number, number];
-  /** Spatial descriptor for the returned positions, origins, normals, and bounds. */
-  spatialReference?: TilesetSpatialReference;
+  coordinateSystem: number;
   byteLength: number;
   texture: TileContentTexture;
-  /** Decoded texture-set resources keyed by texture-set definition id. */
-  textures?: Record<string, TileContentTexture>;
-  /** Opaque mesh-segmentation payload appended to a legacy geometry buffer. */
-  meshSegmentation?: ArrayBuffer;
-  /** Primitive topology required to draw this content. */
-  topology: 'triangle-list' | 'point-list';
-  /** Contiguous renderer draw ranges decoded from I3S feature segmentation. */
-  drawRanges?: I3SDrawRange[];
-  /** Point-profile renderer metadata preserved from the layer document. */
-  pointRenderer?: I3SPointRenderer;
-  /** Point-profile symbol selected by the renderer, when present. */
-  pointSymbol?: I3SPointSymbol;
   [key: string]: any;
 };
 
 export type TileContentTexture =
   | ArrayBuffer
-  | ImageDataType
-  | ImageData
   | {
       compressed: boolean;
       mipmaps: boolean;
@@ -362,7 +243,7 @@ export type SceneLayer3D = {
   /** The relative URL to the 3DSceneLayerResource. Only present as part of the SceneServiceInfo resource. */
   href?: string;
   /** The user-visible layer type */
-  layerType: '3DObject' | 'IntegratedMesh' | 'Point' | 'PointCloud';
+  layerType: '3DObject' | 'IntegratedMesh';
   /** The spatialReference of the layer including the vertical coordinate reference system (CRS). Well Known Text (WKT) for CRS is included to support custom CRS. */
   spatialReference?: SpatialReference;
   /** Enables consuming clients to quickly determine whether this layer is compatible (with respect to its horizontal and vertical coordinate system) with existing content. */
@@ -407,8 +288,6 @@ export type SceneLayer3D = {
   statisticsInfo?: StatisticsInfo[];
   /** The paged-access index description. */
   nodePages?: NodePageDefinition;
-  /** Paged index used by Point scene layers. */
-  pointNodePages?: NodePageDefinition;
   /** List of materials classes used in this layer. */
   materialDefinitions?: I3SMaterialDefinition[];
   /** Defines the set of textures that can be referenced by meshes. */
@@ -426,65 +305,17 @@ export type CachedDrawingInfo = {
 /** Spec - https://github.com/Esri/i3s-spec/blob/master/docs/1.8/drawingInfo.cmn.md */
 export type DrawingInfo = {
   /** An object defining the symbology for the layer. See more information about supported renderer types in ArcGIS clients. */
-  renderer: I3SRenderer;
+  renderer: any;
   /** Scale symbols for the layer. */
-  scaleSymbols?: boolean;
-};
-
-/** Forward-compatible ArcGIS renderer metadata stored in an I3S layer. */
-export type I3SRenderer = {
-  /** Renderer discriminator such as `simple`, `uniqueValue`, or `classBreaks`. */
-  type: string;
-  /** Default symbol used by simple renderers and as a fallback by classified renderers. */
-  symbol?: I3SPointSymbol | Record<string, unknown>;
-  /** Additional renderer properties preserved for application-level evaluation. */
-  [key: string]: unknown;
-};
-
-/** PointSymbol3D metadata exposed by Point scene layers. */
-export type I3SPointSymbol = {
-  /** ArcGIS symbol discriminator, normally `PointSymbol3D`. */
-  type: string;
-  /** Ordered icon, object, text, or other point symbol layers. */
-  symbolLayers?: I3SPointSymbolLayer[];
-  /** Additional producer metadata preserved without interpretation. */
-  [key: string]: unknown;
-};
-
-/** One symbol layer in an I3S PointSymbol3D definition. */
-export type I3SPointSymbolLayer = {
-  /** Symbol-layer discriminator such as `Icon` or `Object`. */
-  type: string;
-  /** Primitive or external resource used by the symbol layer. */
-  resource?: {
-    /** Built-in ArcGIS primitive name. */
-    primitive?: string;
-    /** External symbol resource reference. */
-    href?: string;
-    /** Additional producer metadata preserved without interpretation. */
-    [key: string]: unknown;
-  };
-  /** Additional symbol-layer properties preserved without interpretation. */
-  [key: string]: unknown;
-};
-
-/** Renderer metadata specialized for an I3S Point scene layer. */
-export type I3SPointRenderer = I3SRenderer & {
-  /** PointSymbol3D used by a simple renderer, when present. */
-  symbol?: I3SPointSymbol;
+  scaleSymbols: boolean;
 };
 /** Spec - https://github.com/Esri/i3s-spec/blob/master/docs/1.8/elevationInfo.cmn.md */
 export type ElevationInfo = {
-  /** Rule used to place feature Z values relative to the earth, terrain, or scene surface. */
   mode: 'relativeToGround' | 'absoluteHeight' | 'onTheGround' | 'relativeToScene';
   /** Offset is always added to the result of the above logic except for onTheGround where offset is ignored. */
-  offset?: number;
-  /** Linear unit used by `offset` and feature-expression results. Defaults to meters. */
-  unit?: string;
-  /** Optional constant feature-expression value retained from Web Scene metadata. */
-  featureExpression?: {value?: number};
-  /** Optional Arcade expression retained for renderer-aware clients. */
-  featureExpressionInfo?: {expression: string; title?: string};
+  offset: number;
+  /** A string value indicating the unit for the values in elevationInfo */
+  unit: string;
 };
 /** Spec - https://github.com/Esri/i3s-spec/blob/master/docs/1.8/statisticsInfo.cmn.md */
 export type StatisticsInfo = {
@@ -502,12 +333,7 @@ export type NodePageDefinition = {
   /** Index of the root node. Default = 0. */
   rootIndex?: number;
   /** Defines the meaning of nodes[].lodThreshold for this layer. */
-  lodSelectionMetricType:
-    | 'maxScreenThreshold'
-    | 'maxScreenThresholdSQ'
-    | 'screenSpaceRelative'
-    | 'distanceRangeFromDefaultCamera'
-    | 'density-threshold';
+  lodSelectionMetricType: 'maxScreenThresholdSQ';
 };
 /** Spec - https://github.com/Esri/i3s-spec/blob/master/docs/1.8/materialDefinitions.cmn.md */
 export type I3SMaterialDefinition = {
@@ -551,24 +377,6 @@ export type I3SMaterialTexture = {
   texCoord?: number;
   /** The normal texture: scalar multiplier applied to each normal vector of the normal texture. For occlusion texture,scalar multiplier controlling the amount of occlusion applied. Default=1 */
   factor?: number;
-  /** Legacy I3S texture wrapping mode for the S coordinate. */
-  wrapS?: 'none' | 'repeat' | 'mirror';
-  /** Legacy I3S texture wrapping mode for the T coordinate. */
-  wrapT?: 'none' | 'repeat' | 'mirror';
-};
-
-/** A contiguous range of primitives that belongs to one I3S feature. */
-export type I3SDrawRange = {
-  /** Feature identifier associated with this range. */
-  featureId: number;
-  /** Zero-based primitive offset. */
-  firstPrimitive: number;
-  /** Number of primitives in the range. */
-  primitiveCount: number;
-  /** Zero-based index or vertex offset suitable for a draw call. */
-  firstVertex: number;
-  /** Number of indices or vertices suitable for a draw call. */
-  vertexCount: number;
 };
 /** Spec - https://github.com/Esri/i3s-spec/blob/master/docs/1.8/attributeStorageInfo.cmn.md */
 export type AttributeStorageInfo = {
@@ -876,13 +684,13 @@ type FilterModeWireFrame = {
 /** Spec - https://github.com/Esri/i3s-spec/blob/master/docs/1.8/spatialReference.cmn.md */
 export type SpatialReference = {
   /** The current WKID value of the vertical coordinate system. */
-  latestVcsWkid?: number;
-  /** Identifies the current WKID value associated with the same spatial reference. */
-  latestWkid?: number;
+  latestVcsWkid: number;
+  /** dentifies the current WKID value associated with the same spatial reference. */
+  latestWkid: number;
   /** The WKID value of the vertical coordinate system. */
-  vcsWkid?: number;
+  vcsWkid: number;
   /** WKID, or Well-Known ID, of the CRS. Specify either WKID or WKT of the CRS. */
-  wkid?: number;
+  wkid: number;
   /** WKT, or Well-Known Text, of the CRS. Specify either WKT or WKID of the CRS but not both. */
   wkt?: string;
 };
@@ -936,19 +744,19 @@ type Domain = {
 /**
  * spec - https://github.com/Esri/i3s-spec/blob/master/docs/1.8/store.cmn.md
  */
-export type Store = {
+type Store = {
   id?: string | number;
   profile: string;
   version: number | string;
   resourcePattern?: string[];
   rootNode?: string;
   extent?: number[];
-  indexCRS?: CRSIdentifier;
-  vertexCRS?: CRSIdentifier;
+  indexCRS?: string;
+  vertexCRS?: string;
   normalReferenceFrame?: string;
   lodType?: string;
   lodModel?: string;
-  defaultGeometrySchema?: DefaultGeometrySchema;
+  defaultGeometrySchema: DefaultGeometrySchema;
   nidEncoding?: string;
   textureEncoding?: string[];
   featureEncoding?: string;
@@ -971,22 +779,6 @@ type DefaultGeometrySchema = {
   // TODO Do we realy need this Property?
   attributesOrder?: string[];
 };
-
-/** Default geometry schema used by I3S Point Cloud stores. */
-export type PointCloudDefaultGeometrySchema = {
-  /** Point primitives are encoded as a LEPCC XYZ resource. */
-  geometryType: 'points';
-  /** Point cloud topology. */
-  topology?: 'PerAttributeArray';
-  /** Header fields for point count and optional producer metadata. */
-  header?: HeaderAttribute[];
-  /** Attribute ordering in the binary resources. */
-  ordering?: string[];
-  /** Point cloud geometry encoding, normally `lepcc-xyz`. */
-  encoding?: string;
-  /** Additional producer metadata. */
-  [key: string]: unknown;
-};
 /**
  * spec - https://github.com/Esri/i3s-spec/blob/master/docs/1.8/headerAttribute.cmn.md
  */
@@ -1008,14 +800,11 @@ export enum HeaderAttributeProperty {
   featureCount = 'featureCount'
 }
 export type VertexAttribute = {
-  position?: GeometryAttribute;
-  normal?: GeometryAttribute;
-  uv0?: GeometryAttribute;
-  uv1?: GeometryAttribute;
-  color?: GeometryAttribute;
+  position: GeometryAttribute;
+  normal: GeometryAttribute;
+  uv0: GeometryAttribute;
+  color: GeometryAttribute;
   region?: GeometryAttribute;
-  /** Additional producer-defined vertex attributes. */
-  [attributeName: string]: GeometryAttribute | undefined;
 };
 export type GeometryAttribute = {
   byteOffset?: number;
@@ -1032,7 +821,7 @@ export interface I3SMeshAttribute extends MeshAttribute {
 /** https://github.com/Esri/i3s-spec/blob/master/docs/1.8/heightModelInfo.cmn.md */
 type HeightModelInfo = {
   heightModel: 'gravity_related_height' | 'ellipsoidal';
-  vertCRS: CRSIdentifier;
+  vertCRS: string;
   heightUnit:
     | 'meter'
     | 'us-foot'
@@ -1067,7 +856,7 @@ type TextureSetDefinition = {
 
 /** Spec - https://github.com/Esri/i3s-spec/blob/master/docs/1.8/geometryDefinition.cmn.md */
 type GeometryDefinition = {
-  topology?: 'triangle' | 'point';
+  topology?: 'triangle';
   geometryBuffers: GeometryBuffer[];
 };
 /** Spec - https://github.com/Esri/i3s-spec/blob/master/docs/1.8/geometryBuffer.cmn.md */
@@ -1076,7 +865,6 @@ type GeometryBuffer = {
   position?: GeometryBufferItem;
   normal?: GeometryBufferItem;
   uv0?: GeometryBufferItem;
-  uv1?: GeometryBufferItem;
   color?: GeometryBufferItem;
   uvRegion?: GeometryBufferItem;
   featureId?: GeometryBufferItem;

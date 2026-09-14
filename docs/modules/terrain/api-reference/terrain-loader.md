@@ -1,58 +1,13 @@
----
-title: TerrainLoader
-description: Reconstruct mesh surfaces from encoded height-map images.
-hide_title: true
-page_style: designed
----
+# TerrainLoader
 
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
-
-<DocPageHeader
-  eyebrow="Terrain module · loader API"
-  title="TerrainLoader"
-  description="Decode RGB or grayscale elevation images into a renderable mesh or Mesh Arrow table, with control over bounds, error, skirts, and elevation decoding."
-  tone="orange"
-  meta={['From v1.0', 'Height-map images', 'Mesh / Arrow output']}
-  links={[
-    {label: 'Terrain module', to: '/docs/modules/terrain'},
-    {label: 'Mesh category', to: '/docs/specifications/category-mesh'},
-    {label: 'QuantizedMeshLoader', to: '/docs/modules/terrain/api-reference/quantized-mesh-loader'}
-  ]}
-/>
-
-<DocOrientation
-  eyebrow="What it reconstructs"
-  title="Turn pixels that encode elevation into a surface."
-  description="TerrainLoader interprets image channels as elevation samples, places them within optional geographic bounds, and produces mesh data that can be rendered or passed through a columnar pipeline."
-  tone="orange"
-  items={[
-    {label: 'Input', value: 'RGB, grayscale, or raw terrain images'},
-    {label: 'Decode', value: 'Channel scales and elevation offset'},
-    {label: 'Output', value: 'Mesh or Mesh Arrow table'},
-    {label: 'Detail', value: 'Error tolerance, bounds, and skirts'}
-  ]}
-/>
-
-<ReferenceBoundary
-  title="TerrainLoader reference"
-  description="The sections below document supported inputs, output shapes, usage, elevation decoding, and loader options."
-  tone="orange"
-/>
-
-`TerrainLoader` reconstructs mesh surfaces from height map images, e.g. [Mapzen Terrain Tiles](https://github.com/tilezen/joerd/blob/master/docs/formats.md), which encodes elevation into R,G,B values. It returns the legacy [Mesh](/docs/specifications/category-mesh) object by default and can return a [Mesh Arrow table](/docs/specifications/category-mesh#mesh-arrow-tables) with `terrain.shape: 'arrow-table'`.
-
-| Shape         | Output             | Use when                           |
-| ------------- | ------------------ | ---------------------------------- |
-| `mesh`        | `Mesh`             | You want the legacy mesh object.   |
-| `arrow-table` | `Mesh Arrow table` | You want columnar mesh attributes. |
+The `TerrainLoader` reconstructs mesh surfaces from height map images, e.g. [Mapzen Terrain Tiles](https://github.com/tilezen/joerd/blob/master/docs/formats.md), which encodes elevation into R,G,B values.
 
 | Loader                | Characteristic                             |
 | --------------------- | ------------------------------------------ |
 | File Extension        | `.png`, `.pngraw`                          |
 | File Type             | Binary                                     |
 | File Format           | Encoded height map                         |
-| Data Format           | [Mesh Arrow table](/docs/specifications/category-mesh#mesh-arrow-tables), [Mesh](/docs/specifications/category-mesh) |
+| Data Format           | [Mesh](/docs/specifications/category-mesh) |
 | Supported APIs        | `load`, `parse`                            |
 | Decoder Type          | Asynchronous                               |
 | Worker Thread Support | Yes                                        |
@@ -61,17 +16,14 @@ import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/desig
 ## Usage
 
 ```typescript
+import {ImageLoader} from '@loaders.gl/images';
 import {TerrainLoader} from '@loaders.gl/terrain';
-import {load} from '@loaders.gl/core';
+import {load, registerLoaders} from '@loaders.gl/core';
+
+registerLoaders(ImageLoader);
 
 const data = await load(url, TerrainLoader, options);
-const table = await load(url, TerrainLoader, {
-  worker: false,
-  terrain: {...options.terrain, shape: 'arrow-table'}
-});
 ```
-
-`TerrainLoader` internally decodes heightmap images with [`ImageBitmapLoader`](/docs/modules/images/api-reference/image-bitmap-loader) and then converts them with `getImageData(image)`.
 
 ## Options
 
@@ -81,7 +33,6 @@ const table = await load(url, TerrainLoader, {
 | `terrain.bounds`           | `array<number>` | `null`    | Bounds of the image to fit x,y coordinates into. In `[minX, minY, maxX, maxY]`. If not supplied, x and y are in pixels relative to the image. |
 | `terrain.elevationDecoder` | `object`        | See below | See below                                                                                                                                     |
 | `terrain.tesselator`       | `string`        | `auto`    | See below                                                                                                                                     |
-| `terrain.shape`            | `string`        | `mesh`    | Output shape: `'mesh'` or `'arrow-table'`.                                                                                                     |
 | `terrain.skirtHeight`      | `number`        | `null`    | If set, create the skirt for the tile with particular height in meters                                                                        |
 
 ### elevationDecoder

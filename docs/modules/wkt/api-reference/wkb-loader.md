@@ -1,44 +1,8 @@
----
-title: WKBLoader
-description: Parse compact OGC Well-Known Binary geometry into loaders.gl data.
-hide_title: true
-page_style: designed
----
+# WKBLoader
 
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
-
-<DocPageHeader
-  eyebrow="WKT module · geometry loader"
-  title="WKBLoader"
-  description="Parse compact Well-Known Binary geometry into loaders.gl data for database, GIS, Shapefile, and GeoArrow-oriented pipelines."
-  tone="orange"
-  meta={['From v2.2', 'OGC WKB', 'Binary parser']}
-  links={[
-    {label: 'WKB format', to: '/docs/modules/wkt/formats/wkb'},
-    {label: 'WKBWriter', to: '/docs/modules/wkt/api-reference/wkb-writer'},
-    {label: 'WKT module', to: '/docs/modules/wkt'}
-  ]}
-/>
-
-<DocOrientation
-  eyebrow="What it reads"
-  title="Keep geometry compact without losing its structure."
-  description="WKB stores geometry as binary coordinates and topology without feature attributes. It is a useful boundary format for databases, shapefiles, and columnar geometry pipelines."
-  tone="orange"
-  items={[
-    {label: 'Input', value: 'Binary WKB geometry bytes'},
-    {label: 'Output', value: 'Structured positions and geometry'},
-    {label: 'Dimensions', value: 'Two to four coordinate dimensions'},
-    {label: 'APIs', value: 'load, parse, and parseSync'}
-  ]}
-/>
-
-<ReferenceBoundary
-  title="WKBLoader reference"
-  description="The sections below document format metadata, installation, usage, geometry details, and attribution."
-  tone="orange"
-/>
+<p class="badges">
+  <img src="https://img.shields.io/badge/From-v2.2-blue.svg?style=flat-square" alt="From-v2.2" />
+</p>
 
 ![ogc-logo](../../../images/logos/ogc-logo-60.png)
 
@@ -69,7 +33,7 @@ npm install @loaders.gl/core
 import {WKBLoader} from '@loaders.gl/wkt';
 import {parseSync} from '@loaders.gl/core';
 
-// biome-ignore format: preserve intentional fixture layout
+// prettier-ignore
 const buffer = new Uint8Array([
   1, 1, 0, 0,   0,  0,  0,
   0, 0, 0, 0, 240, 63,  0,
@@ -86,22 +50,9 @@ import {load} from '@loaders.gl/core';
 const data = await load(url, WKBLoader);
 ```
 
-Asynchronous parsing uses the bundled worker automatically when workers are enabled. When
-bundling with Vite, the worker URL can be supplied explicitly:
-
-```typescript
-import WKT_WORKER_URL from '@loaders.gl/wkt/wkt-worker.js?url';
-import {parse} from '@loaders.gl/core';
-import {WKBLoader} from '@loaders.gl/wkt';
-
-const data = await parse(buffer, WKBLoader, {wkb: {workerUrl: WKT_WORKER_URL}});
-```
-
 ## Options
 
-| Option | Type | Default | Description |
-| --- | --- | --- | --- |
-| `wkb.workerUrl` | `string` | CDN URL | Override the shared WKT/WKB worker URL. |
+N/A
 
 ## Format Summary
 

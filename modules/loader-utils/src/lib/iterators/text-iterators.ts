@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 // TextDecoder iterators
 // TextDecoder will keep any partial undecoded bytes between calls to `decode`
 
@@ -27,7 +23,7 @@ export async function* makeTextEncoderIterator(
 ): AsyncIterable<ArrayBuffer> {
   const textEncoder = new TextEncoder();
   for await (const text of textIterator) {
-    yield typeof text === 'string' ? textEncoder.encode(text).buffer : text;
+    yield typeof text === 'string' ? textEncoder.encode(text) : text;
   }
 }
 
@@ -44,13 +40,11 @@ export async function* makeLineIterator(
   for await (const textChunk of textIterator) {
     previous += textChunk;
     let eolIndex;
-    eolIndex = previous.indexOf('\n');
-    while (eolIndex >= 0) {
+    while ((eolIndex = previous.indexOf('\n')) >= 0) {
       // line includes the EOL
       const line = previous.slice(0, eolIndex + 1);
       previous = previous.slice(eolIndex + 1);
       yield line;
-      eolIndex = previous.indexOf('\n');
     }
   }
 

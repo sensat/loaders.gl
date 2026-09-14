@@ -2,8 +2,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Field, ObjectRowTable} from '@loaders.gl/schema';
-import {toArrayBufferIterator} from '@loaders.gl/loader-utils';
+import {Field, ObjectRowTable} from '@loaders.gl/schema';
 import {BinaryChunkReader} from '../streaming/binary-chunk-reader';
 import {
   DBFLoaderOptions,
@@ -28,16 +27,13 @@ enum STATE {
 class DBFParser {
   binaryReader = new BinaryChunkReader();
   textDecoder: TextDecoder;
-  options: DBFLoaderOptions;
   state = STATE.START;
   result: DBFResult = {
     data: []
   };
 
-  constructor(options: DBFLoaderOptions) {
-    const {encoding = 'latin1'} = options.dbf || {};
-    this.options = options;
-    this.textDecoder = new TextDecoder(encoding);
+  constructor(options: {encoding: string}) {
+    this.textDecoder = new TextDecoder(options.encoding);
   }
 
   /**
@@ -45,13 +41,7 @@ class DBFParser {
    */
   write(arrayBuffer: ArrayBuffer): void {
     this.binaryReader.write(arrayBuffer);
-    this.state = parseState(
-      this.state,
-      this.result,
-      this.binaryReader,
-      this.textDecoder,
-      this.options
-    );
+    this.state = parseState(this.state, this.result, this.binaryReader, this.textDecoder);
     // this.result.progress.bytesUsed = this.binaryReader.bytesUsed();
 
     // important events:
@@ -62,13 +52,7 @@ class DBFParser {
 
   end(): void {
     this.binaryReader.end();
-    this.state = parseState(
-      this.state,
-      this.result,
-      this.binaryReader,
-      this.textDecoder,
-      this.options
-    );
+    this.state = parseState(this.state, this.result, this.binaryReader, this.textDecoder);
     // this.result.progress.bytesUsed = this.binaryReader.bytesUsed();
     if (this.state !== STATE.END) {
       this.state = STATE.ERROR;
@@ -86,13 +70,9 @@ export function parseDBF(
   arrayBuffer: ArrayBuffer,
   options: DBFLoaderOptions = {}
 ): DBFRowsOutput | DBFTableOutput | ObjectRowTable {
-  const dbfParser = new DBFParser({
-    ...options,
-    dbf: {
-      ...options.dbf,
-      batchSize: undefined
-    }
-  });
+  const {encoding = 'latin1'} = options.dbf || {};
+
+  const dbfParser = new DBFParser({encoding});
   dbfParser.write(arrayBuffer);
   dbfParser.end();
 
@@ -119,14 +99,14 @@ export function parseDBF(
  * @param options
  */
 export async function* parseDBFInBatches(
-  asyncIterator:
-    | AsyncIterable<ArrayBufferLike | ArrayBufferView>
-    | Iterable<ArrayBufferLike | ArrayBufferView>,
+  asyncIterator: AsyncIterable<ArrayBuffer> | Iterable<ArrayBuffer>,
   options: DBFLoaderOptions = {}
 ): AsyncIterable<DBFHeader | DBFRowsOutput | DBFTableOutput> {
-  const parser = new DBFParser(options);
+  const {encoding = 'latin1'} = options.dbf || {};
+
+  const parser = new DBFParser({encoding});
   let headerReturned = false;
-  for await (const arrayBuffer of toArrayBufferIterator(asyncIterator)) {
+  for await (const arrayBuffer of asyncIterator) {
     parser.write(arrayBuffer);
     if (!headerReturned && parser.result.dbfHeader) {
       headerReturned = true;
@@ -156,8 +136,7 @@ function parseState(
   state: STATE,
   result: DBFResult,
   binaryReader: BinaryChunkReader,
-  textDecoder: TextDecoder,
-  options: DBFLoaderOptions
+  textDecoder: TextDecoder
 ): STATE {
   // eslint-disable-next-line no-constant-condition
   while (true) {
@@ -195,7 +174,7 @@ function parseState(
 
           result.dbfFields = parseFieldDescriptors(fieldDescriptorView, textDecoder);
           result.schema = {
-            fields: result.dbfFields.map(dbfField => makeField(dbfField)),
+            fields: result.dbfFields.map((dbfField) => makeField(dbfField)),
             metadata: {}
           };
 
@@ -208,11 +187,7 @@ function parseState(
 
         case STATE.FIELD_PROPERTIES:
           const {recordLength = 0, nRecords = 0} = result?.dbfHeader || {};
-          while ((result.progress?.rows || 0) < nRecords) {
-            const batchSize = options.dbf?.batchSize || Number.POSITIVE_INFINITY;
-            if (result.data.length >= batchSize) {
-              return state;
-            }
+          while (result.data.length < nRecords) {
             const recordView = binaryReader.getDataView(recordLength - 1);
             if (!recordView) {
               return state;
@@ -223,7 +198,8 @@ function parseState(
             // @ts-ignore
             const row = parseRow(recordView, result.dbfFields, textDecoder);
             result.data.push(row);
-            result.progress!.rows++;
+            // @ts-ignore
+            result.progress.rows = result.data.length;
           }
           state = STATE.END;
           break;
@@ -381,7 +357,7 @@ function parseBoolean(value: string): boolean | null {
  */
 function parseNumber(text: string): number | null {
   const number = parseFloat(text);
-  return Number.isNaN(number) ? null : number;
+  return isNaN(number) ? null : number;
 }
 
 /**

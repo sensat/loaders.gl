@@ -1,20 +1,22 @@
 // loaders.gl
-// SPDX-License-Identifier: MIT AND Apache-2.0
+// SPDX-License-Identifier: MIT and Apache-2.0
 // Copyright vis.gl contributors
 
 // This file is derived from the Cesium code base under Apache 2 license
 // See LICENSE.md and https://github.com/AnalyticalGraphicsInc/cesium/blob/master/LICENSE.md
 
-import {expect, test} from 'vitest';
+import test from 'tape-promise/tape';
 import {load} from '@loaders.gl/core';
 import {Tile3DSubtreeLoader} from '@loaders.gl/3d-tiles';
+
 const FULL_SUBTREE_FILE_URL =
   '@loaders.gl/3d-tiles/test/data/CesiumJS/FullQuadtree/subtrees/0/0/0.subtree';
 const INTERNAL_BINARY_SUBTREE_FILE_URL =
   '@loaders.gl/3d-tiles/test/data/CesiumJS/BasicExample/subtrees/0/0/0.subtree';
 const INTERNAL_BINARY_SPARSE_SUBTREE_FILE_URL =
   '@loaders.gl/3d-tiles/test/data/CesiumJS/SparseOctree/subtrees/0/0/0/0.subtree';
-test('Tile3DSubtreeLoader#Should load quadtree subtree with constant availability', async () => {
+
+test('Tile3DSubtreeLoader#Should load quadtree subtree with constant availability', async (t) => {
   const EXPECTED = {
     buffers: [],
     bufferViews: [],
@@ -22,11 +24,15 @@ test('Tile3DSubtreeLoader#Should load quadtree subtree with constant availabilit
     childSubtreeAvailability: {constant: 0},
     contentAvailability: {constant: 1}
   };
+
   const availabilitySubtree = await load(FULL_SUBTREE_FILE_URL, Tile3DSubtreeLoader);
-  expect(availabilitySubtree).toBeTruthy();
-  expect(availabilitySubtree).toEqual(EXPECTED);
+
+  t.ok(availabilitySubtree);
+  t.deepEqual(availabilitySubtree, EXPECTED);
+  t.end();
 });
-test('Tile3DSubtreeLoader#Should load quadtree subtree with expicitBitstream', async () => {
+
+test('Tile3DSubtreeLoader#Should load quadtree subtree with expicitBitstream', async (t) => {
   const EXPECTED = {
     buffers: [{byteLength: 2}],
     bufferViews: [
@@ -37,11 +43,15 @@ test('Tile3DSubtreeLoader#Should load quadtree subtree with expicitBitstream', a
     childSubtreeAvailability: {constant: 0},
     contentAvailability: {bufferView: 1, explicitBitstream: new Uint8Array([13])}
   };
+
   const availabilitySubtree = await load(INTERNAL_BINARY_SUBTREE_FILE_URL, Tile3DSubtreeLoader);
-  expect(availabilitySubtree).toBeTruthy();
-  expect(availabilitySubtree).toEqual(EXPECTED);
+
+  t.ok(availabilitySubtree);
+  t.deepEqual(availabilitySubtree, EXPECTED);
+  t.end();
 });
-test('Tile3DSubtreeLoader#Should load octree subtree with expicitBitstream', async () => {
+
+test('Tile3DSubtreeLoader#Should load octree subtree with expicitBitstream', async (t) => {
   const EXPECTED = {
     buffers: [{byteLength: 96}],
     bufferViews: [
@@ -71,10 +81,13 @@ test('Tile3DSubtreeLoader#Should load octree subtree with expicitBitstream', asy
       ])
     }
   };
+
   const availabilitySubtree = await load(
     INTERNAL_BINARY_SPARSE_SUBTREE_FILE_URL,
     Tile3DSubtreeLoader
   );
-  expect(availabilitySubtree).toBeTruthy();
-  expect(availabilitySubtree).toEqual(EXPECTED);
+
+  t.ok(availabilitySubtree);
+  t.deepEqual(availabilitySubtree, EXPECTED);
+  t.end();
 });

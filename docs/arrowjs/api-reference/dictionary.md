@@ -1,84 +1,29 @@
----
-title: Dictionary
-description: Use dictionary-encoded Arrow values when repeated logical values can share storage.
-hide_title: true
-page_style: designed
----
+# Dictionary
 
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
+> This documentation reflects Arrow JS v4.0. Needs to be updated for the new Arrow API in v9.0 +.
 
-<DocPageHeader
-  eyebrow="Arrow JS API · encoded type"
-  title="Store repeated values through a shared dictionary."
-  description="Dictionary describes a column whose physical values are integer indices into a logical dictionary. It can reduce repeated text or categorical values while retaining the original value type for readers."
-  tone="yellow"
-  meta={['Dictionary encoding', 'Integer indices', 'Categorical values']}
-  links={[
-    {label: 'Data types', to: '/docs/arrowjs/api-reference/types'},
-    {label: 'Schema', to: '/docs/arrowjs/api-reference/schema'},
-    {label: 'Data', to: '/docs/arrowjs/api-reference/data'}
-  ]}
-/>
+A `Dictionary` stores index-to-value maps for dictionary encoded columns.
 
-<DocOrientation
-  eyebrow="The Dictionary model"
-  title="Separate the repeated value from its index."
-  description="A dictionary type names both the logical value type and the integer index type. The encoding is most useful for repeated values, while the schema carries the dictionary identity needed for serialization."
-  tone="yellow"
-  items={[
-    {label: 'Logical value', value: 'The type stored in the dictionary'},
-    {label: 'Index', value: 'An integer type pointing into dictionary values'},
-    {label: 'Identity', value: 'Dictionary id carried in message metadata'},
-    {label: 'Ordering', value: 'Optional flag for order-preserving indices'}
-  ]}
-/>
+## Fields
 
-<ReferenceBoundary
-  title="Dictionary type reference"
-  description="The sections below document constructor arguments, members, dictionary ids, index types, and string representation."
-  tone="yellow"
-/>
+### indices: `V<TKey>` readonly
 
-:::info
-This page is aligned to Apache Arrow JS v21.x (`apache-arrow`).
-:::
+### dictionary: `Vector<T>` readonly
 
-A `Dictionary` `DataType` that describes dictionary-encoded values (index + dictionary lookup table).
+## Static Methods
 
-## Usage
-
-```ts
-import {Dictionary, Utf8, Int32} from 'apache-arrow';
-
-const type = new Dictionary(new Utf8(), new Int32());
-console.log(type.isOrdered, type.id);
-```
-
-```ts
-import {Dictionary, Utf8, Int32} from 'apache-arrow';
-
-const type = new Dictionary(new Utf8(), new Int32());
-console.log(type.toString());
-```
-
-## Members
-
-- `id: bigint | number | null` — Dictionary type identifier used in message metadata.
-- `indices: TKey` — Integer index key type (`Int8`, `Int16`, `Int32`, `Uint8`, `Uint16`, `Uint32`).
-- `dictionary: T` — Logical value type of the dictionary payload.
-- `isOrdered: boolean` — Whether dictionary index values are order-preserving.
-- `children: Field[]` — Nested field descriptors (inherited from `DataType`).
-- `valueType: T` — Alias for `dictionary`.
-- `ArrayType: T['ArrayType']` — Value array constructor for dictionary index type.
-- `typeId: Type.Dictionary` — Data type enum value for this type.
-
-## Constructor
-
-### `constructor(dictionary: T, indices: TKey, id?: bigint | number | null, isOrdered?: boolean | null)`
-
-Construct a dictionary type with explicit dictionary values and index type.
+### Dictionary.from(values: Vector, indices: TKey, keys: `ArrayLike<number>` | TKey['TArray']) : Dictionary
 
 ## Methods
 
-- `toString(): string` — Returns canonical `"Dictionary<...>"` representation.
+### constructor(data: Data)
+
+### reverseLookup(value: T): number
+
+### getKey(idx: number): TKey['TValue'] | null
+
+### getValue(key: number): T['TValue'] | null
+
+### setKey(idx: number, key: TKey['TValue'] | null): void
+
+### setValue(key: number, value: T['TValue'] | null): void

@@ -1,11 +1,7 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 import {MD5Hash} from '@loaders.gl/crypto';
-import type {ReadableFile} from '@loaders.gl/loader-utils';
-import {IndexedArchive, parseZipLocalFileHeader, readRange} from '@loaders.gl/zip';
-import {GZipDecompressor} from '@loaders.gl/compression';
+import {FileProviderInterface} from '@loaders.gl/loader-utils';
+import {IndexedArchive, parseZipLocalFileHeader} from '@loaders.gl/zip';
+import {GZipCompression} from '@loaders.gl/compression';
 
 /** Description of real paths for different file types */
 const PATH_DESCRIPTIONS: {test: RegExp; extensions: string[]}[] = [
@@ -34,7 +30,7 @@ const PATH_DESCRIPTIONS: {test: RegExp; extensions: string[]}[] = [
     extensions: ['.bin.gz', '.draco.gz']
   },
   {
-    test: /nodes\/\d+\/attributes\/[^/]+\/\d+$/,
+    test: /nodes\/\d+\/attributes\/f_\d+\/\d+$/,
     extensions: ['.bin.gz']
   },
   {
@@ -60,11 +56,15 @@ export class SLPKArchive extends IndexedArchive {
 
   /**
    * Constructor
-   * @param fileProvider - readable file handle for random access
+   * @param fileProvider - instance of a binary data reader
    * @param hashTable - pre-loaded hashTable. If presented, getFile will skip reading the hash file
    * @param fileName - name of the archive. It is used to add to an URL of a loader context
    */
-  constructor(fileProvider: ReadableFile, hashTable?: Record<string, bigint>, fileName?: string) {
+  constructor(
+    fileProvider: FileProviderInterface,
+    hashTable?: Record<string, bigint>,
+    fileName?: string
+  ) {
     super(fileProvider, hashTable, fileName);
     this.hashTable = hashTable;
   }
@@ -76,15 +76,8 @@ export class SLPKArchive extends IndexedArchive {
    * @returns buffer with ready to use file
    */
   async getFile(path: string, mode: 'http' | 'raw' = 'raw'): Promise<ArrayBuffer> {
-    // Shared resources use a logical node-relative path but are stored under
-    // `shared/sharedResource.json.gz`, so archive-backed I3S fetches need the
-    // same expansion as HTTP-mode resource requests.
-    if (mode === 'raw' && /nodes\/(?:\d+|root)\/shared$/.test(path)) {
-      return await this.getFile(path, 'http');
-    }
-
     if (mode === 'http') {
-      const extensions = PATH_DESCRIPTIONS.find(val => val.test.test(path))?.extensions;
+      const extensions = PATH_DESCRIPTIONS.find((val) => val.test.test(path))?.extensions;
       if (extensions) {
         let data: ArrayBuffer | undefined;
         for (const ext of extensions) {
@@ -128,7 +121,7 @@ export class SLPKArchive extends IndexedArchive {
       return undefined;
     }
     if (/\.gz$/.test(path)) {
-      const compression = new GZipDecompressor();
+      const compression = new GZipCompression();
 
       const decompressedData = await compression.decompress(data);
       return decompressedData;
@@ -152,13 +145,12 @@ export class SLPKArchive extends IndexedArchive {
         return undefined;
       }
 
-      const localFileHeader = await parseZipLocalFileHeader(offset, this.file);
+      const localFileHeader = await parseZipLocalFileHeader(offset, this.fileProvider);
       if (!localFileHeader) {
         return undefined;
       }
 
-      compressedFile = await readRange(
-        this.file,
+      compressedFile = await this.fileProvider.slice(
         localFileHeader.fileDataOffset,
         localFileHeader.fileDataOffset + localFileHeader.compressedSize
       );

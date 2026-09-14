@@ -2,54 +2,30 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {GeoArrowEncodingPreference, Schema, ObjectRowTable} from '@loaders.gl/schema';
-import type {StrictLoaderOptions} from '@loaders.gl/loader-utils';
-import type {Proj4CRSDefinition} from '@math.gl/proj4';
+import {Schema, ObjectRowTable} from '@loaders.gl/schema';
+import type {LoaderOptions} from '@loaders.gl/loader-utils';
 
-/**
- * GeoArrow geometry encoding mode for SHP Arrow output.
- * `geoarrow` infers a geometry-specific encoding from the SHP header.
- */
-export type SHPGeoArrowEncoding = 'geoarrow.wkb' | 'geoarrow';
-
-export type SHPLoaderOptions = StrictLoaderOptions & {
-  /** Preferred encoding for Arrow geometry output. */
-  geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
+export type SHPLoaderOptions = LoaderOptions & {
   shp?: {
     _maxDimensions?: number;
-    shape?: 'arrow-table' | 'wkb';
-    geoarrowEncoding?: SHPGeoArrowEncoding;
-    /** Preferred encoding for Arrow geometry output. */
-    geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
-    batchSize?: number;
-    /** Override the URL to the worker bundle (by default loads from unpkg.com) */
-    workerUrl?: string;
   };
 };
 
-export type DBFLoaderOptions = StrictLoaderOptions & {
+export type DBFLoaderOptions = LoaderOptions & {
   dbf?: {
     encoding?: string;
-    shape?: 'rows' | 'table' | 'object-row-table' | 'arrow-table';
-    batchSize?: number;
-    /** Override the URL to the worker bundle (by default loads from unpkg.com) */
-    workerUrl?: string;
+    shape?: 'rows' | 'table' | 'object-row-table';
   };
 };
 
-export type ShapefileLoaderOptions = StrictLoaderOptions &
-  SHPLoaderOptions &
-  DBFLoaderOptions & {
+export type ShapefileLoaderOptions = LoaderOptions &
+  SHPLoaderOptions & {
     shapefile?: {
-      shape?: 'geojson-table' | 'arrow-table' | 'v3';
-      geoarrowEncoding?: SHPGeoArrowEncoding;
-      /** Preferred encoding for Arrow geometry output. */
-      geoarrow?: {encodingPreference?: GeoArrowEncodingPreference};
-      batchSize?: number;
+      shape?: 'geojson-table';
     };
     gis?: {
       reproject?: boolean;
-      _targetCrs?: Proj4CRSDefinition;
+      _targetCrs?: string;
     };
   };
 

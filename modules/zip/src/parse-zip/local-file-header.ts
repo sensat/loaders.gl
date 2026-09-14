@@ -2,16 +2,13 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {compareArrayBuffers, concatenateArrayBuffers} from '@loaders.gl/loader-utils';
-import type {ReadableFile} from '@loaders.gl/loader-utils';
+import {
+  FileProviderInterface,
+  compareArrayBuffers,
+  concatenateArrayBuffers
+} from '@loaders.gl/loader-utils';
 import {ZipSignature} from './search-from-the-end';
 import {createZip64Info, setFieldToNumber} from './zip64-info-generation';
-import {
-  parseZip64ExtraField,
-  ZIP64_UINT32_SENTINEL,
-  type Zip64ExtraFieldDescription
-} from './zip64-extra-field';
-import {readDataView, readRange} from './readable-file-utils';
 
 /**
  * zip local file header info
@@ -40,30 +37,22 @@ const FILE_NAME_LENGTH_OFFSET = 26;
 const EXTRA_FIELD_LENGTH_OFFSET = 28;
 const FILE_NAME_OFFSET = 30n;
 
-/** ZIP64 size values that local file headers store together. */
-type Zip64LocalSizeData = {
-  /** Uncompressed file size. */
-  uncompressedSize: bigint;
-  /** Compressed file size. */
-  compressedSize: bigint;
-};
-
 export const signature: ZipSignature = new Uint8Array([0x50, 0x4b, 0x03, 0x04]);
 
 /**
  * Parses local file header of zip file
  * @param headerOffset - offset in the archive where header starts
- * @param file - readable file containing the archive
+ * @param buffer - buffer containing whole array
  * @returns Info from the header
  */
 export const parseZipLocalFileHeader = async (
   headerOffset: bigint,
-  file: ReadableFile
+  file: FileProviderInterface
 ): Promise<ZipLocalFileHeader | null> => {
-  const mainHeader = await readDataView(file, headerOffset, headerOffset + FILE_NAME_OFFSET);
+  const mainHeader = new DataView(await file.slice(headerOffset, headerOffset + FILE_NAME_OFFSET));
 
   const magicBytes = mainHeader.buffer.slice(0, 4);
-  if (!compareArrayBuffers(magicBytes, signature.buffer)) {
+  if (!compareArrayBuffers(magicBytes, signature)) {
     return null;
   }
 
@@ -71,8 +60,7 @@ export const parseZipLocalFileHeader = async (
 
   const extraFieldLength = mainHeader.getUint16(EXTRA_FIELD_LENGTH_OFFSET, true);
 
-  const additionalHeader = await readRange(
-    file,
+  const additionalHeader = await file.slice(
     headerOffset + FILE_NAME_OFFSET,
     headerOffset + FILE_NAME_OFFSET + BigInt(fileNameLength + extraFieldLength)
   );
@@ -85,28 +73,26 @@ export const parseZipLocalFileHeader = async (
 
   const fileName = new TextDecoder().decode(fileNameBuffer).split('\\').join('/');
 
-  const fileDataOffset =
-    headerOffset + FILE_NAME_OFFSET + BigInt(fileNameLength + extraFieldLength);
+  let fileDataOffset = headerOffset + FILE_NAME_OFFSET + BigInt(fileNameLength + extraFieldLength);
 
   const compressionMethod = mainHeader.getUint16(COMPRESSION_METHOD_OFFSET, true);
 
-  let compressedSize = BigInt(mainHeader.getUint32(COMPRESSED_SIZE_OFFSET, true));
+  let compressedSize = BigInt(mainHeader.getUint32(COMPRESSED_SIZE_OFFSET, true)); // add zip 64 logic
 
-  const uncompressedSize = BigInt(mainHeader.getUint32(UNCOMPRESSED_SIZE_OFFSET, true));
+  let uncompressedSize = BigInt(mainHeader.getUint32(UNCOMPRESSED_SIZE_OFFSET, true)); // add zip 64 logic
 
-  const expectedZip64Fields: Zip64ExtraFieldDescription<keyof Zip64LocalSizeData>[] = [];
-  if (uncompressedSize === ZIP64_UINT32_SENTINEL || compressedSize === ZIP64_UINT32_SENTINEL) {
-    // APPNOTE 4.5.3 requires both sizes in local ZIP64 extra data when either
-    // 32-bit size field contains the ZIP64 sentinel.
-    expectedZip64Fields.push(
-      {name: 'uncompressedSize', byteLength: 8},
-      {name: 'compressedSize', byteLength: 8}
-    );
+  let offsetInZip64Data = 4;
+  // looking for info that might be also be in zip64 extra field
+  if (uncompressedSize === BigInt(0xffffffff)) {
+    uncompressedSize = extraDataBuffer.getBigUint64(offsetInZip64Data, true);
+    offsetInZip64Data += 8;
   }
-
-  const zip64Sizes = parseZip64ExtraField(extraDataBuffer, expectedZip64Fields);
-  if (compressedSize === ZIP64_UINT32_SENTINEL && zip64Sizes.compressedSize !== undefined) {
-    compressedSize = zip64Sizes.compressedSize;
+  if (compressedSize === BigInt(0xffffffff)) {
+    compressedSize = extraDataBuffer.getBigUint64(offsetInZip64Data, true);
+    offsetInZip64Data += 8;
+  }
+  if (fileDataOffset === BigInt(0xffffffff)) {
+    fileDataOffset = extraDataBuffer.getBigUint64(offsetInZip64Data, true); // setting it to the one from zip64
   }
 
   return {

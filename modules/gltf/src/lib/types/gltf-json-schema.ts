@@ -1,9 +1,5 @@
-// SPDX-License-Identifier: MIT
-
 // Types forked from https://github.com/bwasty/gltf-loader-ts under MIT license
 // Generated from official JSON schema using `npm run generate-interface` on 2018-02-24
-
-import type {GLTFBoundingVolume, GLTFShape} from './gltf-shape-schema';
 
 export type GLTFId = number;
 
@@ -81,19 +77,7 @@ export type GLTFAccessor = {
   /**
    * The datatype of components in the attribute.
    */
-  componentType:
-    | 5120
-    | 5121
-    | 5122
-    | 5123
-    | 5124
-    | 5125
-    | 5126
-    | 5130
-    | 5131
-    | 5134
-    | 5135
-    | number;
+  componentType: 5120 | 5121 | 5122 | 5123 | 5125 | 5126 | number;
   /**
    * Specifies whether integer data values should be normalized.
    */
@@ -217,11 +201,6 @@ export type GLTFAsset = {
    * The minimum glTF version that this asset targets.
    */
   minVersion?: string;
-  /**
-   * The index of an image that provides a preview of this glTF asset.
-   * Draft glTF 2.1.
-   */
-  thumbnail?: GLTFId;
   extensions?: Record<string, any>;
   extras?: any;
   // [k: string]: any;
@@ -235,11 +214,6 @@ export type GLTFBuffer = {
    * The uri of the buffer.
    */
   uri?: string;
-  /**
-   * The zero-based index of the GLB v3 chunk containing the buffer.
-   * Draft glTF 2.1 property; mutually exclusive with `uri`.
-   */
-  chunk?: number;
   /**
    * The length of the buffer in bytes.
    */
@@ -372,34 +346,6 @@ export type GLTFImage = {
   extensions?: Record<string, any>;
   extras?: any;
   // [k: string]: any;
-};
-
-/**
- * A draft glTF 2.1 reference to a file stored at a URI or in a buffer view.
- */
-export type GLTFFile = {
-  /** URI of the file. Mutually exclusive with `bufferView`. */
-  uri?: string;
-  /** Index of the buffer view containing the file. Mutually exclusive with `uri`. */
-  bufferView?: GLTFId;
-  /** MIME type of the referenced file. */
-  mimeType: string;
-  /** Name used to resolve references from embedded packaged assets. */
-  name?: string;
-  extensions?: Record<string, any>;
-  extras?: any;
-};
-
-/**
- * A draft glTF 2.1 model dependency sourced from the top-level `files` array.
- */
-export type GLTFExternalAsset = {
-  /** Index of the file containing the external glTF asset. */
-  file: GLTFId;
-  /** Optional application-facing name for this external asset. */
-  name?: string;
-  extensions?: Record<string, any>;
-  extras?: any;
 };
 
 /**
@@ -607,10 +553,6 @@ export type GLTFNode = {
    * The index of the mesh in this node.
    */
   mesh?: GLTFId;
-  /** Index of the draft glTF 2.1 external asset instantiated by this node. */
-  externalAsset?: GLTFId;
-  /** Draft glTF 2.1 bounding-volume shape reference. */
-  boundingVolume?: GLTFBoundingVolume;
   /**
    * The node's unit quaternion rotation in the order (x, y, z, w), where w is the scalar.
    */
@@ -749,16 +691,6 @@ export type GLTF = {
    */
   images?: GLTFImage[];
   /**
-   * Draft glTF 2.1 unified file references.
-   */
-  files?: GLTFFile[];
-  /**
-   * Draft glTF 2.1 external glTF assets.
-   */
-  externalAssets?: GLTFExternalAsset[];
-  /** Draft glTF 2.1 implicit shape definitions. */
-  shapes?: GLTFShape[];
-  /**
    * An array of materials.
    */
   materials?: GLTFMaterial[];
@@ -807,9 +739,7 @@ export type GLTFObject =
   | GLTFScene
   | GLTFSkin
   | GLTFTexture
-  | GLTFImage
-  | GLTFFile
-  | GLTFExternalAsset;
+  | GLTFImage;
 
 // GLTF Extensions
 /* eslint-disable camelcase */
@@ -845,58 +775,23 @@ export type GLTF_KHR_texture_basisu = {
 };
 
 /**
- * Ratified vendor meshopt buffer-view compression extension.
- *
- * The extension object describes compressed source bytes. Its parent `GLTFBufferView` describes
- * the uncompressed destination, whose `byteLength` is `count * byteStride`.
- *
- * @see https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Vendor/EXT_meshopt_compression
+ * @see https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Vendor/EXT_meshopt_compression
+ * buffer: number; //	The index of the buffer with compressed data.	✅ Required
+ * byteOffset	integer	The offset into the buffer in bytes.	Default: 0
+ * byteLength	integer	The length of the compressed data in bytes.	✅ Required
+ * byteStride	integer	The stride, in bytes.	✅ Required
+ * count	integer	The number of elements.	✅ Required
+ * mode	string	The compression mode.	✅ Required
+ * filter	string	The compression filter.	Default: "NONE"
  */
 export type GLTF_EXT_meshopt_compression = {
-  /** Index of the buffer containing the compressed source bytes. */
   buffer: number;
-  /** Byte offset of the compressed data within `buffer`; defaults to `0`. */
   byteOffset?: number;
-  /** Length of the compressed source range in bytes. */
   byteLength: number;
-  /** Stride of each decompressed element in bytes. */
   byteStride: number;
-  /** Number of fixed-stride elements in the decompressed parent buffer view. */
   count: number;
-  /** Meshopt bitstream mode used for the compressed source range. */
   mode: 'ATTRIBUTES' | 'TRIANGLES' | 'INDICES';
-  /** EXT post-decode filter; defaults to `NONE` and is valid only for `ATTRIBUTES` mode. */
   filter?: 'NONE' | 'OCTAHEDRAL' | 'QUATERNION' | 'EXPONENTIAL';
-  /** Application-specific extension data. */
-  extras?: any;
-};
-
-/**
- * Khronos meshopt buffer-view compression extension.
- *
- * The KHR extension preserves the EXT JSON layout and version 0 bitstream compatibility while
- * adding version 1 attribute encoding and the `COLOR` post-decode filter. Its extension object
- * describes compressed source bytes; the parent `GLTFBufferView` describes the uncompressed
- * destination, whose `byteLength` is `count * byteStride`.
- *
- * @see https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_meshopt_compression
- */
-export type GLTF_KHR_meshopt_compression = {
-  /** Index of the buffer containing the compressed source bytes. */
-  buffer: number;
-  /** Byte offset of the compressed data within `buffer`; defaults to `0`. */
-  byteOffset?: number;
-  /** Length of the compressed source range in bytes. */
-  byteLength: number;
-  /** Stride of each decompressed element in bytes. */
-  byteStride: number;
-  /** Number of fixed-stride elements in the decompressed parent buffer view. */
-  count: number;
-  /** Meshopt bitstream mode used for the compressed source range. */
-  mode: 'ATTRIBUTES' | 'TRIANGLES' | 'INDICES';
-  /** KHR post-decode filter; defaults to `NONE` and is valid only for `ATTRIBUTES` mode. */
-  filter?: 'NONE' | 'OCTAHEDRAL' | 'QUATERNION' | 'EXPONENTIAL' | 'COLOR';
-  /** Application-specific extension data. */
   extras?: any;
 };
 
@@ -905,16 +800,6 @@ export type GLTF_KHR_meshopt_compression = {
  */
 export type GLTF_EXT_texture_webp = {
   source: GLTFId;
-  extras?: any;
-};
-
-/**
- * @see https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Vendor/EXT_texture_avif
- */
-export type GLTF_EXT_texture_avif = {
-  /** Index of the AVIF image used in place of the ordinary texture source. */
-  source: GLTFId;
-  /** Application-specific extension data. */
   extras?: any;
 };
 

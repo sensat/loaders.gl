@@ -1,31 +1,35 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
+import test from 'tape-promise/tape';
+import {getMeshBoundingBox} from '@loaders.gl/schema';
 
-import {expect, test} from 'vitest';
-import {getMeshBoundingBox} from '@loaders.gl/schema-utils';
-test('getMeshBoundingBox', () => {
+test('getMeshBoundingBox', (t) => {
   // @ts-ignore
-  expect(getMeshBoundingBox(null), 'does not crash with invalid input').toBe(null);
-  expect(getMeshBoundingBox({}), 'does not crash with invalid input').toBe(null);
-  expect(
+  t.is(getMeshBoundingBox(null), null, 'does not crash with invalid input');
+  t.is(getMeshBoundingBox({}), null, 'does not crash with invalid input');
+  t.is(
     // @ts-ignore
     getMeshBoundingBox({POSITION: new Float32Array(3)}),
+    null,
     'does not crash with invalid input'
-  ).toBe(null);
-  expect(
+  );
+
+  t.deepEqual(
     getMeshBoundingBox({
       POSITION: {value: new Float32Array([-1, 1, 2, -3, 1, 4, -2, 1, 3]), size: 3}
     }),
+    [
+      [-3, 1, 2],
+      [-1, 1, 4]
+    ],
     'returns correct bounding box'
-  ).toEqual([
-    [-3, 1, 2],
-    [-1, 1, 4]
-  ]);
-  expect(
+  );
+
+  t.is(
     getMeshBoundingBox({
       POSITION: {value: new Float32Array(0), size: 3}
     }),
+    null,
     'returns empty bounding box'
-  ).toBe(null);
+  );
+
+  t.end();
 });

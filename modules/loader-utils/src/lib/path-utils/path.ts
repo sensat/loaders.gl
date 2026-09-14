@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: MIT
-
 // Beginning of a minimal implementation of the Node.js path API, that doesn't pull in big polyfills.
 
 import {getCWD} from './get-cwd';
@@ -10,7 +8,7 @@ import {getCWD} from './get-cwd';
  */
 export function filename(url: string): string {
   const slashIndex = url ? url.lastIndexOf('/') : -1;
-  return slashIndex >= 0 ? url.substr(slashIndex + 1) : url;
+  return slashIndex >= 0 ? url.substr(slashIndex + 1) : '';
 }
 
 /**

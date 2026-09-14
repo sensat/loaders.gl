@@ -1,8 +1,13 @@
-// SPDX-License-Identifier: ISC
-import {test} from 'vitest';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+// Forked from sax-ts & sax under ISC license
+
+import test from 'tape-promise/tape';
 import {testSax} from '../utils/test-utils';
-test('SAXParser#xml-entities', () => {
-  testSax({
+
+test('SAXParser#xml-entities', (t) => {
+  testSax(t, {
     saxOptions: {strictEntities: true},
     xml:
       '<r>&rfloor; ' +
@@ -15,4 +20,5 @@ test('SAXParser#xml-entities', () => {
       ['closetag', 'R']
     ]
   });
+  t.end();
 });

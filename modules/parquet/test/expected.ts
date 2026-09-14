@@ -1,58 +1,6 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 /* eslint-disable camelcase */
 
-const TEXT_ENCODER = new TextEncoder();
-
-const RAW_TEXT_FIELDS = new Set(['c1', 'date_string_col', 'string_col']);
-const BIGINT_FIELDS = new Set(['bigint_col', 'c0', 'item', 'number']);
-
-function bytes(values: number[]): Uint8Array {
-  return new Uint8Array(values);
-}
-
-function utf8Bytes(value: string): Uint8Array {
-  return TEXT_ENCODER.encode(value);
-}
-
-function isNumericString(value: string): boolean {
-  return /^-?(?:\d+|\d+\.\d+)$/.test(value);
-}
-
-function toTypedParquetFixture(value: unknown, key?: string): unknown {
-  if (typeof value === 'string') {
-    if (RAW_TEXT_FIELDS.has(key || '')) {
-      return utf8Bytes(value);
-    }
-    if (!isNumericString(value)) {
-      return value;
-    }
-    return BIGINT_FIELDS.has(key || '') && /^-?\d+$/.test(value) ? BigInt(value) : Number(value);
-  }
-
-  if (Array.isArray(value)) {
-    return value.map(item => toTypedParquetFixture(item));
-  }
-
-  if (value && typeof value === 'object' && !ArrayBuffer.isView(value)) {
-    return Object.fromEntries(
-      Object.entries(value).map(([entryKey, entryValue]) => [
-        entryKey,
-        toTypedParquetFixture(entryValue, entryKey)
-      ])
-    );
-  }
-
-  return value;
-}
-
-function typedParquetRows(value: any): any {
-  return toTypedParquetFixture(value);
-}
-
-export const ALL_TYPES_DICTIONARY_EXPECTED = typedParquetRows([
+export const ALL_TYPES_DICTIONARY_EXPECTED = [
   {
     bigint_col: '0',
     bool_col: true,
@@ -79,9 +27,9 @@ export const ALL_TYPES_DICTIONARY_EXPECTED = typedParquetRows([
     timestamp_col: '60000000000',
     tinyint_col: '1'
   }
-]);
+];
 
-export const ALL_TYPES_PLAIN_EXPECTED = typedParquetRows([
+export const ALL_TYPES_PLAIN_EXPECTED = [
   {
     bigint_col: '0',
     bool_col: true,
@@ -186,9 +134,9 @@ export const ALL_TYPES_PLAIN_EXPECTED = typedParquetRows([
     timestamp_col: '60000000000',
     tinyint_col: '1'
   }
-]);
+];
 
-export const ALL_TYPES_PLAIN_SNAPPY_EXPECTED = typedParquetRows([
+export const ALL_TYPES_PLAIN_SNAPPY_EXPECTED = [
   {
     bigint_col: '0',
     bool_col: true,
@@ -215,13 +163,13 @@ export const ALL_TYPES_PLAIN_SNAPPY_EXPECTED = typedParquetRows([
     timestamp_col: '60000000000',
     tinyint_col: '1'
   }
-]);
+];
 
 export const BINARY_EXPECTED = () => {
   const result: {[key: string]: unknown}[] = [];
 
   for (let index = 0; index < 12; index++) {
-    result.push({foo: bytes([index])});
+    result.push({ foo: Buffer.from([index]) });
   }
 
   return result;
@@ -237,7 +185,7 @@ export const DICT_EXPECTED = () => {
   return result;
 };
 
-export const LIST_COLUMNS_EXPECTED = typedParquetRows([
+export const LIST_COLUMNS_EXPECTED = [
   {
     int64_list: { list: [{ item: '1' }, { item: '2' }, { item: '3' }] },
     utf8_list: { list: [{ item: 'abc' }, { item: 'efg' }, { item: 'hij' }] }
@@ -249,9 +197,9 @@ export const LIST_COLUMNS_EXPECTED = typedParquetRows([
     int64_list: { list: [{ item: '4' }] },
     utf8_list: { list: [{ item: 'efg' }, {}, { item: 'hij' }, { item: 'xyz' }] }
   }
-]);
+];
 
-export const NESTED_LIST_EXPECTED = typedParquetRows([
+export const NESTED_LIST_EXPECTED = [
   {
     a: {
       list: [
@@ -320,15 +268,15 @@ export const NESTED_LIST_EXPECTED = typedParquetRows([
     },
     b: '1'
   }
-]);
+];
 
-export const NESTED_MAPS_EXPECTED = typedParquetRows([
+export const NESTED_MAPS_EXPECTED = [
   {
     a:
     {
       key_value: [
         {
-          key: 'a',
+          key: Buffer.from([97]),
           value: {
             key_value: [
               { key: '1', value: true },
@@ -346,7 +294,7 @@ export const NESTED_MAPS_EXPECTED = typedParquetRows([
     {
       key_value: [
         {
-          key: 'b',
+          key: Buffer.from([98]),
           value: {
             key_value: [
               { key: '1', value: true }
@@ -361,7 +309,7 @@ export const NESTED_MAPS_EXPECTED = typedParquetRows([
   {
     a: {
       key_value: [
-        {key: 'c'}
+        { key: Buffer.from([99]) }
       ]
     },
     b: '1',
@@ -371,7 +319,7 @@ export const NESTED_MAPS_EXPECTED = typedParquetRows([
     a: {
       key_value: [
         {
-          key: 'd', value: {}
+          key: Buffer.from([100]), value: {}
         }
       ]
     },
@@ -383,7 +331,7 @@ export const NESTED_MAPS_EXPECTED = typedParquetRows([
     {
       key_value: [
         {
-          key: 'e',
+          key: Buffer.from([101]),
           value: {
             key_value: [
               { key: '1', value: true }
@@ -399,7 +347,7 @@ export const NESTED_MAPS_EXPECTED = typedParquetRows([
     a: {
       key_value: [
         {
-          key: 'f',
+          key: Buffer.from([102]),
           value: {
             key_value: [
               { key: '3', value: true },
@@ -413,18 +361,18 @@ export const NESTED_MAPS_EXPECTED = typedParquetRows([
     b: '1',
     c: '1'
   }
-]);
+];
 
-export const NO_NULLABLE_EXPECTED = typedParquetRows([
+export const NO_NULLABLE_EXPECTED = [
   {
-    ID: 8n,
+    ID: 8,
     Int_Array: { list: [{ element: -1 }] },
     int_array_array: { list: [{ element: { list: [{ element: -1 }, { element: -2 }] } }, { element: {} }] },
-    Int_Map: {map: [{key: 'k1', value: -1}]},
+    Int_Map: { map: [{ key: Buffer.from([107, 49]), value: -1 }] },
     int_map_array: {
       list: [
         { element: {} },
-        {element: {map: [{key: 'k1', value: 1}]}},
+        { element: { map: [{ key: Buffer.from([107, 49]), value: 1 }] } },
         { element: {} },
         { element: {} }
       ]
@@ -439,7 +387,7 @@ export const NO_NULLABLE_EXPECTED = typedParquetRows([
               element: {
                 list: [
                   {
-                    element: {e: -1, f: 'nonnullable'}
+                    element: { e: -1, f: Buffer.from([110, 111, 110, 110, 117, 108, 108, 97, 98, 108, 101]) }
                   }]
               }
             }]
@@ -448,11 +396,11 @@ export const NO_NULLABLE_EXPECTED = typedParquetRows([
       G: {}
     }
   }
-]);
+];
 
-export const NULLABLE_EXPECTED = typedParquetRows([
+export const NULLABLE_EXPECTED = [
   {
-    id: 1n,
+    id: 1,
     int_array: {
       list: [
         { element: '1' },
@@ -496,7 +444,7 @@ export const NULLABLE_EXPECTED = typedParquetRows([
     }
   },
   {
-    id: 2n,
+    id: 2,
     int_array: {
       list: [
         {},
@@ -557,7 +505,7 @@ export const NULLABLE_EXPECTED = typedParquetRows([
     }
   },
   {
-    id: 3n,
+    id: 3,
     int_array: {},
     int_array_Array: { list: [{}] },
     int_map: {},
@@ -565,14 +513,14 @@ export const NULLABLE_EXPECTED = typedParquetRows([
     nested_struct: { C: { d: {} }, g: {} }
   },
   {
-    id: 4n,
+    id: 4,
     int_array_Array: {},
     int_map: {},
     int_Map_Array: {},
     nested_struct: { C: {} }
   },
   {
-    id: 5n,
+    id: 5,
     int_map: {},
     nested_struct: {
       g: {
@@ -583,10 +531,10 @@ export const NULLABLE_EXPECTED = typedParquetRows([
     }
   },
   {
-    id: 6n
+    id: 6
   },
   {
-    id: 7n,
+    id: 7,
     int_array_Array: { list: [{}, { element: { list: [{ element: '5' }, { element: '6' }] } }] },
     int_map: { map: [{ key: 'k1' }, { key: 'k3' }] },
     nested_struct: {
@@ -597,7 +545,7 @@ export const NULLABLE_EXPECTED = typedParquetRows([
       }
     }
   }
-]);
+];
 
 export const NULLS_EXPECTED = [
   { b_struct: {} },
@@ -610,14 +558,14 @@ export const NULLS_EXPECTED = [
   { b_struct: {} }
 ];
 
-export const REPEATED_NO_ANNOTATION_EXPECTED = typedParquetRows([
+export const REPEATED_NO_ANNOTATION_EXPECTED = [
   { id: '1' },
   { id: '2' },
   { id: '3', phoneNumbers: {} },
   { id: '4', phoneNumbers: { phone: [{ number: '5555555555' }] } },
   { id: '5', phoneNumbers: { phone: [{ number: '1111111111', kind: 'home' }] } },
   { id: '6', phoneNumbers: { phone: [{ number: '1111111111', kind: 'home' }, { number: '2222222222' }, { number: '3333333333', kind: 'mobile' }] } }
-]);
+];
 
 export const DECIMAL_EXPECTED = [
   {value: 1},
@@ -647,37 +595,43 @@ export const DECIMAL_EXPECTED = [
 ];
 
 export const LZ4_RAW_COMPRESSED_LARGER_FIRST_EXPECTED = {
-  a: 'c7ce6bef-d5b0-4863-b199-8ea8c7fb117b'
+  a: Buffer.from([
+    99, 55, 99, 101, 54, 98, 101, 102, 45, 100, 53, 98, 48, 45, 52, 56, 54, 51,
+    45, 98, 49, 57, 57, 45, 56, 101, 97, 56, 99, 55, 102, 98, 49, 49, 55, 98
+  ])
 };
 
 export const LZ4_RAW_COMPRESSED_LARGER_LAST_EXPECTED = {
-  a: '85440778-460a-41ac-aa2e-ac3ee41696bf'
+  a: Buffer.from([
+    56, 53, 52, 52, 48, 55, 55, 56, 45, 52, 54, 48, 97, 45, 52, 49, 97, 99,
+    45, 97, 97, 50, 101, 45, 97, 99, 51, 101, 101, 52, 49, 54, 57, 54, 98, 102
+  ])
 };
 
 export const LZ4_RAW_COMPRESSED_EXPECTED = [
   {
-    c0: 1593604800n,
-    c1: utf8Bytes('abc'),
+    c0: 1593604800,
+    c1: Buffer.from([97, 98, 99]),
     v11: 42
   },
   {
-    c0: 1593604800n,
-    c1: utf8Bytes('def'),
+    c0: 1593604800,
+    c1: Buffer.from([100, 101, 102]),
     v11: 7.7
   },
   {
-    c0: 1593604801n,
-    c1: utf8Bytes('abc'),
+    c0: 1593604801,
+    c1: Buffer.from([97, 98, 99]),
     v11: 42.125
   },
   {
-    c0: 1593604801n,
-    c1: utf8Bytes('def'),
+    c0: 1593604801,
+    c1: Buffer.from([100, 101, 102]),
     v11: 7.7
   }
 ];
 
-export const NON_HADOOP_LZ4_COMPRESSED_EXPECTED = typedParquetRows([
+export const NON_HADOOP_LZ4_COMPRESSED_EXPECTED = [
   {
     c0: '1593604800',
     c1: 'abc',
@@ -698,4 +652,4 @@ export const NON_HADOOP_LZ4_COMPRESSED_EXPECTED = typedParquetRows([
     c1: 'def',
     v11: '7.7'
   }
-]);
+];

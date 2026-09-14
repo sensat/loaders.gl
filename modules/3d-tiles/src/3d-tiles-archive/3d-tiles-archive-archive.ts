@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import type {ReadableFile} from '@loaders.gl/loader-utils';
+import {FileProviderInterface} from '@loaders.gl/loader-utils';
 import {MD5Hash} from '@loaders.gl/crypto';
-import {DeflateDecompressor, NoDecompressor} from '@loaders.gl/compression';
-import {IndexedArchive, parseZipLocalFileHeader, readRange} from '@loaders.gl/zip';
+import {DeflateCompression, NoCompression} from '@loaders.gl/compression';
+import {IndexedArchive, parseZipLocalFileHeader} from '@loaders.gl/zip';
 
 type CompressionHandler = (compressedFile: ArrayBuffer) => Promise<ArrayBuffer>;
 
@@ -14,9 +14,9 @@ type CompressionHandler = (compressedFile: ArrayBuffer) => Promise<ArrayBuffer>;
  */
 const COMPRESSION_METHODS: {[key: number]: CompressionHandler} = {
   /** No compression */
-  0: data => new NoDecompressor().decompress(data),
+  0: (data) => new NoCompression().decompress(data),
   /** Deflation */
-  8: data => new DeflateDecompressor({raw: true}).decompress(data)
+  8: (data) => new DeflateCompression({raw: true}).decompress(data)
 };
 
 /**
@@ -28,10 +28,14 @@ export class Tiles3DArchive extends IndexedArchive {
 
   /**
    * creates Tiles3DArchive handler
-   * @param fileProvider - readable file handle with the whole archive
+   * @param fileProvider - FileProvider with the whole file
    * @param hashTable - hash info
    */
-  constructor(fileProvider: ReadableFile, hashTable?: Record<string, bigint>, fileName?: string) {
+  constructor(
+    fileProvider: FileProviderInterface,
+    hashTable?: Record<string, bigint>,
+    fileName?: string
+  ) {
     super(fileProvider, hashTable, fileName);
     this.hashTable = hashTable;
   }
@@ -70,13 +74,12 @@ export class Tiles3DArchive extends IndexedArchive {
         return null;
       }
 
-      const localFileHeader = await parseZipLocalFileHeader(byteOffset, this.file);
+      const localFileHeader = await parseZipLocalFileHeader(byteOffset, this.fileProvider);
       if (!localFileHeader) {
         return null;
       }
 
-      const compressedFile = await readRange(
-        this.file,
+      const compressedFile = await this.fileProvider.slice(
         localFileHeader.fileDataOffset,
         localFileHeader.fileDataOffset + localFileHeader.compressedSize
       );

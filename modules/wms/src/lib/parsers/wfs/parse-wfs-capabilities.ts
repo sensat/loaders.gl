@@ -1,8 +1,6 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
+// loaders.gl, MIT license
 
-import {parseXMLTextSync} from '../xml/parse-xml-text';
+import {XMLLoader} from '@loaders.gl/xml';
 
 /** All capabilities of a WFS service - response to a WFS `GetCapabilities` data structure extracted from XML */
 export type WFSCapabilities = {
@@ -85,7 +83,7 @@ export type WFSCapabilities = {
  * @note Error handlings is fairly weak
  */
 export function parseWFSCapabilities(text: string, options): WFSCapabilities {
-  const parsedXML = parseXMLTextSync(text, {
+  const parsedXML = XMLLoader.parseTextSync?.(text, {
     ...options,
     xml: {
       ...options?.xml,

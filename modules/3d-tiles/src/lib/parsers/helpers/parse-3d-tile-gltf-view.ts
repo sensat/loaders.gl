@@ -80,8 +80,7 @@ export async function extractGLTF(
     }
     if (tile.gltfUrl) {
       const {fetch} = context;
-      // @ts-expect-error TODO - This may not work
-      const response = await fetch(tile.gltfUrl, options?.core);
+      const response = await fetch(tile.gltfUrl, options);
       tile.gltfArrayBuffer = await response.arrayBuffer();
       tile.gltfByteOffset = 0;
     }

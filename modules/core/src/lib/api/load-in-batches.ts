@@ -3,15 +3,13 @@
 // Copyright (c) vis.gl contributors
 
 import type {
-  Loader,
+  LoaderWithParser,
   LoaderOptions,
   LoaderContext,
   FetchLike,
   BatchableDataType,
   LoaderBatchType,
-  LoaderOptionsType,
-  LoaderOptionsWithShape,
-  LoaderShapeType
+  LoaderOptionsType
 } from '@loaders.gl/loader-utils';
 import {isLoaderObject} from '../loader-utils/normalize-loader';
 import {getFetchFunction} from '../loader-utils/get-fetch-function';
@@ -24,11 +22,8 @@ type FileType = string | File | Blob | Response | (string | File | Blob | Respon
  * Parses `data` synchronously using a specified loader
  */
 export async function loadInBatches<
-  LoaderT extends Loader,
-  OptionsT extends LoaderOptions = LoaderOptionsWithShape<
-    LoaderOptionsType<LoaderT>,
-    LoaderShapeType<LoaderT>
-  >
+  LoaderT extends LoaderWithParser,
+  OptionsT extends LoaderOptions = LoaderOptionsType<LoaderT>
 >(
   files: FileType,
   loader: LoaderT,
@@ -45,32 +40,32 @@ export async function loadInBatches<
  */
 export function loadInBatches(
   files: FileType,
-  loaders?: Loader | Loader[] | LoaderOptions,
+  loaders?: LoaderWithParser | LoaderWithParser[] | LoaderOptions,
   options?: LoaderOptions,
   context?: LoaderContext
 ): Promise<AsyncIterable<unknown>>;
 
 export function loadInBatches(
   files: FileType[] | FileList,
-  loaders?: Loader | Loader[] | LoaderOptions,
+  loaders?: LoaderWithParser | LoaderWithParser[] | LoaderOptions,
   options?: LoaderOptions,
   context?: LoaderContext
 ): Promise<AsyncIterable<unknown>>[];
 
 export function loadInBatches(
   files: FileType | FileType[] | FileList,
-  loaders?: Loader | Loader[] | LoaderOptions,
+  loaders?: LoaderWithParser | LoaderWithParser[] | LoaderOptions,
   options?: LoaderOptions,
   context?: LoaderContext
 ): Promise<AsyncIterable<unknown>> | Promise<AsyncIterable<unknown>>[] {
-  let loadersArray: Loader | Loader[] | undefined;
+  let loadersArray: LoaderWithParser | LoaderWithParser[] | undefined;
   // Signature: load(url, options)
   if (!Array.isArray(loaders) && !isLoaderObject(loaders)) {
     context = undefined; // context not supported in short signature
     options = loaders as LoaderOptions;
     loadersArray = undefined;
   } else {
-    loadersArray = loaders as Loader | Loader[] | undefined;
+    loadersArray = loaders as LoaderWithParser | LoaderWithParser[] | undefined;
   }
 
   // Select fetch function
@@ -82,7 +77,7 @@ export function loadInBatches(
   }
 
   // Multiple URLs / files
-  const promises = files.map(file =>
+  const promises = files.map((file) =>
     loadOneFileInBatches(file, loadersArray!, options || {}, fetch)
   );
 
@@ -92,7 +87,7 @@ export function loadInBatches(
 
 async function loadOneFileInBatches(
   file: FileType,
-  loaders: Loader | Loader[],
+  loaders: LoaderWithParser | LoaderWithParser[],
   options: LoaderOptions,
   fetch: FetchLike
 ): Promise<AsyncIterable<unknown>> {

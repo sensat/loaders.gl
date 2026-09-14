@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 const WEBP_TEST_IMAGES = {
   lossy: 'UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA',
   lossless: 'UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==',
@@ -20,9 +16,9 @@ const WEBP_FEATURES: WebPFeature[] = ['lossy', 'lossless', 'alpha', 'animation']
  * @param features Array, can include 'lossy', 'lossless', 'alpha' or 'animation'
  */
 export async function isWebPSupported(features: WebPFeature[] = WEBP_FEATURES): Promise<boolean> {
-  const promises = features.map(feature => checkWebPFeature(feature));
+  const promises = features.map((feature) => checkWebPFeature(feature));
   const statuses = await Promise.all(promises);
-  return statuses.every(_ => _);
+  return statuses.every((_) => _);
 }
 
 /**

@@ -1,23 +1,26 @@
-import {expect, test} from 'vitest';
-import {I3SPendingTilesRegister} from '../../../src/tileset-3d/format-i3s/i3s-pending-tiles-register';
-test('I3SPendingTilesRegister | one viewport', () => {
+import test from 'tape-promise/tape';
+import {I3SPendingTilesRegister} from '../../../src/tileset/format-i3s/i3s-pending-tiles-register';
+
+test('I3SPendingTilesRegister | one viewport', (t) => {
   const register = new I3SPendingTilesRegister();
   const frameNumber = 0;
   const viewportId = 'default';
   for (let i = 0; i < 500; i++) {
     register.register(viewportId, frameNumber);
   }
-  expect(register.isZero(viewportId, frameNumber)).toBeFalsy();
-  expect(register.isZero(viewportId, frameNumber + 1)).toBeTruthy();
-  expect(register.isZero('wrong viewport id', frameNumber)).toBeTruthy();
+  t.notOk(register.isZero(viewportId, frameNumber));
+  t.ok(register.isZero(viewportId, frameNumber + 1));
+  t.ok(register.isZero('wrong viewport id', frameNumber));
   for (let i = 0; i < 499; i++) {
     register.deregister(viewportId, frameNumber);
   }
-  expect(register.isZero(viewportId, frameNumber)).toBeFalsy();
+  t.notOk(register.isZero(viewportId, frameNumber));
   register.deregister(viewportId, frameNumber);
-  expect(register.isZero(viewportId, frameNumber)).toBeTruthy();
+  t.ok(register.isZero(viewportId, frameNumber));
+  t.end();
 });
-test('I3SPendingTilesRegister | two viewports', () => {
+
+test('I3SPendingTilesRegister | two viewports', (t) => {
   const register = new I3SPendingTilesRegister();
   const frameNumber = 0;
   const mainViewportId = 'main';
@@ -28,16 +31,17 @@ test('I3SPendingTilesRegister | two viewports', () => {
   for (let i = 0; i < 100; i++) {
     register.register(minimapViewportId, frameNumber);
   }
-  expect(register.isZero(mainViewportId, frameNumber)).toBeFalsy();
-  expect(register.isZero(minimapViewportId, frameNumber)).toBeFalsy();
+  t.notOk(register.isZero(mainViewportId, frameNumber));
+  t.notOk(register.isZero(minimapViewportId, frameNumber));
   for (let i = 0; i < 100; i++) {
     register.deregister(mainViewportId, frameNumber);
     register.deregister(minimapViewportId, frameNumber);
   }
-  expect(register.isZero(minimapViewportId, frameNumber)).toBeTruthy();
-  expect(register.isZero(mainViewportId, frameNumber)).toBeFalsy();
+  t.ok(register.isZero(minimapViewportId, frameNumber));
+  t.notOk(register.isZero(mainViewportId, frameNumber));
   for (let i = 0; i < 400; i++) {
     register.deregister(mainViewportId, frameNumber);
   }
-  expect(register.isZero(mainViewportId, frameNumber)).toBeTruthy();
+  t.ok(register.isZero(mainViewportId, frameNumber));
+  t.end();
 });

@@ -1,182 +1,74 @@
----
-title: RecordBatch
-description: Work with one row-aligned chunk of typed Apache Arrow columns.
-hide_title: true
-page_style: designed
----
+# RecordBatch
 
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
-
-<DocPageHeader
-  eyebrow="Arrow JS API · batch container"
-  title="A RecordBatch is one useful chunk of a table."
-  description="RecordBatch groups equal-length child vectors under one schema. It is the unit that IPC readers, streaming loaders, and incremental processing pipelines can pass around without materializing an entire table."
-  tone="cyan"
-  meta={['Fixed-width row set', 'Child vectors', 'Streaming boundary']}
-  links={[
-    {label: 'Table', to: '/docs/arrowjs/api-reference/table'},
-    {label: 'Vector', to: '/docs/arrowjs/api-reference/vector'},
-    {label: 'Working with tables', to: '/docs/arrowjs/developer-guide/tables'}
-  ]}
-/>
-
-<DocOrientation
-  eyebrow="The RecordBatch model"
-  title="Keep rows aligned while data arrives in chunks."
-  description="Every child vector in a RecordBatch has the same logical length. Pass batches through a stream, inspect rows, or combine them into a Table when a complete logical result is useful."
-  tone="cyan"
-  items={[
-    {label: 'Rows', value: 'Equal-length records across all child vectors'},
-    {label: 'Columns', value: 'Typed Vector children under one Schema'},
-    {label: 'Source', value: 'Table chunks or IPC readers'},
-    {label: 'Next step', value: 'Process immediately or append to a Table'}
-  ]}
-/>
-
-<ReferenceBoundary
-  title="RecordBatch reference"
-  description="The sections below document constructors, schema and data members, child access, row iteration, and chunk behavior."
-  tone="cyan"
-/>
-
-:::info
-This page is aligned to Apache Arrow JS v21.x (`apache-arrow`).
-:::
-
-A `RecordBatch` is a fixed-width row set of equal-length child vectors.
+> This documentation reflects Arrow JS v4.0. Needs to be updated for the new Arrow API in v9.0 +.
 
 ## Overview
 
-Use `table.batches[i]` from a `Table`, or deserialize IPC input to get `RecordBatch` instances.
-
-```ts
-import {Table, Field, Int32, Utf8, makeTable} from 'apache-arrow';
-
-const table = makeTable({
-  id: [1, 2, 3],
-  label: ['a', 'b', 'c']
-});
-
-const batch = table.batches[0];
-```
+A Record Batch in Apache Arrow is a collection of equal-length array instances.
 
 ## Usage
 
-```ts
-import {makeTable, Field, Int32, Utf8} from 'apache-arrow';
+A record batch can be created from this list of arrays using `RecordBatch.from`:
 
-const table = makeTable({
-  id: [1, 2, 3],
-  label: ['a', 'b', 'c']
-});
-const batch = table.batches[0];
-console.log(batch?.numRows, batch?.schema?.length);
+```
+const data = [
+  new Array([1, 2, 3, 4]),
+  new Array(['foo', 'bar', 'baz', None]),
+  new Array([True, None, False, True])
+]
+
+const recordBatch = RecordBatch.from(arrays);
 ```
 
-```ts
-import {makeVector, Struct, Field, Int32, Utf8} from 'apache-arrow';
+## Inheritance
 
-const batch = makeTable({
-  id: [1, 2],
-  label: ['x', 'y']
-}).batches[0];
-for (const row of batch) {
-  console.log(row.id, row.label);
-}
-```
-
-## Constructors
-
-`new RecordBatch<T extends TypeMap = any>(columns: { [P in keyof T]: Data<T[P]> })`
-
-`new RecordBatch<T extends TypeMap = any>(schema: Schema<T>, data?: Data<Struct<T>>)`.  
-Build a record batch from a schema and backing struct data.
+`RecordBatch` extends [`StructVector`](/docs/arrowjs/api-reference/struct-vector) extends [`BaseVector`](/docs/arrowjs/api-reference/vector)
 
 ## Members
 
-### `schema: Schema` (readonly)
+### schema : Schema (readonly)
 
-Batch schema.
+Returns the schema of the data in the record batch
 
-### `data: Data<Struct>` (readonly)
+### numCols : Number (readonly)
 
-Flattened row-major backing data.
+Returns number of fields/columns in the schema (shorthand for `this.schema.fields.length`).
 
-### `numCols: number` (readonly)
+## Static Methods
 
-Number of columns.
+### RecordBatch.from(vectors: Array, names: String[] = []) : RecordBatch
 
-### `numRows: number` (readonly)
+Creates a `RecordBatch`, see `RecordBatch.new()`.
 
-Number of rows.
+### RecordBatch.new(vectors: Array, names: String[] = []) : RecordBatch
 
-### `nullCount: number` (readonly)
+Creates new a record batch.
 
-Number of null rows.
+Schema is auto inferred, using names or index positions if `names` are not supplied.
 
 ## Methods
 
-### `isValid(index: number): boolean`
+### constructor(schema: Schema, numRows: Number, childData: (Data | Vector)[])
 
-Returns whether row at `index` is non-null.
+Create a new `RecordBatch` instance with `numRows` rows of child data.
 
-### `get(index: number): StructRowProxy<T> | null`
+- `numRows` -
+- `childData` -
 
-Returns row data at `index`.
+### constructor(schema: Schema, data: Data, children?: Vector[])
 
-### `at(index: number): StructRowProxy<T> | null`
+Create a new `RecordBatch` instance with `numRows` rows of child data.
 
-Returns row data at `index`, with negative indexes counting from the end.
+### constructor(...args: any[])
 
-### `set(index: number, value: Struct<T>['TValue']): void`
+### clone(data: Data, children?: Array) : RecordBatch
 
-Assigns one row value at `index`.
+Returns a newly allocated copy of this `RecordBatch`
 
-### `indexOf(element: Struct<T>['TValue'], offset?: number): number`
+### concat(...others: Vector[]) : Table
 
-Finds the first row matching `element`.
+Concatenates a number of `Vector` instances.
 
-### `[Symbol.iterator](): IterableIterator<StructRowProxy<T>>`
+### select(...columnNames: K[]) : RecordBatch
 
-Iterates rows in row order.
-
-### `toArray(): StructRowProxy<T>[]`
-
-Converts all rows into a JS array.
-
-### `toString(): string`
-
-Returns a human-readable row dump.
-
-### `concat(...others: RecordBatch<T>[]): Table<T>`
-
-Returns a single table by concatenating same-schema record batches.
-
-### `slice(begin?: number, end?: number): RecordBatch<T>`
-
-Returns a row-range view, end-exclusive.
-
-### `getChild(name: keyof T): Vector | null`
-
-Returns child vector by field name.
-
-### `getChildAt(index: number): Vector | null`
-
-Returns child vector by field position.
-
-### `setChild(name: keyof T, child: Vector): RecordBatch`
-
-Returns a new batch with a named child replaced.
-
-### `setChildAt(index: number, child?: Vector | null): RecordBatch`
-
-Returns a new batch with a child replaced at index.
-
-### `select<K extends keyof T = any>(columnNames: K[]): RecordBatch<{ [P in K]: T[P] }>`
-
-Returns a new batch with only selected names.
-
-### `selectAt<K extends T = any>(columnIndices: number[]): RecordBatch<{ [P in keyof K]: K[P] }>`
-
-Returns a new batch with only selected indexes.
+Return a new `RecordBatch` with a subset of columns.

@@ -1,9 +1,5 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
+import {JSONLoader, load} from '@loaders.gl/core';
 import type {ArcGISWebSceneData, OperationalLayer} from '../../types';
-import {resolvePath} from '@loaders.gl/loader-utils';
 
 /**
  * WKID, or Well-Known ID, of the CRS. Specify either WKID or WKT of the CRS.
@@ -48,13 +44,12 @@ export class LayerError extends Error {
 
 /**
  * Parses ArcGIS WebScene
- * @param data - WebScene JSON as text or encoded bytes.
+ * @param data
  */
-export async function parseWebscene(data: string | ArrayBuffer): Promise<ArcGISWebSceneData> {
-  const text = typeof data === 'string' ? data : new TextDecoder().decode(data);
-  const layer0 = JSON.parse(text);
+export async function parseWebscene(data: ArrayBuffer): Promise<ArcGISWebSceneData> {
+  const layer0 = JSON.parse(new TextDecoder().decode(data));
   const {operationalLayers} = layer0;
-  const {layers, unsupportedLayers} = await parseOperationalLayers(operationalLayers);
+  const {layers, unsupportedLayers} = await parseOperationalLayers(operationalLayers, true);
 
   if (!layers.length) {
     throw new LayerError(NO_AVAILABLE_SUPPORTED_LAYERS_ERROR, unsupportedLayers);
@@ -72,7 +67,8 @@ export async function parseWebscene(data: string | ArrayBuffer): Promise<ArcGISW
  * @param layersList
  */
 async function parseOperationalLayers(
-  layersList: OperationalLayer[]
+  layersList: OperationalLayer[],
+  needToCheckCRS: boolean
 ): Promise<{layers: OperationalLayer[]; unsupportedLayers: OperationalLayer[]}> {
   const layers: OperationalLayer[] = [];
   let unsupportedLayers: OperationalLayer[] = [];
@@ -82,8 +78,9 @@ async function parseOperationalLayers(
     const isLayerSupported = SUPPORTED_LAYERS_TYPES.includes(layer.layerType);
 
     if (isLayerSupported) {
-      if (layer.layerType !== GROUP_LAYER) {
+      if (needToCheckCRS && layer.layerType !== GROUP_LAYER) {
         await checkSupportedIndexCRS(layer);
+        needToCheckCRS = false;
       }
 
       layers.push(layer);
@@ -93,7 +90,7 @@ async function parseOperationalLayers(
 
     if (layer.layers?.length) {
       const {layers: childLayers, unsupportedLayers: childUnsupportedLayers} =
-        await parseOperationalLayers(layer.layers);
+        await parseOperationalLayers(layer.layers, needToCheckCRS);
       layer.layers = childLayers;
       unsupportedLayers = [...unsupportedLayers, ...childUnsupportedLayers];
     }
@@ -108,8 +105,8 @@ async function parseOperationalLayers(
  */
 async function checkSupportedIndexCRS(layer: OperationalLayer) {
   try {
-    const response = await fetchWebSceneLayerMetadata(layer.url);
-    const layerJson = await response.json();
+    const layerJson = await load(layer.url, JSONLoader);
+    // @ts-expect-error
     const wkid = layerJson?.spatialReference?.wkid;
 
     if (wkid !== SUPPORTED_WKID) {
@@ -118,22 +115,4 @@ async function checkSupportedIndexCRS(layer: OperationalLayer) {
   } catch (error) {
     throw error;
   }
-}
-
-async function fetchWebSceneLayerMetadata(url: string): Promise<Response> {
-  const resolvedUrl = resolvePath(url);
-
-  if (
-    resolvedUrl.startsWith('http://') ||
-    resolvedUrl.startsWith('https://') ||
-    resolvedUrl.startsWith('data:')
-  ) {
-    return await fetch(resolvedUrl);
-  }
-
-  if (globalThis.loaders?.fetchNode) {
-    return await globalThis.loaders.fetchNode(resolvedUrl);
-  }
-
-  return await fetch(resolvedUrl);
 }

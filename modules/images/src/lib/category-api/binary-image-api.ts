@@ -1,9 +1,5 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-//
-// Based on binary-gltf-utils under the MIT License
-// Copyright (c) 2016-17 Karl Cheng
+// Attributions
+// * Based on binary-gltf-utils under MIT license: Copyright (c) 2016-17 Karl Cheng
 
 import {getISOBMFFMediaType} from './parse-isobmff-binary';
 

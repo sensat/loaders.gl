@@ -1,169 +1,83 @@
----
-title: RecordBatchReader
-description: Read Arrow IPC streams, files, JSON, and byte iterators as record-batch sequences.
-hide_title: true
-page_style: designed
----
+# RecordBatchReader
 
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
+> This documentation reflects Arrow JS v4.0. Needs to be updated for the new Arrow API in v9.0 +.
 
-<DocPageHeader
-  eyebrow="Arrow JS API · streaming input"
-  title="Read batches as the bytes arrive."
-  description="RecordBatchReader turns Arrow IPC streams, files, JSON, readable streams, or byte iterators into record batches. Use it when a complete table would add latency or memory pressure."
-  tone="mint"
-  meta={['IPC stream and file', 'Async iterators', 'Browser and Node streams']}
-  links={[
-    {label: 'RecordBatch', to: '/docs/arrowjs/api-reference/record-batch'},
-    {label: 'RecordBatchWriter', to: '/docs/arrowjs/api-reference/record-batch-writer'},
-    {label: 'Streaming guide', to: '/docs/developer-guide/using-streaming-loaders'}
-  ]}
-/>
-
-<DocOrientation
-  eyebrow="The reader path"
-  title="Turn a byte stream into typed row-aligned chunks."
-  description="The reader preserves the Arrow schema and yields RecordBatch chunks. Applications can process each batch immediately, or assemble the sequence into a Table when they need a complete logical result."
-  tone="mint"
-  items={[
-    {label: 'Input', value: 'IPC bytes, streams, async iterators, or JSON'},
-    {label: 'Output', value: 'Sync or async iterators of RecordBatch values'},
-    {label: 'Formats', value: 'Arrow stream, file, and JSON encodings'},
-    {label: 'Transforms', value: 'Node and WHATWG through helpers'}
-  ]}
-/>
-
-<ReferenceBoundary
-  title="RecordBatchReader reference"
-  description="The sections below document source construction, sync and async iteration, stream transforms, file readers, and reader lifecycle methods."
-  tone="mint"
-/>
-
-:::info
-This page is aligned to Apache Arrow JS v21.x (`apache-arrow`).
-:::
-
-`RecordBatchReader` is the IPC reader API for Arrow tables in stream, file, and JSON formats.
+The RecordBatchReader is the IPC reader for reading chunks from a stream or file
 
 ## Usage
 
-```ts
-import {RecordBatchReader} from 'apache-arrow';
+The JavaScript API supports streaming multiple arrow tables over a single socket.
 
-const reader = await RecordBatchReader.from(await fetch('/sample.arrow').then((r) => r.body));
-for await (const batch of reader) {
-  console.log('rows', batch.numRows);
+To read all batches from all tables in a data source:
+
+```typescript
+const readers = RecordBatchReader.readAll(fetch(path, {credentials: 'omit'}));
+for await (const reader of readers) {
+  for await (const batch of reader) {
+    console.log(batch.length);
+  }
 }
 ```
 
-```ts
-import {tableFromIPC, RecordBatchStreamReader} from 'apache-arrow';
+If you only have one table (the normal case), then there'll only be one RecordBatchReader/the outer loop will only execute once. You can also create just one reader via
 
-const response = await fetch('/sample.arrow');
-const arrayBuffer = await response.arrayBuffer();
-const table = await tableFromIPC(arrayBuffer);
-console.log(table.numRows, table.schema.names);
+```typescript
+const reader = await RecordBatchReader.from(fetch(path, {credentials: 'omit'}));
 ```
 
-## Static methods
+## Methods
 
-### `RecordBatchReader.from(source: FromArg0 | FromArg1 | FromArg2 | FromArg3 | FromArg4 | FromArg5 | RecordBatchReader<T>): RecordBatchReader | Promise<RecordBatchReader>`
+### readAll() : `AsyncIterable<RecordBatchReader>`
 
-Creates a reader from:
+Reads all batches from all tables in the data source.
 
-- another `RecordBatchReader`
-- Arrow JSON objects / Promise-wrapped JSON
-- Byte arrays / Node/WHATWG readable streams / async byte iterators
-- File handles
+### from(data : \*) : RecordBatchFileReader \| RecordBatchStreamReader
 
-### `RecordBatchReader.readAll(source: FromArg0 | FromArg1 | FromArg2 | FromArg3 | FromArg4 | FromArg5 | RecordBatchReader<T>): IterableIterator<RecordBatchStreamReader<T>> | AsyncIterableIterator<RecordBatchStreamReader<T>>`
+`data`
 
-Returns either sync or async iterables of readers, depending on whether input is sync or async.
+- Array
+- fetch response object
+- stream
 
-### `RecordBatchReader.throughNode(options?: DuplexOptions & { autoDestroy: boolean }): Duplex`
+The `RecordBatchReader.from` method will also detect which physical representation it's working with (Streaming or File), and will return either a `RecordBatchFileReader` or `RecordBatchStreamReader` accordingly.
 
-Node stream transform helper.
+Remarks:
 
-### `RecordBatchReader.throughDOM<TType extends TypeMap = any>(writableStrategy?: ByteLengthQueuingStrategy, readableStrategy?: { autoDestroy: boolean }): { writable: WritableStream<Uint8Array>; readable: ReadableStream<RecordBatch<TType>> }`
+- if you're fetching the table from a node server, make sure the content-type is `application/octet-stream`
 
-WHATWG stream transform helper.
+### toNodeStream()
 
-## Instance methods
+### pipe()
 
-### `next(): Promise<IteratorResult<RecordBatch<T>>> | IteratorResult<RecordBatch<T>>`
+You can also turn the RecordBatchReader into a stream
+if you're in node, you can use either toNodeStream() or call the pipe(writable) methods
 
-Get next async/sync iterator result.
+in the browser (assuming you're using the UMD or "browser" fields in webpack), you can call
 
-### `isSync(): this is RecordBatchReaders<T>` — `true` when reader is sync.
+### toDOMStream() or
 
-### `isAsync(): this is AsyncRecordBatchReaders<T>` — `true` when reader uses async I/O.
+### pipeTo(writable)/pipeThrough(transform)
 
-### `isFile(): this is RecordBatchFileReaders<T>` — `true` for file-based readers.
+In the browser (assuming you're using the UMD or "browser" fields in webpack), you can call `toDOMStream()` or `pipeTo(writable)`/`pipeThrough(transform)`
 
-### `isStream(): this is RecordBatchStreamReaders<T>` — `true` for stream-based readers.
+You can also create a transform stream directly, instead of using `RecordBatchReader.from()`
 
-### `open(options?: OpenOptions): this | Promise<this>`
+You can also create a transform stream directly, instead of using `RecordBatchReader.from()`
 
-Opens the reader and returns either itself (sync) or a promise for itself (async).
+### throughNode
 
-### `reset(schema?: Schema<T> | null): this`
+### throughDOM
 
-Re-initializes internal state and optionally replaces the schema.
+via `throughNode()` and `throughDOM()` respectively:
 
-### `readRecordBatch(index: number): RecordBatch<T> | Promise<RecordBatch<T> | null> | null`
+1. https://github.com/apache/arrow/blob/49b4d2aad50e9d18cb0a51beb3a2aaff1b43e168/js/test/unit/ipc/reader/streams-node-tests.ts#L54
+2. https://github.com/apache/arrow/blob/49b4d2aad50e9d18cb0a51beb3a2aaff1b43e168/js/test/unit/ipc/reader/streams-dom-tests.ts#L50
 
-Reads a record batch by index.
+By default the transform streams will only read one table from the source readable stream and then close, but you can change this behavior by passing `{ autoDestroy: false }` to the transform creation methods
 
-### `toDOMStream(): ReadableStream<RecordBatch<T>>`
+## Remarks
 
-Exports a DOM `ReadableStream` of record batches.
-
-### `toNodeStream(): stream.Readable`
-
-Creates a Node.js readable stream of record batches.
-
-### `throw(value?: any): IteratorResult<any> | Promise<IteratorResult<any>>`
-
-### `return(value?: any): IteratorResult<any> | Promise<IteratorResult<any>>`
-
-Iterator protocol finalization.
-
-### `cancel(): void | Promise<void>`
-
-Cancels async iteration.
-
-### `closed: boolean`
-
-Current close-state.
-
-### `schema: Schema<T>`
-
-Batch schema (sync or promise in async readers via the getter contract).
-
-### `autoDestroy: boolean`
-
-Whether the reader auto-destroys on exhaustion.
-
-### `dictionaries: Map<number, Vector<any>>`
-
-Dictionary vectors resolved for this reader.
-
-### `numDictionaries: number`
-
-Number of dictionaries in message metadata.
-
-### `numRecordBatches: number`
-
-Number of available record batches (0 when not yet materialized).
-
-Reader state and counts.
-
-## Stream-specific reader subclasses
-
-- `RecordBatchStreamReader`
-- `RecordBatchFileReader`
-- `AsyncRecordBatchStreamReader`
-- `AsyncRecordBatchFileReader`
-
-Each subclass specializes message framing and sync/async behavior for different input types.
+- Reading from multiple tables (`readAll()`) is technically an extension in the JavaScript Arrow API compared to the Arrow C++ API. The authors found it was useful to be able to send multiple tables over the same physical socket
+  so they built the ability to keep the underlying socket open and read more than one table from a stream.
+- Note that Arrow has two physical representations, one for streaming, and another for random-access so this only applies to the streaming representation.
+- The IPC protocol is that a stream of ordered Messages are consumed atomically. Messages can be of type `Schema`, `DictionaryBatch`, `RecordBatch`, or `Tensor` (which we don't support yet). The Streaming format is just a sequence of messages with Schema first, then `n` `DictionaryBatches`, then `m` `RecordBatches`.

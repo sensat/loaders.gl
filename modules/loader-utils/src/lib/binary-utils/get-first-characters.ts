@@ -30,7 +30,7 @@ export function getFirstCharacters(data: string | ArrayBuffer, length: number = 
  * @returns
  */
 export function getMagicString(
-  arrayBuffer: ArrayBufferLike,
+  arrayBuffer: ArrayBuffer,
   byteOffset: number,
   length: number
 ): string {

@@ -1,12 +1,9 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
-import type {Loader} from '@loaders.gl/loader-utils';
+import type {LoaderWithParser, LoaderOptions, LoaderContext} from '@loaders.gl/loader-utils';
 import type {I3SLoaderOptions} from './i3s-loader';
 import type {BuildingSceneLayerTileset} from './types';
 
-import {I3SBuildingSceneLayerFormat} from './i3s-format';
+import {parseBuildingSceneLayer} from './lib/parsers/parse-i3s-building-scene-layer';
+
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 
@@ -16,7 +13,6 @@ const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
  * Loader for I3S - Building Scene Layer
  */
 export const I3SBuildingSceneLayerLoader = {
-  ...I3SBuildingSceneLayerFormat,
   dataType: null as unknown as BuildingSceneLayerTileset,
   batchType: null as never,
 
@@ -25,10 +21,19 @@ export const I3SBuildingSceneLayerLoader = {
   module: 'i3s',
   version: VERSION,
   mimeTypes: ['application/json'],
-  /** Loads the parser-bearing I3S building scene layer loader implementation. */
-  preload: async () =>
-    (await import('./i3s-building-scene-layer-loader-with-parser'))
-      .I3SBuildingSceneLayerLoaderWithParser,
+  parse,
   extensions: ['json'],
   options: {}
-} as const satisfies Loader<BuildingSceneLayerTileset, never, I3SLoaderOptions>;
+} as const satisfies LoaderWithParser<BuildingSceneLayerTileset, never, I3SLoaderOptions>;
+
+async function parse(
+  data: ArrayBuffer,
+  options?: LoaderOptions,
+  context?: LoaderContext
+): Promise<BuildingSceneLayerTileset> {
+  if (!context?.url) {
+    throw new Error('Url is not provided');
+  }
+
+  return parseBuildingSceneLayer(data, context.url);
+}

@@ -10,23 +10,6 @@ export const INITIAL_CATEGORY_NAME = 'WMS';
 export const INITIAL_EXAMPLE_NAME = 'OpenStreetMap WMS (Terrestris)';
 
 export const EXAMPLES: Record<string, Record<string, Example>> = {
-  WMTS: {
-    'NASA GIBS satellite imagery': {
-      type: 'wmts',
-      url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.cgi',
-      description: 'NASA Global Imagery Browse Services WMTS, configured from its GetCapabilities document.',
-      viewState: {longitude: -98, latitude: 39, zoom: 3},
-      sourceOptions: {
-        wmts: {
-          layer: 'MODIS_Terra_CorrectedReflectance_TrueColor',
-          tileMatrixSet: 'GoogleMapsCompatible_Level9',
-          format: 'image/jpeg',
-          capabilitiesUrl:
-            'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/wmts.cgi?SERVICE=WMTS&REQUEST=GetCapabilities&VERSION=1.0.0'
-        }
-      }
-    }
-  },
   WMS: {
     'OpenStreetMap WMS (Terrestris)': {
       // const imageUrl = 'https://ows.terrestris.de/osm/service?width={width}&height={height}&bbox={bounds[0]},{bounds[1]},{bounds[2]},{bounds[3]}&srs=EPSG:4326&format=image%2Fpng&request=GetMap&service=WMS&styles=&transparent=TRUE&version=1.1.1&layers=OSM-WMS';
@@ -94,87 +77,21 @@ export const EXAMPLES: Record<string, Record<string, Example>> = {
       viewState: {longitude: -100, latitude: 55, zoom: 3}
     },
   },
-  'ArcGIS Image Server': {
-    'NLCD Land Cover 2001': {
-      type: 'arcgis-image-server',
-      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/NLCDLandCover2001/ImageServer',
-      description: 'ArcGIS sample imagery service rendered through loaders.gl ImageSourceLayer.',
-      viewState: {longitude: -96, latitude: 38.5, zoom: 4},
-      layerProps: {
-        opacity: 0.75
-      }
+  /*
+  ImageServer: {
+    NLCDLandCover2001: {
+      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/NLCDLandCover2001/ImageServer/exportImage?bbox={east},{north},{west},{south}&bboxSR=4326&size={width},{height}&imageSR=102100&time=&format=jpgpng&pixelType=U8&noData=&noDataInterpretation=esriNoDataMatchAny&interpolation=+RSP_NearestNeighbor&compression=&compressionQuality=&bandIds=&mosaicRule=&renderingRule=&f=image',
+      type: 'template',
+      viewState: {...VIEW_STATE}
     },
-  },
-  'ArcGIS ImageServer tiles': {
-    'NLCD Land Cover tile exports': {
-      type: 'arcgis-image-server-tiles',
-      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/NLCDLandCover2001/ImageServer',
-      description: 'ArcGIS ImageServer exportImage requests rendered as deck.gl tiles.',
-      viewState: {longitude: -96, latitude: 38.5, zoom: 4}
-    }
-  },
-  'ArcGIS MapServer': {
-    'World Imagery cached tiles': {
-      type: 'arcgis-map-server',
-      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer',
-      description: 'ArcGIS cached MapServer tiles with service metadata loaded automatically.',
-      viewState: {longitude: -98, latitude: 39, zoom: 3}
-    }
-  },
-  'ArcGIS Feature Server': {
-    'Kentucky Bicycle Routes FeatureServer': {
-      type: 'arcgis-feature-server',
-      url: 'https://services2.arcgis.com/CcI36Pduqd0OR4W9/ArcGIS/rest/services/Bicycle_Routes_Public/FeatureServer/0',
-      description: 'ArcGIS FeatureServer viewport queries rendered through loaders.gl VectorSourceLayer.',
-      layers: ['0'],
-      viewState: {longitude: -85.75, latitude: 37.75, zoom: 6},
-      layerProps: {
-        pickable: true,
-        stroked: true,
-        filled: false,
-        lineWidthMinPixels: 4,
-        lineWidthMaxPixels: 8,
-        getLineColor: [0, 80, 255, 220]
-      }
-    }
-  },
-  'ArcGIS VectorTileServer': {
-    'Esri World Basemap vector tiles': {
-      type: 'arcgis-vector-tile-server',
-      url: 'https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer',
-      description:
-        'ArcGIS-hosted MVT tiles decoded to WGS84 features by loaders.gl and rendered through SourceLayer.',
-      viewState: {longitude: -98, latitude: 39, zoom: 4},
-      layerProps: {
-        pickable: true,
-        stroked: true,
-        filled: true,
-        lineWidthMinPixels: 1,
-        getLineColor: [48, 68, 82, 180],
-        getFillColor: [109, 166, 122, 150]
-      }
-    }
-  },
-  WFS: {
-    'Redon Reuse Sites': {
-      type: 'wfs',
-      url: 'https://geobretagne.fr/geoserver/ows',
-      description: 'GeoServer WFS features queried by viewport and rendered through loaders.gl VectorSourceLayer.',
-      layers: ['caredon:acteur_reemploi_redon_agglo'],
-      viewState: {longitude: -2.2, latitude: 47.65, zoom: 9},
-      layerProps: {
-        pickable: true,
-        pointType: 'circle',
-        stroked: true,
-        filled: true,
-        pointRadiusMinPixels: 14,
-        pointRadiusMaxPixels: 22,
-        getPointRadius: 10,
-        lineWidthMinPixels: 3,
-        lineWidthMaxPixels: 6,
-        getLineColor: [255, 255, 255, 255],
-        getFillColor: [220, 30, 30, 230]
-      }
+    ArcGISSampleImageryLayer: {
+      url: 'https://developers.arcgis.com/javascript/latest/sample-code/layers-imagerylayer/',
+      viewState: {...VIEW_STATE}
+    },
+    ArcGISExportedImage: {
+      url: 'https://developers.arcgis.com/rest/services-reference/enterprise/export-image.htm',
+      viewState: {...VIEW_STATE}
     }
   }
+  */
 };

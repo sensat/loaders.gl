@@ -3,8 +3,11 @@
 // Copyright (c) vis.gl contributors
 
 import {MD5Hash} from '@loaders.gl/crypto';
-import {concatenateArrayBuffers, concatenateArrayBuffersFromArray} from '@loaders.gl/loader-utils';
-import type {ReadableFile} from '@loaders.gl/loader-utils';
+import {
+  FileProviderInterface,
+  concatenateArrayBuffers,
+  concatenateArrayBuffersFromArray
+} from '@loaders.gl/loader-utils';
 import {ZipCDFileHeader, makeZipCDHeaderIterator} from './parse-zip/cd-file-header';
 
 /**
@@ -29,17 +32,17 @@ export function parseHashTable(arrayBuffer: ArrayBuffer): Record<string, bigint>
 function bufferToHex(buffer: ArrayBuffer, start: number, length: number): string {
   // buffer is an ArrayBuffer
   return [...new Uint8Array(buffer, start, length)]
-    .map(x => x.toString(16).padStart(2, '0'))
+    .map((x) => x.toString(16).padStart(2, '0'))
     .join('');
 }
 
 /**
  * generates hash info from zip files "central directory"
- * @param fileProvider - readable archive source
+ * @param fileProvider - provider of the archive
  * @returns ready to use hash info
  */
 export async function makeHashTableFromZipHeaders(
-  fileProvider: ReadableFile
+  fileProvider: FileProviderInterface
 ): Promise<Record<string, bigint>> {
   const zipCDIterator = makeZipCDHeaderIterator(fileProvider);
   return getHashTable(zipCDIterator);
@@ -126,7 +129,7 @@ function compareHashes(arrA: ArrayBuffer, arrB: ArrayBuffer): number {
  * @returns conversion result
  */
 function hexStringToBuffer(str: string): ArrayBuffer {
-  const byteArray = str.match(/../g)?.map(h => parseInt(h, 16));
+  const byteArray = str.match(/../g)?.map((h) => parseInt(h, 16));
   return new Uint8Array(byteArray ?? new Array(16)).buffer;
 }
 

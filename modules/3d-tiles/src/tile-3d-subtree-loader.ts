@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright vis.gl contributors
 
-import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
+import type {LoaderOptions, LoaderWithParser} from '@loaders.gl/loader-utils';
 import type {Subtree} from './types';
+import parse3DTilesSubtree from './lib/parsers/helpers/parse-3d-tile-subtree';
 import {VERSION} from './lib/utils/version';
-import {Tile3DSubtreeFormat} from './tiles-3d-format';
 
 /**
  * Loader for 3D Tiles Subtree
@@ -13,10 +13,13 @@ import {Tile3DSubtreeFormat} from './tiles-3d-format';
 export const Tile3DSubtreeLoader = {
   dataType: null as unknown as Subtree,
   batchType: null as never,
-  ...Tile3DSubtreeFormat,
+  id: '3d-tiles-subtree',
+  name: '3D Tiles Subtree',
+  module: '3d-tiles',
   version: VERSION,
-  /** Loads the parser-bearing 3D Tiles Subtree loader implementation. */
-  preload: async () =>
-    (await import('./tile-3d-subtree-loader-with-parser')).Tile3DSubtreeLoaderWithParser,
+  extensions: ['subtree'],
+  mimeTypes: ['application/octet-stream'],
+  tests: ['subtree'],
+  parse: parse3DTilesSubtree,
   options: {}
-} as const satisfies Loader<Subtree, never, LoaderOptions>;
+} as const satisfies LoaderWithParser<Subtree, never, LoaderOptions>;

@@ -2,13 +2,15 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {expect, test} from 'vitest';
+/* eslint-disable max-len */
+import test from 'tape-promise/tape';
 import {isLoaderObject, normalizeLoader} from '@loaders.gl/core/lib/loader-utils/normalize-loader';
+
 import * as threeDTiles from '@loaders.gl/3d-tiles';
 import * as arrow from '@loaders.gl/arrow';
 import * as csv from '@loaders.gl/csv';
 import * as draco from '@loaders.gl/draco';
-import * as tables from '@loaders.gl/schema-utils';
+import * as tables from '@loaders.gl/schema';
 import * as gltf from '@loaders.gl/gltf';
 import * as images from '@loaders.gl/images';
 import * as kml from '@loaders.gl/kml';
@@ -17,6 +19,7 @@ import * as obj from '@loaders.gl/obj';
 import * as pcd from '@loaders.gl/pcd';
 import * as ply from '@loaders.gl/ply';
 import * as zip from '@loaders.gl/zip';
+
 const modules = [
   threeDTiles,
   arrow,
@@ -32,19 +35,25 @@ const modules = [
   ply,
   zip
 ];
-test('isLoaderObject', () => {
+
+test('isLoaderObject', (t) => {
   // @ts-ignore
-  expect(isLoaderObject(null), 'null is not a loader').toBeFalsy();
+  t.notOk(isLoaderObject(null), 'null is not a loader');
+
   for (const module of modules) {
     for (const exportName in module) {
       if (exportName.endsWith('Loader')) {
-        expect(isLoaderObject(module[exportName]), `${exportName} should be a loader`).toBeTruthy();
+        t.ok(isLoaderObject(module[exportName]), `${exportName} should be a loader`);
       }
     }
   }
-  expect([csv.CSVLoader, {header: false}], 'loader-option array').toBeTruthy();
+
+  t.ok([csv.CSVLoader, {header: false}], 'loader-option array');
+
+  t.end();
 });
-test('normalizeLoader', () => {
+
+test('normalizeLoader', (t) => {
   const TESTS = [
     {
       title: 'loader',
@@ -56,20 +65,19 @@ test('normalizeLoader', () => {
       options: {image: {imageOrientation: 'flipY'}}
     }
   ];
+
   for (const testCase of TESTS) {
     // TODO
     // @ts-ignore
     const loader = normalizeLoader(testCase.input);
-    expect(Array.isArray(loader.extensions), `${testCase.title}: extensions is array`).toBeTruthy();
-    expect(
-      loader.text || loader.binary,
-      `${testCase.title}: text or binary flag is set`
-    ).toBeTruthy();
+    t.ok(Array.isArray(loader.extensions), `${testCase.title}: extensions is array`);
+    t.ok(loader.text || loader.binary, `${testCase.title}: text or binary flag is set`);
     if (testCase.options) {
-      expect(loader.options, `${testCase.title}: options populated`).toEqual(testCase.options);
+      t.deepEqual(loader.options, testCase.options, `${testCase.title}: options populated`);
     }
   }
-  expect(
+
+  t.throws(
     () =>
       normalizeLoader({
         ...images.ImageLoader,
@@ -77,5 +85,7 @@ test('normalizeLoader', () => {
         extensions: 'jpg'
       }),
     'should throw on malformed extensions field'
-  ).toThrow();
+  );
+
+  t.end();
 });

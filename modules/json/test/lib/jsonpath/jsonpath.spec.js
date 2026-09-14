@@ -1,106 +1,39 @@
-import {expect, test} from 'vitest';
+import test from 'tape-promise/tape';
 import {_JSONPath} from '@loaders.gl/json';
-const VALID_JSONPATHS = [
-  {jsonpath: '$', expected: [], canonical: '$'},
-  {jsonpath: '$.features', expected: ['features'], canonical: '$.features'},
-  {jsonpath: '$["features"]', expected: ['features'], canonical: '$.features'},
-  {jsonpath: '$[:]', expected: [], canonical: '$'},
-  {jsonpath: '$.items[*]', expected: ['items'], canonical: '$.items'},
-  {jsonpath: '$.items[ : ]', expected: ['items'], canonical: '$.items'},
-  {jsonpath: '$.items.*', expected: ['items'], canonical: '$.items'},
-  {jsonpath: '$.items[0:10]', expected: ['items'], canonical: '$.items'},
-  {jsonpath: '$["feature-name"]', expected: ['feature-name'], canonical: "$['feature-name']"},
-  {
-    jsonpath: "$['nested \\'quote\\' and \\\\ key']",
-    expected: ["nested 'quote' and \\ key"],
-    canonical: "$['nested \\'quote\\' and \\\\ key']"
-  },
-  {
-    jsonpath: '  $.space_1.$value  ',
-    expected: ['space_1', '$value'],
-    canonical: '$.space_1.$value'
-  },
-  {jsonpath: '$.items[1:10:2]', expected: ['items'], canonical: '$.items'}
+
+const TEST_CASES = [
+  {jsonpath: '$', expected: []},
+  {jsonpath: '$.features', expected: ['features']},
+  {jsonpath: '$.features.*', expected: ['features', '*']}
 ];
-const INVALID_JSONPATHS = [
-  {jsonpath: 'features', message: /JSONPath must start with \$/},
-  {jsonpath: '$.trailing.', message: /JSONPath cannot end with a period/},
-  {jsonpath: '$.store..book', message: /JSONPath descendant selectors \(..\) are not supported/},
-  {
-    jsonpath: '$.items[*].id',
-    message: /JSONPath cannot select fields after array element selectors/
-  },
-  {jsonpath: '$.items[0]', message: /JSONPath array index selectors are not supported/},
-  {jsonpath: '$.items[0,1]', message: /JSONPath union selectors are not supported/},
-  {jsonpath: '$.items[?(@.price > 10)]', message: /JSONPath filter selectors are not supported/},
-  {jsonpath: '$.items[@.price]', message: /JSONPath current node selector \(@\) is not supported/},
-  {jsonpath: '$.items[(@.length-1)]', message: /JSONPath script selectors are not supported/},
-  {
-    jsonpath: '$["unclosed',
-    message: /JSONPath string in bracket property selector is unterminated/
-  },
-  {jsonpath: '$[', message: /unterminated bracket/},
-  {jsonpath: '$[abc', message: /unterminated bracket/},
-  {jsonpath: '$[]', message: /bracket selectors cannot be empty/},
-  {jsonpath: '$[value]', message: /Unsupported bracket selector/},
-  {jsonpath: '$["value" trailing]', message: /property selectors must end with/},
-  {jsonpath: '$[""]', message: /property selectors cannot be empty/},
-  {jsonpath: '$.1value', message: /property names after period must start/},
-  {jsonpath: '$.@value', message: /current node selector/},
-  {jsonpath: '$@', message: /current node selector/},
-  {jsonpath: '$#', message: /Unexpected character/},
-  {jsonpath: '$.*.value', message: /wildcard selectors must terminate/}
-];
-test('JSONPath#parsing', async () => {
-  for (const testCase of VALID_JSONPATHS) {
-    const jsonpath = new _JSONPath(testCase.jsonpath);
-    const expected = new _JSONPath(testCase.expected);
-    expect(jsonpath.equals(expected), `${testCase.jsonpath} parses correctly`).toBeTruthy();
-    expect(jsonpath.toString(), `${testCase.jsonpath} normalizes to ${testCase.canonical}`).toBe(
-      testCase.canonical
-    );
+
+test('JSONPath#parsing', async (t) => {
+  for (const tc of TEST_CASES) {
+    const jsonpath = new _JSONPath(tc.jsonpath);
+    const expected = new _JSONPath(tc.expected);
+    t.ok(jsonpath.equals(expected), `${tc.jsonpath} parses correctly`);
+    t.equals(jsonpath.toString(), tc.jsonpath, `${tc.jsonpath} generates original string`);
+
     const jsonpathCopy = new _JSONPath(jsonpath);
-    expect(
-      jsonpathCopy.equals(expected),
-      `${testCase.jsonpath} copy parses correctly`
-    ).toBeTruthy();
-    expect(jsonpathCopy.toString(), `${testCase.jsonpath} copy normalizes correctly`).toBe(
-      testCase.canonical
-    );
+    t.ok(jsonpathCopy.equals(expected), `${tc.jsonpath} copy parses correctly`);
+    t.equals(jsonpathCopy.toString(), tc.jsonpath, `${tc.jsonpath} copy generates original string`);
+
     const jsonpathClone = jsonpath.clone();
-    expect(
-      jsonpathClone.equals(expected),
-      `${testCase.jsonpath} clone parses correctly`
-    ).toBeTruthy();
-    expect(jsonpathClone.toString(), `${testCase.jsonpath} clone normalizes correctly`).toBe(
-      testCase.canonical
+    t.ok(jsonpathClone.equals(expected), `${tc.jsonpath} clone parses correctly`);
+    t.equals(
+      jsonpathClone.toString(),
+      tc.jsonpath,
+      `${tc.jsonpath} clone generates original string`
     );
   }
+  t.end();
 });
-test('JSONPath#validation', async () => {
-  for (const testCase of INVALID_JSONPATHS) {
-    expect(() => new _JSONPath(testCase.jsonpath), `${testCase.jsonpath} is rejected`).toThrow(
-      testCase.message
-    );
-  }
-});
-test('JSONPath#deep set', async () => {
+
+test('JSONPath#deep set', async (t) => {
   const jsonpath = new _JSONPath('$.a.b');
   const deepValue = {a: {b: 1}};
-  expect(jsonpath.getFieldAtPath(deepValue), 'JSONPath.getFieldAtPath').toBe(1);
+  t.equal(jsonpath.getFieldAtPath(deepValue), 1, 'JSONPath.getFieldAtPath');
   jsonpath.setFieldAtPath(deepValue, 2);
-  expect(jsonpath.getFieldAtPath(deepValue), 'JSONPath.setFieldAtPath').toBe(2);
-});
-test('JSONPath#mutable path operations and equality boundaries', () => {
-  const jsonpath = new _JSONPath();
-  jsonpath.push('items');
-  jsonpath.push('first');
-  expect(jsonpath.toString()).toBe('$.items.first');
-  jsonpath.set('second');
-  expect(jsonpath.pop()).toBe('second');
-  expect(jsonpath.toString()).toBe('$.items');
-  expect(jsonpath.equals(new _JSONPath('$.items'))).toBe(true);
-  expect(jsonpath.equals(new _JSONPath('$.other'))).toBe(false);
-  expect(jsonpath.equals(new _JSONPath('$.items.value'))).toBe(false);
-  expect(jsonpath.equals(null)).toBe(false);
+  t.equal(jsonpath.getFieldAtPath(deepValue), 2, 'JSONPath.setFieldAtPath');
+  t.end();
 });

@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
-import {LoaderContext} from '@loaders.gl/loader-utils';
-
 // __VERSION__ is injected by babel-plugin-version-inline
 // @ts-ignore TS2304: Cannot find name '__VERSION__'.
 const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
+
+import type {Loader, LoaderWithParser, LoaderOptions} from '@loaders.gl/loader-utils';
+import {LoaderContext} from '@loaders.gl/loader-utils';
 
 export type NullLoaderOptions = LoaderOptions & {
   null?: {};
@@ -45,11 +45,8 @@ export const NullLoader = {
   version: VERSION,
   mimeTypes: ['application/x.empty'],
   extensions: ['null'],
-  parse: async (
-    arrayBuffer: ArrayBufferLike | ArrayBufferView,
-    options?: NullLoaderOptions,
-    context?: LoaderContext
-  ) => parseSync(arrayBuffer, options || {}, context),
+  parse: async (arrayBuffer: ArrayBuffer, options?: NullLoaderOptions, context?: LoaderContext) =>
+    parseSync(arrayBuffer, options || {}, context),
   parseSync,
   parseInBatches: async function* generator(asyncIterator, options, context) {
     for await (const batch of asyncIterator) {
@@ -67,7 +64,7 @@ export const NullLoader = {
  * web worker. The `context` parameter is stripped using JSON.stringify & parse.
  */
 function parseSync(
-  arrayBuffer: ArrayBufferLike | ArrayBufferView,
+  arrayBuffer: ArrayBuffer,
   options?: NullLoaderOptions,
   context?: LoaderContext
 ): null {

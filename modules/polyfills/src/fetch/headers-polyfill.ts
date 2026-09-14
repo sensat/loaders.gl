@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: MIT
-
 /**
  * Polyfill for Browser Headers
  * Based on https://github.com/github/fetch under MIT license
@@ -13,9 +11,9 @@ export class Headers {
     if (headers instanceof Headers) {
       headers.forEach((value, name) => this.append(name, value));
     } else if (Array.isArray(headers)) {
-      headers.forEach(header => this.append(header[0], header[1]));
+      headers.forEach((header) => this.append(header[0], header[1]));
     } else if (headers) {
-      Object.getOwnPropertyNames(headers).forEach(name => this.append(name, headers[name]));
+      Object.getOwnPropertyNames(headers).forEach((name) => this.append(name, headers[name]));
     }
   }
 

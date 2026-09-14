@@ -1,44 +1,40 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 // GLTF EXTENSION: KHR_techniques_webgl
 // https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_techniques_webgl
 
-import type {GLTFWithBuffers} from '../../types/gltf-types';
+import type {GLTF} from '../../types/gltf-json-schema';
 
-import {GLTFIterator} from '../../api/gltf-iterator';
-import {getTypedArrayForBufferView} from '../../gltf-utils/get-typed-array';
+import {GLTFScenegraph} from '../../api/gltf-scenegraph';
 
 const KHR_TECHNIQUES_WEBGL = 'KHR_techniques_webgl';
 
 export const name = KHR_TECHNIQUES_WEBGL;
 
-export async function decode(gltfData: GLTFWithBuffers): Promise<void> {
-  const iterator = new GLTFIterator(gltfData);
+export async function decode(gltfData: {json: GLTF}): Promise<void> {
+  const gltfScenegraph = new GLTFScenegraph(gltfData);
+  const {json} = gltfScenegraph;
 
-  const extension = iterator.getExtension(KHR_TECHNIQUES_WEBGL);
+  const extension = gltfScenegraph.getExtension(KHR_TECHNIQUES_WEBGL);
   if (extension) {
-    const techniques = resolveTechniques(extension, iterator);
+    const techniques = resolveTechniques(extension, gltfScenegraph);
 
-    for (const material of iterator.materials) {
-      const materialExtension = iterator.getExtension<any>(material, KHR_TECHNIQUES_WEBGL);
+    for (const material of json.materials || []) {
+      const materialExtension = gltfScenegraph.getObjectExtension(material, KHR_TECHNIQUES_WEBGL);
       if (materialExtension) {
         // @ts-ignore TODO
-        (material as any).technique = Object.assign(
+        material.technique = Object.assign(
           {},
           materialExtension,
           // @ts-ignore
           techniques[materialExtension.technique]
         );
         // @ts-ignore TODO
-        (material as any).technique.values = resolveValues((material as any).technique, iterator);
+        material.technique.values = resolveValues(material.technique, gltfScenegraph);
       }
-      iterator.removeExtension(material, KHR_TECHNIQUES_WEBGL);
+      gltfScenegraph.removeObjectExtension(material, KHR_TECHNIQUES_WEBGL);
     }
 
     // Remove the top-level extension
-    iterator.removeExtension(KHR_TECHNIQUES_WEBGL);
+    gltfScenegraph.removeExtension(KHR_TECHNIQUES_WEBGL);
   }
 }
 // eslint-disable-next-line
@@ -51,15 +47,15 @@ function resolveTechniques(
   // programs: {[key: string]: any}[],
   // shaders: {[key: string]: any}[],
   // techniques: {[key: string]: any}[]
-  iterator: GLTFIterator
+  gltfScenegraph
 ) {
   const {programs = [], shaders = [], techniques = []} = techniquesExtension;
   const textDecoder = new TextDecoder();
 
-  shaders.forEach(shader => {
+  shaders.forEach((shader) => {
     if (Number.isFinite(shader.bufferView)) {
       shader.code = textDecoder.decode(
-        getTypedArrayForBufferView(iterator.data, iterator.gltf.buffers, shader.bufferView)
+        gltfScenegraph.getTypedArrayForBufferView(shader.bufferView)
       );
     } else {
       // TODO: handle URI shader
@@ -67,37 +63,34 @@ function resolveTechniques(
     }
   });
 
-  programs.forEach(program => {
+  programs.forEach((program) => {
     program.fragmentShader = shaders[program.fragmentShader];
     program.vertexShader = shaders[program.vertexShader];
   });
 
-  techniques.forEach(technique => {
+  techniques.forEach((technique) => {
     technique.program = programs[technique.program];
   });
 
   return techniques;
 }
 
-function resolveValues(technique, iterator: GLTFIterator) {
+function resolveValues(technique, gltfScenegraph) {
   const values = Object.assign({}, technique.values);
 
   // merge values from uniforms
-  Object.keys(technique.uniforms || {}).forEach(uniform => {
+  Object.keys(technique.uniforms || {}).forEach((uniform) => {
     if (technique.uniforms[uniform].value && !(uniform in values)) {
       values[uniform] = technique.uniforms[uniform].value;
     }
   });
 
   // resolve textures
-  Object.keys(values).forEach(uniform => {
+  Object.keys(values).forEach((uniform) => {
     if (typeof values[uniform] === 'object' && values[uniform].index !== undefined) {
       // Assume this is a texture
       // TODO: find if there are any other types that can be referenced
-      values[uniform].texture = iterator.resolveTexture(
-        values[uniform].index,
-        `technique.values.${uniform}.index`
-      );
+      values[uniform].texture = gltfScenegraph.getTexture(values[uniform].index);
     }
   });
 

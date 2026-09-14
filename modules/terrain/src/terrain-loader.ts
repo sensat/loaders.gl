@@ -3,19 +3,16 @@
 // Copyright (c) vis.gl contributors
 
 import type {Loader} from '@loaders.gl/loader-utils';
-import type {Mesh, MeshArrowTable} from '@loaders.gl/schema';
-import type {ImageBitmapLoaderOptions} from '@loaders.gl/images';
+import type {ImageLoaderOptions} from '@loaders.gl/images';
 import {VERSION} from './lib/utils/version';
 
-import type {TerrainOptions} from './lib/parse-terrain';
-import {TerrainFormat} from './terrain-format';
+import {TerrainOptions} from './lib/parse-terrain';
+import {Mesh} from '@loaders.gl/schema';
 
 /** TerrainLoader options */
-export type TerrainLoaderOptions = ImageBitmapLoaderOptions & {
+export type TerrainLoaderOptions = ImageLoaderOptions & {
   /** TerrainLoader options */
   terrain?: TerrainOptions & {
-    /** Selects mesh output or Apache Arrow output. */
-    shape?: 'mesh' | 'arrow-table';
     /** Override the URL to the worker bundle (by default loads from unpkg.com) */
     workerUrl?: string;
   };
@@ -25,14 +22,16 @@ export type TerrainLoaderOptions = ImageBitmapLoaderOptions & {
  * Worker loader for image encoded terrain
  */
 export const TerrainLoader = {
-  dataType: null as unknown as Mesh | MeshArrowTable,
+  dataType: null as unknown as Mesh,
   batchType: null as never,
 
-  ...TerrainFormat,
+  name: 'Terrain',
+  id: 'terrain',
+  module: 'terrain',
   version: VERSION,
   worker: true,
-  /** Loads the parser-bearing terrain loader implementation. */
-  preload: async () => (await import('./terrain-loader-with-parser')).TerrainLoaderWithParser,
+  extensions: ['png', 'pngraw', 'jpg', 'jpeg', 'gif', 'webp', 'bmp'],
+  mimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/bmp'],
   options: {
     terrain: {
       tesselator: 'auto',
@@ -47,4 +46,4 @@ export const TerrainLoader = {
       skirtHeight: undefined
     }
   }
-} as const satisfies Loader<Mesh | MeshArrowTable, never, TerrainLoaderOptions>;
+} as const satisfies Loader<Mesh, never, TerrainLoaderOptions>;

@@ -1,44 +1,4 @@
----
-title: loadImageCube
-description: Load the six images that make up a cubemap, with optional mip levels per face.
-hide_title: true
-page_style: designed
----
-
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
-
-<DocPageHeader
-  eyebrow="Images API · cubemap helper"
-  title="Load six images with one callback."
-  description="loadImageCube turns a face naming function into a cubemap image set. Use it when the images are already described by application logic rather than a JSON manifest."
-  tone="blue"
-  meta={['Six directional faces', 'Optional mip levels', 'Browser and Node polyfills']}
-  links={[
-    {label: 'Images module', to: '/docs/modules/images'},
-    {label: 'TextureCubeLoader', to: '/docs/modules/textures/api-reference/texture-cube-loader'},
-    {label: 'ImageBitmapLoader', to: '/docs/modules/images/api-reference/image-bitmap-loader'}
-  ]}
-/>
-
-<DocOrientation
-  eyebrow="The helper path"
-  title="Generate face URLs without hand-writing six loads."
-  description="The callback receives stable face and direction information for every request. Add mip loading when each direction has a resolution chain, or keep one image per face for a simple environment map."
-  tone="blue"
-  items={[
-    {label: 'Callback', value: 'Receives face, direction, axis, sign, and index'},
-    {label: 'Output', value: 'Six images keyed by WebGL cube-face constants'},
-    {label: 'Mip levels', value: 'Single images or arrays of images per face'},
-    {label: 'Options', value: 'ImageBitmapLoader options plus image.mipLevels'}
-  ]}
-/>
-
-<ReferenceBoundary
-  title="loadImageCube reference"
-  description="The sections below document URL callbacks, directional names, mip-level loading, return values, and image options."
-  tone="blue"
-/>
+# loadCubeImages
 
 A function that loads 6 images representing the faces of a cube. Primarily intended for loading images for WebGL `GL.TEXTURE_CUBE` textures.
 
@@ -95,15 +55,15 @@ Loads and image cube, i.e. 6 images keyed by WebGL face constants (see table).
 Parameters:
 
 - `getUrl`: A function that generates the url for each image, it is called for each image with the `index` of that image.
-- `options`: Supports the same image parsing options as [`ImageBitmapLoader`](/docs/modules/images/api-reference/image-bitmap-loader).
+- `options`: Supports the same options as [`ImageLoader`](/docs/modules/images/api-reference/image-loader).
 
 Returns
 
-- An object with 6 key/value pairs containing images (or arrays of mip images) for each cube face. The keys are the (stringified) numeric values of the GL constant for the respective faces of the cube.
+- An object with 6 key/value pairs containing images (or arrays of mip images) for for each cube face. They keys are the (stringified) numeric values of the GL constant for the respective faces of the cube
 
 ## Options
 
-Accepts the same options as [`ImageBitmapLoader`](/docs/modules/images/api-reference/image-bitmap-loader), and
+Accepts the same options as [`ImageLoader`](/docs/modules/images/api-reference/image-loader), and
 
 | Option            | Type    | Default | Description |
 | ----------------- | ------- | ------- | ----------- | ------------------------------------------------------ |
@@ -113,4 +73,4 @@ Number of mip level images to load: Use `0` to indicate a single image with no m
 
 ## Remarks
 
-- Returned images can be passed directly to WebGL texture methods. See [`ImageBitmapLoader`](/docs/modules/images/api-reference/image-bitmap-loader) for details about the returned `ImageBitmap` contract.
+- Returned images can be passed directly to WebGL texture methods. See [`ImageLoader`](/docs/modules/images/api-reference/image-loader) for details about the type of the returned images.

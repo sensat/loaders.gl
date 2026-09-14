@@ -1,57 +1,10 @@
----
-title: '@loaders.gl/textures'
-description: Load compressed texture containers and transcode portable payloads into GPU-oriented formats.
-hide_title: true
-page_style: designed
----
+# Overview
 
-import {TexturesDocsTabs} from '@site/src/components/docs/textures-docs-tabs';
-import {TextureTranscodeGraphic} from '@site/src/components/docs/texture-transcode-graphic';
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
-
-<DocPageHeader
-  eyebrow="Texture module"
-  title="@loaders.gl/textures"
-  description="Ship one texture asset and choose the GPU format at runtime. Handle containers, mip chains, arrays, cube maps, and Basis Universal transcoding on the client."
-  tone="cyan"
-  meta={['KTX / KTX2', 'Basis Universal', 'GPU-oriented payloads']}
-  links={[
-    {label: 'Texture category', to: '/docs/specifications/category-texture'},
-    {label: 'Basis format', to: '/docs/modules/textures/formats/basis'}
-  ]}
-/>
-
-<TexturesDocsTabs active="overview" />
-
-<TextureTranscodeGraphic />
-
-<DocOrientation
-  eyebrow="Container, payload, device"
-  title="Keep texture delivery separate from texture use."
-  description="A source file can carry mip levels and a portable compressed payload. The application can inspect that metadata, select a target, and hand the resulting levels to its rendering layer."
-  tone="cyan"
-  items={[
-    {label: 'Containers', value: 'KTX, KTX2, DDS, PVR, Basis, and Crunch'},
-    {label: 'Layouts', value: 'Mips, arrays, cube maps, and 3D texture images'},
-    {label: 'Transcode', value: 'Basis payloads to device-compatible compressed formats'},
-    {label: 'Return', value: 'TextureLevel data or normalized texture objects'}
-  ]}
-/>
-
-<p className="badges">
+<p class="badges">
   <img src="https://img.shields.io/badge/From-v3.0-blue.svg?style=flat-square" alt="From-v3.0" />
 </p>
 
-The `@loaders.gl/textures` module contains loaders for compressed textures. More specifically it contains loaders and writers for compressed texture **container** formats, including KTX, DDS and PVR. It also supports supercompressed Basis textures and decoded Radiance HDR images.
-
-See [Texture Loaders](/docs/specifications/category-texture) for the shared category conventions.
-
-<ReferenceBoundary
-  title="Texture module details"
-  description="The sections below cover formats, loaders, writers, normalized return shapes, and runtime selection."
-  tone="cyan"
-/>
+The `@loaders.gl/textures` module contains loaders for compressed textures. More specifically it contains loaders and writers for compressed texture **container** formats, including KTX, DDS and PVR. It also supports supercompressed Basis textures.
 
 Note that a texture is more complex than an image. A texture typically has many subimages. A texture can represent a single logical image but can also be a texture cube, a texture array etc representing many logical images. In addition, each "image" typically has many mipmap levels.
 
@@ -62,80 +15,37 @@ Basis encoded textures are super compressed. A more recent addition, they can be
 ## Installation
 
 ```bash
-npm install @loaders.gl/core @loaders.gl/textures
+npm install @loaders.gl/textures
+npm install @loaders.gl/core
 ```
-
-## Formats
-
-The `@loaders.gl/textures` module handles the following formats:
-
-| Format                                                                      | Description                                                                                                                                             |
-| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`Compressed Textures`](/docs/modules/textures/formats/compressed-textures) | Overview of GPU texture container and compression formats                                                                                               |
-| [`KTX / KTX2`](/docs/modules/textures/formats/ktx)                          | Khronos texture container formats for mipmapped textures                                                                                                |
-| [`DDS`](/docs/modules/textures/formats/dds)                                 | Microsoft DirectDraw Surface texture container                                                                                                          |
-| [`PVR`](/docs/modules/textures/formats/pvr)                                 | PowerVR texture container format                                                                                                                        |
-| [`Basis Universal`](/docs/modules/textures/formats/basis)                   | Supercompressed texture format for runtime transcoding                                                                                                  |
-| [`Crunch`](/docs/modules/textures/formats/crunch)                           | Lossy compressed texture distribution format for GPU textures                                                                                           |
-| [`Radiance HDR`](/docs/modules/textures/formats/hdr)                        | High-dynamic-range RGBE textures stored in `.hdr` files                                                                                              |
 
 ## API
 
-| Loader                                                                                      | Description                                                                                                                               |
-| ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| [`BasisLoader`](/docs/modules/textures/api-reference/basis-loader)                          | Basis Universal textures as `TextureLevel[][]`                                                                                            |
-| [`CompressedTextureLoader`](/docs/modules/textures/api-reference/compressed-texture-loader) | KTX, DDS and PVR mip chains as `TextureLevel[]`                                                                                           |
-| [`RadianceHDRLoader`](/docs/modules/textures/api-reference/radiance-hdr-loader)             | Radiance `.hdr` textures as `Texture`                                                                                                        |
-| [`CrunchWorkerLoader`](/docs/modules/textures/api-reference/crunch-loader)                  | Crunch mip chains as `TextureLevel[]`                                                                                                        |
-| [`TextureLoader`](/docs/modules/textures/api-reference/texture-loader)                      | Manifest-driven single image or mip chain                                                                                                   |
-| [`TextureArrayLoader`](/docs/modules/textures/api-reference/texture-array-loader)           | Manifest-driven texture arrays                                                                                                              |
-| [`TextureCubeLoader`](/docs/modules/textures/api-reference/texture-cube-loader)             | Manifest-driven cubemaps                                                                                                                    |
-| [`TextureCubeArrayLoader`](/docs/modules/textures/api-reference/texture-cube-array-loader)  | Manifest-driven cube arrays                                                                                                                 |
+| Loader                                                             | Description |
+| ------------------------------------------------------------------ | ----------- |
+| [`BasisLoader`](/docs/modules/textures/api-reference/basis-loader) |             |
 
 ## Return Types
 
-The compressed texture loaders in this module return `TextureLevel` objects from `@loaders.gl/schema`.
+The `BasisLoader` returns Array of Array of ArrayBuffer
 
-## Texture Category
+See [`BasisLoader`](/docs/modules/images/api-reference/image-loader) for more details on options etc.
 
-A `TextureLevel` describes one mip level of one texture image.
+## Texture APIs
 
-| Field           | Type              | Description                                                                                                                                        |
-| --------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `compressed`    | `boolean`         | Whether the mip level data is GPU-compressed.                                                                                                      |
-| `shape`         | `'texture-level'` | Shape tag for normalized texture-level payloads.                                                                                              |
-| `format`        | `number`          | WebGL internal format enum for the decoded level.                                                                                              |
-| `textureFormat` | `TextureFormat`   | WebGPU / luma.gl style format string for the data.                                                                                            |
-| `data`          | `TypedArray`      | The payload for this mip level. Compressed texture loaders return `Uint8Array`; `RadianceHDRLoader` returns `Float32Array`.                        |
-| `width`         | `number`          | Width of this mip level.                                                                                                                           |
-| `height`        | `number`          | Height of this mip level.                                                                                                                          |
-| `levelSize`     | `number`          | Size in bytes for this mip level, when available.                                                                                                  |
-| `hasAlpha`      | `boolean`         | Whether the transcoded texture contains alpha.                                                                                                     |
+The textures API offers functions to load "composite" images for WebGL textures, cube textures and image mip levels.
 
-`BasisLoader` returns `TextureLevel[][]`, preserving all images in a `.basis` or `.ktx2` asset.
+These functions take a `getUrl` parameter that enables the app to supply the url for each "sub-image", and return a single promise enabling applications to for instance load all the faces of a cube texture, with one image for each mip level for each face in a single async operation.
 
-`CompressedTextureLoader` returns `TextureLevel[]`.
+| Function                                                                  | Description                                                                                                           |
+| ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| [`loadImage`](/docs/modules/textures/api-reference/load-image)            | Load a single image                                                                                                   |
+| [`loadImageArray`](/docs/modules/textures/api-reference/load-image-array) | Load an array of images, e.g. for a `Texture2DArray` or `Texture3D`                                                   |
+| [`loadImageCube`](/docs/modules/textures/api-reference/load-image-cube)   | Load a map of 6 images for the faces of a cube map, or a map of 6 arrays of images for the mip levels of the 6 faces. |
 
-`RadianceHDRLoader` returns a `Texture` with `shape: 'texture'`, `type: '2d'`, one decoded `rgba32float` level in `data`, and optional application-facing metadata.
-
-`CrunchWorkerLoader` returns `TextureLevel[]`.
-
-See [`BasisLoader`](/docs/modules/textures/api-reference/basis-loader) and [`CompressedTextureLoader`](/docs/modules/textures/api-reference/compressed-texture-loader) for loader-specific options and return shapes.
-
-## Composite Image Loaders
-
-The textures module also includes manifest-driven loaders for composite image textures:
-
-- [`TextureLoader`](/docs/modules/textures/api-reference/texture-loader) for a single image or mip chain
-- [`TextureArrayLoader`](/docs/modules/textures/api-reference/texture-array-loader) for texture arrays, including mipmapped layers
-- [`TextureCubeLoader`](/docs/modules/textures/api-reference/texture-cube-loader) for cubemaps, including mipmapped faces
-- [`TextureCubeArrayLoader`](/docs/modules/textures/api-reference/texture-cube-array-loader) for cube arrays
-
-These loaders resolve relative member URLs against the manifest URL, or against `options.core.baseUrl` when parsing an in-memory manifest.
-Member assets are parsed with `ImageBitmapLoader` by default.
-They return schema `Texture` objects rather than raw image trees.
+As with all loaders.gl functions, while these functions are intended for use in WebGL applications, they do not call any WebGL functions, and do not actually create any WebGL textures..
 
 ## Attributions
 
 - The `CompressedTextureLoader` was forked from [PicoGL](https://github.com/tsherif/picogl.js/blob/master/examples/utils/utils.js), Copyright (c) 2017 Tarek Sherif, The MIT License (MIT)
-- The `CompressedTextureWriter` is a wrapper around @TimvanScherpenzeel's [`texture-compressor`](https://github.com/TimvanScherpenzeel/texture-compressor) utility (MIT licensed). That utility is not a dependency of `@loaders.gl/textures`; applications that use the writer must install it separately.
+- The `CompressedTextureWriter` is a wrapper around @TimvanScherpenzeel's [`texture-compressor`](https://github.com/TimvanScherpenzeel/texture-compressor) utility (MIT licensed).

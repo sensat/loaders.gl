@@ -1,27 +1,22 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
-import type {ReadableFile} from '@loaders.gl/loader-utils';
+import {FileProviderInterface} from '@loaders.gl/loader-utils';
 import {
   parseZipCDFileHeader,
   CD_HEADER_SIGNATURE,
   parseZipLocalFileHeader,
   searchFromTheEnd,
   parseHashTable,
-  makeHashTableFromZipHeaders,
-  readRange
+  makeHashTableFromZipHeaders
 } from '@loaders.gl/zip';
 import {SLPKArchive} from './slpk-archieve';
 
 /**
  * Creates slpk file handler from raw file
- * @param fileProvider raw readable file data
+ * @param fileProvider raw file data
  * @param cb is called with information message during parsing
  * @returns slpk file handler
  */
 export async function parseSLPKArchive(
-  fileProvider: ReadableFile,
+  fileProvider: FileProviderInterface,
   cb?: (msg: string) => void,
   fileName?: string
 ): Promise<SLPKArchive> {
@@ -46,8 +41,7 @@ export async function parseSLPKArchive(
     }
 
     const fileDataOffset = localFileHeader.fileDataOffset;
-    const hashFile = await readRange(
-      fileProvider,
+    const hashFile = await fileProvider.slice(
       fileDataOffset,
       fileDataOffset + localFileHeader.compressedSize
     );

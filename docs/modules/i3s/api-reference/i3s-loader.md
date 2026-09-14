@@ -1,89 +1,52 @@
----
-title: I3SLoader
-description: Load Indexed 3D Scene layers and their node resources.
-hide_title: true
-page_style: designed
----
+# I3SLoader
 
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {ClientExample, DocLiveExample} from '@site/src/components';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
-import {TiledSceneGraphic} from '@site/src/components/docs/tiled-scene-graphic';
-
-<DocPageHeader
-  eyebrow="I3S loader"
-  title="I3SLoader"
-  description="Read ArcGIS scene layers, geometry, textures, and the metadata needed by the shared tiles runtime. Use it for mesh, point, and scene-layer content delivered as JSON, binary nodes, or an SLPK archive."
-  hideTitle
-  tone="orange"
-  meta={['I3S 1.x and 2.x', 'Scene and point layers', 'JSON and binary resources']}
-  logos={[
-    {alt: 'ArcGIS', src: '/images/format-logos/arcgis-logo.svg'},
-    {alt: 'Open Geospatial Consortium', src: '/images/format-logos/ogc-logo-transparent.png'}
-  ]}
-  links={[
-    {label: 'I3S module', to: '/docs/modules/i3s'},
-    {label: 'I3S format', to: '/docs/modules/i3s/formats/i3s'},
-    {label: 'I3S source', to: '/docs/modules/tiles/api-reference/i3s-source'}
-  ]}
-/>
-
-<DocLiveExample label="I3S building scene" height="430px">
-  <ClientExample kind="i3s-building-scene-layer" />
-</DocLiveExample>
-
-<TiledSceneGraphic />
-
-<DocOrientation
-  eyebrow="The I3S loading path"
-  title="Read layer metadata, traverse nodes, decode payloads."
-  description="I3S is a layered delivery format rather than one self-contained file. The loader keeps the format-specific details behind the normal loaders.gl and tiles APIs."
-  tone="orange"
-  items={[
-    {label: 'Input', value: 'Layer JSON, node resources, or an SLPK archive'},
-    {label: 'Hierarchy', value: 'Scene layer nodes with level-of-detail metadata'},
-    {label: 'Payloads', value: 'Mesh, point, texture, material, and attribute resources'},
-    {label: 'Output', value: 'I3S data for loaders, sources, and tiles traversal'}
-  ]}
-/>
-
-<p className="badges">
+<p class="badges">
   <img src="https://img.shields.io/badge/From-v2.1-blue.svg?style=flat-square" alt="From-v2.1" />
 </p>
 
 A loader for loading an [Indexed 3d Scene (I3S) layer](https://github.com/Esri/i3s-spec), and its geometries and textures data.
 
-:::info[Choose the entry point]
+| Loader         | Characteristic                                      |
+| -------------- | --------------------------------------------------- |
+| File Format    | [I3S Layer](https://github.com/Esri/i3s-spec)       |
+| File Type      | Json, Binary                                        |
+| File Extension | `.json` (layer), `.bin` (geometries)                |
+| File Format    | [i3s](https://www.opengeospatial.org/standards/i3s) |
+| Data Format    | Data formats                                        |
+| Supported APIs | `load`, `parse`                                     |
 
-- Use `I3SLoader` with `load` or `parse` when the application needs a parsed layer, node, or tile
-  payload.
-- Use `I3SSource` with `Tileset3D` when the application needs hierarchy traversal, caching, and
-  view-dependent loading.
-- Use `SourceLayer` when a deck.gl application should connect an ArcGIS SceneServer URL directly to
-  the shared 3D source layer.
+## I3S Layer type support
 
-The layer document is JSON, while node indexes, geometry, textures, and attributes are resolved as
-separate resources. An I3S loader therefore describes a resource family rather than one file
-extension.
+| Layer Type           | Supported       | I3S Spec Link                                                                  |
+| -------------------- | --------------- | ------------------------------------------------------------------------------ |
+| 3DObject             | ✅              | https://github.com/Esri/i3s-spec/blob/master/docs/1.7/3Dobject_ReadMe.md       |
+| Integrated Mesh      | ✅              | https://github.com/Esri/i3s-spec/blob/master/docs/1.7/IntegratedMesh_ReadMe.md |
+| Points               | ❌              | https://github.com/Esri/i3s-spec/blob/master/docs/1.7/Point_ReadMe.md          |
+| PointClouds          | ❌              | https://github.com/Esri/i3s-spec/blob/master/docs/2.0/pcsl_ReadMe.md           |
+| Building Scene Layer | 🚧 experimental | https://github.com/Esri/i3s-spec/blob/master/docs/1.8/BSL_ReadMe.md            |
 
-:::
+## I3S Aspects support
 
-## Format support
+| Aspect                | Supported | I3S Spec Link                                                                                |
+| --------------------- | --------- | -------------------------------------------------------------------------------------------- |
+| Node pages            | ✅        | https://github.com/Esri/i3s-spec/blob/master/docs/1.8/nodePage.cmn.md                        |
+| Compressed attributes | ✅        | https://github.com/Esri/i3s-spec/blob/master/docs/1.8/compressedAttributes.cmn.md            |
+| PBR materials         | ✅        | https://github.com/Esri/i3s-spec/blob/master/docs/1.8/pbrMetallicRoughness.cmn.md            |
+| Feature attributes    | ✅        | https://github.com/Esri/i3s-spec/blob/master/docs/1.8/attributeStorageInfo.cmn.md            |
+| Texture Atlas         | ✅        | https://github.com/Esri/i3s-spec/blob/master/docs/1.8/texture.cmn.md#atlas-usage-and-regions |
 
-<ReferenceBoundary
-  title="Format and runtime details"
-  description="The detailed sections cover supported I3S profiles, terminology, loading, rendering integration, and the full loader object."
-  tone="orange"
-/>
+## Texture formats
 
-See the [I3S format support matrix](../formats/i3s) for detailed coverage of scene layer profiles,
-specification generations, delivery modes, hierarchy and LOD, mesh geometry, textures, materials,
-feature attributes, coordinate systems, conversion, and known gaps.
+I3S textures specification - https://github.com/Esri/i3s-spec/blob/master/docs/1.8/texture.cmn.md
 
-Point scene layers use the same `I3SLoader` and `I3SSource` path as mesh layers. Their content has
-`topology: 'point-list'`; `pointRenderer` and `pointSymbol` retain the typed ArcGIS renderer
-metadata, while `featureIds` align vertices with the standard node-local attribute resources.
-Point Cloud layers remain available through the separate `I3SPointCloudSource` API.
+| Texture                                        | Supported     |
+| ---------------------------------------------- | ------------- |
+| JPEG                                           | ✅            |
+| PNG                                            | ✅            |
+| .dds with DXT1 (no alpha)                      | ✅            |
+| .dds with DXT5 (alpha channel)                 | ✅            |
+| ktx-etc2                                       | 🚧 not tested |
+| Basis Universal Texture format in Khronos KTX2 | ✅            |
 
 ## Terms
 
@@ -95,78 +58,148 @@ The terms and concepts used in `i3s` module have the corresponding parts [I3S Sp
 
 ## Usage
 
-As an I3S tileset contains multiple file formats, `I3SLoader` is needed to be explicitly specified when using [`load`](/docs/modules/core/api-reference/load).
+As an I3S tileset contains multiple file formats, `I3SLoader` is needed to be explicitly specified when using [`load`](https://loaders.gl/modules/core/docs/api-reference/load) function.
 
-### Render an I3S layer with deck.gl
+**Load I3S tileset and render with [deck.gl](https://deck.gl/#/)**
 
-`SourceLayer` selects the I3S source runtime and keeps hierarchy traversal separate from the
-renderer. The same pattern works for SceneServer mesh and point layers:
+A simple react app uses [`I3SLoader`](https://github.com/visgl/loaders.gl/blob/master/modules/i3s/src/i3s-loader.ts) to load [San Francisco Buildings](https://www.arcgis.com/home/item.html?id=d3344ba99c3f4efaa909ccfbcc052ed5), render with [deck.gl's](https://deck.gl/) [`Tile3Dlayer`](https://deck.gl/docs/api-reference/geo-layers/tile-3d-layer) and dynamically load/unload tiles based on current viewport and adjust the level of details when zooming in and out.
+
+<table style={{border: 0, align: "center"}}>
+  <tbody>
+    <img style={{maxHeight: 200}} src="https://raw.github.com/visgl/deck.gl-data/master/images/whats-new/esri-i3s.gif" />
+  </tbody>
+</table>
+
+[Example Codepen](https://codepen.io/belom88/pen/JjamLvx)
 
 ```typescript
-import {SourceLayer} from '@loaders.gl/deck-layers';
-import {COORDINATE_SYSTEM, I3SLoader} from '@loaders.gl/i3s';
+import React, {Component} from 'react';
 
-const layer = new SourceLayer({
-  id: 'city-buildings',
-  data: 'https://tiles.arcgis.com/tiles/z2tnIkrLQ2BRzr6P/arcgis/rest/services/SanFrancisco_Bldgs/SceneServer/layers/0',
-  loaders: [I3SLoader],
-  loadOptions: {
-    i3s: {coordinateSystem: COORDINATE_SYSTEM.LNGLAT_OFFSETS}
+import {StaticMap} from 'react-map-gl';
+import DeckGL from '@deck.gl/react';
+import {MapController} from '@deck.gl/core';
+import {Tile3DLayer} from '@deck.gl/geo-layers';
+import {I3SLoader} from '@loaders.gl/i3s';
+
+// How to get mapbox token https://docs.mapbox.com/help/how-mapbox-works/access-tokens/
+const MAPBOX_TOKEN = ''; // add your Mapbox token here
+
+const INITIAL_VIEW_STATE = {
+  longitude: -120,
+  latitude: 34,
+  height: 600,
+  width: 800,
+  pitch: 45,
+  maxPitch: 85,
+  bearing: 0,
+  minZoom: 2,
+  maxZoom: 30,
+  zoom: 14.5
+};
+
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {viewState: INITIAL_VIEW_STATE};
   }
-});
+
+  _onTilesetLoad(tileset) {
+    // update viewport to the tileset center
+    const {zoom, cartographicCenter} = tileset;
+    const [longitude, latitude] = cartographicCenter;
+
+    const viewState = {
+      ...this.state.viewState,
+      zoom: zoom + 2.5,
+      longitude,
+      latitude
+    };
+
+    this.setState({viewState});
+  }
+
+  render() {
+    const {viewState} = this.state;
+
+    // construct Tile3DLayer to render I3S tileset
+    const layer = new Tile3DLayer({
+      id: 'tile-3d-layer',
+      // Tileset entry point: Indexed 3D layer file url
+      data: 'https://tiles.arcgis.com/tiles/z2tnIkrLQ2BRzr6P/arcgis/rest/services/SanFrancisco_Bldgs/SceneServer/layers/0',
+      loader: I3SLoader,
+      onTilesetLoad: this._onTilesetLoad.bind(this)
+    });
+
+    return (
+      <DeckGL
+        layers={[layer]}
+        viewState={viewState}
+        controller={{type: MapController}}
+        onViewStateChange={({viewState}) => {
+          // update viewState when interacting with map
+          this.setState({viewState});
+        }}
+      >
+        <StaticMap
+          mapStyle={'mapbox://styles/mapbox/dark-v9'}
+          mapboxApiAccessToken={MAPBOX_TOKEN}
+          preventStyleDiffing
+        />
+      </DeckGL>
+    );
+  }
+}
 ```
 
-See the [I3S example](/examples/i3s-arcgis) for a complete application and the
-[`I3SSource`](/docs/modules/tiles/api-reference/i3s-source) reference for direct traversal.
+A more complex example can be found [here](https://github.com/visgl/loaders.gl/tree/master/examples/website/i3s), checkout website [example](https://loaders.gl/examples/i3s).
 
 **Basic API Usage**
 
 Basic API usage is illustrated in the following snippet. Create a `Tileset3D` instance, point it a valid tileset URL, set up callbacks, and keep feeding in new camera positions:
 
 ```typescript
+import {load} from '@loaders.gl/core';
 import {I3SLoader} from '@loaders.gl/i3s';
-import {I3SSource, Tileset3D} from '@loaders.gl/tiles';
+import {Tileset3D} from '@loaders.gl/tiles';
 import {WebMercatorViewport} from '@deck.gl/core';
 
-const tilesetUrl =
+const tileseturl =
   'https://tiles.arcgis.com/tiles/z2tnIkrLQ2BRzr6P/arcgis/rest/services/SanFrancisco_Bldgs/SceneServer/layers/0';
 
-const source = new I3SSource({url: tilesetUrl, loader: I3SLoader});
+const tileset = await load(tileseturl, I3SLoader);
 
-const tileset = new Tileset3D(source, {
+const tileset3d = new Tileset3D(tilesetJson, {
   onTileLoad: tile => console.log(tile)
 });
 
-const viewport = new WebMercatorViewport({
-  width: 600,
-  height: 400,
-  latitude: 37.7749,
-  longitude: -122.4194,
-  zoom: 15
-});
-await tileset.selectTiles(viewport);
+// initial viewport
+// viewport should be deck.gl WebMercatorViewport instance
+const viewport = new WebMercatorViewport({latitude, longitude, zoom, ...})
+tileset3d.update(viewport);
 
-// Call again whenever the viewport changes (pan, zoom, and so on).
-await tileset.selectTiles(viewport);
+// Viewport changes (pan zoom etc)
+tileset3d.selectTiles(viewport);
 
 // Visible tiles
-const visibleTiles = tileset.tiles.filter(tile => tile.selected);
+const visibleTiles = tileset3d.tiles.filter(tile => tile.selected);
 
-// Note that visibleTiles will likely not immediately include all tiles.
-// Content continues loading and onTileLoad fires as resources become ready.
+// Note that visibleTiles will likely not immediately include all tiles
+// tiles will keep loading and file `onTileLoad` callbacks
 ```
 
 ## Options
 
 | Option                              | Type             | Default | Description                                                                                                                                                                                                                                                                                                                     |
 | ----------------------------------- | ---------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `options.i3s.isTileset`             | `boolean \| 'auto'` | `'auto'` | Treat the resource as a layer document instead of a node or content resource. Auto-detection follows I3S URL conventions. |
-| `options.i3s.isTileHeader`          | `boolean \| 'auto'` | `'auto'` | Treat the resource as a node header. Auto-detection follows `/nodes/...` URL conventions. |
-| `options.i3s.token`                 | `string` | — | ArcGIS access token appended to source-managed requests. |
-| `options.i3s.useDracoGeometry`      | `boolean` | `true` | Decode Draco-compressed geometry when available. |
-| `options.i3s.useCompressedTextures` | `boolean` | `true` | Use DDS or KTX2 resources when the runtime supports them. |
-| `options.i3s.decodeTextures`        | `boolean` | `true` | Decode image resources into the returned texture representation. |
-| `options.i3s.coordinateSystem`      | `CoordinateSystem` | `METER_OFFSETS` | Select the deck.gl-compatible output coordinate system for decoded content. |
+| `options.i3s.isTileset`             | `Bool` or `auto` | `auto`  | Whether to load `Tileset` (Layer 3D Index) file. If `auto`, will decide if follow `ArcGIS` tile layers' url convention                                                                                                                                                                                                          |
+| `options.i3s.isTileHeader`          | `Bool` or `auto` | `auto`  | Whether to load `TileHeader`(node) file. If `auto`, will decide if follow `argis` url convention                                                                                                                                                                                                                                |
+| `options.i3s.loadContent`           | `Bool`           | `true`  | Whether to load tile content (geometries, texture, etc.). Note: I3S dataset, each tile node has separate urls pointing to tile metadata and its actual tile payload. If `loadContent` is true, i3s loader will make a request to fetch the content fiile and decoded to the format as specified in [Tile Object](#tile-object). |
+| `options.i3s.token`                 | `string`         | `null`  | Authorization token for the layer                                                                                                                                                                                                                                                                                               |
+| `options.i3s.tileset`               | `Object`         | `null`  | `Tileset` object loaded by I3SLoader or follow the data format specified in [Tileset Object](#tileset-object). It is required when loading i3s geometry content                                                                                                                                                                 |
+| `options.i3s.tile`                  | `Object`         | `null`  | `Tile` object loaded by I3SLoader or follow the data format [Tile Object](#tile-object). It is required when loading i3s geometry content                                                                                                                                                                                       |
+| `options.i3s.useDracoGeometry`      | `Bool`           | `true`  | Use 'Draco' compressed geometry to show if applicable                                                                                                                                                                                                                                                                           |
+| `options.i3s.useCompressedTextures` | `Bool`           | `true`  | Use "Compressed textures" (_.dds or _.ktx) if available and supported by GPU                                                                                                                                                                                                                                                    |
+| `options.i3s.decodeTextures`        | `Bool`           | `true`  | Decode texture image to ImageBitmap or compressed texture object (if supported by GPU)                                                                                                                                                                                                                                          |
 
 ## Data formats
 
@@ -195,7 +228,6 @@ The following fields are guaranteed. Additionally, the loaded tile object will c
 | `contentUrl`     | `String` | The url of this tile.                                                                                                                                                                                                                                                                    |
 | `featureUrl`     | `String` | The url of this tile.                                                                                                                                                                                                                                                                    |
 | `textureUrl`     | `String` | The url of this tile.                                                                                                                                                                                                                                                                    |
-| `textureUrls`    | `Object[]` | Selected URLs for every texture-set resource referenced by the tile material.                                                                                                                                                                                                          |
 | `boundingVolume` | `Object` | A bounding volume in Cartesian coordinates converted from i3s node's [`mbs`](https://github.com/Esri/i3s-spec/blob/master/format/Indexed%203d%20Scene%20Layer%20Format%20Specification.md) that encloses a tile or its content. Exactly one box, region, or sphere property is required. |
 | `lodMetricType`  | `String` | Level of Detail (LoD) metric type, which is used to decide if a tile is sufficient for current viewport. Only support `maxScreenThreshold` for now. Check I3S [lodSelection](https://github.com/Esri/i3s-spec/blob/master/docs/1.8/lodSelection.cmn.md) for more details.                |
 | `lodMetricValue` | `String` | Level of Detail (LoD) metric value.                                                                                                                                                                                                                                                      |
@@ -213,7 +245,6 @@ After content is loaded, the following fields are guaranteed. But different tile
 | `vertexCount`        | `Number`     | Transforms tile geometry positions to fixed frame coordinates                                                                         |
 | `attributes`         | `Object`     | Each attribute follows luma.gl [accessor](https://github.com/visgl/luma.gl/blob/master/docs/api-reference/webgl/README.md) properties |
 | `texture`            | `Object`     | Loaded texture by [`loaders.gl/image`](/docs/modules/images/api-reference/image-loader)                                               |
-| `textures`           | `Object`     | Loaded texture-set resources keyed by texture-set definition id.                                                                       |
 | `featureData`        | `Object`     | Loaded feature data for parsing the geometies (Will be deprecated in 2.x)                                                             |
 
 `attributes` contains following fields
@@ -224,20 +255,3 @@ After content is loaded, the following fields are guaranteed. But different tile
 | `attributes.normals`   | `Object` | `{value, type, size, normalized}` |
 | `attributes.colors`    | `Object` | `{value, type, size, normalized}` |
 | `attributes.texCoords` | `Object` | `{value, type, size, normalized}` |
-
-### Layer statistics
-
-Use `loadStatistics` to fetch the resources listed in a scene layer's `statisticsInfo` array.
-The returned object is keyed by each descriptor's `key`; an unavailable resource is represented by
-`null` so other fields can still be consumed.
-
-```typescript
-import {loadStatistics} from '@loaders.gl/i3s';
-
-const statistics = await loadStatistics(sceneLayer.statisticsInfo, {
-  core: {baseUrl: sceneLayer.url},
-  i3s: {token}
-});
-```
-
-Set `core.baseUrl` to the loaded layer URL when descriptors use relative `href` values.

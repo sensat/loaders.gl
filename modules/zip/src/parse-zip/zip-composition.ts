@@ -1,19 +1,15 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 import {
+  FileHandleFile,
   concatenateArrayBuffers,
   path,
   NodeFilesystem,
-  NodeFile,
-  toArrayBuffer
+  NodeFile
 } from '@loaders.gl/loader-utils';
 import {ZipEoCDRecord, generateEoCD, parseEoCDRecord, updateEoCD} from './end-of-central-directory';
 import {CRC32Hash} from '@loaders.gl/crypto';
 import {generateLocalHeader} from './local-file-header';
 import {generateCDHeader} from './cd-file-header';
-import {readRange} from './readable-file-utils';
+import {fetchFile} from '@loaders.gl/core';
 
 /**
  * cut off CD and EoCD records from zip file
@@ -21,12 +17,11 @@ import {readRange} from './readable-file-utils';
  * @returns tuple with three values: CD, EoCD record, EoCD information
  */
 async function cutTheTailOff(
-  provider: NodeFile
+  provider: FileHandleFile
 ): Promise<[ArrayBuffer, ArrayBuffer, ZipEoCDRecord]> {
   // define where the body ends
   const oldEoCDinfo = await parseEoCDRecord(provider);
   const oldCDStartOffset = oldEoCDinfo.cdStartOffset;
-  const providerSize = (await provider.stat()).bigsize;
 
   // define cd length
   const oldCDLength = Number(
@@ -36,7 +31,7 @@ async function cutTheTailOff(
   );
 
   // cut off everything except of archieve body
-  const zipEnding = await readRange(provider, oldCDStartOffset, providerSize);
+  const zipEnding = await provider.slice(oldCDStartOffset, provider.length);
   await provider.truncate(Number(oldCDStartOffset));
 
   // divide cd body and eocd record
@@ -89,44 +84,39 @@ async function generateFileHeaders(
  */
 export async function addOneFile(zipUrl: string, fileToAdd: ArrayBuffer, fileName: string) {
   // init file handler
-  const provider = new NodeFile(zipUrl, 'a+');
+  const provider = new FileHandleFile(zipUrl, true);
 
   const [oldCDBody, eocdBody, oldEoCDinfo] = await cutTheTailOff(provider);
 
-  let currentOffset = (await provider.stat()).bigsize;
-
   // remember the new file local header start offset
-  const newFileOffset = currentOffset;
+  const newFileOffset = provider.length;
 
   const [localPart, cdHeaderPart] = await generateFileHeaders(fileName, fileToAdd, newFileOffset);
 
   // write down the file local header
   await provider.append(localPart);
-  currentOffset += BigInt(localPart.byteLength);
 
   // add the file CD header to the CD
   const newCDBody = concatenateArrayBuffers(oldCDBody, cdHeaderPart);
 
   // remember the CD start offset
-  const newCDStartOffset = currentOffset;
+  const newCDStartOffset = provider.length;
 
   // write down new CD
   await provider.append(new Uint8Array(newCDBody));
-  currentOffset += BigInt(newCDBody.byteLength);
 
   // remember where eocd starts
-  const eocdOffset = currentOffset;
+  const eocdOffset = provider.length;
 
-  const updatedEoCD = updateEoCD(
-    eocdBody,
-    oldEoCDinfo.offsets,
-    newCDStartOffset,
-    eocdOffset,
-    oldEoCDinfo.cdRecordsNumber + 1n
+  await provider.append(
+    updateEoCD(
+      eocdBody,
+      oldEoCDinfo.offsets,
+      newCDStartOffset,
+      eocdOffset,
+      oldEoCDinfo.cdRecordsNumber + 1n
+    )
   );
-
-  await provider.append(updatedEoCD);
-  currentOffset += BigInt(updatedEoCD.byteLength);
 }
 
 /**
@@ -183,7 +173,7 @@ async function addFile(
   fileList?.push({fileName: file.path, localHeaderOffset: size});
   const [localPart, cdHeaderPart] = await generateFileHeaders(file.path, file.file, size);
   await resFile.append(localPart);
-  cdArray.push(toArrayBuffer(cdHeaderPart));
+  cdArray.push(cdHeaderPart);
 }
 
 /**
@@ -197,10 +187,7 @@ export function getFileIterator(
   async function* iterable() {
     const fileList = await getAllFiles(inputPath);
     for (const filePath of fileList) {
-      const provider = new NodeFile(path.join(inputPath, filePath), 'r');
-      const {bigsize} = await provider.stat();
-      const file = await provider.read(0, Number(bigsize));
-      await provider.close();
+      const file = await (await fetchFile(path.join(inputPath, filePath))).arrayBuffer();
       yield {path: filePath, file};
     }
   }
@@ -242,6 +229,6 @@ export async function getAllFiles(
  * @returns joined path
  */
 function pathJoin(...paths: string[]): string {
-  const resPaths: string[] = paths.filter(val => val.length);
+  const resPaths: string[] = paths.filter((val) => val.length);
   return path.join(...resPaths);
 }

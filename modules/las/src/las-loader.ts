@@ -1,75 +1,47 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
-import type {LoaderWithParser} from '@loaders.gl/loader-utils';
-import type {MeshArrowTable} from '@loaders.gl/schema';
-import {convertTableToMesh} from '@loaders.gl/schema-utils';
-import {LAS_LOADER_METADATA, type LASLoaderOptions} from './las-loader-shared';
+// LASER (LAS) FILE FORMAT
+import type {Loader, LoaderOptions} from '@loaders.gl/loader-utils';
 import type {LASMesh} from './lib/las-types';
-import {
-  decodeLAZChunkToArrowTable,
-  parseLAS,
-  parseLASInBatches,
-  type LASArrowTable,
-  type LAZChunkArrowTableMetadata
-} from './lib/typescript/parse-las';
 
-type LASWorkerChunkRequest = {
-  metadata: LAZChunkArrowTableMetadata;
-};
+// __VERSION__ is injected by babel-plugin-version-inline
+// @ts-ignore TS2304: Cannot find name '__VERSION__'.
+const VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'latest';
 
-type LASWorkerOptions = LASLoaderOptions & {
-  las?: LASLoaderOptions['las'] & {
-    _chunk?: LASWorkerChunkRequest;
+export type LASLoaderOptions = LoaderOptions & {
+  las?: {
+    shape?: 'mesh' | 'columnar-table' | 'arrow-table';
+    fp64?: boolean;
+    skip?: number;
+    colorDepth?: number | string;
+    /** Override the URL to the worker bundle (by default loads from unpkg.com) */
+    workerUrl?: string;
   };
+  onProgress?: Function;
 };
 
-/** Parser-bearing TypeScript-only LAS loader implementation. */
-export const LASLoaderWithParser = {
-  ...LAS_LOADER_METADATA,
+/**
+ * Loader for the LAS (LASer) point cloud format
+ * @note Does not support LAS v1.4
+ */
+export const LASLoader = {
+  dataType: null as unknown as LASMesh,
+  batchType: null as never,
+
+  name: 'LAS',
+  id: 'las',
+  module: 'las',
+  version: VERSION,
   worker: true,
-  parse: async (arrayBuffer: ArrayBuffer, options?: LASLoaderOptions) =>
-    convertLASMesh(parseLASTable(arrayBuffer, options), options),
-  parseSync: (arrayBuffer: ArrayBuffer, options?: LASLoaderOptions) =>
-    convertLASMesh(parseLASTable(arrayBuffer, options), options),
-  parseInBatches: async function* (arrayBufferIterator, options?: LASLoaderOptions) {
-    yield* convertLASMeshBatches(parseLASInBatches(arrayBufferIterator, options), options);
+  extensions: ['las', 'laz'], // LAZ is the "compressed" flavor of LAS,
+  mimeTypes: ['application/octet-stream'], // TODO - text version?
+  text: true,
+  binary: true,
+  tests: ['LAS'],
+  options: {
+    las: {
+      shape: 'mesh',
+      fp64: false,
+      skip: 1,
+      colorDepth: 8
+    }
   }
-} as const satisfies LoaderWithParser<
-  LASMesh | MeshArrowTable,
-  LASMesh | MeshArrowTable,
-  LASLoaderOptions
->;
-
-/** Parse a complete LAS file or an internal standalone worker chunk request. */
-function parseLASTable(arrayBuffer: ArrayBuffer, options?: LASLoaderOptions): LASArrowTable {
-  const chunkRequest = (options as LASWorkerOptions | undefined)?.las?._chunk;
-  return chunkRequest
-    ? decodeLAZChunkToArrowTable(arrayBuffer, chunkRequest.metadata, options || {})
-    : parseLAS(arrayBuffer, options);
-}
-
-function convertLASMesh(
-  table: LASArrowTable,
-  options?: LASLoaderOptions
-): LASMesh | MeshArrowTable {
-  if (options?.las?.shape === 'arrow-table') {
-    return table;
-  }
-  return {
-    ...(convertTableToMesh(table) as LASMesh),
-    loader: table.loader,
-    loaderData: table.loaderData,
-    progress: table.progress
-  } as LASMesh & {progress?: number};
-}
-
-async function* convertLASMeshBatches(
-  tableBatches: AsyncIterable<LASArrowTable>,
-  options?: LASLoaderOptions
-): AsyncIterable<LASMesh | MeshArrowTable> {
-  for await (const table of tableBatches) {
-    yield convertLASMesh(table, options);
-  }
-}
+} as const satisfies Loader<LASMesh, never, LASLoaderOptions>;

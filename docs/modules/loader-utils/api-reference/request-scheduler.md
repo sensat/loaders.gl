@@ -1,46 +1,6 @@
----
-title: RequestScheduler
-description: Queue and reprioritize outstanding resource requests without flooding browser connections or service endpoints.
-hide_title: true
-page_style: designed
----
+# Request Scheduler
 
-import {DocPageHeader} from '@site/src/components/docs/doc-page-header';
-import {DocOrientation, ReferenceBoundary} from '@site/src/components/docs/designed-doc';
-
-<DocPageHeader
-  eyebrow="Loader utilities / request scheduling"
-  title="Control when outstanding work gets a network slot."
-  description="RequestScheduler does not fetch resources itself. It coordinates the moment an application is allowed to issue a request, and it can reevaluate priority as the camera, viewport, or application state changes."
-  tone="orange"
-  meta={['Concurrency limits', 'Dynamic priorities', 'Cancellation-aware']}
-  links={[
-    {label: 'Loader utilities', to: '/docs/modules/loader-utils'},
-    {label: '3D Tiles priorities', to: '/docs/modules/3d-tiles/concepts/request-scheduling-and-priorities'},
-    {label: 'Request cache', to: '/docs/modules/loader-utils/api-reference/request-cache'}
-  ]}
-/>
-
-<DocOrientation
-  eyebrow="Request coordination"
-  title="Issue many requests without issuing them all at once."
-  description="Applications can describe work immediately, then let the scheduler decide which request starts when capacity is available. Priority callbacks are reevaluated as pending work and application state change."
-  tone="orange"
-  items={[
-    {label: 'Queue', value: 'Register work that is ready to be issued.'},
-    {label: 'Limit', value: 'Keep active requests within a configured concurrency.'},
-    {label: 'Prioritize', value: 'Reevaluate outstanding work when a slot opens.'},
-    {label: 'Complete', value: 'Release the token so the next queued request can proceed.'}
-  ]}
-/>
-
-<ReferenceBoundary
-  title="RequestScheduler reference"
-  description="The detailed reference covers construction, scheduling tokens, priority callbacks, throttling, cancellation, and completion lifecycle."
-  tone="orange"
-/>
-
-<p className="badges">
+<p class="badges">
   <img src="https://img.shields.io/badge/From-v2.2-blue.svg?style=flat-square" alt="From-v2.2" /> 
 </p>
 
@@ -98,20 +58,6 @@ Returns a promise that
 - resolves to an object (with a `done` field) when the request can be issued without queueing. The application should issue the request and call `done()` when completed.
 - resolves to `null` if the request has been cancelled (by the callback return < 0).
   In this case the application should not issue the request.
-
-### `setProps(props: object): void`
-
-Updates scheduler properties without recreating the instance. This preserves active and queued requests.
-
-Parameters:
-
-- `throttleRequests`?: boolean — Whether to throttle requests
-- `maxRequests`?: number — Maximum concurrent requests
-- `debounceTime`?: number — Debounce time in milliseconds
-
-Note: The `id` property cannot be updated after construction as it's tied to the stats tracker.
-
-This is useful when you need to dynamically adjust throttling behavior, for example during a transition when otherwise many tile requests would be issued.
 
 ## About Request Priorities
 

@@ -1,6 +1,6 @@
 {
   "name": "@loaders.gl/gltf",
-  "version": "5.0.0-alpha.5",
+  "version": "4.3.3",
   "description": "Framework-independent loader for the glTF format",
   "license": "MIT",
   "type": "module",
@@ -28,29 +28,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    },
-    "./schema": {
-      "types": "./dist/schema.d.ts",
-      "import": "./dist/schema.js"
-    },
-    "./unbundled": {
-      "types": "./dist/unbundled.d.ts",
-      "import": "./dist/unbundled.js"
-    },
-    "./bundled": {
-      "types": "./dist/bundled.d.ts",
-      "import": "./dist/bundled.js"
-    },
-    "./mesh-arrow": {
-      "types": "./dist/mesh-arrow.d.ts",
-      "import": "./dist/mesh-arrow.js"
-    },
-    "./gltf.schema.json": "./dist/gltf.schema.json",
-    "./gltf-1.schema.json": "./dist/gltf-1.schema.json",
-    "./gltf-2.schema.json": "./dist/gltf-2.schema.json",
-    "./gltf-2.1.schema.json": "./dist/gltf-2.1.schema.json",
-    "./gltf-all.schema.json": "./dist/gltf-all.schema.json",
-    "./schemas/*": "./dist/schemas/*"
+    }
   },
   "sideEffects": false,
   "files": [
@@ -60,26 +38,20 @@
     "README.md"
   ],
   "scripts": {
-    "pre-build": "npm run generate-json-schema && npm run build-bundle && npm run build-bundle-dev",
-    "generate-json-schema": "node scripts/generate-json-schema.mjs",
-    "update-official-schemas": "node scripts/update-official-schemas.mjs",
+    "pre-build": "npm run build-bundle && npm run build-bundle-dev",
     "build-bundle": "ocular-bundle ./bundle.ts --output=dist/dist.min.js",
     "build-bundle-dev": "ocular-bundle ./bundle.ts --env=dev --output=dist/dist.dev.js"
   },
   "dependencies": {
-    "@loaders.gl/draco": "5.0.0-alpha.5",
-    "@loaders.gl/images": "5.0.0-alpha.5",
-    "@loaders.gl/loader-utils": "5.0.0-alpha.5",
-    "@loaders.gl/schema": "5.0.0-alpha.5",
-    "@loaders.gl/schema-utils": "5.0.0-alpha.5",
-    "@loaders.gl/textures": "5.0.0-alpha.5",
-    "@math.gl/core": "5.0.0-alpha.5",
-    "@math.gl/culling": "5.0.0-alpha.5",
-    "meshoptimizer": "^1.2.0",
-    "zod": "^4.1.12"
+    "@loaders.gl/draco": "4.3.3",
+    "@loaders.gl/images": "4.3.3",
+    "@loaders.gl/loader-utils": "4.3.3",
+    "@loaders.gl/schema": "4.3.3",
+    "@loaders.gl/textures": "4.3.3",
+    "@math.gl/core": "^4.1.0"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "~5.0.0-alpha.0"
+    "@loaders.gl/core": "^4.3.0"
   },
-  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
+  "gitHead": "3213679d79e6ff2814d48fd3337acfa446c74099"
 }

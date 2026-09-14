@@ -1,7 +1,3 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
 // OBJ Loader, adapted from THREE.js (MIT license)
 //
 // Attributions per original THREE.js source file:
@@ -407,8 +403,7 @@ export function parseOBJMeshes(text) {
       const pointData = lineData.split(' ');
 
       state.addPointGeometry(pointData);
-    } else if (OBJECT_RE.test(line)) {
-      result = OBJECT_RE.exec(line) || [];
+    } else if ((result = OBJECT_RE.exec(line)) !== null) {
       // o object_name
       // or
       // g group_name

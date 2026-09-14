@@ -1,13 +1,14 @@
-// loaders.gl
-// SPDX-License-Identifier: MIT
-// Copyright (c) vis.gl contributors
-
-import {expect, test} from 'vitest';
+/* eslint-disable camelcase */
+/* eslint-disable max-len */
+import test from 'tape-promise/tape';
 import {validateWriter} from 'test/common/conformance';
+
 import {parse, encodeSync, encode, load} from '@loaders.gl/core';
 import {GLTFLoader, GLTFWriter, GLTFScenegraph, postProcessGLTF} from '@loaders.gl/gltf';
 import {ImageWriter} from '@loaders.gl/images';
+
 const GLTF_BINARY_URL = '@loaders.gl/gltf/test/data/3d-tiles/143.glb';
+
 const EXTRA_DATA = {extraData: 1};
 const APP_DATA = {vizData: 2};
 const EXTENSION_DATA_1 = {extData: 3};
@@ -16,33 +17,46 @@ const REQUIRED_EXTENSION_1 = 'UBER_extension_1';
 const REQUIRED_EXTENSION_2 = 'UBER_extension_2';
 const USED_EXTENSION_1 = 'UBER_extension_3';
 const USED_EXTENSION_2 = 'UBER_extension_4';
-test('GLTFWriter#loader conformance', () => {
-  validateWriter(GLTFWriter, 'GLTFWriter');
+
+test('GLTFWriter#loader conformance', (t) => {
+  validateWriter(t, GLTFWriter, 'GLTFWriter');
+  t.end();
 });
-test('GLTFWriter#encode', async () => {
+
+test('GLTFWriter#encode', async (t) => {
   const gltfBuilder = new GLTFScenegraph();
   gltfBuilder.addApplicationData('viz', APP_DATA);
   gltfBuilder.addExtraData('test', EXTRA_DATA);
+
   gltfBuilder.registerUsedExtension(USED_EXTENSION_1);
   gltfBuilder.registerRequiredExtension(REQUIRED_EXTENSION_1);
   gltfBuilder.addExtension(USED_EXTENSION_2, EXTENSION_DATA_1);
   gltfBuilder.addRequiredExtension(REQUIRED_EXTENSION_2, EXTENSION_DATA_2);
+
   const arrayBuffer = encodeSync(gltfBuilder.gltf, GLTFWriter);
+
   const gltf = await parse(arrayBuffer, GLTFLoader);
   const gltfScenegraph = new GLTFScenegraph(gltf);
+
   const appData = gltfScenegraph.getApplicationData('viz');
   const extraData = gltfScenegraph.getExtraData('test');
-  expect(appData, 'usedExtensions was found').toBeTruthy();
-  expect(extraData, 'extraData was found').toBeTruthy();
+
+  t.ok(appData, 'usedExtensions was found');
+  t.ok(extraData, 'extraData was found');
+
   const usedExtensions = gltfScenegraph.getUsedExtensions();
   const requiredExtensions = gltfScenegraph.getRequiredExtensions();
   const extension1 = gltfScenegraph.getExtension(USED_EXTENSION_2);
   const extension2 = gltfScenegraph.getExtension(REQUIRED_EXTENSION_2);
-  expect(usedExtensions, 'usedExtensions was found').toBeTruthy();
-  expect(requiredExtensions, 'requiredExtensions was found').toBeTruthy();
-  expect(extension1, 'extension1 was found').toBeTruthy();
-  expect(extension2, 'extension2 was found').toBeTruthy();
+
+  t.ok(usedExtensions, 'usedExtensions was found');
+  t.ok(requiredExtensions, 'requiredExtensions was found');
+  t.ok(extension1, 'extension1 was found');
+  t.ok(extension2, 'extension2 was found');
+
+  t.end();
 });
+
 const gltfWithExtension = {
   json: {
     asset: {version: '1'},
@@ -69,6 +83,7 @@ const gltfWithExtension = {
     ]
   }
 };
+
 const gltfJsonWithExtensionEncodedExpected = {
   asset: {
     version: '1'
@@ -119,6 +134,7 @@ const gltfJsonWithExtensionEncodedExpected = {
     }
   ]
 };
+
 const arrayBufferExpected = new Uint8Array([
   103, 108, 84, 70, 2, 0, 0, 0, 200, 1, 0, 0, 144, 1, 0, 0, 74, 83, 79, 78, 123, 34, 97, 115, 115,
   101, 116, 34, 58, 123, 34, 118, 101, 114, 115, 105, 111, 110, 34, 58, 34, 49, 34, 125, 44, 34,
@@ -142,16 +158,21 @@ const arrayBufferExpected = new Uint8Array([
   116, 104, 34, 58, 50, 56, 125, 93, 125, 32, 32, 28, 0, 0, 0, 66, 73, 78, 0, 4, 0, 0, 0, 4, 0, 0,
   0, 4, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0
 ]).buffer;
-test('GLTFWriter#encode with extensions', async () => {
+
+test('GLTFWriter#encode with extensions', async (t) => {
   const gltfBuilder = new GLTFScenegraph(gltfWithExtension);
   const arrayBuffer = encodeSync(gltfBuilder.gltf, GLTFWriter);
-  expect(gltfBuilder.gltf.json).toEqual(gltfJsonWithExtensionEncodedExpected);
-  expect(arrayBuffer).toEqual(arrayBufferExpected);
+  t.deepEqual(gltfBuilder.gltf.json, gltfJsonWithExtensionEncodedExpected);
+  t.deepEqual(arrayBuffer, arrayBufferExpected);
+
+  t.end();
 });
-test('GLTFWriter#Should build a GLTF object with GLTFScenegraph builder functions', async () => {
+
+test('GLTFWriter#Should build a GLTF object with GLTFScenegraph builder functions', async (t) => {
   const gltfWithBuffers = await load(GLTF_BINARY_URL, GLTFLoader);
   const inputData = postProcessGLTF(gltfWithBuffers);
   const gltfBuilder = new GLTFScenegraph();
+
   const meshIndex = gltfBuilder.addMesh({attributes: inputData.meshes[0].primitives[0].attributes});
   const nodeIndex = gltfBuilder.addNode({meshIndex});
   const sceneIndex = gltfBuilder.addScene({nodeIndices: [nodeIndex]});
@@ -169,48 +190,69 @@ test('GLTFWriter#Should build a GLTF object with GLTFScenegraph builder function
     };
     gltfBuilder.addMaterial(pbrMaterialInfo);
   }
+
   gltfBuilder.createBinaryChunk();
-  checkJson(gltfBuilder);
+
+  checkJson(t, gltfBuilder);
+
   const gltfBuffer = encodeSync(gltfBuilder.gltf, GLTFWriter);
+
   const gltf = await parse(gltfBuffer, GLTFLoader);
-  checkJson(new GLTFScenegraph(gltf));
+
+  checkJson(t, new GLTFScenegraph(gltf));
+  t.end();
 });
-test('GLTFWriter#should write extra data to binary chunk', async () => {
+
+test('GLTFWriter#should write extra data to binary chunk', async (t) => {
   const gltfWithBuffers1 = await load(GLTF_BINARY_URL, GLTFLoader);
   const inputData = postProcessGLTF(gltfWithBuffers1);
+
   const gltfWithBuffers2 = await load(GLTF_BINARY_URL, GLTFLoader, {
     gltf: {decompressMeshes: false}
   });
   const gltfScenegraph = new GLTFScenegraph(gltfWithBuffers2);
+
   const meshIndex = gltfScenegraph.addMesh({
     attributes: inputData.meshes[0].primitives[0].attributes
   });
-  expect(meshIndex).toBe(1);
+
+  t.equal(meshIndex, 1);
+
   gltfScenegraph.createBinaryChunk();
-  expect(gltfScenegraph.gltf.json.meshes?.[0].primitives[0]).toBeTruthy();
-  expect(
+
+  t.ok(gltfScenegraph.gltf.json.meshes?.[0].primitives[0]);
+  t.equal(
     gltfScenegraph.gltf.json.meshes?.[0].primitives[0].attributes.POSITION,
+    1,
     'Input data should not be parsed'
-  ).toBe(1);
+  );
+
   // Encode to buffer
   const gltfBuffer = encodeSync(gltfScenegraph.gltf, GLTFWriter);
+
   // Now parse the generated buffer
   const gltfWithBuffers3 = await parse(gltfBuffer, GLTFLoader);
   const gltf = postProcessGLTF(gltfWithBuffers3);
-  expect(gltf).toBeTruthy();
-  expect(gltf.meshes[1]).toBeTruthy();
-  expect(gltf.meshes[1].primitives[0].attributes.POSITION.value.byteLength).toBe(
+
+  t.ok(gltf);
+  t.ok(gltf.meshes[1]);
+  t.equal(
+    gltf.meshes[1].primitives[0].attributes.POSITION.value.byteLength,
     inputData.meshes[0].primitives[0].attributes.POSITION.value.byteLength
   );
-  expect(gltf.meshes[0]).toBeTruthy();
+  t.ok(gltf.meshes[0]);
+  t.end();
 });
-test('GLTFWriter#should write extra data to binary chunk twice', async () => {
+
+test('GLTFWriter#should write extra data to binary chunk twice', async (t) => {
   const gltfWithBuffers = await load(GLTF_BINARY_URL, GLTFLoader);
   const inputData = postProcessGLTF(gltfWithBuffers);
+
   const data = await load(GLTF_BINARY_URL, GLTFLoader, {
     gltf: {decompressMeshes: false}
   });
   const gltfScenegraph = new GLTFScenegraph(data);
+
   gltfScenegraph.addMesh({
     attributes: {positions: inputData.meshes[0].primitives[0].attributes.POSITION}
   });
@@ -218,30 +260,42 @@ test('GLTFWriter#should write extra data to binary chunk twice', async () => {
   const imageBuffer = await encode(inputData.images?.[0]?.image, ImageWriter);
   gltfScenegraph.addImage(imageBuffer, 'image/jpeg');
   gltfScenegraph.createBinaryChunk();
-  expect(gltfScenegraph).toBeTruthy();
+  t.ok(gltfScenegraph);
+
   const gltfBuffer = encodeSync(gltfScenegraph.gltf, GLTFWriter);
+
   const gltfWithBuffers2 = await parse(gltfBuffer, GLTFLoader);
   const gltf = postProcessGLTF(gltfWithBuffers2);
-  expect(gltf).toBeTruthy();
-  expect(gltf.meshes[1]).toBeTruthy();
-  expect(gltf.meshes[1].primitives[0].attributes.POSITION.value.byteLength).toBe(
+
+  t.ok(gltf);
+  t.ok(gltf.meshes[1]);
+  t.equal(
+    gltf.meshes[1].primitives[0].attributes.POSITION.value.byteLength,
     inputData.meshes[0].primitives[0].attributes.POSITION.value.byteLength
   );
-  expect(gltf.images[2]).toBeTruthy();
+
+  t.ok(gltf.images[2]);
+  t.end();
 });
-function checkJson(gltfBuilder) {
-  expect(gltfBuilder).toBeTruthy();
-  expect(gltfBuilder.json).toBeTruthy();
-  expect(gltfBuilder.json.accessors).toBeTruthy();
-  expect(gltfBuilder.json.accessors.length).toBe(2);
-  expect(gltfBuilder.json.buffers[0]).toBeTruthy();
-  expect(gltfBuilder.json.buffers[0].byteLength).toBe(383372);
-  expect(gltfBuilder.json.bufferViews).toBeTruthy();
-  expect(gltfBuilder.json.bufferViews.length).toBe(3);
-  expect(gltfBuilder.json.images[0]).toBeTruthy();
-  expect(gltfBuilder.json.images[0]).toEqual({bufferView: 2, mimeType: 'image/jpeg'});
-  expect(gltfBuilder.json.meshes).toBeTruthy();
-  expect(gltfBuilder.json.meshes[0]).toEqual({
+
+function checkJson(t, gltfBuilder) {
+  t.ok(gltfBuilder);
+  t.ok(gltfBuilder.json);
+  t.ok(gltfBuilder.json.accessors);
+  t.equal(gltfBuilder.json.accessors.length, 2);
+
+  t.ok(gltfBuilder.json.buffers[0]);
+
+  t.equal(gltfBuilder.json.buffers[0].byteLength, 383372);
+
+  t.ok(gltfBuilder.json.bufferViews);
+  t.equal(gltfBuilder.json.bufferViews.length, 3);
+
+  t.ok(gltfBuilder.json.images[0]);
+  t.deepEqual(gltfBuilder.json.images[0], {bufferView: 2, mimeType: 'image/jpeg'});
+
+  t.ok(gltfBuilder.json.meshes);
+  t.deepEqual(gltfBuilder.json.meshes[0], {
     primitives: [{attributes: {POSITION: 0, TEXCOORD_0: 1}, mode: 4}]
   });
 }

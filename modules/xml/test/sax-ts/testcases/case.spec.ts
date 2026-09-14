@@ -1,9 +1,14 @@
-// SPDX-License-Identifier: ISC
-import {test} from 'vitest';
+// loaders.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
+// Forked from sax-ts & sax under ISC license
+
+import test from 'tape-promise/tape';
 import {testSax} from '../utils/test-utils';
+
 // default to uppercase
-test('SAXParser#case', () => {
-  testSax({
+test('SAXParser#case', (t) => {
+  testSax(t, {
     xml: '<span class="test" hello="world"></span>',
     expect: [
       [
@@ -29,8 +34,9 @@ test('SAXParser#case', () => {
       strict: false
     }
   });
+
   // lowercase option : lowercase tag/attribute names
-  testSax({
+  testSax(t, {
     xml: '<span class="test" hello="world"></span>',
     expect: [
       [
@@ -57,8 +63,9 @@ test('SAXParser#case', () => {
       lowercase: true
     }
   });
+
   // backward compatibility with old lowercasetags opt
-  testSax({
+  testSax(t, {
     xml: '<span class="test" hello="world"></span>',
     expect: [
       [
@@ -84,4 +91,6 @@ test('SAXParser#case', () => {
       lowercasetags: true
     }
   });
+
+  t.end();
 });

@@ -3,6 +3,6 @@
 // Copyright (c) vis.gl contributors
 
 import {createLoaderWorker} from '@loaders.gl/loader-utils';
-import {QuantizedMeshLoaderWithParser} from '../quantized-mesh-loader-with-parser';
+import {QuantizedMeshLoader} from '../index';
 
-createLoaderWorker(QuantizedMeshLoaderWithParser);
+createLoaderWorker(QuantizedMeshLoader);

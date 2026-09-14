@@ -3,14 +3,7 @@
 // Copyright (c) vis.gl contributors
 // Copyright 2022 Foursquare Labs, Inc.
 
-import {GeometryConverter} from '@loaders.gl/gis';
-import type {Feature, Geometry, Table} from '@loaders.gl/schema';
-import {
-  convert,
-  getTableLength,
-  getTableNumCols,
-  getTableRowAsArray
-} from '@loaders.gl/schema-utils';
+import {Table, getTableLength, getTableNumCols, getTableRowAsArray} from '@loaders.gl/schema';
 
 type Row = {[key: string]: unknown};
 
@@ -24,7 +17,7 @@ export function detectGeometryColumnIndex(table: Table): number {
   // TODO - look for hints in schema metadata
 
   // look for a column named geometry
-  const geometryIndex = table.schema?.fields.findIndex(field => field.name === 'geometry') ?? -1;
+  const geometryIndex = table.schema?.fields.findIndex((field) => field.name === 'geometry') ?? -1;
   if (geometryIndex > -1) {
     return geometryIndex;
   }
@@ -35,44 +28,13 @@ export function detectGeometryColumnIndex(table: Table): number {
     const row = getTableRowAsArray(table, 0);
     for (let columnIndex = 0; columnIndex < getTableNumCols(table); columnIndex++) {
       const value = row?.[columnIndex];
-      if (
-        value &&
-        (typeof value === 'object' ||
-          (typeof value === 'string' && parseGeometryString(value) !== null))
-      ) {
+      if (value && typeof value === 'object') {
         return columnIndex;
       }
     }
   }
 
   throw new Error('Failed to detect geometry column');
-}
-
-/**
- * Parses a GeoJSON- or WKT-encoded geometry string.
- * @param value String containing a GeoJSON feature/geometry or WKT geometry.
- * @returns The parsed feature or geometry, or `null` when the string is not a supported geometry.
- */
-export function parseGeometryString(value: string): Feature | Geometry | null {
-  let parsedValue: unknown;
-  try {
-    parsedValue = JSON.parse(value);
-  } catch {
-    try {
-      parsedValue = convert(value, 'geojson-geometry', GeometryConverter);
-    } catch {
-      return null;
-    }
-  }
-
-  return isFeatureOrGeometry(parsedValue) ? parsedValue : null;
-}
-
-/** Returns whether a value looks like a GeoJSON feature or geometry. */
-function isFeatureOrGeometry(value: unknown): value is Feature | Geometry {
-  return (
-    typeof value === 'object' && value !== null && 'type' in value && typeof value.type === 'string'
-  );
 }
 
 /**
