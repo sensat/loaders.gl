@@ -145,6 +145,14 @@ export class Tile3D {
   _replacedTileId?: string;
 
   /**
+   * Indicates whether the tile has been drawn by the renderer.
+   * Defaults to true for backwards compatibility — renderers that support
+   * transition hold (e.g. deck.gl 9.3+) should set this to false on tile load,
+   * then back to true after first draw to avoid flashes (see deck.gl #7914).
+   */
+  tileDrawn: boolean = true;
+
+  /**
    * @constructs
    * Create a Tile3D instance
    * @param tileset - Tileset3D instance
@@ -416,14 +424,15 @@ export class Tile3D {
       const contentUrl = this.tileset.getTileUrl(this.contentUrl);
       // The content can be a binary tile ot a JSON tileset
       const loader = this.tileset.loader;
+      const tilesetLoaderOptions =
+        (this.tileset.loadOptions[loader.id] as Record<string, unknown>) || {};
       const options = {
         ...this.tileset.loadOptions,
         [loader.id]: {
-          // @ts-expect-error
-          ...this.tileset.loadOptions[loader.id],
+          ...tilesetLoaderOptions,
           isTileset: this.type === 'json',
           ...this._getLoaderSpecificOptions(loader.id)
-        }
+        } // TODO add typecheck - as const satisfies ...
       };
 
       this.content = await load(contentUrl, loader, options);
@@ -462,6 +471,7 @@ export class Tile3D {
     }
     this.header.content = null;
     this.contentState = TILE_CONTENT_STATE.UNLOADED;
+    this.tileDrawn = true;
     return true;
   }
 

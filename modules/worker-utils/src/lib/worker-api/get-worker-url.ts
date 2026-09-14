@@ -9,7 +9,8 @@
 import type {WorkerObject, WorkerOptions} from '../../types';
 import {assert} from '../env-utils/assert';
 import {isBrowser} from '../env-utils/globals';
-import {VERSION, NPM_TAG} from '../env-utils/version';
+import {VERSION} from '../env-utils/version';
+import {NPM_TAG} from '../npm-tag';
 
 /**
  * Gets worker object's name (for debugging in Chrome thread inspector window)
@@ -45,7 +46,8 @@ export function getWorkerURL(worker: WorkerObject, options: WorkerOptions = {}):
 
   // If URL is test, generate local loaders.gl url
   // @ts-ignore _workerType
-  if (options._workerType === 'test') {
+  const workerType = (options as any)._workerType || (options as any)?.core?._workerType;
+  if (workerType === 'test') {
     if (isBrowser) {
       url = `modules/${worker.module}/dist/${workerFile}`;
     } else {

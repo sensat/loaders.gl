@@ -25,7 +25,7 @@ import type {
   DracoOctahedronTransform
 } from './draco-types';
 
-import {getMeshBoundingBox} from '@loaders.gl/schema';
+import {getMeshBoundingBox} from '@loaders.gl/schema-utils';
 import {getDracoSchema} from './utils/get-draco-schema';
 
 /** Options to control draco parsing */
@@ -257,6 +257,7 @@ export default class DracoParser {
         case 'triangle-strip':
           return {
             topology: 'triangle-strip',
+            // TODO - mode is wrong?
             mode: 4, // GL.TRIANGLES
             attributes,
             indices: {
@@ -268,6 +269,7 @@ export default class DracoParser {
         default:
           return {
             topology: 'triangle-list',
+            // TODO - mode is wrong?
             mode: 5, // GL.TRIANGLE_STRIP
             attributes,
             indices: {

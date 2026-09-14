@@ -2,15 +2,17 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import {
-  DataViewFile,
-  FileProviderInterface,
-  compareArrayBuffers,
-  concatenateArrayBuffers
-} from '@loaders.gl/loader-utils';
+import {compareArrayBuffers, concatenateArrayBuffers} from '@loaders.gl/loader-utils';
+import type {ReadableFile} from '@loaders.gl/loader-utils';
 import {parseEoCDRecord} from './end-of-central-directory';
 import {ZipSignature} from './search-from-the-end';
 import {createZip64Info, setFieldToNumber} from './zip64-info-generation';
+import {
+  DataViewReadableFile,
+  getReadableFileSize,
+  readDataView,
+  readRange
+} from './readable-file-utils';
 
 /**
  * zip central directory file header info
@@ -55,6 +57,7 @@ const CD_EXTRA_FIELD_LENGTH_OFFSET = 30;
 const CD_START_DISK_OFFSET = 32;
 const CD_LOCAL_HEADER_OFFSET_OFFSET = 42;
 const CD_FILE_NAME_OFFSET = 46n;
+const ZIP64_EXTRA_FIELD_ID = 0x0001;
 
 export const signature: ZipSignature = new Uint8Array([0x50, 0x4b, 0x01, 0x02]);
 
@@ -66,14 +69,13 @@ export const signature: ZipSignature = new Uint8Array([0x50, 0x4b, 0x01, 0x02]);
  */
 export const parseZipCDFileHeader = async (
   headerOffset: bigint,
-  file: FileProviderInterface
+  file: ReadableFile
 ): Promise<ZipCDFileHeader | null> => {
-  if (headerOffset >= file.length) {
+  const fileLength = await getReadableFileSize(file);
+  if (headerOffset >= fileLength) {
     return null;
   }
-  const mainHeader = new DataView(
-    await file.slice(headerOffset, headerOffset + CD_FILE_NAME_OFFSET)
-  );
+  const mainHeader = await readDataView(file, headerOffset, headerOffset + CD_FILE_NAME_OFFSET);
 
   const magicBytes = mainHeader.buffer.slice(0, 4);
   if (!compareArrayBuffers(magicBytes, signature.buffer)) {
@@ -86,7 +88,8 @@ export const parseZipCDFileHeader = async (
   const startDisk = BigInt(mainHeader.getUint16(CD_START_DISK_OFFSET, true));
   const fileNameLength = mainHeader.getUint16(CD_FILE_NAME_LENGTH_OFFSET, true);
 
-  const additionalHeader = await file.slice(
+  const additionalHeader = await readRange(
+    file,
     headerOffset + CD_FILE_NAME_OFFSET,
     headerOffset + CD_FILE_NAME_OFFSET + BigInt(fileNameLength + extraFieldLength)
   );
@@ -124,14 +127,14 @@ export const parseZipCDFileHeader = async (
 
 /**
  * Create iterator over files of zip archive
- * @param fileProvider - file provider that provider random access to the file
+ * @param fileProvider - readable file that provides random access to the file
  */
 export async function* makeZipCDHeaderIterator(
-  fileProvider: FileProviderInterface
+  fileProvider: ReadableFile
 ): AsyncIterable<ZipCDFileHeader> {
   const {cdStartOffset, cdByteSize} = await parseEoCDRecord(fileProvider);
-  const centralDirectory = new DataViewFile(
-    new DataView(await fileProvider.slice(cdStartOffset, cdStartOffset + cdByteSize))
+  const centralDirectory = new DataViewReadableFile(
+    new DataView(await readRange(fileProvider, cdStartOffset, cdStartOffset + cdByteSize))
   );
   let cdHeader = await parseZipCDFileHeader(0n, centralDirectory);
   while (cdHeader) {
@@ -142,14 +145,6 @@ export async function* makeZipCDHeaderIterator(
     );
   }
 }
-/**
- * returns the number written in the provided bytes
- * @param bytes two bytes containing the number
- * @returns the number written in the provided bytes
- */
-const getUint16 = (...bytes: [number, number]) => {
-  return bytes[0] + bytes[1] * 16;
-};
 
 /**
  * reads all nesessary data from zip64 record in the extra data
@@ -165,19 +160,27 @@ const findZip64DataInExtra = (zip64data: Zip64Data, extraField: DataView): Parti
   if (zip64dataList.length > 0) {
     // total length of data in zip64 notation in bytes
     const zip64chunkSize = zip64dataList.reduce((sum, curr) => sum + curr.length, 0);
-    // we're looking for the zip64 nontation header (0x0001)
-    // and a size field with a correct value next to it
-    const offsetInExtraData = new Uint8Array(extraField.buffer).findIndex(
-      (_val, i, arr) =>
-        getUint16(arr[i], arr[i + 1]) === 0x0001 &&
-        getUint16(arr[i + 2], arr[i + 3]) === zip64chunkSize
-    );
-    // then we read all the nesessary fields from the zip64 data
-    let bytesRead = 0;
-    for (const note of zip64dataList) {
-      const offset = bytesRead;
-      zip64DataRes[note.name] = extraField.getBigUint64(offsetInExtraData + 4 + offset, true);
-      bytesRead = offset + note.length;
+    let offset = 0;
+    while (offset + 4 <= extraField.byteLength) {
+      const headerId = extraField.getUint16(offset, true);
+      const dataSize = extraField.getUint16(offset + 2, true);
+      const payloadStart = offset + 4;
+      if (payloadStart + dataSize > extraField.byteLength) {
+        break;
+      }
+      if (headerId === ZIP64_EXTRA_FIELD_ID && dataSize === zip64chunkSize) {
+        let bytesRead = 0;
+        for (const note of zip64dataList) {
+          const fieldOffset = payloadStart + bytesRead;
+          if (fieldOffset + 8 > payloadStart + dataSize) {
+            break;
+          }
+          zip64DataRes[note.name] = extraField.getBigUint64(fieldOffset, true);
+          bytesRead += note.length;
+        }
+        break;
+      }
+      offset = payloadStart + dataSize;
     }
   }
 

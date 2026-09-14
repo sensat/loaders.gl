@@ -3,8 +3,13 @@
 // Copyright (c) vis.gl contributors
 
 // import type {Feature} from '@loaders.gl/gis';
-import {LoaderContext, parseInBatchesFromContext, parseFromContext} from '@loaders.gl/loader-utils';
-import {binaryToGeometry, transformGeoJsonCoords} from '@loaders.gl/gis';
+import {
+  LoaderContext,
+  parseInBatchesFromContext,
+  parseFromContext,
+  toArrayBufferIterator
+} from '@loaders.gl/loader-utils';
+import {convertBinaryGeometryToGeometry, transformGeoJsonCoords} from '@loaders.gl/gis';
 import type {
   BinaryGeometry,
   Geometry,
@@ -34,7 +39,9 @@ interface ShapefileOutput {
  */
 // eslint-disable-next-line max-statements, complexity
 export async function* parseShapefileInBatches(
-  asyncIterator: AsyncIterable<ArrayBuffer> | Iterable<ArrayBuffer>,
+  asyncIterator:
+    | AsyncIterable<ArrayBufferLike | ArrayBufferView>
+    | Iterable<ArrayBufferLike | ArrayBufferView>,
   options?: ShapefileLoaderOptions,
   context?: LoaderContext
 ): AsyncIterable<ShapefileOutput> {
@@ -43,7 +50,7 @@ export async function* parseShapefileInBatches(
 
   // parse geometries
   const shapeIterable = await parseInBatchesFromContext(
-    asyncIterator,
+    toArrayBufferIterator(asyncIterator),
     SHPLoader,
     options,
     context!
@@ -61,7 +68,10 @@ export async function* parseShapefileInBatches(
       DBFLoader,
       {
         ...options,
-        dbf: {encoding: cpg || 'latin1'}
+        dbf: {
+          ...options?.dbf,
+          encoding: cpg || 'latin1'
+        }
       },
       context!
     );
@@ -147,12 +157,15 @@ export async function parseShapefile(
 
   const dbfResponse = await context?.fetch(replaceExtension(context?.url!, 'dbf'));
   if (dbfResponse?.ok) {
-    propertyTable = await parseFromContext(
-      dbfResponse as any,
-      DBFLoader,
-      {dbf: {shape: 'object-row-table', encoding: cpg || 'latin1'}},
-      context!
-    );
+    const dbfOptions = {
+      ...options,
+      dbf: {
+        ...options?.dbf,
+        shape: 'object-row-table',
+        encoding: cpg || 'latin1'
+      }
+    };
+    propertyTable = await parseFromContext(dbfResponse as any, DBFLoader, dbfOptions, context!);
   }
 
   let features = joinProperties(geojsonGeometries, propertyTable?.data || []);
@@ -193,7 +206,7 @@ export async function parseShapefile(
 function parseGeometries(geometries: BinaryGeometry[]): Geometry[] {
   const geojsonGeometries: any[] = [];
   for (const geom of geometries) {
-    geojsonGeometries.push(binaryToGeometry(geom));
+    geojsonGeometries.push(convertBinaryGeometryToGeometry(geom));
   }
   return geojsonGeometries;
 }

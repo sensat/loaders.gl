@@ -1,5 +1,4 @@
 import {load} from '@loaders.gl/core';
-import {getSupportedGPUTextureFormats, selectSupportedBasisFormat} from '@loaders.gl/textures';
 import {I3SNodePageLoader} from '../../i3s-node-page-loader';
 import {normalizeTileNonUrlData} from '../parsers/parse-i3s';
 import {getUrlWithToken, generateTilesetAttributeUrls} from '../utils/url-utils';
@@ -16,6 +15,20 @@ import {
   I3STileHeader,
   SceneLayer3D
 } from '../../types';
+
+const BROWSER_PREFIXES = ['', 'WEBKIT_', 'MOZ_'];
+const WEBGL_EXTENSIONS: Record<string, string> = {
+  /* eslint-disable camelcase */
+  WEBGL_compressed_texture_s3tc: 'dxt',
+  WEBGL_compressed_texture_s3tc_srgb: 'dxt-srgb',
+  WEBGL_compressed_texture_etc1: 'etc1',
+  WEBGL_compressed_texture_etc: 'etc2',
+  WEBGL_compressed_texture_pvrtc: 'pvrtc',
+  WEBGL_compressed_texture_atc: 'atc',
+  WEBGL_compressed_texture_astc: 'astc',
+  EXT_texture_compression_rgtc: 'rgtc'
+  /* eslint-enable camelcase */
+};
 
 /**
  * class I3SNodePagesTiles - loads nodePages and form i3s tiles from them
@@ -159,8 +172,8 @@ export default class I3SNodePagesTiles {
     const geometryDefinition = this.tileset.geometryDefinitions[meshGeometryData.definition];
     let geometryIndex = -1;
     // Try to find DRACO geometryDefinition of `useDracoGeometry` option is set
-    // @ts-expect-error this.options is not properly typed
-    if (this.options.i3s && this.options.i3s.useDracoGeometry) {
+    const i3sOptions = this.options.i3s as Record<string, any> | undefined;
+    if (i3sOptions && typeof i3sOptions === 'object' && i3sOptions.useDracoGeometry) {
       geometryIndex = geometryDefinition.geometryBuffers.findIndex(
         (buffer) => buffer.compressedAttributes && buffer.compressedAttributes.encoding === 'draco'
       );
@@ -258,7 +271,6 @@ export default class I3SNodePagesTiles {
       // For I3S 1.8 need to define basis target format to decode
       if (selectedFormat && selectedFormat.format === 'ktx2') {
         this.textureLoaderOptions.basis = {
-          format: selectSupportedBasisFormat(),
           containerFormat: 'ktx2',
           module: 'encoder'
         };
@@ -274,8 +286,8 @@ export default class I3SNodePagesTiles {
    */
   private getSupportedTextureFormats(): I3STextureFormat[] {
     const formats: I3STextureFormat[] = [];
-    // @ts-expect-error this.options is not properly typed
-    if (!this.options.i3s || this.options.i3s.useCompressedTextures) {
+    const i3sOptions = this.options.i3s as Record<string, any> | undefined;
+    if (!i3sOptions || i3sOptions.useCompressedTextures) {
       // I3S 1.7 selection
       const supportedCompressedFormats = getSupportedGPUTextureFormats();
       // List of possible in i3s formats:
@@ -295,5 +307,29 @@ export default class I3SNodePagesTiles {
     formats.push('jpg');
     formats.push('png');
     return formats;
+  }
+}
+
+function getSupportedGPUTextureFormats(gl?: WebGLRenderingContext): Set<string> {
+  const formats = new Set<string>();
+  gl = gl || getWebGLContext() || undefined;
+
+  for (const prefix of BROWSER_PREFIXES) {
+    for (const extension in WEBGL_EXTENSIONS) {
+      if (gl && gl.getExtension(`${prefix}${extension}`)) {
+        formats.add(WEBGL_EXTENSIONS[extension]);
+      }
+    }
+  }
+
+  return formats;
+}
+
+function getWebGLContext() {
+  try {
+    const canvas = document.createElement('canvas');
+    return canvas.getContext('webgl');
+  } catch {
+    return null;
   }
 }

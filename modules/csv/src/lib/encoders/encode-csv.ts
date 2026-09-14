@@ -3,7 +3,8 @@
 // Copyright (c) vis.gl contributors
 // Copyright 2022 Foursquare Labs, Inc.
 
-import {Table, makeArrayRowIterator, getTableNumCols} from '@loaders.gl/schema';
+import type {Table} from '@loaders.gl/schema';
+import {makeArrayRowIterator, getTableNumCols} from '@loaders.gl/schema-utils';
 import {csvFormatRows} from 'd3-dsv';
 import type {CSVWriterOptions} from '../../csv-writer';
 
@@ -36,7 +37,10 @@ export function encodeTableAsCSV(
     formattedData.push(formattedRow);
   }
 
-  return csvFormatRows(formattedData);
+  // We represent missing values as '', leaving the option for the app to explicity represent 'null'.
+  const stringsOnly = formattedData.map((row) => row.map((value) => (value === null ? '' : value)));
+
+  return csvFormatRows(stringsOnly);
 }
 
 /**

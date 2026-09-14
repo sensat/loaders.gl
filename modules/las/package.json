@@ -1,6 +1,6 @@
 {
   "name": "@loaders.gl/las",
-  "version": "4.3.3",
+  "version": "4.5.1",
   "description": "Framework-independent loader for the LAS and LAZ formats",
   "license": "MIT",
   "type": "module",
@@ -28,6 +28,9 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./las-worker.js": {
+      "import": "./dist/las-worker.js"
     }
   },
   "sideEffects": false,
@@ -43,18 +46,20 @@
     "README.md"
   ],
   "scripts": {
-    "pre-build": "npm run build-bundle && npm run build-bundle-dev && npm run build-worker",
+    "pre-build": "npm run copy-wasm-files && npm run build-bundle && npm run build-bundle-dev && npm run build-worker",
+    "copy-wasm-files": "cp src/libs/laz-rs-wasm/*.wasm* dist/libs/laz-rs-wasm/",
     "build-bundle": "ocular-bundle ./bundle.ts --output=dist/dist.min.js",
     "build-bundle-dev": "ocular-bundle ./bundle.ts --env=dev --output=dist/dist.dev.js",
     "build-worker": "esbuild src/workers/las-worker.ts --bundle --outfile=dist/las-worker.js --define:__VERSION__=\\\"$npm_package_version\\\""
   },
   "dependencies": {
-    "@loaders.gl/loader-utils": "4.3.3",
-    "@loaders.gl/schema": "4.3.3",
+    "@loaders.gl/loader-utils": "4.5.1",
+    "@loaders.gl/schema": "4.5.1",
+    "@loaders.gl/schema-utils": "4.5.1",
     "laz-perf": "^0.0.6"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "^4.3.0"
+    "@loaders.gl/core": "~4.4.0"
   },
-  "gitHead": "3213679d79e6ff2814d48fd3337acfa446c74099"
+  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
 }

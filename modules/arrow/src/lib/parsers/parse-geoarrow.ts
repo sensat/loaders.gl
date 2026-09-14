@@ -2,10 +2,14 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) vis.gl contributors
 
-import type {GeoJSONTable, GeoJSONTableBatch} from '@loaders.gl/schema';
-import type {ArrowTable, ArrowTableBatch} from '../../schema/arrow-table-type';
+import type {
+  GeoJSONTable,
+  GeoJSONTableBatch,
+  ArrowTable,
+  ArrowTableBatch
+} from '@loaders.gl/schema';
 import {parseArrowSync, parseArrowInBatches} from './parse-arrow';
-import {convertArrowToTable} from '../tables/convert-arrow-to-table';
+import {convertGeoArrowToTable} from '@loaders.gl/gis';
 
 // Parses arrow to a columnar table
 export function parseGeoArrowSync(
@@ -16,7 +20,7 @@ export function parseGeoArrowSync(
   const table = parseArrowSync(arrayBuffer, {shape: 'arrow-table'}) as ArrowTable;
   switch (options?.shape) {
     case 'geojson-table':
-      return convertArrowToTable(table.data, 'geojson-table');
+      return convertGeoArrowToTable(table.data, 'geojson-table');
     default:
       return table;
   }
@@ -25,7 +29,9 @@ export function parseGeoArrowSync(
 /**
  */
 export function parseGeoArrowInBatches(
-  asyncIterator: AsyncIterable<ArrayBuffer> | Iterable<ArrayBuffer>
+  asyncIterator:
+    | AsyncIterable<ArrayBufferLike | ArrayBufferView>
+    | Iterable<ArrayBufferLike | ArrayBufferView>
 ): AsyncIterable<ArrowTableBatch | GeoJSONTableBatch> {
   // | BinaryGeometry
   return parseArrowInBatches(asyncIterator);

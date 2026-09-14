@@ -1,15 +1,87 @@
 # What's New
 
+## Next v4.5 patch
+
+- **@loaders.gl/arrow** - Backport public `IndexedArrowTable`, `IndexedArrowVector`,
+  `MappedArrowTable` and their callback types. These readonly views support filtering, sorting,
+  slicing and keyed lookup without eagerly copying the backing columns. See
+  [indexed views](/docs/modules/arrow/api-reference/indexed-arrow-table) and
+  [mapped views](/docs/modules/arrow/api-reference/mapped-arrow-table).
+
+## v4.5
+
+Release Date: Sep 7, 2026
+
+v4.5 adds experimental Gaussian splat and TypeScript Parquet support, Chrome Trace parsing, Mapbox/MapLibre style resolution, and glTF texture handling improvements.
+
+**Highlights**
+
+- **@loaders.gl/splats** - New loaders for raw SPLAT, KSPLAT, SPZ, and Spark RAD Gaussian-splat data. `RADSourceLoader` supports progressive chunk loading for paged RAD scenes.
+- **@loaders.gl/parquet** - New experimental `ParquetJSLoader` makes the TypeScript Parquet backend available through an explicit loader import.
+- **@loaders.gl/traces** - New `ChromeTraceLoader` parses Chrome Trace Event JSON as normalized JSON or Arrow tables. Streaming helpers support incremental event, Arrow-batch, and file parsing.
+- **@loaders.gl/mvt** - New [`MapStyleLoader`](/docs/modules/mvt/api-reference/map-style-loader) parses Mapbox/MapLibre style JSON, resolves relative source and TileJSON URLs, preserves metadata, and supports custom fetch and base URL options.
+- **@loaders.gl/gltf** - `KHR_texture_transform` now supports independent transforms on textures that share a UV attribute, and `GLTFLoader` selects `EXT_texture_avif` sources when AVIF is available.
+- **@loaders.gl/textures** - The experimental `CompressedTextureWriter` no longer installs `texture-compressor` for every consumer; applications that use the writer can opt in explicitly.
+
+The release also includes `KHR_meshopt_compression` support and portable `LINE_LOOP` / `TRIANGLE_FAN` normalization from v4.4.5.
+
+## v4.4
+
+Release Date: March 31, 2026
+
+**Highlights**
+
+- **@loaders.gl/mlt** - New [`MLTLoader`](/docs/modules/mlt/api-reference/mlt-loader) and [`MLTSource`](/docs/modules/mlt/api-reference/mlt-source) add support for the [`MapLibre Tile`](/docs/modules/mlt/formats/mlt) format, with a new [MLT website example](/examples/tiles/mlt).
+- **@loaders.gl/textures** - Texture loaders now return `TextureLevel` objects with explicit `shape`, `format`, and `textureFormat` fields, add manifest-driven [`TextureLoader`](/docs/modules/textures/api-reference/texture-loader), [`TextureArrayLoader`](/docs/modules/textures/api-reference/texture-array-loader), and [`TextureCubeLoader`](/docs/modules/textures/api-reference/texture-cube-loader), and support Radiance HDR textures through [`RadianceHDRLoader`](/docs/modules/textures/api-reference/radiance-hdr-loader).
+- **@loaders.gl/arrow** - Added support for `apache-arrow@21` and a new guide for [Using with Apache Arrow](/docs/developer-guide/apache-arrow).
+- **@loaders.gl/mvt** - New experimental [`MVTWriter`](/docs/modules/mvt/api-reference/mvt-writer) allows GeoJSON to be written in binary MVT tile format.
+
+**Minor Features**
+
+**All modules**
+
+- Pre-bundled workers now exported explicitly in each module's package.json `exports` section.
+
+**@loaders.gl/core**
+
+- [`LoaderOptions.core`](/docs/modules/core/api-reference/loader-options) - stronger type checks when options are supplied through the new `options.core` option sub-object.
+
+**@loaders.gl/gltf**
+
+- [`GLTFLoader`](/docs/modules/gltf/api-reference/gltf-loader) supports the release-candidate [`KHR_meshopt_compression`](/docs/modules/gltf/formats/gltf#meshopt-compression) extension, including version 1 attribute streams and the `COLOR` filter, while retaining `EXT_meshopt_compression` support.
+
+**@loaders.gl/compression**
+
+- `LZOCompression` was removed due to lack of maintenance and licensing concerns with the underlying `lzo-wasm` library.
+
+**@loaders.gl/shapefile**
+
+- `ShapefileLoader` - Now forwards `dbf` loader options (such as `workerUrl`) when loading sidecar files.
+
+**@loaders.gl/zip**
+
+- `ZipWriter` adds `options.zip.createFolders` to emit parent directory entries for nested file keys.
+
+**@loaders.gl/tile-converter**
+
+- `tile-converter` is now broken out into separate "application" and can be versioned and published independently.
+
+**Internal Changes**
+
+- **TypeScript** - TypeScript v5.9, stricter typings, `ArrayBuffer` -> `ArrayBufferLike` codebase migration.
+- **Website** - docusaurus@3.9. Website search.
+- **Tooling** - Bump to @vis.gl/dev-tools@1.0, GitHub CI optimizations, migrate from volta to corepack
+
 ## v4.3
 
 Release Date: October 16, 2024
 
 A minor release that includes:
 
-- **TypeScript** - Typecript v5.6.
+- **TypeScript** - TypeScript v5.6.
 - **Node.js** - Node.js v20 is now the primary supported Node.js version.
 - **Loader/Writer APIs** - Improved type inference for loader / writer options and return types.
-- **[`DataSource`](/docs/developer-guide/using-sources) API** Multi-step data loadingi mprovements. 
+- **[`DataSource`](/docs/developer-guide/using-sources) API** Multi-step data loadingi mprovements.
 - **Website** - Live examples are now available for more loaders / formats.
 - **Examples** - Migrated to React functional components. Minimized boilerplate code.
 
@@ -19,6 +91,7 @@ A minor release that includes:
 - `Writer` type inference improvements: `encode()`, `encodeSync()` and `encodeInBatches()` now infer correct option and data types matching the specified writer.
 - [`createDataSource`](/docs/modules/core/api-reference/create-data-source) - Create a `DataSource` from a list of `Source` objects.
 - [`selectSource`](/docs/modules/core/api-reference/select-source) - Select the appropriate `Source` from a list of `Source` objects.
+- Loader-wide options such as `fetch`, `worker`, `nothrow`, batching limits, etc. are now grouped under `options.core`, while the deprecated top-level aliases continue to work for backwards compatibility.
 
 **@loaders.gl/mvt**
 
@@ -30,7 +103,7 @@ A minor release that includes:
 
 **@loaders.gl/3d-tiles**
 
-- **3D Tiles 1.1 Writing** [`Tile3DWriter`](/docs/modules/3d-tiles/api-reference/tile3d-writer) now supports writing 3DTiles 1.1
+- **3D Tiles 1.1 Writing** [`Tile3DWriter`](/docs/modules/3d-tiles/api-reference/tile-3d-writer) now supports writing 3DTiles 1.1
 - **3D Tiles 1.1 Extensions** `EXT_mesh_features` and `EXT_structural_metadata` are now supported.
 
 **@loaders.gl/tile-converter**
@@ -47,7 +120,7 @@ Release Date: April 9, 2024
 A minor release that includes:
 
 - **deck.gl v9**: All [website examples](https://github.com/visgl/loaders.gl/tree/master/examples/website) updated to deck.gl v9.
-- **TypeScript**: Loader objects are typed via `as const satisfies`, preserving more type information. 
+- **TypeScript**: Loader objects are typed via `as const satisfies`, preserving more type information.
 - **TypeScript**: Loaders with workers now declare the `workerUrl` field in their `...LoaderOptions` types.
 - **Build tooling**: loaders.gl itself now builds ~10x faster via esbuild, and installs ~2x faster via yarn 4.
 
@@ -58,7 +131,7 @@ A minor release that includes:
 **@loaders.gl/pmtiles**
 
 - `PMTilesSource` - now uses [`pmtiles` version 3](https://github.com/protomaps/PMTiles/blob/main/js/CHANGELOG.md).
-- `PMTilesSource` - Now refreshes the already loaded index if the underlying PMTiles file being loaded from is changed. 
+- `PMTilesSource` - Now refreshes the already loaded index if the underlying PMTiles file being loaded from is changed.
 
 **@loaders.gl/parquet**
 
@@ -83,6 +156,7 @@ A minor release that includes:
 **@loaders.gl/gltf**
 
 - `GLTFLoader`: Support models with more complex use of `KHR_texture_transform` extension.
+- [`postProcessGLTF()`](/docs/modules/gltf/api-reference/post-process-gltf) expands WebGL-only `LINE_LOOP` and `TRIANGLE_FAN` primitives into portable indexed `LINES` and `TRIANGLES` without mutating the loaded source data.
 
 **@loaders.gl/las**
 
@@ -123,7 +197,7 @@ Release Date: February 6, 2024
 
 Release Date: Oct 30, 2023
 
-A major release that brings: 
+A major release that brings:
 
 - **Typed loaders** - The **`load()`** and **`parse()`** APIs now infer types from the supplied loader.
 - **Writers** - More writers for formats such as CSV, GeoJSON etc.
@@ -135,7 +209,7 @@ A major release that brings:
 - New [`PMTilesSource`](/docs/modules/pmtiles/api-reference/pmtiles-source) supports the [PMTiles](/docs/modules/pmtiles/formats/pmtiles) format.
 - New [PMTiles example](/examples/tiles/pmtiles).
 
-**@loaders.gl/parquet** 
+**@loaders.gl/parquet**
 
 - The [`ParquetLoader`](/docs/modules/parquet/api-reference/parquet-loader) now supports loading [GeoParquet](/docs/modules/parquet/formats/geoparquet) files.
 - New [GeoParquet example](/examples/geospatial/geoparquet).
@@ -166,7 +240,8 @@ A major release that brings:
 
 **@loaders.gl/zip**
 
-- `ZipArchive` - now enables file-by-file reads from large zip archives without loading the entire archive into memory (in Node.js).
+- `ZipFileSystem` and `IndexedArchive` enable file-by-file reads from large zip archives without loading the entire archive into memory (in Node.js).
+- `ZipWriter` adds `options.zip.createFolders` to emit parent directory entries for nested file keys.
 - Supports hash-info generation from Zip Central Directory Headers. Used in I3S Archive format (SLPK) and 3D Tiles Archive format (3TZ).
 
 **@loaders.gl/gltf**
@@ -181,7 +256,7 @@ A major release that brings:
 
 **@loaders.gl/arrow**
 
-- Now uses latest [`apache-arrow` v13](/docs/arrowjs/whats-new#v130). 
+- Now uses latest [`apache-arrow` v21](/docs/arrowjs/whats-new#v210).
 
 **@loaders.gl/draco**
 
@@ -193,7 +268,7 @@ A major release that brings:
 
 **@loaders.gl/core**
 
-- `fetchFile()` now supports fetching from local filesystem in Node.js 
+- `fetchFile()` now supports fetching from local filesystem in Node.js
 
 **@loaders.gl/schema**
 
@@ -244,7 +319,7 @@ A major release that brings:
 
 Release Date: May 16, 2023.
 
-*For patch releases, see [CHANGELOG](https://github.com/visgl/loaders.gl/blob/3.4-release/CHANGELOG.md).*
+_For patch releases, see [CHANGELOG](https://github.com/visgl/loaders.gl/blob/3.4-release/CHANGELOG.md)._
 
 **General Improvements**
 
@@ -287,19 +362,19 @@ Release Date: May 16, 2023.
 
 **@loaders.gl/wms**
 
-- [`WMSService`](modules/wms/api-reference/wms-service)
+- [`WMSService`](modules/wms/api-reference/wms-source)
   - WMS version 1.3.0 is now the default. When connecting to older servers, version dependent parameters, coordinate conventions etc are remapped under the hood.
   - HTTP Authentication: `loadOptions` now enables overriding fetch options, including supplying an HTTP `Authentication` header.
-  - Transparent rendering: The `transparent` prop is now  enabling requesting images that are transparent where there is no data.
+  - Transparent rendering: The `transparent` prop is now enabling requesting images that are transparent where there is no data.
   - Pre-specified parameters (`layers`, `crs` etc) can now be specified during construction, no longer need to repeatedly pass them to `getMap` etc methods.
 - [`WMSCapabilitiesLoader`](modules/wms/api-reference/wms-capabilities-loader)
   - Now handles version 1.3.0, and when loading older capabilities, fields and parameters that have changed across WMS versions are automatically remapped to 1.3.0 equivalents (`CRS` vs `SRS` etc).
   - Extracts more information (such as `version`, `abstract` fields, layer bounding boxes, available `dimensions` (time etc) and flags (`opaque`, `queryable`, `cascaded`), MIME types for `exceptions`) etc.
-- [`CSWService`](modules/wms/api-reference/csw-service)
+- [`CSWService`](modules/wms/api-reference/csw-source)
   - New service supporting the [**CSW (Catalog Services for the Web)**](modules/wms/formats/csw) protocol.
   - Enables applications to discover available services (including WMS).
 - `WMSCapabilities` type has some breaking changes, please refer to the upgrade guide.
-  
+
 **@loaders.gl/xml**
 
 - [`HTMLLoader`](modules/xml/api-reference/html-loader) - New minimal HTML loader, intended for small ad-hoc use cases such as extracting an error message or a link from a short HTML page.
@@ -312,7 +387,7 @@ Release Date: May 16, 2023.
 
 Release Date: February 17, 2023.
 
-*For patch releases, see [CHANGELOG](https://github.com/visgl/loaders.gl/blob/3.3-release/CHANGELOG.md).*
+_For patch releases, see [CHANGELOG](https://github.com/visgl/loaders.gl/blob/3.3-release/CHANGELOG.md)._
 
 **General Improvements**
 
@@ -350,7 +425,7 @@ Release Date: February 17, 2023.
 - Limited support for converting `3D Tiles Next` source tilesets:
   - [`KHR_texture_basisu`](https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_texture_basisu) glTF extension support. Support of KTX2 textures.
   - [`KHR_texture_transform`](https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_texture_transform) glTF extension support. Supported as input.
-  - [`EXT_feature_metadata`](https://github.com/CesiumGS/glTF/tree/3d-tiles-next/extensions/2.0/Vendor/EXT_feature_metadata) extension support. Support converting attributes from **3D Tiles Next**  to I3S.
+  - [`EXT_feature_metadata`](https://github.com/CesiumGS/glTF/tree/3d-tiles-next/extensions/2.0/Vendor/EXT_feature_metadata) extension support. Support converting attributes from **3D Tiles Next** to I3S.
 - New conversion options:
   - `split-nodes` - create multiple I3S nodes from one glTF file when the source glTF has multiple materials.
   - `instant-node-writing` - RAM usage management option. Keep JSON resources on disk instead of memory in cost of conversion speed.
@@ -359,7 +434,7 @@ Release Date: February 17, 2023.
 
 Release Date: May 12, 2022.
 
-*For patch releases, see [CHANGELOG](https://github.com/visgl/loaders.gl/blob/3.2-release/CHANGELOG.md).*
+_For patch releases, see [CHANGELOG](https://github.com/visgl/loaders.gl/blob/3.2-release/CHANGELOG.md)._
 
 **@loaders.gl/arrow**
 
@@ -399,7 +474,7 @@ Release Date: May 12, 2022.
 
 Release Date: Dec 7, 2021.
 
-*For patch releases, see [CHANGELOG](https://github.com/visgl/loaders.gl/blob/3.1-release/CHANGELOG.md).*
+_For patch releases, see [CHANGELOG](https://github.com/visgl/loaders.gl/blob/3.1-release/CHANGELOG.md)._
 
 **@loaders.gl/textures**
 
@@ -445,7 +520,7 @@ Release Date: July 13, 2021.
 
 loaders.gl v3.0 is a major release, that adds a range of new loaders and features and continues the transition of the loaders.gl code base to typescript. Some deprecated APIs have been removed, check the upgrade guide for breaking changes.
 
-*For patch releases, see [CHANGELOG](https://github.com/visgl/loaders.gl/blob/3.0-release/CHANGELOG.md).*
+_For patch releases, see [CHANGELOG](https://github.com/visgl/loaders.gl/blob/3.0-release/CHANGELOG.md)._
 
 **General improvements**
 
@@ -793,9 +868,8 @@ The 2.0 release brings potentially dramatic bundle size savings through dynamic 
 - **Smaller Loaders** Big loaders such as `DracoLoader` and `BasisLoader` that use large libraries (e.g. WASM/WebAssembly or emscripten/C++ transpiled to JavaScript) now load those libraries dynamically from `unpkg.com` CDN resulting in dramatic bundle size savings. E.g the bundle size impact of the `DracoLoader` was reduced from > 1MB to just over 10KB.
 
 - **Worker Loaders**
-
   - Ease-of-use: Worker loading is provided by the main loader objects. It is not necessary to import the `...WorkerLoader` objects to enable worker loading (but see below about bundle size)
-  - Performance: Loading on worker threads is now the default: All worker enabled loaders now run on worker threads by default (set `options.worker: false` to disable worker-thread loading and run the loader on the main thread).
+  - Performance: Loading on worker threads is now the default: All worker enabled loaders now run on worker threads by default (set `options.core.worker: false` to disable worker-thread loading and run the loader on the main thread).
   - Debugging: Development builds of workers are now available on `unpkg.com` CDN, eabling debugging of worker loaders.
   - Bundle size: Workers are no longer bundled, but loaded from from the `unpkg.com` CDN.
   - Bundle size: Note that the old `...WorkerLoader` classes are still available. Using these can save even more bundle space since during tree-shaking since they do not depend on the non-worker parser.
@@ -803,23 +877,27 @@ The 2.0 release brings potentially dramatic bundle size savings through dynamic 
 - **Composite Loaders**
   - The new _composite loader_ architecture enables complex loaders like `Tiles3DLoader` and `GLTFLoader` to be composed from more primitive loaders without losing the ability to run some parts on worker, pass arguments to sub-loaders etc.
 
-**@loaders.gl/basis** NEW 
+**@loaders.gl/basis** NEW
+
 - A new module for the basis format that enables. This module also provides a `CompressedImageLoader` for more traditional compressed images.
 
-**@loaders.gl/json** NEW 
+**@loaders.gl/json** NEW
+
 - A new streaming `JSONLoader` that supports batched (i.e. streaming) parsing from standard JSON files, e.g. geojson. No need to reformat your files as line delimited JSON.
 
-**@loaders.gl/gltf** 
-  - the `GLTFLoader` is now a "composite loader". The perhaps most important change is that `load(url, GLTFLoader)` also loads all sub-assets, including images, Draco compressed meshes, etc making the loaded data easier for applications to use.
+**@loaders.gl/gltf**
+
+- the `GLTFLoader` is now a "composite loader". The perhaps most important change is that `load(url, GLTFLoader)` also loads all sub-assets, including images, Draco compressed meshes, etc making the loaded data easier for applications to use.
 
 **@loaders.gl/images**
-  - **New ImageLoader options** `options: {image: {}}` contain common options that apply across the category
-  - `options.image.type`, Ability to control loaded image type enabling faster `ImageBitmap` instances to be loaded via `type: 'imagebitmap`. Default `auto` setting returns traditional HTML image objects.
-  - Image Decoding. `options.image.decodeHTML: true` - `ImageLoader` now ensures HTML images are completely decoded and ready to be used when the image is returned (by calling `Image.decode()`).
-  - **Parsed Image API** Since the type of images returned by the `ImageLoader` depends on the `{image: {type: ...}}` option, a set of functions are provided to work portably with loaded images: `isImage()`, `getImageType()`, `getImageData()`, ...
-  - **Binary Image API** Separate API to work with unparsed images in binary data form: `isBinaryImage()`, `getBinaryImageType()`, `getBinaryImageSize()`, ...
-  - **"Texture" Loading API** New methods `loadImages` and `loadImageCube` can signficantly simplify loading of arrays of arrays of (mipmapped) images that are often used in 3D applications. These methods allow an entire complex of images (e.g. 6 cube faces with 10 mip images each) to be loaded using a single async call.
-  - **Improved Node.js support** More image test cases are now run in both browser and Node.js and a couple of important Node.js issues were uncovered and fixed.
+
+- **New ImageLoader options** `options: {image: {}}` contain common options that apply across the category
+- `options.image.type`, Ability to control loaded image type enabling faster `ImageBitmap` instances to be loaded via `type: 'imagebitmap`. Default `auto` setting returns traditional HTML image objects.
+- Image Decoding. `options.image.decodeHTML: true` - `ImageLoader` now ensures HTML images are completely decoded and ready to be used when the image is returned (by calling `Image.decode()`).
+- **Parsed Image API** Since the type of images returned by the `ImageLoader` depends on the `{image: {type: ...}}` option, a set of functions are provided to work portably with loaded images: `isImage()`, `getImageType()`, `getImageData()`, ...
+- **Binary Image API** Separate API to work with unparsed images in binary data form: `isBinaryImage()`, `getBinaryImageType()`, `getBinaryImageSize()`, ...
+- **"Texture" Loading API** New methods `loadImages` and `loadImageCube` can signficantly simplify loading of arrays of arrays of (mipmapped) images that are often used in 3D applications. These methods allow an entire complex of images (e.g. 6 cube faces with 10 mip images each) to be loaded using a single async call.
+- **Improved Node.js support** More image test cases are now run in both browser and Node.js and a couple of important Node.js issues were uncovered and fixed.
 
 ## v1.3
 
@@ -846,15 +924,12 @@ The 1.3 release is focused on production quality 3D tiles support, maturing the 
 **`@loaders.gl/3d-tiles`**
 
 - **Tile3DLayer moved to deck.gl**
-
   - The `Tile3DLayer` can now be imported from `@deck.gl/geo-layers`, and no longer needs to be copied from the loaders.gl `3d-tiles` example
 
 - **Batched 3D Model Tile Support**
-
   - `b3dm` tiles can now be loaded and displayed by the `Tile3DLayer` (in addition to `pnts` tiles).
 
 - **Performance Tracking**
-
   - `Tileset3D` now contain a `stats` object which tracks the loading process to help profile big tilesets.
   - Easily displayed in your UI via the `@probe.gl/stats-widget` module (see 3d-tiles example).
 
@@ -871,7 +946,6 @@ The 1.3 release is focused on production quality 3D tiles support, maturing the 
 **@loaders.gl/core**
 
 - **Loader Selection Improvements**
-
   - The loader selection mechanism is now exposed to apps through the new `selectLoader` API.
   - Loaders can now examine the first bytes of a file
   - This complements the existing URL extension based auto detection mechanisms.

@@ -1,6 +1,6 @@
 {
   "name": "@loaders.gl/compression",
-  "version": "4.3.3",
+  "version": "4.5.1",
   "description": "Decompression and compression plugins for loaders.gl",
   "license": "MIT",
   "type": "module",
@@ -29,6 +29,12 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./compression-worker.js": {
+      "import": "./dist/compression-worker.js"
+    },
+    "./compression-worker-node.js": {
+      "import": "./dist/compression-worker-node.js"
     }
   },
   "sideEffects": false,
@@ -50,16 +56,15 @@
     "build-worker-node": "esbuild src/workers/compression-worker-node.ts --outfile=dist/compression-worker-node.js --platform=node --target=node16 --bundle --minify --sourcemap --define:__VERSION__=\\\"$npm_package_version\\\""
   },
   "dependencies": {
-    "@loaders.gl/loader-utils": "4.3.3",
-    "@loaders.gl/worker-utils": "4.3.3",
-    "@types/brotli": "^1.3.0",
+    "@loaders.gl/loader-utils": "4.5.1",
+    "@loaders.gl/worker-utils": "4.5.1",
     "@types/pako": "^1.0.1",
     "fflate": "0.7.4",
-    "lzo-wasm": "^0.0.4",
     "pako": "1.0.11",
     "snappyjs": "^0.6.1"
   },
   "optionalDependencies": {
+    "@types/brotli": "^1.3.0",
     "brotli": "^1.3.2",
     "lz4js": "^0.2.0",
     "zstd-codec": "^0.1"
@@ -70,7 +75,7 @@
     "zstd-codec": "^0.1"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "^4.3.0"
+    "@loaders.gl/core": "~4.4.0"
   },
-  "gitHead": "3213679d79e6ff2814d48fd3337acfa446c74099"
+  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
 }

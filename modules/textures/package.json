@@ -1,6 +1,6 @@
 {
   "name": "@loaders.gl/textures",
-  "version": "4.3.3",
+  "version": "4.5.1",
   "description": "Framework-independent loaders for compressed and super compressed (basis) textures ",
   "license": "MIT",
   "type": "module",
@@ -30,6 +30,27 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./basis-worker.js": {
+      "import": "./dist/basis-worker.js"
+    },
+    "./basis-worker-node.js": {
+      "import": "./dist/basis-worker-node.js"
+    },
+    "./npy-worker.js": {
+      "import": "./dist/npy-worker.js"
+    },
+    "./compressed-texture-worker.js": {
+      "import": "./dist/compressed-texture-worker.js"
+    },
+    "./crunch-worker.js": {
+      "import": "./dist/crunch-worker.js"
+    },
+    "./ktx2-basis-writer-worker.js": {
+      "import": "./dist/ktx2-basis-writer-worker.js"
+    },
+    "./ktx2-basis-writer-worker-node.js": {
+      "import": "./dist/ktx2-basis-writer-worker-node.js"
     }
   },
   "sideEffects": false,
@@ -54,16 +75,21 @@
     "build-crunch-worker": "esbuild src/workers/crunch-worker.ts --outfile=dist/crunch-worker.js --target=esnext --bundle --define:__VERSION__=\\\"$npm_package_version\\\""
   },
   "dependencies": {
-    "@loaders.gl/images": "4.3.3",
-    "@loaders.gl/loader-utils": "4.3.3",
-    "@loaders.gl/schema": "4.3.3",
-    "@loaders.gl/worker-utils": "4.3.3",
+    "@loaders.gl/images": "4.5.1",
+    "@loaders.gl/loader-utils": "4.5.1",
+    "@loaders.gl/schema": "4.5.1",
+    "@loaders.gl/worker-utils": "4.5.1",
     "@math.gl/types": "^4.1.0",
-    "ktx-parse": "^0.7.0",
-    "texture-compressor": "^1.0.2"
+    "ktx-parse": "^0.7.0"
   },
   "peerDependencies": {
-    "@loaders.gl/core": "^4.3.0"
+    "@loaders.gl/core": "~4.4.0",
+    "texture-compressor": "^1.0.2"
   },
-  "gitHead": "3213679d79e6ff2814d48fd3337acfa446c74099"
+  "peerDependenciesMeta": {
+    "texture-compressor": {
+      "optional": true
+    }
+  },
+  "gitHead": "8a9e77743ea90a7be4ebec572416bb50ca9d73c3"
 }

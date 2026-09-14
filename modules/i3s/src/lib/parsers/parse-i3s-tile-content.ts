@@ -2,7 +2,7 @@ import type {TypedArray} from '@loaders.gl/schema';
 import {load, parse} from '@loaders.gl/core';
 import {Vector3, Matrix4} from '@math.gl/core';
 import {Ellipsoid} from '@math.gl/geospatial';
-import {LoaderOptions, LoaderContext, parseFromContext} from '@loaders.gl/loader-utils';
+import {StrictLoaderOptions, LoaderContext, parseFromContext} from '@loaders.gl/loader-utils';
 import {ImageLoader} from '@loaders.gl/images';
 import {DracoLoader, DracoMesh} from '@loaders.gl/draco';
 import {BasisLoader, CompressedTextureLoader} from '@loaders.gl/textures';
@@ -46,7 +46,7 @@ export async function parseI3STileContent(
   arrayBuffer: ArrayBuffer,
   tileOptions: I3STileOptions,
   tilesetOptions: I3STilesetOptions,
-  options?: LoaderOptions,
+  options?: StrictLoaderOptions,
   context?: LoaderContext
 ): Promise<I3STileContent> {
   const content: I3STileContent = {
@@ -55,7 +55,7 @@ export async function parseI3STileContent(
     featureIds: [],
     vertexCount: 0,
     modelMatrix: new Matrix4(),
-    coordinateSystem: 0,
+    coordinateSystem: 'meter-offsets',
     byteLength: 0,
     texture: null
   };
@@ -195,15 +195,14 @@ async function parseI3SNodeGeometry(
 
   if (
     !options?.i3s?.coordinateSystem ||
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     options.i3s.coordinateSystem === COORDINATE_SYSTEM.METER_OFFSETS
   ) {
     const enuMatrix = parsePositions(attributes.position, tileOptions);
     content.modelMatrix = enuMatrix.invert();
-    content.coordinateSystem = COORDINATE_SYSTEM.METER_OFFSETS;
+    content.coordinateSystem = 'meter-offsets';
   } else {
     content.modelMatrix = getModelMatrix(attributes.position);
-    content.coordinateSystem = COORDINATE_SYSTEM.LNGLAT_OFFSETS;
+    content.coordinateSystem = 'lnglat-offsets';
   }
 
   content.attributes = {

@@ -3,9 +3,10 @@ import test from 'tape-promise/tape';
 import {validateLoader} from 'test/common/conformance';
 
 import {registerLoaders, load, parseSync, fetchFile} from '@loaders.gl/core';
-import {GLTFLoader, postProcessGLTF} from '@loaders.gl/gltf';
+import {GLTFLoader, postProcessGLTF, type GLTFLoaderOptions} from '@loaders.gl/gltf';
 import {DracoLoader} from '@loaders.gl/draco';
 import {ImageLoader} from '@loaders.gl/images';
+import {getGLTFImageOptions} from '../src/lib/parsers/parse-gltf';
 
 const GLTF_BINARY_URL = '@loaders.gl/gltf/test/data/gltf-2.0/2CylinderEngine.glb';
 const GLTF_JSON_URL = '@loaders.gl/gltf/test/data/gltf-2.0/2CylinderEngine.gltf';
@@ -53,13 +54,38 @@ test('GLTFLoader#load(text)', async (t) => {
   t.end();
 });
 
-test('GLTFLoader#load(3d tile GLB)', async (t) => {
-  t.ok(await load(GLB_TILE_URL, [GLTFLoader, DracoLoader]), 'Test that GLB from 3D tile parses');
+test('GLTFLoader#Basis image options', (t) => {
+  const loaderOptions: GLTFLoaderOptions = {
+    core: {worker: true},
+    basis: {
+      supportedTextureFormats: ['bc3-rgba-unorm'],
+      containerFormat: 'ktx2'
+    }
+  };
 
-  t.ok(
-    await load(GLB_TILE_WITH_DRACO_URL, [GLTFLoader, DracoLoader, ImageLoader]),
-    'Parses Draco GLB with supplied DracoLoader'
+  const imageOptions = getGLTFImageOptions(loaderOptions, 'image/ktx2');
+
+  t.deepEqual(
+    imageOptions.basis,
+    {
+      supportedTextureFormats: ['bc3-rgba-unorm'],
+      containerFormat: 'ktx2',
+      format: {alpha: 'bc3', noAlpha: 'bc1'}
+    },
+    'selects a concrete format while preserving partial Basis options'
   );
+  t.equal(imageOptions.core?.worker, true, 'preserves core options');
+  t.equal(imageOptions.core?.mimeType, 'image/ktx2', 'sets the image MIME type');
+  t.notOk(loaderOptions.basis?.format, 'does not mutate the supplied options');
+  t.end();
+});
+
+test('GLTFLoader#load(3d tile GLB)', async (t) => {
+  const result = await load(GLB_TILE_URL, [GLTFLoader, DracoLoader]);
+  t.ok(result, 'Test that GLB from 3D tile parses');
+
+  const result2 = await load(GLB_TILE_WITH_DRACO_URL, [GLTFLoader, DracoLoader, ImageLoader]);
+  t.ok(result2, 'Parses Draco GLB with supplied DracoLoader');
 
   // TODO - prone to flakiness since we have async unregisterLoaders calls
   registerLoaders([DracoLoader, ImageLoader]);

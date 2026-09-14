@@ -12,6 +12,8 @@ The `@loaders.gl/arrow` module provides support for the [Apache Arrow](/docs/mod
 npm install @loaders.gl/core @loaders.gl/arrow
 ```
 
+See [Using with Apache Arrow](/docs/developer-guide/apache-arrow) for practical guidance on how to integrate with the Apache Arrow JS library.
+
 ## Loaders and Writers
 
 | Loader                                                                |
@@ -26,7 +28,13 @@ npm install @loaders.gl/core @loaders.gl/arrow
 
 ## Additional APIs
 
-Arrow provides a rich JavaScript API for working with Arrow formatted data. Please refer to the `ArrowJS` API documentation.
+| API                                                                                                | Description                                                                                                  |
+| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| [`IndexedArrowTable`, `IndexedArrowVector`](/docs/modules/arrow/api-reference/indexed-arrow-table) | Readonly indexed views for filtering, sorting, slicing and reordering without eagerly copying Arrow columns. |
+| [`MappedArrowTable`](/docs/modules/arrow/api-reference/mapped-arrow-table)                         | String-keyed row lookup that preserves indexed table transforms.                                             |
+
+Arrow provides a rich JavaScript API for working with Arrow formatted data.
+Start with the [`ArrowJS API Reference`](/docs/arrowjs/api-reference).
 
 ## Attributions
 

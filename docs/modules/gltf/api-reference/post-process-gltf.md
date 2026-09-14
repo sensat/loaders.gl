@@ -45,20 +45,27 @@ The GLTF post processor copies objects in the input gltf json field as necessary
 - The `GLTFPostprocessed` type has less optional fields. Many optional `GLTF` fields will be required and populated with empty arrays etc as appropriate.
 - "Resolves" references to GLTF objects. glTF objects reference other object with integer indexes. Such indexes will be replaced with object references, simplifying iteration over the scenegraph.
 - Generates required `id` fields for all objects.
+- Expands `LINE_LOOP` and `TRIANGLE_FAN` primitives into portable indexed `LINES` and `TRIANGLES`
+  without changing the loaded source JSON or buffers.
 
 ## Post Processing of glTF Extensions
 
-Mhile many glTF extensions can only be handled in the final renderer, some extensions are "structural" and can be processed during the loading / post processing stage.
+While many glTF extensions can only be handled in the final renderer, some extensions are "structural" and can be processed during loading.
 
 Such structural extensions may represent alternate, optional, more efficient ways to store data etc.
 Examples are mesh compressions such as Draco, or alternate image formats for textures.
 
 By handling these extensions during loading, less work needs to be done by the upstream renderer.
+Meshopt decompression is completed by the asynchronous `GLTFLoader` before `postProcessGLTF` runs;
+the postprocessor itself does not decode compressed streams. See the
+[meshopt compression guide](/docs/modules/gltf/formats/gltf#meshopt-compression) for the distinction
+between the existing EXT extension and the newer KHR extension.
 
-| Extension                                                | Preprocessed | Description                                |
-| -------------------------------------------------------- | ------------ | ------------------------------------------ |
-| [KHR_draco_mesh_compression][KHR_draco_mesh_compression] | Y            | Decompresses draco-compressed geometries   |
-| [EXT_meshopt_compression][EXT_meshopt_compression])      | Y            | Decompresses meshopt-compressed geometries |
+| Extension                                                                                | Preprocessed | Description                                |
+| ---------------------------------------------------------------------------------------- | ------------ | ------------------------------------------ |
+| [KHR_draco_mesh_compression](/docs/modules/gltf/formats/gltf#khr_draco_mesh_compression) | Y            | Decompresses draco-compressed geometries   |
+| [KHR_meshopt_compression](/docs/modules/gltf/formats/gltf#khr_meshopt_compression)       | Y            | Decompresses meshopt-compressed geometries |
+| [EXT_meshopt_compression](/docs/modules/gltf/formats/gltf#ext_meshopt_compression)       | Y            | Decompresses meshopt-compressed geometries |
 
 ## Detailed Post Processing Notes
 
@@ -71,6 +78,15 @@ Background: The GLTF file format describes a tree structure, however it links no
 ### Adds `id` to every node
 
 The postprocessor makes sure each node and an `id` value, unless already present.
+
+### Normalizes WebGL-only primitive topologies
+
+WebGPU does not support the glTF `LINE_LOOP` and `TRIANGLE_FAN` primitive modes.
+`postProcessGLTF` expands those modes into indexed `LINES` and `TRIANGLES`, respectively. Indexed
+and non-indexed source primitives are both supported, winding is preserved, and generated indices
+use `Uint16Array` or `Uint32Array` according to the largest referenced vertex. The original glTF
+primitive, accessor, and buffer data remain unchanged. Bufferless index accessors are materialized
+from their implicit-zero base and optional sparse substitutions before topology expansion.
 
 ## Node Specific Post Processing
 
@@ -99,7 +115,7 @@ Remarks:
 ## Images
 
 - `image.image` - Populated from the supplied `gltf.images` array. This array is populated by the `GLTFLoader` via `options.loadImages: true`):
-- `image.uri` - If loaded image in the `images` array is not available, uses `gltf.baseUri` or `options.baseUri` is available, to resolve a relative URI and replaces this value.
+- `image.uri` - If the loaded image in the `images` array is not available, uses `gltf.baseUri` to resolve a relative URI and replaces this value.
 
 ### Materials
 

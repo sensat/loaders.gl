@@ -20,12 +20,24 @@ const WITH_FEATURE_ID = '@loaders.gl/mvt/test/data/mvt/with_feature_id.mvt';
 // Geometry Array Results
 
 // // GeoJSON Results
-import decodedPolygonsGeometry from '@loaders.gl/mvt/test/data/mvt-results/decoded_mvt_polygons_array.json' assert {type: 'json'};
+const loadJSON = async (relativePath: string) => {
+  const url = new URL(relativePath, import.meta.url);
+  if (url.protocol === 'file:' && typeof window === 'undefined') {
+    const {readFile} = await import('fs/promises');
+    return JSON.parse(await readFile(url, 'utf8'));
+  }
+  const response = await fetch(url);
+  return response.json();
+};
+
+const decodedPolygonsGeometry = await loadJSON(
+  './data/mvt-results/decoded_mvt_polygons_array.json'
+);
 
 // GeoJSON Results
-import decodedPointsGeoJSON from '@loaders.gl/mvt/test/data/mvt-results/decoded_mvt_points.json' assert {type: 'json'};
-import decodedLinesGeoJSON from '@loaders.gl/mvt/test/data/mvt-results/decoded_mvt_lines.json' assert {type: 'json'};
-import decodedPolygonsGeoJSON from '@loaders.gl/mvt/test/data/mvt-results/decoded_mvt_polygons.json' assert {type: 'json'};
+const decodedPointsGeoJSON = await loadJSON('./data/mvt-results/decoded_mvt_points.json');
+const decodedLinesGeoJSON = await loadJSON('./data/mvt-results/decoded_mvt_lines.json');
+const decodedPolygonsGeoJSON = await loadJSON('./data/mvt-results/decoded_mvt_polygons.json');
 
 setLoaderOptions({
   _workerType: 'test'
@@ -286,7 +298,15 @@ test('Features with top-level id', async (t) => {
   const response = await fetchFile(WITH_FEATURE_ID);
   const mvtArrayBuffer = await response.arrayBuffer();
 
-  const binary = await parse(mvtArrayBuffer, MVTLoader, {mvt: {shape: 'binary'}});
+  const geojsonFeatures = await parse(mvtArrayBuffer, MVTLoader);
+  for (const feature of geojsonFeatures) {
+    t.ok(feature.id, 'feature.id is preserved');
+    t.notOk(feature.properties.id, 'feature.id is not copied to properties');
+  }
+
+  const binaryResponse = await fetchFile(WITH_FEATURE_ID);
+  const binaryArrayBuffer = await binaryResponse.arrayBuffer();
+  const binary = await parse(binaryArrayBuffer, MVTLoader, {mvt: {shape: 'binary'}});
   t.ok(binary.points.fields.length, 'feature.id fields are preserved');
   t.ok(binary.lines.fields.length, 'feature.id fields are preserved');
   t.ok(binary.polygons.fields.length, 'feature.id fields are preserved');

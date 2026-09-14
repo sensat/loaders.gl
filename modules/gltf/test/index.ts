@@ -5,6 +5,7 @@ import './lib/glb/glb-encoder-decoder.spec';
 import './lib/glb/glb-custom-payload.spec';
 
 import './lib/gltf-utils/gltf-attribute-utils.spec';
+import './lib/gltf-utils/resolve-url.spec';
 
 import './lib/api/gltf-scenegraph-modifiers.spec';
 import './lib/api/gltf-scenegraph-accessors.spec';
@@ -12,6 +13,7 @@ import './lib/api/post-process-gltf.spec';
 import './lib/api/gltf-roundtrip.spec';
 
 import './lib/extensions/KHR_draco_mesh_compression.spec';
+import './lib/extensions/KHR_meshopt_compression.spec';
 import './lib/extensions/KHR_lights_punctual.spec';
 import './lib/extensions/KHR_materials_unlit.spec';
 import './lib/extensions/KHR_texture_transform.spec';

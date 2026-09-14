@@ -1,5 +1,5 @@
 /* eslint-disable camelcase, max-statements, no-restricted-globals */
-import type {LoaderContext} from '@loaders.gl/loader-utils';
+import type {LoaderContext, StrictLoaderOptions} from '@loaders.gl/loader-utils';
 import type {GLTFLoaderOptions} from '../../gltf-loader';
 import type {GLTFWithBuffers} from '../types/gltf-types';
 import type {GLB} from '../types/glb-types';
@@ -21,12 +21,41 @@ import {normalizeGLTFV1} from '../api/normalize-gltf-v1';
 export type ParseGLTFOptions = ParseGLBOptions & {
   normalize?: boolean;
   loadImages?: boolean;
+  /** Load linked and embedded buffers; required for meshopt decompression. @default true */
   loadBuffers?: boolean;
+  /** Decompress Draco, `EXT_meshopt_compression`, and `KHR_meshopt_compression` data. @default true */
   decompressMeshes?: boolean;
   excludeExtensions?: string[];
   /** @deprecated not supported in v4. `postProcessGLTF()` must be called by the application */
   postProcess?: never;
 };
+
+/**
+ * Creates options for parsing an image referenced by a glTF asset.
+ * Resolves automatic Basis format selection before the image is delegated to a worker.
+ * @param options - glTF loader options.
+ * @param mimeType - MIME type declared by the glTF image.
+ * @returns Loader options for the referenced image.
+ */
+export function getGLTFImageOptions(
+  options: GLTFLoaderOptions,
+  mimeType?: string
+): GLTFLoaderOptions {
+  const basisOptions = options.basis;
+  const basisFormat = basisOptions?.format;
+
+  return {
+    ...options,
+    core: {...options.core, mimeType},
+    basis: {
+      ...basisOptions,
+      format:
+        basisFormat && basisFormat !== 'auto'
+          ? basisFormat
+          : selectSupportedBasisFormat(basisOptions?.supportedTextureFormats)
+    }
+  };
+}
 
 /** Check if an array buffer appears to contain GLTF data */
 export function isGLTF(arrayBuffer: ArrayBuffer, options?: ParseGLTFOptions): boolean {
@@ -45,7 +74,7 @@ export async function parseGLTF(
 
   normalizeGLTFV1(gltf, {normalize: options?.gltf?.normalize});
 
-  preprocessExtensions(gltf, options, context);
+  await preprocessExtensions(gltf, options, context);
 
   // Load linked buffers asynchronously and decodes base64 buffers in parallel
   if (options?.gltf?.loadBuffers && gltf.json.buffers) {
@@ -70,14 +99,14 @@ export async function parseGLTF(
  * @param byteOffset
  * @param options
  */
-function parseGLTFContainerSync(gltf, data, byteOffset, options) {
+function parseGLTFContainerSync(gltf, data, byteOffset, options: GLTFLoaderOptions) {
   // Initialize gltf container
-  if (options.uri) {
-    gltf.baseUri = options.uri;
+  if (options.core?.baseUrl) {
+    gltf.baseUri = options.core?.baseUrl;
   }
 
   // If data is binary and starting with magic bytes, assume binary JSON text, convert to string
-  if (data instanceof ArrayBuffer && !isGLB(data, byteOffset, options)) {
+  if (data instanceof ArrayBuffer && !isGLB(data, byteOffset, options.glb)) {
     const textDecoder = new TextDecoder();
     data = textDecoder.decode(data);
   }
@@ -134,7 +163,7 @@ async function loadBuffers(gltf: GLTFWithBuffers, options, context: LoaderContex
       const {fetch} = context;
       assert(fetch);
 
-      const uri = resolveUrl(buffer.uri, options);
+      const uri = resolveUrl(buffer.uri, options, context);
       const response = await context?.fetch?.(uri);
       const arrayBuffer = await response?.arrayBuffer?.();
 
@@ -201,7 +230,7 @@ async function loadImage(
   let arrayBuffer;
 
   if (image.uri && !image.hasOwnProperty('bufferView')) {
-    const uri = resolveUrl(image.uri, options);
+    const uri = resolveUrl(image.uri, options, context);
 
     const {fetch} = context;
     const response = await fetch(uri);
@@ -219,15 +248,13 @@ async function loadImage(
 
   assert(arrayBuffer, 'glTF image has no data');
 
+  const gltfOptions = getGLTFImageOptions(options, image.mimeType) satisfies StrictLoaderOptions;
+
   // Call `parse`
   let parsedImage = (await parseFromContext(
     arrayBuffer,
     [ImageLoader, BasisLoader],
-    {
-      ...options,
-      mimeType: image.mimeType,
-      basis: options.basis || {format: selectSupportedBasisFormat()}
-    },
+    gltfOptions,
     context
   )) as ImageType | TextureLevel[][];
 

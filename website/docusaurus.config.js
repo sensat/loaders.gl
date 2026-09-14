@@ -14,11 +14,16 @@ const config = {
   url: 'https://loaders.gl',
   baseUrl: '/',
   onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'warn',
   favicon: '/favicon.png',
   organizationName: 'visgl', // Usually your GitHub org/user name.
   projectName: 'loaders.gl', // Usually your repo name.
   trailingSlash: false,
+
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    }
+  },
 
   presets: [
     [
@@ -80,6 +85,7 @@ const config = {
             '@loaders.gl/las': resolve('../modules/las/src'),
             '@loaders.gl/loader-utils': resolve('../modules/loader-utils/src'),
             '@loaders.gl/math': resolve('../modules/math/src'),
+            '@loaders.gl/mlt': resolve('../modules/mlt/src'),
             '@loaders.gl/mvt': resolve('../modules/mvt/src'),
             '@loaders.gl/netcdf': resolve('../modules/netcdf/src'),
             '@loaders.gl/obj': resolve('../modules/obj/src'),
@@ -90,13 +96,15 @@ const config = {
             '@loaders.gl/polyfills': resolve('../modules/polyfills/src'),
             '@loaders.gl/potree': resolve('../modules/potree/src'),
             '@loaders.gl/schema': resolve('../modules/schema/src'),
+            '@loaders.gl/schema-utils': resolve('../modules/schema-utils/src'),
             '@loaders.gl/shapefile': resolve('../modules/shapefile/src'),
             '@loaders.gl/stac': resolve('../modules/stac/src'),
             '@loaders.gl/terrain': resolve('../modules/terrain/src'),
             '@loaders.gl/textures': resolve('../modules/textures/src'),
-            '@loaders.gl/tile-converter': resolve('../modules/tile/converter/src-'),
+            '@loaders.gl/tile-converter': resolve('../apps/tile/converter/src-'),
             '@loaders.gl/tiles': resolve('../modules/tiles/src'),
             '@loaders.gl/tiles-2d': resolve('../modules/tiles-2d/src'),
+            '@loaders.gl/traces': resolve('../modules/traces/src'),
             '@loaders.gl/type-analyzer': resolve('../modules/type-analyzer/src'),
             '@loaders.gl/video': resolve('../modules/video/src'),
             '@loaders.gl/wkt': resolve('../modules/wkt/src'),
@@ -152,12 +160,12 @@ const config = {
         docItemComponent: resolve('./src/components/example/doc-item-component.tsx')
       }
     ],
-    [
-      require.resolve('@cmfcmf/docusaurus-search-local'),
-      {
-        // Options here
-      }
-    ],
+    // [
+    //   require.resolve('@cmfcmf/docusaurus-search-local'),
+    //   {
+    //     // Options here
+    //   }
+    // ],
     [
       '@docusaurus/plugin-client-redirects',
       {
